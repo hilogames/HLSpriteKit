@@ -1,0 +1,20 @@
+# code
+*.o
+
+# xcode
+UserInterfaceState.xcuserstate
+WorkspaceSettings.xcsettings
+xcdebugger
+
+# other editors and tools
+TAGS
+*.rej
+#*#
+.#*
+
+# mac os x
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes

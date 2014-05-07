@@ -1,0 +1,485 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		CB923F941914230E00419AD1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB923F931914230E00419AD1 /* Foundation.framework */; };
+		CB923FA21914230E00419AD1 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB923FA11914230E00419AD1 /* XCTest.framework */; };
+		CB923FA31914230E00419AD1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB923F931914230E00419AD1 /* Foundation.framework */; };
+		CB923FA51914230E00419AD1 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB923FA41914230E00419AD1 /* UIKit.framework */; };
+		CB923FA81914230E00419AD1 /* libHLSpriteKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CB923F901914230E00419AD1 /* libHLSpriteKit.a */; };
+		CB923FAE1914230E00419AD1 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = CB923FAC1914230E00419AD1 /* InfoPlist.strings */; };
+		CB923FB01914230E00419AD1 /* HLSpriteKitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CB923FAF1914230E00419AD1 /* HLSpriteKitTests.m */; };
+		CBD9E92D19142738002533DF /* SpriteKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CBD9E92C19142738002533DF /* SpriteKit.framework */; };
+		CBD9E941191434AF002533DF /* HLLabelButtonNode.m in Sources */ = {isa = PBXBuildFile; fileRef = CBD9E92A191426D0002533DF /* HLLabelButtonNode.m */; };
+		CBD9E9441914353A002533DF /* HLLabelButtonNode.h in Headers */ = {isa = PBXBuildFile; fileRef = CBD9E929191426D0002533DF /* HLLabelButtonNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CBD9E9451914353A002533DF /* HLSpriteKit.h in Headers */ = {isa = PBXBuildFile; fileRef = CBD9E93F1914334C002533DF /* HLSpriteKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		CB923FA61914230E00419AD1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CB923F881914230E00419AD1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CB923F8F1914230E00419AD1;
+			remoteInfo = HLSpriteKit;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		CB923F8E1914230E00419AD1 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		CB923F901914230E00419AD1 /* libHLSpriteKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libHLSpriteKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		CB923F931914230E00419AD1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		CB923F971914230E00419AD1 /* HLSpriteKit-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HLSpriteKit-Prefix.pch"; sourceTree = "<group>"; };
+		CB923FA01914230E00419AD1 /* HLSpriteKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HLSpriteKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CB923FA11914230E00419AD1 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		CB923FA41914230E00419AD1 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
+		CB923FAB1914230E00419AD1 /* HLSpriteKitTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "HLSpriteKitTests-Info.plist"; sourceTree = "<group>"; };
+		CB923FAD1914230E00419AD1 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		CB923FAF1914230E00419AD1 /* HLSpriteKitTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HLSpriteKitTests.m; sourceTree = "<group>"; };
+		CBD9E929191426D0002533DF /* HLLabelButtonNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLLabelButtonNode.h; sourceTree = "<group>"; };
+		CBD9E92A191426D0002533DF /* HLLabelButtonNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLLabelButtonNode.m; sourceTree = "<group>"; };
+		CBD9E92C19142738002533DF /* SpriteKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SpriteKit.framework; path = System/Library/Frameworks/SpriteKit.framework; sourceTree = SDKROOT; };
+		CBD9E93F1914334C002533DF /* HLSpriteKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HLSpriteKit.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		CB923F8D1914230E00419AD1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CBD9E92D19142738002533DF /* SpriteKit.framework in Frameworks */,
+				CB923F941914230E00419AD1 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CB923F9D1914230E00419AD1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CB923FA21914230E00419AD1 /* XCTest.framework in Frameworks */,
+				CB923FA81914230E00419AD1 /* libHLSpriteKit.a in Frameworks */,
+				CB923FA51914230E00419AD1 /* UIKit.framework in Frameworks */,
+				CB923FA31914230E00419AD1 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		CB923F871914230E00419AD1 = {
+			isa = PBXGroup;
+			children = (
+				CB923F951914230E00419AD1 /* HLSpriteKit */,
+				CB923FA91914230E00419AD1 /* HLSpriteKitTests */,
+				CB923F921914230E00419AD1 /* Frameworks */,
+				CB923F911914230E00419AD1 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		CB923F911914230E00419AD1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CB923F901914230E00419AD1 /* libHLSpriteKit.a */,
+				CB923FA01914230E00419AD1 /* HLSpriteKitTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		CB923F921914230E00419AD1 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				CBD9E92C19142738002533DF /* SpriteKit.framework */,
+				CB923F931914230E00419AD1 /* Foundation.framework */,
+				CB923FA11914230E00419AD1 /* XCTest.framework */,
+				CB923FA41914230E00419AD1 /* UIKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		CB923F951914230E00419AD1 /* HLSpriteKit */ = {
+			isa = PBXGroup;
+			children = (
+				CBD9E929191426D0002533DF /* HLLabelButtonNode.h */,
+				CBD9E92A191426D0002533DF /* HLLabelButtonNode.m */,
+				CBD9E93F1914334C002533DF /* HLSpriteKit.h */,
+				CB923F961914230E00419AD1 /* Supporting Files */,
+			);
+			path = HLSpriteKit;
+			sourceTree = "<group>";
+		};
+		CB923F961914230E00419AD1 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				CB923F971914230E00419AD1 /* HLSpriteKit-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		CB923FA91914230E00419AD1 /* HLSpriteKitTests */ = {
+			isa = PBXGroup;
+			children = (
+				CB923FAF1914230E00419AD1 /* HLSpriteKitTests.m */,
+				CB923FAA1914230E00419AD1 /* Supporting Files */,
+			);
+			path = HLSpriteKitTests;
+			sourceTree = "<group>";
+		};
+		CB923FAA1914230E00419AD1 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				CB923FAB1914230E00419AD1 /* HLSpriteKitTests-Info.plist */,
+				CB923FAC1914230E00419AD1 /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		CBD9E94319143525002533DF /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CBD9E9441914353A002533DF /* HLLabelButtonNode.h in Headers */,
+				CBD9E9451914353A002533DF /* HLSpriteKit.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		CB923F8F1914230E00419AD1 /* HLSpriteKit */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CB923FB31914230E00419AD1 /* Build configuration list for PBXNativeTarget "HLSpriteKit" */;
+			buildPhases = (
+				CB923F8C1914230E00419AD1 /* Sources */,
+				CB923F8D1914230E00419AD1 /* Frameworks */,
+				CB923F8E1914230E00419AD1 /* CopyFiles */,
+				CBD9E94319143525002533DF /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = HLSpriteKit;
+			productName = HLSpriteKit;
+			productReference = CB923F901914230E00419AD1 /* libHLSpriteKit.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		CB923F9F1914230E00419AD1 /* HLSpriteKitTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CB923FB61914230E00419AD1 /* Build configuration list for PBXNativeTarget "HLSpriteKitTests" */;
+			buildPhases = (
+				CB923F9C1914230E00419AD1 /* Sources */,
+				CB923F9D1914230E00419AD1 /* Frameworks */,
+				CB923F9E1914230E00419AD1 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CB923FA71914230E00419AD1 /* PBXTargetDependency */,
+			);
+			name = HLSpriteKitTests;
+			productName = HLSpriteKitTests;
+			productReference = CB923FA01914230E00419AD1 /* HLSpriteKitTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		CB923F881914230E00419AD1 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0510;
+				ORGANIZATIONNAME = Hilo;
+			};
+			buildConfigurationList = CB923F8B1914230E00419AD1 /* Build configuration list for PBXProject "HLSpriteKit" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = CB923F871914230E00419AD1;
+			productRefGroup = CB923F911914230E00419AD1 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				CB923F8F1914230E00419AD1 /* HLSpriteKit */,
+				CB923F9F1914230E00419AD1 /* HLSpriteKitTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		CB923F9E1914230E00419AD1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CB923FAE1914230E00419AD1 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		CB923F8C1914230E00419AD1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CBD9E941191434AF002533DF /* HLLabelButtonNode.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CB923F9C1914230E00419AD1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CB923FB01914230E00419AD1 /* HLSpriteKitTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		CB923FA71914230E00419AD1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CB923F8F1914230E00419AD1 /* HLSpriteKit */;
+			targetProxy = CB923FA61914230E00419AD1 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		CB923FAC1914230E00419AD1 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CB923FAD1914230E00419AD1 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		CB923FB11914230E00419AD1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		CB923FB21914230E00419AD1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		CB923FB41914230E00419AD1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_CXX0X_EXTENSIONS = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = YES;
+				CLANG_WARN_OBJC_EXPLICIT_OWNERSHIP_TYPE = YES;
+				CLANG_WARN_OBJC_IMPLICIT_ATOMIC_PROPERTIES = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
+				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
+				CLANG_WARN__EXIT_TIME_DESTRUCTORS = YES;
+				DSTROOT = /tmp/HLSpriteKit.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "HLSpriteKit/HLSpriteKit-Prefix.pch";
+				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
+				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
+				GCC_WARN_UNKNOWN_PRAGMAS = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = "include/$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		CB923FB51914230E00419AD1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_CXX0X_EXTENSIONS = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = YES;
+				CLANG_WARN_OBJC_EXPLICIT_OWNERSHIP_TYPE = YES;
+				CLANG_WARN_OBJC_IMPLICIT_ATOMIC_PROPERTIES = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
+				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
+				CLANG_WARN__EXIT_TIME_DESTRUCTORS = YES;
+				DSTROOT = /tmp/HLSpriteKit.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "HLSpriteKit/HLSpriteKit-Prefix.pch";
+				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
+				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
+				GCC_WARN_UNKNOWN_PRAGMAS = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = "include/$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		CB923FB71914230E00419AD1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "HLSpriteKit/HLSpriteKit-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "HLSpriteKitTests/HLSpriteKitTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
+		CB923FB81914230E00419AD1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "HLSpriteKit/HLSpriteKit-Prefix.pch";
+				INFOPLIST_FILE = "HLSpriteKitTests/HLSpriteKitTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		CB923F8B1914230E00419AD1 /* Build configuration list for PBXProject "HLSpriteKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CB923FB11914230E00419AD1 /* Debug */,
+				CB923FB21914230E00419AD1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CB923FB31914230E00419AD1 /* Build configuration list for PBXNativeTarget "HLSpriteKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CB923FB41914230E00419AD1 /* Debug */,
+				CB923FB51914230E00419AD1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CB923FB61914230E00419AD1 /* Build configuration list for PBXNativeTarget "HLSpriteKitTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CB923FB71914230E00419AD1 /* Debug */,
+				CB923FB81914230E00419AD1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = CB923F881914230E00419AD1 /* Project object */;
+}
