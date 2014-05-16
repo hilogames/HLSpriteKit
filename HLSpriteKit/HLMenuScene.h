@@ -12,7 +12,7 @@
 @class HLMenu;
 @protocol HLMenuSceneDelegate;
 
-@interface HLMenuScene : SKScene <NSCoding>
+@interface HLMenuScene : SKScene <NSCoding, UIGestureRecognizerDelegate>
 
 @property (nonatomic, weak) id<HLMenuSceneDelegate> delegate;
 

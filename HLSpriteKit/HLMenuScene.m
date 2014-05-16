@@ -13,86 +13,13 @@
 static const CGFloat HLZPositionBackground = 0.0f;
 static const CGFloat HLZPositionMenus = 1.0f;
 
-@implementation HLMenuItem
-
-- (id)initWithText:(NSString *)text
-{
-  self = [super init];
-  if (self) {
-    _text = [text copy];
-  }
-  return self;
-}
-
-- (id)initWithCoder:(NSCoder *)aDecoder
-{
-  self = [super init];
-  if (self) {
-    _text = [aDecoder decodeObjectForKey:@"text"];
-    _buttonPrototype = [aDecoder decodeObjectForKey:@"buttonPrototype"];
-  }
-  return self;
-}
-
-- (void)encodeWithCoder:(NSCoder *)aCoder
-{
-  [aCoder encodeObject:_text forKey:@"text"];
-  [aCoder encodeObject:_buttonPrototype forKey:@"buttonPrototype"];
-}
-
-@end
-
-@implementation HLMenu
-{
-  NSMutableArray *_items;
-}
-
-- (id)init
-{
-  self = [super init];
-  if (self) {
-    _items = [NSMutableArray array];
-  }
-  return self;
-}
-
-- (id)initWithCoder:(NSCoder *)aDecoder
-{
-  self = [super initWithCoder:aDecoder];
-  if (self) {
-    _items = [aDecoder decodeObjectForKey:@"items"];
-  }
-  return self;
-}
-
-- (void)encodeWithCoder:(NSCoder *)aCoder
-{
-  [super encodeWithCoder:aCoder];
-  [aCoder encodeObject:_items forKey:@"items"];
-}
-
-- (void)addItem:(HLMenuItem *)item
-{
-  [_items addObject:item];
-}
-
-- (NSUInteger)itemCount
-{
-  return [_items count];
-}
-
-- (HLMenuItem *)itemAtIndex:(NSUInteger)index
-{
-  return (HLMenuItem *)[_items objectAtIndex:index];
-}
-
-@end
-
 @implementation HLMenuScene
 {
   BOOL _contentCreated;
   SKNode *_menusNode;
   HLMenu *_currentMenu;
+  
+  UITapGestureRecognizer *_tapRecognizer;
 }
 
 - (id)initWithSize:(CGSize)size
@@ -176,6 +103,18 @@ static const CGFloat HLZPositionMenus = 1.0f;
     [self HL_createSceneContents];
     _contentCreated = YES;
   }
+  
+  _tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
+  _tapRecognizer.delegate = self;
+  // note: This slows down the single-tap recognizer noticeably.  And yet it's not really nice to have
+  // the tap and double-tap fire together.  Consider not using double-tap for these reasons.
+  //[_tapRecognizer requireGestureRecognizerToFail:_doubleTapRecognizer];
+  [view addGestureRecognizer:_tapRecognizer];
+}
+
+- (void)willMoveFromView:(SKView *)view
+{
+  [view removeGestureRecognizer:_tapRecognizer];
 }
 
 - (void)HL_createSceneContents
@@ -221,6 +160,31 @@ static const CGFloat HLZPositionMenus = 1.0f;
   }
 }
 
+#pragma mark -
+#pragma mark UIGestureRecognizerDelegate
+
+- (void)handleTap:(UIGestureRecognizer *)gestureRecognizer
+{
+  CGPoint viewLocation = [gestureRecognizer locationInView:self.view];
+  CGPoint sceneLocation = [self convertPointFromView:viewLocation];
+
+  NSUInteger i = 0;
+  for (HLLabelButtonNode *buttonNode in _menusNode.children) {
+    if ([buttonNode containsPoint:sceneLocation]) {
+      id<HLMenuSceneDelegate> delegate = self.delegate;
+      if (delegate) {
+        HLMenuItem *item = [_currentMenu itemAtIndex:i];
+        [delegate menuScene:self didTapMenuItem:item];
+      }
+      return;
+    }
+    ++i;
+  }
+}
+
+#pragma mark -
+#pragma mark Private
+
 - (void)HL_showMenu:(HLMenu *)menu
 {
   if (_currentMenu) {
@@ -242,6 +206,81 @@ static const CGFloat HLZPositionMenus = 1.0f;
   }
 
   _currentMenu = menu;
+}
+
+@end
+
+@implementation HLMenuItem
+
+- (id)initWithText:(NSString *)text
+{
+  self = [super init];
+  if (self) {
+    _text = [text copy];
+  }
+  return self;
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+  self = [super init];
+  if (self) {
+    _text = [aDecoder decodeObjectForKey:@"text"];
+    _buttonPrototype = [aDecoder decodeObjectForKey:@"buttonPrototype"];
+  }
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+  [aCoder encodeObject:_text forKey:@"text"];
+  [aCoder encodeObject:_buttonPrototype forKey:@"buttonPrototype"];
+}
+
+@end
+
+@implementation HLMenu
+{
+  NSMutableArray *_items;
+}
+
+- (id)init
+{
+  self = [super init];
+  if (self) {
+    _items = [NSMutableArray array];
+  }
+  return self;
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+  self = [super initWithCoder:aDecoder];
+  if (self) {
+    _items = [aDecoder decodeObjectForKey:@"items"];
+  }
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+  [super encodeWithCoder:aCoder];
+  [aCoder encodeObject:_items forKey:@"items"];
+}
+
+- (void)addItem:(HLMenuItem *)item
+{
+  [_items addObject:item];
+}
+
+- (NSUInteger)itemCount
+{
+  return [_items count];
+}
+
+- (HLMenuItem *)itemAtIndex:(NSUInteger)index
+{
+  return (HLMenuItem *)[_items objectAtIndex:index];
 }
 
 @end
