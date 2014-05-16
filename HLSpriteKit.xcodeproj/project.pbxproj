@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CB6872E619258F37008415E1 /* HLMenuScene.m in Sources */ = {isa = PBXBuildFile; fileRef = CB6872E419258F37008415E1 /* HLMenuScene.m */; };
+		CB6872EE192591C9008415E1 /* HLMenuScene.h in Headers */ = {isa = PBXBuildFile; fileRef = CB6872E319258F37008415E1 /* HLMenuScene.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CB923F941914230E00419AD1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB923F931914230E00419AD1 /* Foundation.framework */; };
 		CB923FA21914230E00419AD1 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB923FA11914230E00419AD1 /* XCTest.framework */; };
 		CB923FA31914230E00419AD1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB923F931914230E00419AD1 /* Foundation.framework */; };
@@ -43,6 +45,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		CB6872E319258F37008415E1 /* HLMenuScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLMenuScene.h; sourceTree = "<group>"; };
+		CB6872E419258F37008415E1 /* HLMenuScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLMenuScene.m; sourceTree = "<group>"; };
 		CB923F901914230E00419AD1 /* libHLSpriteKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libHLSpriteKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB923F931914230E00419AD1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		CB923F971914230E00419AD1 /* HLSpriteKit-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HLSpriteKit-Prefix.pch"; sourceTree = "<group>"; };
@@ -115,6 +119,8 @@
 		CB923F951914230E00419AD1 /* HLSpriteKit */ = {
 			isa = PBXGroup;
 			children = (
+				CB6872E319258F37008415E1 /* HLMenuScene.h */,
+				CB6872E419258F37008415E1 /* HLMenuScene.m */,
 				CBD9E929191426D0002533DF /* HLLabelButtonNode.h */,
 				CBD9E92A191426D0002533DF /* HLLabelButtonNode.m */,
 				CBD9E93F1914334C002533DF /* HLSpriteKit.h */,
@@ -157,6 +163,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CBD9E9441914353A002533DF /* HLLabelButtonNode.h in Headers */,
+				CB6872EE192591C9008415E1 /* HLMenuScene.h in Headers */,
 				CBD9E9451914353A002533DF /* HLSpriteKit.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -244,6 +251,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CBD9E941191434AF002533DF /* HLLabelButtonNode.m in Sources */,
+				CB6872E619258F37008415E1 /* HLMenuScene.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

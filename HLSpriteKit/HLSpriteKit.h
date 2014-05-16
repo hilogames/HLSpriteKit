@@ -7,3 +7,4 @@
 //
 
 #import <HLSpriteKit/HLLabelButtonNode.h>
+#import <HLSpriteKit/HLMenuScene.h>
