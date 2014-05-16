@@ -97,8 +97,8 @@
   [aCoder encodeBool:_automaticWidth forKey:@"automaticWidth"];
   [aCoder encodeBool:_automaticHeight forKey:@"automaticHeight"];
   [aCoder encodeInt:(int)_verticalAlignmentMode forKey:@"verticalAlignmentMode"];
-  [aCoder encodeFloat:_labelPadX forKey:@"labelPadX"];
-  [aCoder encodeFloat:_labelPadY forKey:@"labelPadY"];
+  [aCoder encodeDouble:_labelPadX forKey:@"labelPadX"];
+  [aCoder encodeDouble:_labelPadY forKey:@"labelPadY"];
 }
 
 - (id)copyWithZone:(NSZone *)zone

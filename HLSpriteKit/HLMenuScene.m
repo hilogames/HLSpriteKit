@@ -85,7 +85,7 @@ static const CGFloat HLZPositionMenus = 1.0f;
   [aCoder encodeObject:_menu forKey:@"menu"];
   [aCoder encodeObject:_currentMenu forKey:@"currentMenu"];
   [aCoder encodeObject:_backgroundImageName forKey:@"backgroundImageName"];
-  [aCoder encodeFloat:_itemSpacing forKey:@"itemSpacing"];
+  [aCoder encodeDouble:_itemSpacing forKey:@"itemSpacing"];
   [aCoder encodeObject:_buttonPrototype forKey:@"buttonPrototype"];
 
   // Replace any removed nodes.
