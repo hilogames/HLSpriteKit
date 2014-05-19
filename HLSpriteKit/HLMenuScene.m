@@ -30,16 +30,17 @@ static const CGFloat HLZPositionMenus = 1.0f;
     _currentMenu = nil;
     _menu = [[HLMenu alloc] init];
     
-    // note: Provide a default button layout.  Almost all callers will be providing
-    // their own, but this makes it so that the class doesn't throw exceptions or
+    // note: Provide a default item appearance and behavior.  Almost all callers will be
+    // providing their own, but this makes it so that the class doesn't throw exceptions or
     // seem to do nothing when used without configuration.
     _itemSpacing = 60.0f;
-    _buttonPrototype = [[HLLabelButtonNode alloc] initWithColor:[UIColor blackColor] size:CGSizeMake(240.0f, 40.0f)];
-    _buttonPrototype.centerRect = CGRectMake(0.3333333f, 0.3333333f, 0.3333333f, 0.3333333f);
-    _buttonPrototype.fontName = @"Helvetica";
-    _buttonPrototype.fontSize = 24.0f;
-    _buttonPrototype.fontColor = [UIColor whiteColor];
-    _buttonPrototype.verticalAlignmentMode = HLLabelButtonNodeVerticalAlignFont;
+    _itemButtonPrototype = [[HLLabelButtonNode alloc] initWithColor:[UIColor blackColor] size:CGSizeMake(240.0f, 40.0f)];
+    _itemButtonPrototype.centerRect = CGRectMake(0.3333333f, 0.3333333f, 0.3333333f, 0.3333333f);
+    _itemButtonPrototype.fontName = @"Helvetica";
+    _itemButtonPrototype.fontSize = 24.0f;
+    _itemButtonPrototype.fontColor = [UIColor whiteColor];
+    _itemButtonPrototype.verticalAlignmentMode = HLLabelButtonNodeVerticalAlignFont;
+    _itemAnimation = HLMenuSceneAnimationSlideLeft;
   }
   return self;
 }
@@ -58,8 +59,10 @@ static const CGFloat HLZPositionMenus = 1.0f;
     _currentMenu = [aDecoder decodeObjectForKey:@"currentMenu"];
     self.backgroundImageName = [aDecoder decodeObjectForKey:@"backgroundImageName"];
     _itemSpacing = [aDecoder decodeFloatForKey:@"itemSpacing"];
-    _buttonPrototype = [aDecoder decodeObjectForKey:@"buttonPrototype"];
-    [self HL_showMenu:_menu];
+    _itemButtonPrototype = [aDecoder decodeObjectForKey:@"itemButtonPrototype"];
+    _itemAnimation = (HLMenuSceneAnimation)[aDecoder decodeIntForKey:@"itemAnimation"];
+    _itemSoundFile = [aDecoder decodeObjectForKey:@"itemSoundFile"];
+    [self HL_showMenu:_menu animation:HLMenuSceneAnimationNone];
   }
   return self;
 }
@@ -86,7 +89,9 @@ static const CGFloat HLZPositionMenus = 1.0f;
   [aCoder encodeObject:_currentMenu forKey:@"currentMenu"];
   [aCoder encodeObject:_backgroundImageName forKey:@"backgroundImageName"];
   [aCoder encodeDouble:_itemSpacing forKey:@"itemSpacing"];
-  [aCoder encodeObject:_buttonPrototype forKey:@"buttonPrototype"];
+  [aCoder encodeObject:_itemButtonPrototype forKey:@"itemButtonPrototype"];
+  [aCoder encodeInt:(int)_itemAnimation forKey:@"itemAnimation"];
+  [aCoder encodeObject:_itemSoundFile forKey:@"itemSoundFile"];
 
   // Replace any removed nodes.
   if (backgroundImageNode) {
@@ -106,9 +111,6 @@ static const CGFloat HLZPositionMenus = 1.0f;
   
   _tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
   _tapRecognizer.delegate = self;
-  // note: This slows down the single-tap recognizer noticeably.  And yet it's not really nice to have
-  // the tap and double-tap fire together.  Consider not using double-tap for these reasons.
-  //[_tapRecognizer requireGestureRecognizerToFail:_doubleTapRecognizer];
   [view addGestureRecognizer:_tapRecognizer];
 }
 
@@ -121,14 +123,7 @@ static const CGFloat HLZPositionMenus = 1.0f;
 {
   self.anchorPoint = CGPointMake(0.5f, 0.5f);
   [self HL_createMenusNode];
-  [self HL_showMenu:_menu];
-}
-
-- (void)HL_createMenusNode
-{
-  _menusNode = [SKNode node];
-  _menusNode.zPosition = HLZPositionMenus;
-  [self addChild:_menusNode];
+  [self HL_showMenu:_menu animation:_itemAnimation];
 }
 
 - (void)didChangeSize:(CGSize)oldSize
@@ -171,11 +166,7 @@ static const CGFloat HLZPositionMenus = 1.0f;
   NSUInteger i = 0;
   for (HLLabelButtonNode *buttonNode in _menusNode.children) {
     if ([buttonNode containsPoint:sceneLocation]) {
-      id<HLMenuSceneDelegate> delegate = self.delegate;
-      if (delegate) {
-        HLMenuItem *item = [_currentMenu itemAtIndex:i];
-        [delegate menuScene:self didTapMenuItem:item];
-      }
+      [self HL_tappedItem:i];
       return;
     }
     ++i;
@@ -185,32 +176,124 @@ static const CGFloat HLZPositionMenus = 1.0f;
 #pragma mark -
 #pragma mark Private
 
-- (void)HL_showMenu:(HLMenu *)menu
+- (void)HL_createMenusNode
 {
-  if (_currentMenu) {
-    [_menusNode removeAllChildren];
-  }
+  _menusNode = [SKNode node];
+  _menusNode.zPosition = HLZPositionMenus;
+  [self addChild:_menusNode];
+}
+
+- (void)HL_showMenu:(HLMenu *)menu animation:(HLMenuSceneAnimation)animation
+{
+  const NSTimeInterval HLMenuSceneSlideDuration = 0.25f;
+
+  SKNode *oldMenusNode = _menusNode;
+  [self HL_createMenusNode];
 
   for (NSUInteger i = 0; i < [menu itemCount]; ++i) {
     HLMenuItem *item = [menu itemAtIndex:i];
-    HLLabelButtonNode *buttonPrototype = (item.buttonPrototype ? item.buttonPrototype : self.buttonPrototype);
+    HLLabelButtonNode *buttonPrototype = (item.buttonPrototype ? item.buttonPrototype : self.itemButtonPrototype);
     if (!buttonPrototype) {
       [NSException raise:@"HLMenuSceneMissingButtonPrototype" format:@"Missing button prototype for menu item."];
     }
     HLLabelButtonNode *buttonNode = [buttonPrototype copy];
     buttonNode.text = item.text;
-    // note: SKSpriteNode in iOS 7.1 SDK does not support using centerRect with changes to the size
-    // property -- only the scale properties.  HLLabelButtonNode works around that, for now.
     buttonNode.position = CGPointMake(0.0f, -self.itemSpacing * i);
     [_menusNode addChild:buttonNode];
   }
 
+  if (animation == HLMenuSceneAnimationNone) {
+
+    if (oldMenusNode) {
+      [oldMenusNode removeFromParent];
+    }
+    [self addChild:_menusNode];
+  
+  } else {
+
+    CGFloat buttonWidthMax = self.itemButtonPrototype.size.width;
+    for (NSUInteger i = 0; i < [menu itemCount]; ++i) {
+      HLMenuItem *item = [menu itemAtIndex:i];
+      if (item.buttonPrototype && item.buttonPrototype.size.width > buttonWidthMax) {
+        buttonWidthMax = item.buttonPrototype.size.width;
+      }
+    }
+  
+    CGPoint delta;
+    switch (animation) {
+      case HLMenuSceneAnimationSlideLeft:
+        delta = CGPointMake(-1.0f * (self.scene.size.width + buttonWidthMax) / 2.0f, 0.0f);
+        break;
+      case HLMenuSceneAnimationSlideRight:
+        delta = CGPointMake((self.scene.size.width + buttonWidthMax) / 2.0f, 0.0f);
+        break;
+      default:
+        [NSException raise:@"HLMenuSceneUnhandledAnimation" format:@"Unhandled animation %d.", animation];
+        break;
+    }
+  
+    _menusNode.position = CGPointMake(-delta.x, -delta.y);
+    SKAction *animationAction = [SKAction moveByX:delta.x y:delta.y duration:HLMenuSceneSlideDuration];
+    [_menusNode runAction:animationAction];
+
+    if (oldMenusNode) {
+      // note: If !_currentMenu, could just remove from parent without animating.
+      [oldMenusNode runAction:[SKAction sequence:@[ animationAction, [SKAction removeFromParent] ]]];
+    }
+  }
+
+// Commented out: Experiments with preloading sound files.  Continue
+// once it's a problem.  Would want to go through each item and preload
+// each one; would want to only preload if not already preloaded.
+//  if (self.itemSoundFile) {
+//    NSLog(@"adding to operation queue");
+//    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+//      NSLog(@"preloading sound file");
+//      [SKAction playSoundFileNamed:self.itemSoundFile waitForCompletion:NO];
+//      NSLog(@"done preloading sound file");
+//    }];
+//    NSLog(@"done adding to operation queue");
+//  }
+
   _currentMenu = menu;
+}
+
+- (void)HL_tappedItem:(NSUInteger)itemIndex
+{
+  HLMenuItem *item = [_currentMenu itemAtIndex:itemIndex];
+
+  id<HLMenuSceneDelegate> delegate = self.delegate;
+  if (delegate) {
+    if ([delegate respondsToSelector:@selector(menuScene:shouldTapMenuItem:)]
+        && ![delegate menuScene:self shouldTapMenuItem:item]) {
+      return;
+    }
+  }
+
+  NSString *soundFile = (item.soundFile ? item.soundFile : _itemSoundFile);
+  if (soundFile) {
+    [self runAction:[SKAction playSoundFileNamed:soundFile waitForCompletion:NO]];
+  }
+
+  if ([item isKindOfClass:[HLMenu class]]) {
+    [self HL_showMenu:(HLMenu *)item animation:_itemAnimation];
+  }
+
+  if (delegate) {
+    if ([delegate respondsToSelector:@selector(menuScene:didTapMenuItem:)]) {
+      [delegate menuScene:self didTapMenuItem:item];
+    }
+  }
 }
 
 @end
 
 @implementation HLMenuItem
+
++ (HLMenuItem *)menuItemWithText:(NSString *)text
+{
+  return [[HLMenuItem alloc] initWithText:text];
+}
 
 - (id)initWithText:(NSString *)text
 {
@@ -225,16 +308,31 @@ static const CGFloat HLZPositionMenus = 1.0f;
 {
   self = [super init];
   if (self) {
+    _parent = [aDecoder decodeObjectForKey:@"parent"];
     _text = [aDecoder decodeObjectForKey:@"text"];
     _buttonPrototype = [aDecoder decodeObjectForKey:@"buttonPrototype"];
+    _soundFile = [aDecoder decodeObjectForKey:@"soundFile"];
   }
   return self;
 }
 
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
+  [aCoder encodeObject:_parent forKey:@"parent"];
   [aCoder encodeObject:_text forKey:@"text"];
   [aCoder encodeObject:_buttonPrototype forKey:@"buttonPrototype"];
+  [aCoder encodeObject:_soundFile forKey:@"soundFile"];
+}
+
+- (NSString *)path
+{
+  HLMenuItem *parent = _parent;
+  // note: The top-level menu, by convention, has no text, and so is not
+  // included in the path.
+  if (!parent || !parent.parent) {
+    return self.text;
+  }
+  return [NSString stringWithFormat:@"%@/%@", [parent path], self.text];
 }
 
 @end
@@ -244,11 +342,37 @@ static const CGFloat HLZPositionMenus = 1.0f;
   NSMutableArray *_items;
 }
 
++ (HLMenu *)menuWithText:(NSString *)text items:(NSArray *)items
+{
+  return [[HLMenu alloc] initWithText:text items:items];
+}
+
 - (id)init
 {
-  self = [super init];
+  self = [super initWithText:@""];
   if (self) {
     _items = [NSMutableArray array];
+  }
+  return self;
+}
+
+- (id)initWithText:(NSString *)text
+{
+  self = [super initWithText:text];
+  if (self) {
+    _items = [NSMutableArray array];
+  }
+  return self;
+}
+
+- (id)initWithText:(NSString *)text items:(NSArray *)items
+{
+  self = [super initWithText:text];
+  if (self) {
+    _items = [NSMutableArray array];
+    for (HLMenuItem *item in items) {
+      [self addItem:item];
+    }
   }
   return self;
 }
@@ -271,6 +395,7 @@ static const CGFloat HLZPositionMenus = 1.0f;
 - (void)addItem:(HLMenuItem *)item
 {
   [_items addObject:item];
+  item.parent = self;
 }
 
 - (NSUInteger)itemCount

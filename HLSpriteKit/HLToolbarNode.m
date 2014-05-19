@@ -262,7 +262,6 @@ static UIColor *HLToolbarColorButtonHighlighted;
       case HLToolbarNodeAnimationSlideRight:
         delta = CGPointMake(MAX(finalToolbarSize.width, self.size.width), 0.0f);
         break;
-      case HLToolbarNodeAnimationNone:
       default:
         [NSException raise:@"HLToolbarNodeUnhandledAnimation" format:@"Unhandled animation %d.", animation];
         break;
