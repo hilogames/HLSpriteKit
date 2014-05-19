@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CB63B0B11926AB6300091907 /* HLToolbarNode.h in Headers */ = {isa = PBXBuildFile; fileRef = CB63B0AF1926AB6300091907 /* HLToolbarNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CB63B0B21926AB6300091907 /* HLToolbarNode.m in Sources */ = {isa = PBXBuildFile; fileRef = CB63B0B01926AB6300091907 /* HLToolbarNode.m */; };
 		CB6872E619258F37008415E1 /* HLMenuScene.m in Sources */ = {isa = PBXBuildFile; fileRef = CB6872E419258F37008415E1 /* HLMenuScene.m */; };
 		CB6872EE192591C9008415E1 /* HLMenuScene.h in Headers */ = {isa = PBXBuildFile; fileRef = CB6872E319258F37008415E1 /* HLMenuScene.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CB923F941914230E00419AD1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB923F931914230E00419AD1 /* Foundation.framework */; };
@@ -16,6 +18,8 @@
 		CB923FA81914230E00419AD1 /* libHLSpriteKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CB923F901914230E00419AD1 /* libHLSpriteKit.a */; };
 		CB923FAE1914230E00419AD1 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = CB923FAC1914230E00419AD1 /* InfoPlist.strings */; };
 		CB923FB01914230E00419AD1 /* HLSpriteKitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CB923FAF1914230E00419AD1 /* HLSpriteKitTests.m */; };
+		CBA8988A1926BFE500849215 /* HLTextureStore.h in Headers */ = {isa = PBXBuildFile; fileRef = CBA898881926BFE500849215 /* HLTextureStore.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CBA8988B1926BFE500849215 /* HLTextureStore.m in Sources */ = {isa = PBXBuildFile; fileRef = CBA898891926BFE500849215 /* HLTextureStore.m */; };
 		CBD9E92D19142738002533DF /* SpriteKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CBD9E92C19142738002533DF /* SpriteKit.framework */; };
 		CBD9E941191434AF002533DF /* HLLabelButtonNode.m in Sources */ = {isa = PBXBuildFile; fileRef = CBD9E92A191426D0002533DF /* HLLabelButtonNode.m */; };
 		CBD9E9441914353A002533DF /* HLLabelButtonNode.h in Headers */ = {isa = PBXBuildFile; fileRef = CBD9E929191426D0002533DF /* HLLabelButtonNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -45,6 +49,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		CB63B0AF1926AB6300091907 /* HLToolbarNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLToolbarNode.h; sourceTree = "<group>"; };
+		CB63B0B01926AB6300091907 /* HLToolbarNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLToolbarNode.m; sourceTree = "<group>"; };
 		CB6872E319258F37008415E1 /* HLMenuScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLMenuScene.h; sourceTree = "<group>"; };
 		CB6872E419258F37008415E1 /* HLMenuScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLMenuScene.m; sourceTree = "<group>"; };
 		CB923F901914230E00419AD1 /* libHLSpriteKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libHLSpriteKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -56,6 +62,8 @@
 		CB923FAB1914230E00419AD1 /* HLSpriteKitTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "HLSpriteKitTests-Info.plist"; sourceTree = "<group>"; };
 		CB923FAD1914230E00419AD1 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		CB923FAF1914230E00419AD1 /* HLSpriteKitTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HLSpriteKitTests.m; sourceTree = "<group>"; };
+		CBA898881926BFE500849215 /* HLTextureStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLTextureStore.h; sourceTree = "<group>"; };
+		CBA898891926BFE500849215 /* HLTextureStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLTextureStore.m; sourceTree = "<group>"; };
 		CBD9E929191426D0002533DF /* HLLabelButtonNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLLabelButtonNode.h; sourceTree = "<group>"; };
 		CBD9E92A191426D0002533DF /* HLLabelButtonNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLLabelButtonNode.m; sourceTree = "<group>"; };
 		CBD9E92C19142738002533DF /* SpriteKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SpriteKit.framework; path = System/Library/Frameworks/SpriteKit.framework; sourceTree = SDKROOT; };
@@ -119,11 +127,15 @@
 		CB923F951914230E00419AD1 /* HLSpriteKit */ = {
 			isa = PBXGroup;
 			children = (
-				CB6872E319258F37008415E1 /* HLMenuScene.h */,
-				CB6872E419258F37008415E1 /* HLMenuScene.m */,
 				CBD9E929191426D0002533DF /* HLLabelButtonNode.h */,
 				CBD9E92A191426D0002533DF /* HLLabelButtonNode.m */,
+				CB6872E319258F37008415E1 /* HLMenuScene.h */,
+				CB6872E419258F37008415E1 /* HLMenuScene.m */,
 				CBD9E93F1914334C002533DF /* HLSpriteKit.h */,
+				CBA898881926BFE500849215 /* HLTextureStore.h */,
+				CBA898891926BFE500849215 /* HLTextureStore.m */,
+				CB63B0AF1926AB6300091907 /* HLToolbarNode.h */,
+				CB63B0B01926AB6300091907 /* HLToolbarNode.m */,
 				CB923F961914230E00419AD1 /* Supporting Files */,
 			);
 			path = HLSpriteKit;
@@ -165,6 +177,8 @@
 				CBD9E9441914353A002533DF /* HLLabelButtonNode.h in Headers */,
 				CB6872EE192591C9008415E1 /* HLMenuScene.h in Headers */,
 				CBD9E9451914353A002533DF /* HLSpriteKit.h in Headers */,
+				CBA8988A1926BFE500849215 /* HLTextureStore.h in Headers */,
+				CB63B0B11926AB6300091907 /* HLToolbarNode.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -250,8 +264,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CB63B0B21926AB6300091907 /* HLToolbarNode.m in Sources */,
 				CBD9E941191434AF002533DF /* HLLabelButtonNode.m in Sources */,
 				CB6872E619258F37008415E1 /* HLMenuScene.m in Sources */,
+				CBA8988B1926BFE500849215 /* HLTextureStore.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

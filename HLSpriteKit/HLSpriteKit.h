@@ -8,3 +8,5 @@
 
 #import <HLSpriteKit/HLLabelButtonNode.h>
 #import <HLSpriteKit/HLMenuScene.h>
+#import <HLSpriteKit/HLTextureStore.h>
+#import <HLSpriteKit/HLToolbarNode.h>
