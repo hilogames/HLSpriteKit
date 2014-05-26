@@ -11,6 +11,10 @@
 		CB63B0B21926AB6300091907 /* HLToolbarNode.m in Sources */ = {isa = PBXBuildFile; fileRef = CB63B0B01926AB6300091907 /* HLToolbarNode.m */; };
 		CB6872E619258F37008415E1 /* HLMenuScene.m in Sources */ = {isa = PBXBuildFile; fileRef = CB6872E419258F37008415E1 /* HLMenuScene.m */; };
 		CB6872EE192591C9008415E1 /* HLMenuScene.h in Headers */ = {isa = PBXBuildFile; fileRef = CB6872E319258F37008415E1 /* HLMenuScene.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CB79D706192C2A900014E267 /* HLEmitterStore.h in Headers */ = {isa = PBXBuildFile; fileRef = CB79D704192C2A900014E267 /* HLEmitterStore.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CB79D707192C2A900014E267 /* HLEmitterStore.m in Sources */ = {isa = PBXBuildFile; fileRef = CB79D705192C2A900014E267 /* HLEmitterStore.m */; };
+		CB8DD9D1192CEBC600C0704D /* HLScene.h in Headers */ = {isa = PBXBuildFile; fileRef = CB8DD9CF192CEBC600C0704D /* HLScene.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CB8DD9D2192CEBC600C0704D /* HLScene.m in Sources */ = {isa = PBXBuildFile; fileRef = CB8DD9D0192CEBC600C0704D /* HLScene.m */; };
 		CB923F941914230E00419AD1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB923F931914230E00419AD1 /* Foundation.framework */; };
 		CB923FA21914230E00419AD1 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB923FA11914230E00419AD1 /* XCTest.framework */; };
 		CB923FA31914230E00419AD1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB923F931914230E00419AD1 /* Foundation.framework */; };
@@ -53,6 +57,10 @@
 		CB63B0B01926AB6300091907 /* HLToolbarNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLToolbarNode.m; sourceTree = "<group>"; };
 		CB6872E319258F37008415E1 /* HLMenuScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLMenuScene.h; sourceTree = "<group>"; };
 		CB6872E419258F37008415E1 /* HLMenuScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLMenuScene.m; sourceTree = "<group>"; };
+		CB79D704192C2A900014E267 /* HLEmitterStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLEmitterStore.h; sourceTree = "<group>"; };
+		CB79D705192C2A900014E267 /* HLEmitterStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLEmitterStore.m; sourceTree = "<group>"; };
+		CB8DD9CF192CEBC600C0704D /* HLScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLScene.h; sourceTree = "<group>"; };
+		CB8DD9D0192CEBC600C0704D /* HLScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLScene.m; sourceTree = "<group>"; };
 		CB923F901914230E00419AD1 /* libHLSpriteKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libHLSpriteKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB923F931914230E00419AD1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		CB923F971914230E00419AD1 /* HLSpriteKit-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HLSpriteKit-Prefix.pch"; sourceTree = "<group>"; };
@@ -127,10 +135,14 @@
 		CB923F951914230E00419AD1 /* HLSpriteKit */ = {
 			isa = PBXGroup;
 			children = (
+				CB79D704192C2A900014E267 /* HLEmitterStore.h */,
+				CB79D705192C2A900014E267 /* HLEmitterStore.m */,
 				CBD9E929191426D0002533DF /* HLLabelButtonNode.h */,
 				CBD9E92A191426D0002533DF /* HLLabelButtonNode.m */,
 				CB6872E319258F37008415E1 /* HLMenuScene.h */,
 				CB6872E419258F37008415E1 /* HLMenuScene.m */,
+				CB8DD9CF192CEBC600C0704D /* HLScene.h */,
+				CB8DD9D0192CEBC600C0704D /* HLScene.m */,
 				CBD9E93F1914334C002533DF /* HLSpriteKit.h */,
 				CBA898881926BFE500849215 /* HLTextureStore.h */,
 				CBA898891926BFE500849215 /* HLTextureStore.m */,
@@ -174,8 +186,10 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CB79D706192C2A900014E267 /* HLEmitterStore.h in Headers */,
 				CBD9E9441914353A002533DF /* HLLabelButtonNode.h in Headers */,
 				CB6872EE192591C9008415E1 /* HLMenuScene.h in Headers */,
+				CB8DD9D1192CEBC600C0704D /* HLScene.h in Headers */,
 				CBD9E9451914353A002533DF /* HLSpriteKit.h in Headers */,
 				CBA8988A1926BFE500849215 /* HLTextureStore.h in Headers */,
 				CB63B0B11926AB6300091907 /* HLToolbarNode.h in Headers */,
@@ -264,10 +278,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CB8DD9D2192CEBC600C0704D /* HLScene.m in Sources */,
 				CB63B0B21926AB6300091907 /* HLToolbarNode.m in Sources */,
 				CBD9E941191434AF002533DF /* HLLabelButtonNode.m in Sources */,
 				CB6872E619258F37008415E1 /* HLMenuScene.m in Sources */,
 				CBA8988B1926BFE500849215 /* HLTextureStore.m in Sources */,
+				CB79D707192C2A900014E267 /* HLEmitterStore.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

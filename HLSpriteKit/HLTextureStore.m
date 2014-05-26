@@ -10,8 +10,8 @@
 
 @implementation HLTextureStore
 {
-  NSDictionary *_textures;
-  NSDictionary *_images;
+  NSMutableDictionary *_textures;
+  NSMutableDictionary *_images;
 }
 
 + (HLTextureStore *)sharedStore
@@ -48,7 +48,7 @@
   return [_images objectForKey:key];
 }
 
-- (void)setTextureWithImage:(UIImage *)image forKey:(NSString *)key filteringMode:(SKTextureFilteringMode)filteringMode
+- (SKTexture *)setTextureWithImage:(UIImage *)image forKey:(NSString *)key filteringMode:(SKTextureFilteringMode)filteringMode
 {
   SKTexture *texture = [SKTexture textureWithImage:image];
   if (!texture) {
@@ -57,9 +57,10 @@
   texture.filteringMode = filteringMode;
   [_textures setValue:texture forKey:key];
   [_images setValue:image forKey:key];
+  return texture;
 }
 
-- (void)setTextureWithImageNamed:(NSString *)imageName forKey:(NSString *)key filteringMode:(SKTextureFilteringMode)filteringMode
+- (SKTexture *)setTextureWithImageNamed:(NSString *)imageName forKey:(NSString *)key filteringMode:(SKTextureFilteringMode)filteringMode
 {
   SKTexture *texture = [SKTexture textureWithImageNamed:imageName];
   if (!texture) {
@@ -68,9 +69,10 @@
   texture.filteringMode = filteringMode;
   [_textures setValue:texture forKey:key];
   [_images setValue:nil forKey:key];
+  return texture;
 }
 
-- (void)setTextureWithImageNamed:(NSString *)textureImageName andUIImageWithImageNamed:(NSString *)imageImageName forKey:(NSString *)key filteringMode:(SKTextureFilteringMode)filteringMode
+- (SKTexture *)setTextureWithImageNamed:(NSString *)textureImageName andUIImageWithImageNamed:(NSString *)imageImageName forKey:(NSString *)key filteringMode:(SKTextureFilteringMode)filteringMode
 {
   // note: If the texture and image name are the same, the documentation indicates that the texture
   // will be created using the bundle image rather than any available texture atlases.
@@ -85,6 +87,7 @@
   texture.filteringMode = filteringMode;
   [_textures setValue:texture forKey:key];
   [_images setValue:image forKey:key];
+  return texture;
 }
 
 @end

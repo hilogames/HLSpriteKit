@@ -27,8 +27,8 @@ static const CGFloat HLZPositionMenus = 1.0f;
   self = [super initWithSize:size];
   if (self) {
     _contentCreated = NO;
-    _currentMenu = nil;
     _menu = [[HLMenu alloc] init];
+    _currentMenu = _menu;
     
     // note: Provide a default item appearance and behavior.  Almost all callers will be
     // providing their own, but this makes it so that the class doesn't throw exceptions or
@@ -50,11 +50,6 @@ static const CGFloat HLZPositionMenus = 1.0f;
   self = [super initWithCoder:aDecoder];
   if (self) {
     _contentCreated = [aDecoder decodeBoolForKey:@"contentCreated"];
-    if (_contentCreated) {
-      [self HL_createMenusNode];
-    } else {
-      _menusNode = nil;
-    }
     _menu = [aDecoder decodeObjectForKey:@"menu"];
     _currentMenu = [aDecoder decodeObjectForKey:@"currentMenu"];
     self.backgroundImageName = [aDecoder decodeObjectForKey:@"backgroundImageName"];
@@ -62,7 +57,9 @@ static const CGFloat HLZPositionMenus = 1.0f;
     _itemButtonPrototype = [aDecoder decodeObjectForKey:@"itemButtonPrototype"];
     _itemAnimation = (HLMenuSceneAnimation)[aDecoder decodeIntForKey:@"itemAnimation"];
     _itemSoundFile = [aDecoder decodeObjectForKey:@"itemSoundFile"];
-    [self HL_showMenu:_menu animation:HLMenuSceneAnimationNone];
+    if (_contentCreated) {
+      [self HL_showCurrentMenuAnimation:HLMenuSceneAnimationNone];
+    }
   }
   return self;
 }
@@ -122,8 +119,7 @@ static const CGFloat HLZPositionMenus = 1.0f;
 - (void)HL_createSceneContents
 {
   self.anchorPoint = CGPointMake(0.5f, 0.5f);
-  [self HL_createMenusNode];
-  [self HL_showMenu:_menu animation:_itemAnimation];
+  [self HL_showCurrentMenuAnimation:_itemAnimation];
 }
 
 - (void)didChangeSize:(CGSize)oldSize
@@ -155,6 +151,14 @@ static const CGFloat HLZPositionMenus = 1.0f;
   }
 }
 
+- (void)navigateToMenu:(HLMenu *)menu animation:(HLMenuSceneAnimation)animation
+{
+  _currentMenu = menu;
+  if (_contentCreated) {
+    [self HL_showCurrentMenuAnimation:animation];
+  }
+}
+
 #pragma mark -
 #pragma mark UIGestureRecognizerDelegate
 
@@ -176,22 +180,21 @@ static const CGFloat HLZPositionMenus = 1.0f;
 #pragma mark -
 #pragma mark Private
 
-- (void)HL_createMenusNode
+- (void)HL_showCurrentMenuAnimation:(HLMenuSceneAnimation)animation
 {
-  _menusNode = [SKNode node];
-  _menusNode.zPosition = HLZPositionMenus;
-  [self addChild:_menusNode];
-}
+  if (!_currentMenu) {
+    [NSException raise:@"HLMenuSceneNoCurrentMenu" format:@"Current menu must be set before showing."];
+  }
 
-- (void)HL_showMenu:(HLMenu *)menu animation:(HLMenuSceneAnimation)animation
-{
   const NSTimeInterval HLMenuSceneSlideDuration = 0.25f;
 
   SKNode *oldMenusNode = _menusNode;
-  [self HL_createMenusNode];
+  _menusNode = [SKNode node];
+  _menusNode.zPosition = HLZPositionMenus;
+  [self addChild:_menusNode];
 
-  for (NSUInteger i = 0; i < [menu itemCount]; ++i) {
-    HLMenuItem *item = [menu itemAtIndex:i];
+  for (NSUInteger i = 0; i < [_currentMenu itemCount]; ++i) {
+    HLMenuItem *item = [_currentMenu itemAtIndex:i];
     HLLabelButtonNode *buttonPrototype = (item.buttonPrototype ? item.buttonPrototype : self.itemButtonPrototype);
     if (!buttonPrototype) {
       [NSException raise:@"HLMenuSceneMissingButtonPrototype" format:@"Missing button prototype for menu item."];
@@ -207,13 +210,12 @@ static const CGFloat HLZPositionMenus = 1.0f;
     if (oldMenusNode) {
       [oldMenusNode removeFromParent];
     }
-    [self addChild:_menusNode];
   
   } else {
 
     CGFloat buttonWidthMax = self.itemButtonPrototype.size.width;
-    for (NSUInteger i = 0; i < [menu itemCount]; ++i) {
-      HLMenuItem *item = [menu itemAtIndex:i];
+    for (NSUInteger i = 0; i < [_currentMenu itemCount]; ++i) {
+      HLMenuItem *item = [_currentMenu itemAtIndex:i];
       if (item.buttonPrototype && item.buttonPrototype.size.width > buttonWidthMax) {
         buttonWidthMax = item.buttonPrototype.size.width;
       }
@@ -237,25 +239,35 @@ static const CGFloat HLZPositionMenus = 1.0f;
     [_menusNode runAction:animationAction];
 
     if (oldMenusNode) {
-      // note: If !_currentMenu, could just remove from parent without animating.
       [oldMenusNode runAction:[SKAction sequence:@[ animationAction, [SKAction removeFromParent] ]]];
     }
   }
 
-// Commented out: Experiments with preloading sound files.  Continue
-// once it's a problem.  Would want to go through each item and preload
-// each one; would want to only preload if not already preloaded.
-//  if (self.itemSoundFile) {
-//    NSLog(@"adding to operation queue");
-//    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-//      NSLog(@"preloading sound file");
-//      [SKAction playSoundFileNamed:self.itemSoundFile waitForCompletion:NO];
-//      NSLog(@"done preloading sound file");
-//    }];
-//    NSLog(@"done adding to operation queue");
-//  }
+  // noob: Okay to preload sounds in background thread?  What if the main thread
+  // also tries to load the sound at the same time?
+  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+    [self HL_loadCurrentMenuSounds];
+  });
+}
 
-  _currentMenu = menu;
+- (void)HL_loadCurrentMenuSounds
+{
+  NSDate *startDate = [NSDate date];
+
+  // noob: Okay to keep preloading the main sound over and over again?
+  // Or is that dumb?
+  NSLog(@"loading sound %@", self.itemSoundFile);
+  [SKAction playSoundFileNamed:self.itemSoundFile waitForCompletion:NO];
+  
+  for (NSUInteger i = 0; i < [_currentMenu itemCount]; ++i) {
+    HLMenuItem *item = [_currentMenu itemAtIndex:i];
+    if (item.soundFile) {
+      NSLog(@"loading sound %@", item.soundFile);
+      [SKAction playSoundFileNamed:item.soundFile waitForCompletion:NO];
+    }
+  }
+
+  NSLog(@"loaded sounds for current menu in %.2f seconds", [[NSDate date] timeIntervalSinceDate:startDate]);
 }
 
 - (void)HL_tappedItem:(NSUInteger)itemIndex
@@ -276,7 +288,8 @@ static const CGFloat HLZPositionMenus = 1.0f;
   }
 
   if ([item isKindOfClass:[HLMenu class]]) {
-    [self HL_showMenu:(HLMenu *)item animation:_itemAnimation];
+    _currentMenu = (HLMenu *)item;
+    [self HL_showCurrentMenuAnimation:_itemAnimation];
   }
 
   if (delegate) {
@@ -292,7 +305,7 @@ static const CGFloat HLZPositionMenus = 1.0f;
 
 + (HLMenuItem *)menuItemWithText:(NSString *)text
 {
-  return [[HLMenuItem alloc] initWithText:text];
+  return [[[self class] alloc] initWithText:text];
 }
 
 - (id)initWithText:(NSString *)text
@@ -344,7 +357,7 @@ static const CGFloat HLZPositionMenus = 1.0f;
 
 + (HLMenu *)menuWithText:(NSString *)text items:(NSArray *)items
 {
-  return [[HLMenu alloc] initWithText:text items:items];
+  return [[[self class] alloc] initWithText:text items:items];
 }
 
 - (id)init
@@ -406,6 +419,30 @@ static const CGFloat HLZPositionMenus = 1.0f;
 - (HLMenuItem *)itemAtIndex:(NSUInteger)index
 {
   return (HLMenuItem *)[_items objectAtIndex:index];
+}
+
+- (HLMenuItem *)itemForPathComponents:(NSArray *)pathComponents
+{
+  HLMenuItem *matchingItem = self;
+  NSUInteger pathComponentCount = [pathComponents count];
+  for (NSUInteger pc = 0; pc < pathComponentCount; ++pc) {
+    NSString *pathComponent = [pathComponents objectAtIndex:pc];
+    BOOL foundMatchingItem = NO;
+    for (HLMenuItem *item in ((HLMenu *)matchingItem)->_items) {
+      if ([item.text isEqualToString:pathComponent]) {
+        foundMatchingItem = YES;
+        matchingItem = item;
+        break;
+      }
+    }
+    if (!foundMatchingItem) {
+      return nil;
+    }
+    if ((pc + 1) < pathComponentCount && ![matchingItem isKindOfClass:[HLMenu class]]) {
+      return nil;
+    }
+  }
+  return matchingItem;
 }
 
 @end

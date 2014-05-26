@@ -8,7 +8,15 @@
 
 #import <SpriteKit/SpriteKit.h>
 
+/**
+ * HLMenuScene has an HLMenu, and it creates and displays label buttons for
+ * each item in the HLMenu, stacked vertically.  Menus are hierarchical in
+ * nature, and the scene provides functionality for navigating between menus
+ * and submenus.
+ */
+
 @class HLLabelButtonNode;
+@class HLMenuItem;
 @class HLMenu;
 @protocol HLMenuSceneDelegate;
 
@@ -34,7 +42,25 @@ typedef enum HLMenuSceneAnimation {
 
 @property (nonatomic, copy) NSString *itemSoundFile;
 
+- (void)navigateToMenu:(HLMenu *)menu animation:(HLMenuSceneAnimation)animation;
+
 @end
+
+@protocol HLMenuSceneDelegate <NSObject>
+
+@optional
+
+- (BOOL)menuScene:(HLMenuScene *)menuScene shouldTapMenuItem:(HLMenuItem *)menuItem;
+
+@required
+
+- (void)menuScene:(HLMenuScene *)menuScene didTapMenuItem:(HLMenuItem *)menuItem;
+
+@end
+
+/**
+ * An HLMenuItem is a single item in an HLMenu.
+ */
 
 @interface HLMenuItem : NSObject <NSCoding>
 
@@ -54,6 +80,10 @@ typedef enum HLMenuSceneAnimation {
 
 @end
 
+/**
+ * An HLMenu is a kind of menu item which can itself contain menu items.
+ */
+
 @interface HLMenu : HLMenuItem <NSCoding>
 
 + (HLMenu *)menuWithText:(NSString *)text items:(NSArray *)items;
@@ -66,16 +96,6 @@ typedef enum HLMenuSceneAnimation {
 
 - (HLMenuItem *)itemAtIndex:(NSUInteger)index;
 
-@end
-
-@protocol HLMenuSceneDelegate <NSObject>
-
-@optional
-
-- (BOOL)menuScene:(HLMenuScene *)menuScene shouldTapMenuItem:(HLMenuItem *)menuItem;
-
-@required
-
-- (void)menuScene:(HLMenuScene *)menuScene didTapMenuItem:(HLMenuItem *)menuItem;
+- (HLMenuItem *)itemForPathComponents:(NSArray *)pathComponents;
 
 @end
