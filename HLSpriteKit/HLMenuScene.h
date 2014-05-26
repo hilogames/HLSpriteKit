@@ -64,7 +64,7 @@ typedef enum HLMenuSceneAnimation {
 
 @interface HLMenuItem : NSObject <NSCoding>
 
-@property (nonatomic, weak) HLMenuItem *parent;
+@property (nonatomic, weak) HLMenu *parent;
 
 @property (nonatomic, copy) NSString *text;
 
@@ -97,5 +97,14 @@ typedef enum HLMenuSceneAnimation {
 - (HLMenuItem *)itemAtIndex:(NSUInteger)index;
 
 - (HLMenuItem *)itemForPathComponents:(NSArray *)pathComponents;
+
+@end
+
+/**
+ * An HLMenuBackItem is a kind of menu item which, when tapped,
+ * navigates the menu scene to the parent of its parent menu.
+ */
+
+@interface HLMenuBackItem : HLMenuItem <NSCoding>
 
 @end

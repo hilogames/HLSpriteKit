@@ -231,7 +231,6 @@ static const CGFloat HLZPositionMenus = 1.0f;
         break;
       default:
         [NSException raise:@"HLMenuSceneUnhandledAnimation" format:@"Unhandled animation %d.", animation];
-        break;
     }
   
     _menusNode.position = CGPointMake(-delta.x, -delta.y);
@@ -290,12 +289,29 @@ static const CGFloat HLZPositionMenus = 1.0f;
   if ([item isKindOfClass:[HLMenu class]]) {
     _currentMenu = (HLMenu *)item;
     [self HL_showCurrentMenuAnimation:_itemAnimation];
+  } else if ([item isKindOfClass:[HLMenuBackItem class]]) {
+    _currentMenu = _currentMenu.parent;
+    [self HL_showCurrentMenuAnimation:[self HL_oppositeAnimation:_itemAnimation]];
   }
 
   if (delegate) {
     if ([delegate respondsToSelector:@selector(menuScene:didTapMenuItem:)]) {
       [delegate menuScene:self didTapMenuItem:item];
     }
+  }
+}
+
+- (HLMenuSceneAnimation)HL_oppositeAnimation:(HLMenuSceneAnimation)animation
+{
+  switch (animation) {
+    case HLMenuSceneAnimationNone:
+      return HLMenuSceneAnimationNone;
+    case HLMenuSceneAnimationSlideLeft:
+      return HLMenuSceneAnimationSlideRight;
+    case HLMenuSceneAnimationSlideRight:
+      return HLMenuSceneAnimationSlideLeft;
+    default:
+      [NSException raise:@"HLMenuSceneUnhandledAnimation" format:@"Unhandled animation %d.", animation];
   }
 }
 
@@ -339,7 +355,7 @@ static const CGFloat HLZPositionMenus = 1.0f;
 
 - (NSString *)path
 {
-  HLMenuItem *parent = _parent;
+  HLMenu *parent = _parent;
   // note: The top-level menu, by convention, has no text, and so is not
   // included in the path.
   if (!parent || !parent.parent) {
@@ -444,5 +460,9 @@ static const CGFloat HLZPositionMenus = 1.0f;
   }
   return matchingItem;
 }
+
+@end
+
+@implementation HLMenuBackItem
 
 @end
