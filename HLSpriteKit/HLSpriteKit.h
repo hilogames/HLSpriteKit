@@ -7,7 +7,10 @@
 //
 
 #import <HLSpriteKit/HLEmitterStore.h>
+#import <HLSpriteKit/HLGestureScene.h>
+#import <HLSpriteKit/HLGestureTarget.h>
 #import <HLSpriteKit/HLLabelButtonNode.h>
+#import <HLSpriteKit/HLMenuNode.h>
 #import <HLSpriteKit/HLMenuScene.h>
 #import <HLSpriteKit/HLScene.h>
 #import <HLSpriteKit/HLTextureStore.h>

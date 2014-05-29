@@ -7,10 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CB26105A1934DEEB0095856E /* HLGestureScene.h in Headers */ = {isa = PBXBuildFile; fileRef = CB2610581934DEEB0095856E /* HLGestureScene.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CB26105B1934DEEB0095856E /* HLGestureScene.m in Sources */ = {isa = PBXBuildFile; fileRef = CB2610591934DEEB0095856E /* HLGestureScene.m */; };
+		CB26105D1934E4E40095856E /* HLGestureTarget.h in Headers */ = {isa = PBXBuildFile; fileRef = CB26105C1934E4E40095856E /* HLGestureTarget.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CB63B0B11926AB6300091907 /* HLToolbarNode.h in Headers */ = {isa = PBXBuildFile; fileRef = CB63B0AF1926AB6300091907 /* HLToolbarNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CB63B0B21926AB6300091907 /* HLToolbarNode.m in Sources */ = {isa = PBXBuildFile; fileRef = CB63B0B01926AB6300091907 /* HLToolbarNode.m */; };
-		CB6872E619258F37008415E1 /* HLMenuScene.m in Sources */ = {isa = PBXBuildFile; fileRef = CB6872E419258F37008415E1 /* HLMenuScene.m */; };
-		CB6872EE192591C9008415E1 /* HLMenuScene.h in Headers */ = {isa = PBXBuildFile; fileRef = CB6872E319258F37008415E1 /* HLMenuScene.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CB6872E619258F37008415E1 /* HLMenuNode.m in Sources */ = {isa = PBXBuildFile; fileRef = CB6872E419258F37008415E1 /* HLMenuNode.m */; };
+		CB6872EE192591C9008415E1 /* HLMenuNode.h in Headers */ = {isa = PBXBuildFile; fileRef = CB6872E319258F37008415E1 /* HLMenuNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CB79D706192C2A900014E267 /* HLEmitterStore.h in Headers */ = {isa = PBXBuildFile; fileRef = CB79D704192C2A900014E267 /* HLEmitterStore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CB79D707192C2A900014E267 /* HLEmitterStore.m in Sources */ = {isa = PBXBuildFile; fileRef = CB79D705192C2A900014E267 /* HLEmitterStore.m */; };
 		CB8DD9D1192CEBC600C0704D /* HLScene.h in Headers */ = {isa = PBXBuildFile; fileRef = CB8DD9CF192CEBC600C0704D /* HLScene.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -28,6 +31,8 @@
 		CBD9E941191434AF002533DF /* HLLabelButtonNode.m in Sources */ = {isa = PBXBuildFile; fileRef = CBD9E92A191426D0002533DF /* HLLabelButtonNode.m */; };
 		CBD9E9441914353A002533DF /* HLLabelButtonNode.h in Headers */ = {isa = PBXBuildFile; fileRef = CBD9E929191426D0002533DF /* HLLabelButtonNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CBD9E9451914353A002533DF /* HLSpriteKit.h in Headers */ = {isa = PBXBuildFile; fileRef = CBD9E93F1914334C002533DF /* HLSpriteKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CBE67531193775FC00114476 /* HLMenuScene.h in Headers */ = {isa = PBXBuildFile; fileRef = CBE6752F193775FC00114476 /* HLMenuScene.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CBE67532193775FC00114476 /* HLMenuScene.m in Sources */ = {isa = PBXBuildFile; fileRef = CBE67530193775FC00114476 /* HLMenuScene.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,10 +58,13 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		CB2610581934DEEB0095856E /* HLGestureScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLGestureScene.h; sourceTree = "<group>"; };
+		CB2610591934DEEB0095856E /* HLGestureScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLGestureScene.m; sourceTree = "<group>"; };
+		CB26105C1934E4E40095856E /* HLGestureTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLGestureTarget.h; sourceTree = "<group>"; };
 		CB63B0AF1926AB6300091907 /* HLToolbarNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLToolbarNode.h; sourceTree = "<group>"; };
 		CB63B0B01926AB6300091907 /* HLToolbarNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLToolbarNode.m; sourceTree = "<group>"; };
-		CB6872E319258F37008415E1 /* HLMenuScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLMenuScene.h; sourceTree = "<group>"; };
-		CB6872E419258F37008415E1 /* HLMenuScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLMenuScene.m; sourceTree = "<group>"; };
+		CB6872E319258F37008415E1 /* HLMenuNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLMenuNode.h; sourceTree = "<group>"; };
+		CB6872E419258F37008415E1 /* HLMenuNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLMenuNode.m; sourceTree = "<group>"; };
 		CB79D704192C2A900014E267 /* HLEmitterStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLEmitterStore.h; sourceTree = "<group>"; };
 		CB79D705192C2A900014E267 /* HLEmitterStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLEmitterStore.m; sourceTree = "<group>"; };
 		CB8DD9CF192CEBC600C0704D /* HLScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLScene.h; sourceTree = "<group>"; };
@@ -76,6 +84,8 @@
 		CBD9E92A191426D0002533DF /* HLLabelButtonNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLLabelButtonNode.m; sourceTree = "<group>"; };
 		CBD9E92C19142738002533DF /* SpriteKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SpriteKit.framework; path = System/Library/Frameworks/SpriteKit.framework; sourceTree = SDKROOT; };
 		CBD9E93F1914334C002533DF /* HLSpriteKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HLSpriteKit.h; sourceTree = "<group>"; };
+		CBE6752F193775FC00114476 /* HLMenuScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLMenuScene.h; sourceTree = "<group>"; };
+		CBE67530193775FC00114476 /* HLMenuScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLMenuScene.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -137,10 +147,15 @@
 			children = (
 				CB79D704192C2A900014E267 /* HLEmitterStore.h */,
 				CB79D705192C2A900014E267 /* HLEmitterStore.m */,
+				CB2610581934DEEB0095856E /* HLGestureScene.h */,
+				CB2610591934DEEB0095856E /* HLGestureScene.m */,
+				CB26105C1934E4E40095856E /* HLGestureTarget.h */,
 				CBD9E929191426D0002533DF /* HLLabelButtonNode.h */,
 				CBD9E92A191426D0002533DF /* HLLabelButtonNode.m */,
-				CB6872E319258F37008415E1 /* HLMenuScene.h */,
-				CB6872E419258F37008415E1 /* HLMenuScene.m */,
+				CB6872E319258F37008415E1 /* HLMenuNode.h */,
+				CB6872E419258F37008415E1 /* HLMenuNode.m */,
+				CBE6752F193775FC00114476 /* HLMenuScene.h */,
+				CBE67530193775FC00114476 /* HLMenuScene.m */,
 				CB8DD9CF192CEBC600C0704D /* HLScene.h */,
 				CB8DD9D0192CEBC600C0704D /* HLScene.m */,
 				CBD9E93F1914334C002533DF /* HLSpriteKit.h */,
@@ -187,8 +202,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				CB79D706192C2A900014E267 /* HLEmitterStore.h in Headers */,
+				CB26105A1934DEEB0095856E /* HLGestureScene.h in Headers */,
+				CB26105D1934E4E40095856E /* HLGestureTarget.h in Headers */,
 				CBD9E9441914353A002533DF /* HLLabelButtonNode.h in Headers */,
-				CB6872EE192591C9008415E1 /* HLMenuScene.h in Headers */,
+				CBE67531193775FC00114476 /* HLMenuScene.h in Headers */,
+				CB6872EE192591C9008415E1 /* HLMenuNode.h in Headers */,
 				CB8DD9D1192CEBC600C0704D /* HLScene.h in Headers */,
 				CBD9E9451914353A002533DF /* HLSpriteKit.h in Headers */,
 				CBA8988A1926BFE500849215 /* HLTextureStore.h in Headers */,
@@ -280,10 +298,12 @@
 			files = (
 				CB8DD9D2192CEBC600C0704D /* HLScene.m in Sources */,
 				CB63B0B21926AB6300091907 /* HLToolbarNode.m in Sources */,
+				CB26105B1934DEEB0095856E /* HLGestureScene.m in Sources */,
 				CBD9E941191434AF002533DF /* HLLabelButtonNode.m in Sources */,
-				CB6872E619258F37008415E1 /* HLMenuScene.m in Sources */,
+				CB6872E619258F37008415E1 /* HLMenuNode.m in Sources */,
 				CBA8988B1926BFE500849215 /* HLTextureStore.m in Sources */,
 				CB79D707192C2A900014E267 /* HLEmitterStore.m in Sources */,
+				CBE67532193775FC00114476 /* HLMenuScene.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -9,6 +9,15 @@
 #import <Foundation/Foundation.h>
 #import <SpriteKit/SpriteKit.h>
 
+/**
+ * HLScene contains functionality useful to many scenes.
+ *
+ * TODO: Composition would be better than inheritance.  Can functionality
+ * be grouped into modules or functions?  See, for instance, HLGestureScene,
+ * which wants to offer a particular set of features to some (but not all)
+ * scenes.
+ */
+
 @interface HLScene : SKScene
 
 + (void)loadSceneAssetsWithCompletion:(void(^)(void))completion;
