@@ -9,15 +9,53 @@
 #import <SpriteKit/SpriteKit.h>
 
 #import "HLScene.h"
+#import "HLGestureTarget.h"
 
 /**
  * HLGestureScene implements a gesture handler for any of its child nodes which
- * conform to HLGestureTarget.
+ * conform to HLGestureTarget, and associated common functionality which depends
+ * on gesture targets.
  *
  * note: This is a feature useful to different kinds of scenes; consider making
  * this a component for composition rather than a class for subclassing.
+ *
+ * note: The scene will add gesture recognizers dynamically as children are
+ * added, but will not remove them when children are removed.
  */
 
 @interface HLGestureScene : HLScene <UIGestureRecognizerDelegate>
+
+/**
+ * Presents a node modally above the current scene, pausing the scene and disabling
+ * other interaction.
+ *
+ * note: "Above" the current scene might or might not depend on (a particular) zPosition,
+ * depending on whether the SKView ignoresSiblingOrder.  It's left to the caller to
+ * provide an appropriate zPosition range that can be used by this scene to display
+ * the presented node and other related decorations and animations.  The presented
+ * node will have its zPosition set to a value in the provided range, but exactly
+ * what value is implementation-specific.  The range may be empty; that is, min and
+ * max may be the same.
+ *
+ * @param The node to present modally.  The node must be an HLGestureTarget so that
+ *        the HLGestureScene's gesture handling code can forward gestures to the target.
+ *        (The scene will not automatically dismiss the presented node; perhaps the
+ *        node will dismiss itself, or perhaps the node has a delegate which will
+ *        dismiss it.)
+ *
+ * @param A lower bound (inclusive) for a range of zPositions to be used by the presented
+ *        node and other related decorations and animations.  See note above.
+ *
+ * @param An upper bound (inclusive) for a range of zPositions to be used by the presented
+ *        node and other related decorations and animations.  See note above.
+ */
+- (void)presentModalNode:(SKNode <HLGestureTarget> *)node
+            zPositionMin:(CGFloat)zPositionMin
+            zPositionMax:(CGFloat)zPositionMax;
+
+/**
+ * Dismisses the node currently presented by presentModalNode (if any).
+ */
+- (void)dismissModalNode;
 
 @end

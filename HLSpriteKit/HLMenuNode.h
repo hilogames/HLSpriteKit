@@ -32,7 +32,21 @@ typedef enum HLMenuNodeAnimation {
 
 @property (nonatomic, weak) id<HLMenuNodeDelegate> delegate;
 
-@property (nonatomic, strong) HLMenu *menu;
+/**
+ * The hierarchical menu displayed by the menu node.
+ *
+ * note: For the sake of simplicity, menu node does not worry about updating its
+ * display when the caller makes changes to the individual menu items.  Instead,
+ * it will only refresh the display after a call to setMenu:animation:.  The readonly
+ * attribute helps to suggest this pattern.  More stringent would be to copy the
+ * menu into the menu node, but that is deemed unnecessary.
+ *
+ * note: It is considered convenient for the menu node to keep a strong reference
+ * to its menu, assuming that the caller typically wants a single fairly-static
+ * menu hierarchy.  An alternate design, perhaps where only "current" menu is tracked,
+ * should be considered if useful.
+ */
+@property (nonatomic, readonly, strong) HLMenu *menu;
 
 @property (nonatomic, assign) CGFloat itemSpacing;
 
@@ -42,9 +56,11 @@ typedef enum HLMenuNodeAnimation {
 
 @property (nonatomic, copy) NSString *itemSoundFile;
 
+- (void)setMenu:(HLMenu *)menu animation:(HLMenuNodeAnimation)animation;
+
 - (void)navigateToTopMenuAnimation:(HLMenuNodeAnimation)animation;
 
-- (void)navigateToMenu:(HLMenu *)menu animation:(HLMenuNodeAnimation)animation;
+- (void)navigateToSubmenuWithPathComponents:(NSArray *)pathComponents animation:(HLMenuNodeAnimation)animation;
 
 @end
 

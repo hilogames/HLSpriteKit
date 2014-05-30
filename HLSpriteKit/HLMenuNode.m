@@ -74,10 +74,13 @@
   }
 }
 
-- (void)setMenu:(HLMenu *)menu
+- (void)setMenu:(HLMenu *)menu animation:(HLMenuNodeAnimation)animation
 {
   _menu = menu;
   _currentMenu = menu;
+  if (_currentMenu) {
+    [self HL_showCurrentMenuAnimation:animation];
+  }
 }
 
 - (void)navigateToTopMenuAnimation:(HLMenuNodeAnimation)animation
@@ -86,8 +89,13 @@
   [self HL_showCurrentMenuAnimation:animation];
 }
 
-- (void)navigateToMenu:(HLMenu *)menu animation:(HLMenuNodeAnimation)animation
+- (void)navigateToSubmenuWithPathComponents:(NSArray *)pathComponents animation:(HLMenuNodeAnimation)animation
 {
+  HLMenuItem *item = [_menu itemForPathComponents:pathComponents];
+  if (![item isKindOfClass:[HLMenu class]]) {
+    return;
+  }
+  HLMenu *menu = (HLMenu *)item;
   _currentMenu = menu;
   [self HL_showCurrentMenuAnimation:animation];
 }

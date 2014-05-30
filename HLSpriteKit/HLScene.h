@@ -20,6 +20,8 @@
 
 @interface HLScene : SKScene
 
+// Functionality for loading scene assets.
+
 + (void)loadSceneAssetsWithCompletion:(void(^)(void))completion;
 
 + (void)loadSceneAssets;
