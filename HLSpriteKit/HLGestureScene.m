@@ -80,12 +80,9 @@
 #pragma mark -
 #pragma mark Modal Presentation
 
-- (void)presentModalNode:(SKNode<HLGestureTarget> *)node zPositionMin:(CGFloat)zPositionMin zPositionMax:(CGFloat)zPositionMax
+- (void)presentModalNode:(SKNode *)node zPositionMin:(CGFloat)zPositionMin zPositionMax:(CGFloat)zPositionMax
 {
   const CGFloat HLBackgroundFadeAlpha = 0.7f;
-
-  SKView *skView = (SKView *)self.view;
-  skView.paused = YES;
 
   // note: As long as the background node covers the whole scene, our current gesture recognizer
   // implementation should find it (and nothing behind it) after any potential interaction with
@@ -112,8 +109,6 @@
   }
   [modalPresentationNode removeFromParent];
   [modalPresentationNode removeAllChildren];
-  SKView *skView = (SKView *)self.view;
-  skView.paused = NO;
 }
 
 #pragma mark -

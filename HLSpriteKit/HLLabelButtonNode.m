@@ -214,6 +214,26 @@
   _labelNode.fontColor = fontColor;
 }
 
+- (SKColor *)color
+{
+  return _backgroundNode.color;
+}
+
+- (void)setColor:(SKColor *)color
+{
+  _backgroundNode.color = color;
+}
+
+- (CGFloat)colorBlendFactor
+{
+  return _backgroundNode.colorBlendFactor;
+}
+
+- (void)setColorBlendFactor:(CGFloat)colorBlendFactor
+{
+  _backgroundNode.colorBlendFactor = colorBlendFactor;
+}
+
 - (void)setCenterRect:(CGRect)centerRect
 {
   _backgroundNode.centerRect = centerRect;

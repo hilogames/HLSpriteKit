@@ -68,11 +68,11 @@ typedef enum HLMenuNodeAnimation {
 
 @optional
 
-- (BOOL)menuNode:(HLMenuNode *)menuNode shouldTapMenuItem:(HLMenuItem *)menuItem;
+- (BOOL)menuNode:(HLMenuNode *)menuNode shouldTapMenuItem:(HLMenuItem *)menuItem itemIndex:(NSUInteger)itemIndex;
 
 @required
 
-- (void)menuNode:(HLMenuNode *)menuNode didTapMenuItem:(HLMenuItem *)menuItem;
+- (void)menuNode:(HLMenuNode *)menuNode didTapMenuItem:(HLMenuItem *)menuItem itemIndex:(NSUInteger)itemIndex;
 
 @end
 
@@ -115,6 +115,8 @@ typedef enum HLMenuNodeAnimation {
 - (HLMenuItem *)itemAtIndex:(NSUInteger)index;
 
 - (HLMenuItem *)itemForPathComponents:(NSArray *)pathComponents;
+
+- (void)removeAllItems;
 
 @end
 

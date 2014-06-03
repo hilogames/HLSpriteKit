@@ -12,6 +12,7 @@
 #import <HLSpriteKit/HLLabelButtonNode.h>
 #import <HLSpriteKit/HLMenuNode.h>
 #import <HLSpriteKit/HLMenuScene.h>
+#import <HLSpriteKit/HLMessageNode.h>
 #import <HLSpriteKit/HLScene.h>
 #import <HLSpriteKit/HLTextureStore.h>
 #import <HLSpriteKit/HLToolbarNode.h>

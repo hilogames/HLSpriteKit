@@ -72,6 +72,10 @@ typedef enum HLLabelButtonNodeVerticalAlignmentMode {
 
 @property (nonatomic, strong) SKColor *fontColor;
 
+@property (nonatomic, strong) SKColor *color;
+
+@property (nonatomic, assign) CGFloat colorBlendFactor;
+
 @property (nonatomic, assign) CGRect centerRect;
 
 - (id)initWithColor:(UIColor *)color size:(CGSize)size;

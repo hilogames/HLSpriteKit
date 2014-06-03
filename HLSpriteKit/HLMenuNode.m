@@ -137,10 +137,11 @@
   // performance significantly.
   CGPoint viewLocation = [gestureRecognizer locationInView:self.scene.view];
   CGPoint sceneLocation = [self.scene convertPointFromView:viewLocation];
+  CGPoint menuLocation = [self convertPoint:sceneLocation fromNode:self.scene];
 
   NSUInteger i = 0;
   for (HLLabelButtonNode *buttonNode in _buttonsNode.children) {
-    if ([buttonNode containsPoint:sceneLocation]) {
+    if ([buttonNode containsPoint:menuLocation]) {
       [self HL_tappedItem:i];
       return;
     }
@@ -241,8 +242,8 @@
 
   id<HLMenuNodeDelegate> delegate = self.delegate;
   if (delegate) {
-    if ([delegate respondsToSelector:@selector(menuNode:shouldTapMenuItem:)]
-        && ![delegate menuNode:self shouldTapMenuItem:item]) {
+    if ([delegate respondsToSelector:@selector(menuNode:shouldTapMenuItem:itemIndex:)]
+        && ![delegate menuNode:self shouldTapMenuItem:item itemIndex:itemIndex]) {
       return;
     }
   }
@@ -264,8 +265,8 @@
   }
 
   if (delegate) {
-    if ([delegate respondsToSelector:@selector(menuNode:didTapMenuItem:)]) {
-      [delegate menuNode:self didTapMenuItem:item];
+    if ([delegate respondsToSelector:@selector(menuNode:didTapMenuItem:itemIndex:)]) {
+      [delegate menuNode:self didTapMenuItem:item itemIndex:itemIndex];
     }
   }
 }
@@ -428,6 +429,11 @@
     }
   }
   return matchingItem;
+}
+
+- (void)removeAllItems
+{
+  [_items removeAllObjects];
 }
 
 @end
