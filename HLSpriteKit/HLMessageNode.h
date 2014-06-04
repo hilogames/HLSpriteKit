@@ -14,6 +14,8 @@
 
 @property (nonatomic, assign) HLLabelNodeVerticalAlignmentMode verticalAlignmentMode;
 
+@property (nonatomic, assign) NSTimeInterval messageAnimationDuration;
+
 @property (nonatomic, assign) NSTimeInterval messageLingerDuration;
 
 @property (nonatomic, copy) NSString *fontName;

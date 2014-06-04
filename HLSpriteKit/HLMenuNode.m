@@ -31,6 +31,7 @@
     _itemButtonPrototype.fontColor = [UIColor whiteColor];
     _itemButtonPrototype.verticalAlignmentMode = HLLabelNodeVerticalAlignFont;
     _itemAnimation = HLMenuNodeAnimationSlideLeft;
+    _itemAnimationDuration = 0.25;
   }
   return self;
 }
@@ -44,6 +45,7 @@
     _itemSpacing = [aDecoder decodeFloatForKey:@"itemSpacing"];
     _itemButtonPrototype = [aDecoder decodeObjectForKey:@"itemButtonPrototype"];
     _itemAnimation = (HLMenuNodeAnimation)[aDecoder decodeIntForKey:@"itemAnimation"];
+    _itemAnimationDuration = [aDecoder decodeDoubleForKey:@"itemAnimationDuration"];
     _itemSoundFile = [aDecoder decodeObjectForKey:@"itemSoundFile"];
     if (_currentMenu) {
       [self HL_showCurrentMenuAnimation:HLMenuNodeAnimationNone];
@@ -66,6 +68,7 @@
   [aCoder encodeDouble:_itemSpacing forKey:@"itemSpacing"];
   [aCoder encodeObject:_itemButtonPrototype forKey:@"itemButtonPrototype"];
   [aCoder encodeInt:(int)_itemAnimation forKey:@"itemAnimation"];
+  [aCoder encodeDouble:_itemAnimationDuration forKey:@"itemAnimationDuration"];
   [aCoder encodeObject:_itemSoundFile forKey:@"itemSoundFile"];
 
   // Replace any removed nodes.
@@ -154,8 +157,6 @@
 
 - (void)HL_showCurrentMenuAnimation:(HLMenuNodeAnimation)animation
 {
-  const NSTimeInterval HLMenuNodeSlideDuration = 0.25f;
-
   SKNode *oldButtonsNode = _buttonsNode;
   _buttonsNode = [SKNode node];
   [self addChild:_buttonsNode];
@@ -201,7 +202,7 @@
     }
   
     _buttonsNode.position = CGPointMake(-delta.x, -delta.y);
-    SKAction *animationAction = [SKAction moveByX:delta.x y:delta.y duration:HLMenuNodeSlideDuration];
+    SKAction *animationAction = [SKAction moveByX:delta.x y:delta.y duration:_itemAnimationDuration];
     [_buttonsNode runAction:animationAction];
 
     if (oldButtonsNode) {

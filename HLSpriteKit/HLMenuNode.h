@@ -54,6 +54,8 @@ typedef enum HLMenuNodeAnimation {
 
 @property (nonatomic, assign) HLMenuNodeAnimation itemAnimation;
 
+@property (nonatomic, assign) NSTimeInterval itemAnimationDuration;
+
 @property (nonatomic, copy) NSString *itemSoundFile;
 
 - (void)setMenu:(HLMenu *)menu animation:(HLMenuNodeAnimation)animation;

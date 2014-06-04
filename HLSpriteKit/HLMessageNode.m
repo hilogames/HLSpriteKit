@@ -53,6 +53,7 @@
 {
   _verticalAlignmentMode = HLLabelNodeVerticalAlignFont;
 
+  _messageAnimationDuration = 0.1;
   _messageLingerDuration = 2.0;
 
   _labelNode = [SKLabelNode labelNodeWithFontNamed:@"Courier"];
@@ -110,16 +111,16 @@
     CGPoint messageNodePosition = self.position;
     messageNodePosition.x = self.size.width;
     self.position = messageNodePosition;
-    SKAction *slideIn = [SKAction moveToX:0.0f duration:0.1f];
+    SKAction *slideIn = [SKAction moveToX:0.0f duration:_messageAnimationDuration];
     SKAction *wait = [SKAction waitForDuration:_messageLingerDuration];
-    SKAction *slideOut = [SKAction moveToX:-self.size.width duration:0.1f];
+    SKAction *slideOut = [SKAction moveToX:-self.size.width duration:_messageAnimationDuration];
     SKAction *remove = [SKAction removeFromParent];
     SKAction *show = [SKAction sequence:@[slideIn, wait, slideOut, remove ]];
     [self runAction:show withKey:@"show"];
   } else {
     [self removeActionForKey:@"show"];
     SKAction *wait = [SKAction waitForDuration:_messageLingerDuration];
-    SKAction *slideOut = [SKAction moveToX:-self.size.width duration:0.1f];
+    SKAction *slideOut = [SKAction moveToX:-self.size.width duration:_messageAnimationDuration];
     SKAction *remove = [SKAction removeFromParent];
     SKAction *show = [SKAction sequence:@[ wait, slideOut, remove ]];
     [self runAction:show withKey:@"show"];

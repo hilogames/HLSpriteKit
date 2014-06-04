@@ -29,12 +29,12 @@
  *     - (void)addChild:(SKNode *)child withOptions:(HLSceneChildOptions)options
  *
  *     HLSceneChildOptions
- *     + HLSceneChildNoCoding
+ *     + HLSceneChildNoCoding    (auto detected if conforms to <NSCoding>)
  *     + HLSceneChildScaleToScene
- *     + HLSceneChildGestureTarget
+ *     + HLSceneChildGestureTarget  (auto detected if conforms to <HLGestureTarget>)
  *     + HLSceneChildNoGestureTarget
  *
- * HERE HERE HERE this will work!  do it.  but...as part of HLScene, and then HLGesture
+ * TODO this will work!  do it.  but...as part of HLScene, and then HLGesture
  * scene still inherits (and adds more options in addChild:withOptions:)?  Or maybe
  * collapse scene parents into each other and a big boolean flag for disabling gesture
  * handling?  Or maybe these scene parents are keeping track of everything that has been
