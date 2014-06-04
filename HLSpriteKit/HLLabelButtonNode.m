@@ -57,7 +57,7 @@
 {
   _automaticWidth = NO;
   _automaticHeight = NO;
-  _verticalAlignmentMode = HLLabelButtonNodeVerticalAlignText;
+  _verticalAlignmentMode = HLLabelNodeVerticalAlignText;
   _labelPadX = 0.0f;
   _labelPadY = 0.0f;
   _labelNode = [SKLabelNode labelNodeWithFontNamed:@"Helvetica"];
@@ -81,7 +81,7 @@
     _labelNode = [aDecoder decodeObjectForKey:@"labelNode"];
     _automaticWidth = [aDecoder decodeBoolForKey:@"automaticWidth"];
     _automaticHeight = [aDecoder decodeBoolForKey:@"automaticHeight"];
-    _verticalAlignmentMode = (HLLabelButtonNodeVerticalAlignmentMode)[aDecoder decodeIntForKey:@"verticalAlignmentMode"];
+    _verticalAlignmentMode = (HLLabelNodeVerticalAlignmentMode)[aDecoder decodeIntForKey:@"verticalAlignmentMode"];
     _labelPadX = [aDecoder decodeFloatForKey:@"labelPadX"];
     _labelPadY = [aDecoder decodeFloatForKey:@"labelPadY"];
   }
@@ -176,7 +176,7 @@
   [self HL_layout];
 }
 
-- (void)setVerticalAlignmentMode:(HLLabelButtonNodeVerticalAlignmentMode)verticalAlignmentMode
+- (void)setVerticalAlignmentMode:(HLLabelNodeVerticalAlignmentMode)verticalAlignmentMode
 {
   _verticalAlignmentMode = verticalAlignmentMode;
   [self HL_layout];
@@ -261,29 +261,25 @@
     newSize.width = _labelNode.frame.size.width + _labelPadX * 2.0f;
   }
 
-  if (_verticalAlignmentMode == HLLabelButtonNodeVerticalAlignText) {
-    _labelNode.verticalAlignmentMode = SKLabelVerticalAlignmentModeCenter;
-    if (_automaticHeight) {
-      newSize.height = _labelNode.frame.size.height + _labelPadY * 2.0f;
-    }
-    _labelNode.position = CGPointMake(0.0f, 0.0f);
-  } else if (_verticalAlignmentMode == HLLabelButtonNodeVerticalAlignFont) {
-    _labelNode.verticalAlignmentMode = SKLabelVerticalAlignmentModeBaseline;
-    UIFont *font = [UIFont fontWithName:_labelNode.fontName size:_labelNode.fontSize];
-    if (_automaticHeight) {
-      newSize.height = font.lineHeight + _labelPadY * 2.0f;
-    }
-    _labelNode.position = CGPointMake(0.0f, -font.lineHeight / 2.0f - font.descender);
-  } else if (_verticalAlignmentMode == HLLabelButtonNodeVerticalAlignFontAscender) {
-    _labelNode.verticalAlignmentMode = SKLabelVerticalAlignmentModeBaseline;
-    UIFont *font = [UIFont fontWithName:_labelNode.fontName size:_labelNode.fontSize];
-    if (_automaticHeight) {
-      newSize.height = font.ascender + _labelPadY * 2.0f;
-    }
-    _labelNode.position = CGPointMake(0.0f, -font.ascender / 2.0f);
+  SKLabelVerticalAlignmentMode skVerticalAlignmentMode;
+  CGFloat alignedYPosition;
+  if (_automaticHeight) {
+    CGFloat effectiveLabelHeight;
+    [_labelNode getAlignmentInNode:self
+        forHLVerticalAlignmentMode:_verticalAlignmentMode
+           skVerticalAlignmentMode:&skVerticalAlignmentMode
+                       labelHeight:&effectiveLabelHeight
+                         yPosition:&alignedYPosition];
+    newSize.height = effectiveLabelHeight + _labelPadY * 2.0f;
   } else {
-    [NSException raise:@"HLLabelButtonNodeUnknownVerticalAlignmentMode" format:@"Unknown vertical alignment mode %d.", _verticalAlignmentMode];
+    [_labelNode getAlignmentInNode:self
+        forHLVerticalAlignmentMode:_verticalAlignmentMode
+           skVerticalAlignmentMode:&skVerticalAlignmentMode
+                       labelHeight:nil
+                         yPosition:&alignedYPosition];
   }
+  _labelNode.verticalAlignmentMode = skVerticalAlignmentMode;
+  _labelNode.position = CGPointMake(0.0f, alignedYPosition);
 
   if (_automaticWidth || _automaticHeight) {
     if (_backgroundNode.texture) {

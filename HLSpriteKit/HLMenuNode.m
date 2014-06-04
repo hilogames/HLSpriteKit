@@ -29,7 +29,7 @@
     _itemButtonPrototype.fontName = @"Helvetica";
     _itemButtonPrototype.fontSize = 24.0f;
     _itemButtonPrototype.fontColor = [UIColor whiteColor];
-    _itemButtonPrototype.verticalAlignmentMode = HLLabelButtonNodeVerticalAlignFont;
+    _itemButtonPrototype.verticalAlignmentMode = HLLabelNodeVerticalAlignFont;
     _itemAnimation = HLMenuNodeAnimationSlideLeft;
   }
   return self;

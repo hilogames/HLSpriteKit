@@ -16,3 +16,4 @@
 #import <HLSpriteKit/HLScene.h>
 #import <HLSpriteKit/HLTextureStore.h>
 #import <HLSpriteKit/HLToolbarNode.h>
+#import <HLSpriteKit/SKLabelNode+HLLabelNodeAdditions.h>

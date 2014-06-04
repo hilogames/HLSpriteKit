@@ -51,18 +51,22 @@
 
 - (void)HL_messageNodeInitCommon
 {
+  _verticalAlignmentMode = HLLabelNodeVerticalAlignFont;
+
   _messageLingerDuration = 2.0;
 
   _labelNode = [SKLabelNode labelNodeWithFontNamed:@"Courier"];
   _labelNode.fontSize = 14.0f;
   _labelNode.fontColor = [UIColor whiteColor];
-  _labelNode.verticalAlignmentMode = SKLabelVerticalAlignmentModeBaseline;
-  // note: Position offset accommodates a "typical" descender proportion.
-  // Could be more exact if required; see HLLabelButtonNode.
-  // HERE: Factor out HLLabelNode and use it here.  Wrap the alignment
-  // mode property in this class to be available to callers.
-  _labelNode.position = CGPointMake(0.0f, -(14.0f / 3.0f));
   [self addChild:_labelNode];
+
+  [self HL_layoutLabelNode];
+}
+
+- (void)setVerticalAlignmentMode:(HLLabelNodeVerticalAlignmentMode)verticalAlignmentMode
+{
+  _verticalAlignmentMode = verticalAlignmentMode;
+  [self HL_layoutLabelNode];
 }
 
 - (NSString *)fontName
@@ -73,6 +77,7 @@
 - (void)setFontName:(NSString *)fontName
 {
   _labelNode.fontName = fontName;
+  [self HL_layoutLabelNode];
 }
 
 - (CGFloat)fontSize
@@ -83,7 +88,7 @@
 - (void)setFontSize:(CGFloat)fontSize
 {
   _labelNode.fontSize = fontSize;
-  _labelNode.position = CGPointMake(0.0f, -(fontSize / 3.0f));
+  [self HL_layoutLabelNode];
 }
 
 - (SKColor *)fontColor
@@ -119,6 +124,20 @@
     SKAction *show = [SKAction sequence:@[ wait, slideOut, remove ]];
     [self runAction:show withKey:@"show"];
   }
+}
+
+- (void)HL_layoutLabelNode
+{
+  SKLabelVerticalAlignmentMode skVerticalAlignmentMode;
+  CGFloat alignedYPosition;
+  [_labelNode getAlignmentInNode:self
+      forHLVerticalAlignmentMode:_verticalAlignmentMode
+         skVerticalAlignmentMode:&skVerticalAlignmentMode
+                     labelHeight:nil
+                       yPosition:&alignedYPosition];
+
+  _labelNode.verticalAlignmentMode = skVerticalAlignmentMode;
+  _labelNode.position = CGPointMake(0.0f, alignedYPosition);
 }
 
 @end

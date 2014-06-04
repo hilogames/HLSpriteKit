@@ -8,6 +8,8 @@
 
 #import <SpriteKit/SpriteKit.h>
 
+#import "SKLabelNode+HLLabelNodeAdditions.h"
+
 @interface HLLabelButtonNode : SKNode <NSCopying, NSCoding>
 
 @property (nonatomic, copy) NSString *text;
@@ -22,42 +24,12 @@
 @property (nonatomic, assign) BOOL automaticHeight;
 
 /**
- * Specifies how to calculate the label text height and center when
- * sizing the button and/or centering the text within the button
- * (depending on the value of automaticHeight).  The options are:
- *
- *   HLLabelButtonNodeVerticalAlignText.  Measure the label using the
- *   exact height of the current text (for example, not including the
- *   font descender if the current text has no descending characters).
- *   Align the label by the center of that height.
- *
- *   HLLabelButtonNodeVerticalAlignFont.  Measure the label using the
- *   full height of the font (regardless of the current text, and
- *   including both ascender and descender).  Align the label by the
- *   center of that height.  This means that the location of the
- *   baseline won't change depending on the current text; space will be
- *   reserved for ascenders and descenders.
- *
- *   HLLabelButtonNodeVerticalAlignFontAscender.  Measure the label using
- *   the full ascender of the font, but excluding the descender (regardless
- *   of the current text).  Align the label by the center of that height.
- *   This means that the location of the baseline won't change depending
- *   on the current text; space will be reserved for ascenders; any
- *   descenders in the current text will extend down below the space
- *   reserved for the label.
- *
- * sizing the button (in case automaticHeight is true) or centering the
- * text Specifies whether to use fixed font metrics or the current text
- * when calculating the label's height.  This will affect the height
- * of the overall button if property automaticHeight is YES, or the
- * centering of the label (within the button) if automaticHeight is NO.
+ * Specifies how to align the label within the button frame.  See
+ * documentation for HLLabelNodeVerticalAlignmentMode.  This
+ * alignment mode also determines the calculated height used for
+ * the button when automaticHeight is true.
  */
-typedef enum HLLabelButtonNodeVerticalAlignmentMode {
-  HLLabelButtonNodeVerticalAlignText,
-  HLLabelButtonNodeVerticalAlignFont,
-  HLLabelButtonNodeVerticalAlignFontAscender,
-} HLLabelButtonNodeVerticalAlignmentMode;
-@property (nonatomic, assign) HLLabelButtonNodeVerticalAlignmentMode verticalAlignmentMode;
+@property (nonatomic, assign) HLLabelNodeVerticalAlignmentMode verticalAlignmentMode;
 
 /**
  * The amount of space, when using automatic height or automatic width,

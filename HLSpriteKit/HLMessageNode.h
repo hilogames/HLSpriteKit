@@ -8,7 +8,11 @@
 
 #import <SpriteKit/SpriteKit.h>
 
+#import "SKLabelNode+HLLabelNodeAdditions.h"
+
 @interface HLMessageNode : SKSpriteNode
+
+@property (nonatomic, assign) HLLabelNodeVerticalAlignmentMode verticalAlignmentMode;
 
 @property (nonatomic, assign) NSTimeInterval messageLingerDuration;
 
