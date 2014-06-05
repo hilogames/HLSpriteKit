@@ -26,4 +26,6 @@
 
 - (void)showMessage:(NSString *)message parent:(SKNode *)parent;
 
+- (void)hideMessage;
+
 @end

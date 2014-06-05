@@ -127,6 +127,14 @@
   }
 }
 
+- (void)hideMessage
+{
+  if (self.parent) {
+    [self removeActionForKey:@"show"];
+    [self removeFromParent];
+  }
+}
+
 - (void)HL_layoutLabelNode
 {
   SKLabelVerticalAlignmentMode skVerticalAlignmentMode;
