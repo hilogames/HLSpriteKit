@@ -14,7 +14,7 @@
  * might be an SKScene, which has only a single view (and hence only a single set of gesture recognizers),
  * but perhaps many different SKNode components within the scene, like a world, a character, or a toolbar.
  * Upon receiving the first touch of a particular gesture, the SKScene finds likely HLGestureTarget
- * components and offers them the chance to become targets of that gesture.  See HLGestureScene for a
+ * components and offers them the chance to become targets of that gesture.  See HLScene for a
  * simple implementation.
  */
 
