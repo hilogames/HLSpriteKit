@@ -130,7 +130,22 @@
   return YES;
 }
 
+- (BOOL)addsToDoubleTapGestureRecognizer
+{
+  return NO;
+}
+
+- (BOOL)addsToLongPressGestureRecognizer
+{
+  return NO;
+}
+
 - (BOOL)addsToPanGestureRecognizer
+{
+  return NO;
+}
+
+- (BOOL)addsToPinchGestureRecognizer
 {
   return NO;
 }
@@ -252,7 +267,11 @@
 
   NSString *soundFile = (item.soundFile ? item.soundFile : _itemSoundFile);
   if (soundFile) {
-    [self runAction:[SKAction playSoundFileNamed:soundFile waitForCompletion:NO]];
+    // noob: Have the scene run it in case we are pressing some kind of "dismiss" button
+    // and the menu node is about to be removed from its parent.  Is there a standard
+    // way of thinking about this?  After all, this isn't extreme enough: The scene
+    // might be about to be dismissed, too.
+    [self.scene runAction:[SKAction playSoundFileNamed:soundFile waitForCompletion:NO]];
   }
 
   if ([item isKindOfClass:[HLMenu class]]) {

@@ -24,10 +24,10 @@ static BOOL HLSceneAssetsLoaded = NO;
   NSMutableSet *_childResizeWithScene;
 
   NSMutableSet *_childTapTargets;
-  UITapGestureRecognizer *_tapRecognizer;
-
+  NSMutableSet *_childDoubleTapTargets;
+  NSMutableSet *_childLongPressTargets;
   NSMutableSet *_childPanTargets;
-  UIPanGestureRecognizer *_panRecognizer;
+  NSMutableSet *_childPinchTargets;
 
   SKNode *_modalPresentationNode;
 }
@@ -41,7 +41,10 @@ static BOOL HLSceneAssetsLoaded = NO;
     _childNoCoding = nil;
     _childResizeWithScene = [aDecoder decodeObjectForKey:@"childResizeWithScene"];
     _childTapTargets = [aDecoder decodeObjectForKey:@"childTapTargets"];
+    _childDoubleTapTargets = [aDecoder decodeObjectForKey:@"childDoubleTapTargets"];
+    _childLongPressTargets = [aDecoder decodeObjectForKey:@"childLongPressTargets"];
     _childPanTargets = [aDecoder decodeObjectForKey:@"childPanTargets"];
+    _childPinchTargets = [aDecoder decodeObjectForKey:@"childPinchTargets"];
   }
   return self;
 }
@@ -62,7 +65,10 @@ static BOOL HLSceneAssetsLoaded = NO;
 
   [self HLScene_encodeChildReferences:_childResizeWithScene forKey:@"childResizeWithScene" withCoder:aCoder];
   [self HLScene_encodeChildReferences:_childTapTargets forKey:@"childTapTargets" withCoder:aCoder];
+  [self HLScene_encodeChildReferences:_childDoubleTapTargets forKey:@"childDoubleTapTargets" withCoder:aCoder];
+  [self HLScene_encodeChildReferences:_childLongPressTargets forKey:@"childLongPressTargets" withCoder:aCoder];
   [self HLScene_encodeChildReferences:_childPanTargets forKey:@"childPanTargets" withCoder:aCoder];
+  [self HLScene_encodeChildReferences:_childPinchTargets forKey:@"childPinchTargets" withCoder:aCoder];
 
   [removedChildren enumerateKeysAndObjectsUsingBlock:^(id key, id object, BOOL *stop){
     [object addChild:key];
@@ -79,27 +85,35 @@ static BOOL HLSceneAssetsLoaded = NO;
 
   // noob: In fact, there is a more general problem here: The possibility of persistent
   // memory leaks caused by nodes removed from the node tree by the subclass (and
-  // dereferenced) but which the subclass forgot to unregister.  TODO: Detect such nodes
-  // automatically.  For now we can emit a warning if the node: 1) has no scene (and so
-  // won't be encoded by super), and 2) is only referenced by our sets.  But maybe we
-  // could use sets of weak pointers to advantage here, or do some other better automatic
-  // detection.
-
+  // dereferenced) but which the subclass forgot to unregister.
+  
   if (!childReferences) {
     return;
   }
 
-  NSSet *filteredChildReferences = [childReferences objectsPassingTest:^BOOL(id obj, BOOL *stop){
-    SKNode *node = (SKNode *)obj;
-    while (node) {
+  NSMutableSet *filteredChildReferences = [NSMutableSet set];
+  for (SKNode *node in childReferences) {
+    BOOL noCoding = NO;
+    SKNode *n = node;
+    while (n) {
       if ([self->_childNoCoding containsObject:node]) {
-        return NO;
+        noCoding = YES;
+        break;
       }
-      node = node.parent;
+      n = n.parent;
     }
-    return YES;
-  }];
+    if (!noCoding) {
+      [filteredChildReferences addObject:node];
+    }
+  }
 
+  // TODO: Can fix the memory leak problem.  For now we've got a warning hacked in there.
+  // Another idea is to use the equivalent of weak pointers to avoid encoding objects that
+  // only we reference.  However, even that isn't complete enough, since someone else might
+  // currently have a reference, but then choose not to encode the object.  I'm thinking the
+  // best idea is this: (temporarily?) encode the registration information on the node itself,
+  // and then do a one-time (or lazy-loading) scan of the entire node-tree at decode time to
+  // recreate our child sets.  Probably store it on the nodes itself using SKNode's userData.
   [filteredChildReferences enumerateObjectsUsingBlock:^(id obj, BOOL *stop){
     SKNode *node = (SKNode *)obj;
     if (!node.scene) {
@@ -114,15 +128,20 @@ static BOOL HLSceneAssetsLoaded = NO;
 {
   [super didMoveToView:view];
 
-  if ([_childTapTargets count] > 0) {
-    _tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(HLScene_handleGesture:)];
-    _tapRecognizer.delegate = self;
+  if (_tapRecognizer) {
     [view addGestureRecognizer:_tapRecognizer];
   }
-  if ([_childPanTargets count] > 0) {
-    _panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(HLScene_handleGesture:)];
-    _panRecognizer.delegate = self;
+  if (_doubleTapRecognizer) {
+    [view addGestureRecognizer:_doubleTapRecognizer];
+  }
+  if (_longPressRecognizer) {
+    [view addGestureRecognizer:_longPressRecognizer];
+  }
+  if (_panRecognizer) {
     [view addGestureRecognizer:_panRecognizer];
+  }
+  if (_pinchRecognizer) {
+    [view addGestureRecognizer:_pinchRecognizer];
   }
 }
 
@@ -132,11 +151,18 @@ static BOOL HLSceneAssetsLoaded = NO;
 
   if (_tapRecognizer) {
     [view removeGestureRecognizer:_tapRecognizer];
-    _tapRecognizer = nil;
+  }
+  if (_doubleTapRecognizer) {
+    [view removeGestureRecognizer:_doubleTapRecognizer];
+  }
+  if (_longPressRecognizer) {
+    [view removeGestureRecognizer:_longPressRecognizer];
   }
   if (_panRecognizer) {
     [view removeGestureRecognizer:_panRecognizer];
-    _panRecognizer = nil;
+  }
+  if (_pinchRecognizer) {
+    [view removeGestureRecognizer:_pinchRecognizer];
   }
 }
 
@@ -162,7 +188,84 @@ static BOOL HLSceneAssetsLoaded = NO;
 }
 
 #pragma mark -
-#pragma mark UIGestureRecognizerDelegate
+#pragma mark Shared Gesture Recognizers
+
+- (BOOL)needSharedTapGestureRecognizer
+{
+  if (_tapRecognizer) {
+    return NO;
+  }
+  _tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(HLScene_handleGesture:)];
+  _tapRecognizer.delegate = self;
+  UIView *view = self.view;
+  if (view) {
+    [view addGestureRecognizer:_tapRecognizer];
+  }
+  return YES;
+}
+
+- (BOOL)needSharedDoubleTapGestureRecognizer
+{
+  if (_doubleTapRecognizer) {
+    return NO;
+  }
+  _doubleTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(HLScene_handleGesture:)];
+  _doubleTapRecognizer.delegate = self;
+  _doubleTapRecognizer.numberOfTapsRequired = 2;
+  // noob: Requiring single-tap recognizer to fail can be very nice, since a double-tap
+  // will certainly be recognized as a single tap first.  But requiring it to fail slows
+  // down the single-tap recognizer more than seems appropriate; there must be a better
+  // way.
+  //[_tapRecognizer requireGestureRecognizerToFail:_doubleTapRecognizer];
+  UIView *view = self.view;
+  if (view) {
+    [view addGestureRecognizer:_doubleTapRecognizer];
+  }
+  return YES;
+}
+
+- (BOOL)needSharedLongPressGestureRecognizer
+{
+  if (_longPressRecognizer) {
+    return NO;
+  }
+  _longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(HLScene_handleGesture:)];
+  _longPressRecognizer.delegate = self;
+  UIView *view = self.view;
+  if (view) {
+    [view addGestureRecognizer:_longPressRecognizer];
+  }
+  return YES;
+}
+
+- (BOOL)needSharedPanGestureRecognizer
+{
+  if (_panRecognizer) {
+    return NO;
+  }
+  _panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(HLScene_handleGesture:)];
+  _panRecognizer.delegate = self;
+  _panRecognizer.maximumNumberOfTouches = 1;
+  UIView *view = self.view;
+  if (view) {
+    [view addGestureRecognizer:_panRecognizer];
+  }
+  return YES;
+}
+
+- (BOOL)needSharedPinchGestureRecognizer
+{
+  if (_pinchRecognizer) {
+    return NO;
+  }
+  _pinchRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(HLScene_handleGesture:)];
+  _pinchRecognizer.delegate = self;
+  UIView *view = self.view;
+  if (view) {
+    [view addGestureRecognizer:_pinchRecognizer];
+  }
+  return YES;
+}
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
 {
@@ -172,11 +275,7 @@ static BOOL HLSceneAssetsLoaded = NO;
   // make our gesture handler delegate private as a way to handle the issue, but on the
   // other hand, we might have subclasses which want to cooperate with our system by doing
   // some selective overriding.)
-  if (!_childTapTargets && !_childPanTargets) {
-    // TODO: Check this assertion during development; remove later.
-    if (_tapRecognizer || _panRecognizer) {
-      [NSException raise:@"HLSceneGestureRecognizerBadState" format:@"Gesture recognizer exists but no targets."];
-    }
+  if (!_childTapTargets && !_childDoubleTapTargets && !_childLongPressTargets && !_childPanTargets && !_childPinchTargets) {
     return YES;
   }
 
@@ -199,7 +298,10 @@ static BOOL HLSceneAssetsLoaded = NO;
     // the target.
 
     if ((_childTapTargets && [_childTapTargets containsObject:node])
-        || (_childPanTargets && [_childPanTargets containsObject:node])) {
+        || (_childDoubleTapTargets && [_childDoubleTapTargets containsObject:node])
+        || (_childLongPressTargets && [_childLongPressTargets containsObject:node])
+        || (_childPanTargets && [_childPanTargets containsObject:node])
+        || (_childPinchTargets && [_childPinchTargets containsObject:node])) {
       SKNode <HLGestureTarget> *target = (SKNode <HLGestureTarget> *)node;
       BOOL isInside = NO;
       if ([target addToGesture:gestureRecognizer firstTouch:touch isInside:&isInside]) {
@@ -262,15 +364,41 @@ static BOOL HLSceneAssetsLoaded = NO;
     if ([target addsToTapGestureRecognizer]) {
       if (!_childTapTargets) {
         _childTapTargets = [NSMutableSet setWithObject:target];
+        [self needSharedTapGestureRecognizer];
       } else {
         [_childTapTargets addObject:target];
+      }
+    }
+    if ([target addsToDoubleTapGestureRecognizer]) {
+      if (!_childDoubleTapTargets) {
+        _childDoubleTapTargets = [NSMutableSet setWithObject:target];
+        [self needSharedDoubleTapGestureRecognizer];
+      } else {
+        [_childDoubleTapTargets addObject:target];
+      }
+    }
+    if ([target addsToLongPressGestureRecognizer]) {
+      if (!_childLongPressTargets) {
+        _childLongPressTargets = [NSMutableSet setWithObject:target];
+        [self needSharedLongPressGestureRecognizer];
+      } else {
+        [_childLongPressTargets addObject:target];
       }
     }
     if ([target addsToPanGestureRecognizer]) {
       if (!_childPanTargets) {
         _childPanTargets = [NSMutableSet setWithObject:target];
+        [self needSharedPanGestureRecognizer];
       } else {
         [_childPanTargets addObject:target];
+      }
+    }
+    if ([target addsToPinchGestureRecognizer]) {
+      if (!_childPinchTargets) {
+        _childPinchTargets = [NSMutableSet setWithObject:target];
+        [self needSharedPinchGestureRecognizer];
+      } else {
+        [_childPinchTargets addObject:target];
       }
     }
   }
@@ -298,11 +426,28 @@ static BOOL HLSceneAssetsLoaded = NO;
       _childTapTargets = nil;
     }
   }
-
+  if (_childDoubleTapTargets) {
+    [_childDoubleTapTargets removeObject:node];
+    if ([_childDoubleTapTargets count] == 0) {
+      _childDoubleTapTargets = nil;
+    }
+  }
+  if (_childLongPressTargets) {
+    [_childLongPressTargets removeObject:node];
+    if ([_childLongPressTargets count] == 0) {
+      _childLongPressTargets = nil;
+    }
+  }
   if (_childPanTargets) {
     [_childPanTargets removeObject:node];
     if ([_childPanTargets count] == 0) {
       _childPanTargets = nil;
+    }
+  }
+  if (_childPinchTargets) {
+    [_childPinchTargets removeObject:node];
+    if ([_childPinchTargets count] == 0) {
+      _childPinchTargets = nil;
     }
   }
 }
@@ -344,6 +489,11 @@ static BOOL HLSceneAssetsLoaded = NO;
 #pragma mark -
 #pragma mark Modal Presentation
 
+- (void)presentModalNode:(SKNode *)node
+{
+  [self presentModalNode:node zPositionMin:0.0f zPositionMax:0.0f];
+}
+
 - (void)presentModalNode:(SKNode *)node zPositionMin:(CGFloat)zPositionMin zPositionMax:(CGFloat)zPositionMax
 {
   const CGFloat HLBackgroundFadeAlpha = 0.7f;
@@ -376,6 +526,11 @@ static BOOL HLSceneAssetsLoaded = NO;
   [_modalPresentationNode removeFromParent];
   [_modalPresentationNode removeAllChildren];
   _modalPresentationNode = nil;
+}
+
+- (BOOL)modalNodePresented
+{
+  return (_modalPresentationNode != nil);
 }
 
 @end

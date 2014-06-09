@@ -66,7 +66,6 @@
 // every target doing the same coordinates conversion over and over.
 //- (BOOL)addToGesture:(UIGestureRecognizer *)gestureRecognizer firstTouchSceneLocation:(CGPoint)sceneLocation isInside:(BOOL *)isInside;
 
-
 /**
  * Returns a boolean indicating interest in particular kinds of gesture recognizers.
  * These are used by the caller to initialize and configure itself.
@@ -77,19 +76,9 @@
  * gesture.
  */
 - (BOOL)addsToTapGestureRecognizer;
+- (BOOL)addsToDoubleTapGestureRecognizer;
+- (BOOL)addsToLongPressGestureRecognizer;
 - (BOOL)addsToPanGestureRecognizer;
-
-// Commented out: At one point I thought about providing a standard interface
-// for all targets.  But it turns out it's pretty easy for the target to
-// add its own selector to the gesture recognizer during claimGesture, and
-// a bit of a pain for the caller to do so.  At least, that's currently the
-// case, but I'm leaving this here as a concept in case it proves useful.
-//@optional
-//
-//- (void)handleTap:(UITapGestureRecognizer *)gestureRecognizer;
-//
-//- (void)handlePan:(UIPanGestureRecognizer *)gestureRecognizer;
-//
-//- (void)handleGesture:(UIGestureRecognizer *)gestureRecognizer;
+- (BOOL)addsToPinchGestureRecognizer;
 
 @end
