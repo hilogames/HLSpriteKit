@@ -64,6 +64,20 @@
   [self HL_layoutLabelNode];
 }
 
+- (id)copyWithZone:(NSZone *)zone
+{
+  HLMessageNode *copy = [super copyWithZone:zone];
+  for (SKNode *child in copy.children) {
+    if ([child isKindOfClass:[SKLabelNode class]]) {
+      copy->_labelNode = (SKLabelNode *)child;
+    }
+  }
+  copy->_verticalAlignmentMode = _verticalAlignmentMode;
+  copy->_messageAnimationDuration = _messageAnimationDuration;
+  copy->_messageLingerDuration = _messageLingerDuration;
+  return nil;
+}
+
 - (void)setVerticalAlignmentMode:(HLLabelNodeVerticalAlignmentMode)verticalAlignmentMode
 {
   _verticalAlignmentMode = verticalAlignmentMode;

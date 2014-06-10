@@ -78,6 +78,12 @@
   }
 }
 
+- (id)copyWithZone:(NSZone *)zone
+{
+  [NSException raise:@"HLCopyingNotImplemented" format:@"Copying not implemented for this descendant of an NSCopying parent."];
+  return nil;
+}
+
 - (void)setMenu:(HLMenu *)menu animation:(HLMenuNodeAnimation)animation
 {
   _menu = menu;

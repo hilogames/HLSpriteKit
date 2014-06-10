@@ -103,18 +103,16 @@
 
 - (id)copyWithZone:(NSZone *)zone
 {
-  HLLabelButtonNode *copy = [[[self class] allocWithZone:zone] init];
-  if (_backgroundNode) {
-    copy->_backgroundNode = [_backgroundNode copyWithZone:zone];
-    [copy addChild:copy->_backgroundNode];
-  } else {
-    copy->_backgroundNode = nil;
-  }
-  if (_labelNode) {
-    copy->_labelNode = [_labelNode copyWithZone:zone];
-    [copy addChild:copy->_labelNode];
-  } else {
-    copy->_labelNode = nil;
+  HLLabelButtonNode *copy = [super copyWithZone:zone];
+  // noob: SKNode copy deep-copies all children; need to hook up our
+  // pointers, though.  (I guess this is why finding nodes by name is
+  // recommended.)
+  for (SKNode *child in copy.children) {
+    if ([child isKindOfClass:[SKSpriteNode class]]) {
+      copy->_backgroundNode = (SKSpriteNode *)child;
+    } else if ([child isKindOfClass:[SKLabelNode class]]) {
+      copy->_labelNode = (SKLabelNode *)child;
+    }
   }
   copy->_automaticHeight = _automaticHeight;
   copy->_automaticWidth = _automaticWidth;

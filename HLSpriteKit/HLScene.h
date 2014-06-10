@@ -94,23 +94,30 @@ FOUNDATION_EXPORT NSString * const HLSceneChildGestureTarget;
  *
  * note: One problem with the current design, for the record: Each node gets registered as
  * a pointer in an NSSet for its feature.  If many nodes are registered, then the memory
- * use will be significant.  Currently, the options do not lend themselves to widespread
- * use in the scene.  One option to keep an eye on is gesture target registration:
- * Probably HLScene's gesture recognition system is not suited to use for lots and lots of
- * targets.
+ * use will be significant.  That said, the options do not lend themselves to widespread
+ * use on lots and lots of nodes in the scene.  One option to keep an eye on is gesture
+ * target registration: Probably HLScene's gesture recognition system is not suited to use
+ * for lots and lots of targets.
  *
  * note: An alternate design would be to put requests for scene behavior in the nodes
  * themselves (perhaps by having them conform to protocols, or perhaps by having them
  * subclass a HLNode class which can track desired options).  Then, children in the scene
  * don't need to be added specially; they can be discovered during normal adding with
- * addChild:, or else discovered lazily (by scanning the node tree) when needed.  (This
- * would have minor benefits during encoding and decoding, too, since we wouldn't have to
- * be so careful about the pointers we are encoding; see implementation notes for
- * details.)  The main drawback seems to be an invisible performance impact (no matter how
- * small) for the HLScene subclass.  With explicit registration, the subclasser can be
- * relatively confident that nothing is going on that wasn't requested.  Also with
- * explicit registration, the caller is able to override node information, for example
- * not registering a child for gesture recognition even though it conforms to HLGestureTarget.
+ * addChild:, or else discovered lazily (by scanning the node tree) when needed.  The main
+ * drawback seems to be an invisible performance impact (no matter how small) for the HLScene
+ * subclass.  With explicit registration, the subclasser can be relatively confident that
+ * nothing is going on that wasn't requested.  Also with explicit registration, the caller
+ * is able to override node information, for example not registering a child for gesture
+ * recognition even though it conforms to HLGestureTarget.
+ *
+ * note: Okay, one more note: I waffle a bit on gesture targets.  They are easily discovered
+ * implicitly (by their conformance to HLGestureTarget); the use case for adding an
+ * HLGestureTarget to a scene but not wanting it to receive gestures is small (and could
+ * be addressed by registering a node to *not* be a target if needed); and it's somewhat
+ * surprising when you add some kind of interactive node to a scene and it doesn't
+ * interact.  But, on the other hand: It's really nice having the HLScene manage the
+ * shared gesture recognizer objects during registration (by asking the target what
+ * recognizers it needs).  So, waffle.
  */
 - (void)registerDescendant:(SKNode *)node withOptions:(NSSet *)options;
 
@@ -124,7 +131,7 @@ FOUNDATION_EXPORT NSString * const HLSceneChildGestureTarget;
 
 /**
  * Current interface is protected and unsafe.  It will evolve into something safer,
- * and this documentation will certainly be updated.
+ * and this documentation will certainly be updated.  Certainly.
  *
  * HLScene implements a gesture recognition system that can forward gestures to
  * HLGestureTarget nodes registered the appropriate option (in registerDescendant:).  The

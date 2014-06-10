@@ -15,6 +15,12 @@ NSString * const HLSceneChildNoCoding = @"HLSceneChildNoCoding";
 NSString * const HLSceneChildResizeWithScene = @"HLSceneChildResizeWithScene";
 NSString * const HLSceneChildGestureTarget = @"HLSceneChildGestureTarget";
 
+static NSString * const HLSceneChildUserDataKey = @"HLScene";
+
+static NSUInteger HLSceneChildBitNoCoding = (1 << 0);
+static NSUInteger HLSceneChildBitResizeWithScene = (1 << 1);
+static NSUInteger HLSceneChildBitGestureTarget = (1 << 2);
+
 static BOOL HLSceneAssetsLoaded = NO;
 
 @implementation HLScene
@@ -36,92 +42,83 @@ static BOOL HLSceneAssetsLoaded = NO;
 {
   self = [super initWithCoder:aDecoder];
   if (self) {
-    // note: None of the no-coding children were encoded; nothing to track now.  Subclass
-    // or owner will have to recreate them.
-    _childNoCoding = nil;
-    _childResizeWithScene = [aDecoder decodeObjectForKey:@"childResizeWithScene"];
-    _childTapTargets = [aDecoder decodeObjectForKey:@"childTapTargets"];
-    _childDoubleTapTargets = [aDecoder decodeObjectForKey:@"childDoubleTapTargets"];
-    _childLongPressTargets = [aDecoder decodeObjectForKey:@"childLongPressTargets"];
-    _childPanTargets = [aDecoder decodeObjectForKey:@"childPanTargets"];
-    _childPinchTargets = [aDecoder decodeObjectForKey:@"childPinchTargets"];
+    NSMutableArray *childrenArrayQueue = [NSMutableArray arrayWithObject:self.children];
+    NSUInteger a = 0;
+    while (a < [childrenArrayQueue count]) {
+      NSArray *childrenArray = [childrenArrayQueue objectAtIndex:a];
+      ++a;
+      for (SKNode *node in childrenArray) {
+        if ([node.children count] > 0) {
+          [childrenArrayQueue addObject:node.children];
+        }
+        NSNumber *optionBitsNumber = [node.userData objectForKey:HLSceneChildUserDataKey];
+        if (!optionBitsNumber) {
+          continue;
+        }
+        NSUInteger optionBits = [optionBitsNumber unsignedIntegerValue];
+        if ((optionBits & HLSceneChildBitNoCoding) != 0) {
+          if (!_childNoCoding) {
+            _childNoCoding = [NSMutableSet setWithObject:node];
+          } else {
+            [_childNoCoding addObject:node];
+          }
+        }
+        if ((optionBits & HLSceneChildBitResizeWithScene) != 0) {
+          if (!_childResizeWithScene) {
+            _childResizeWithScene = [NSMutableSet setWithObject:node];
+          } else {
+            [_childResizeWithScene addObject:node];
+          }
+        }
+        if ((optionBits & HLSceneChildBitGestureTarget) != 0) {
+          [self HLScene_addTargetToGestureSets:(SKNode <HLGestureTarget> *)node];
+        }
+      }
+    }
   }
   return self;
 }
 
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
+  // note: All _child* registration references are re-created from node information
+  // during initWithCoder, rather than explicitly encoded as references.  This is
+  // good because it's otherwise quite hard to figure out whether a certain node
+  // will be encoded or not -- and if the node won't be encoded, then we don't
+  // want to encode our reference.
+  
+  // note: The shortcoming is this, though: If a node is registered to the scene
+  // but then encoded separately from the scene's node hierarchy, it will have
+  // the lingering userData flags attached to it, but this object won't have it
+  // in its _child* lists.  Which may cause hijinks.  Let us hope in that case
+  // the caller sees fit to call addChild:withOptions: for that node again,
+  // when it is re-added.  It seems sensible.  (Otherwise we could check during
+  // addNode:, but that again means going down the path of implicit registration,
+  // which would involve a recursive check of all added nodes, which doesn't seem
+  // lightweight or unintrusive.)
+  
   NSMutableDictionary *removedChildren = [NSMutableDictionary dictionary];
   if (_childNoCoding) {
     for (SKNode *child in _childNoCoding) {
       if (child.parent) {
-        [removedChildren setObject:child.parent forKey:child];
+        [removedChildren setObject:child.parent forKey:[NSValue valueWithPointer:(__bridge const void *)(child)]];
         [child removeFromParent];
       }
     }
   }
 
   [super encodeWithCoder:aCoder];
-
-  [self HLScene_encodeChildReferences:_childResizeWithScene forKey:@"childResizeWithScene" withCoder:aCoder];
-  [self HLScene_encodeChildReferences:_childTapTargets forKey:@"childTapTargets" withCoder:aCoder];
-  [self HLScene_encodeChildReferences:_childDoubleTapTargets forKey:@"childDoubleTapTargets" withCoder:aCoder];
-  [self HLScene_encodeChildReferences:_childLongPressTargets forKey:@"childLongPressTargets" withCoder:aCoder];
-  [self HLScene_encodeChildReferences:_childPanTargets forKey:@"childPanTargets" withCoder:aCoder];
-  [self HLScene_encodeChildReferences:_childPinchTargets forKey:@"childPinchTargets" withCoder:aCoder];
-
+  
   [removedChildren enumerateKeysAndObjectsUsingBlock:^(id key, id object, BOOL *stop){
-    [object addChild:key];
+    SKNode *child = [key pointerValue];
+    [object addChild:child];
   }];
 }
 
-- (void)HLScene_encodeChildReferences:(NSSet *)childReferences forKey:(NSString *)key withCoder:(NSCoder *)aCoder
+- (id)copyWithZone:(NSZone *)zone
 {
-  // note: No-coding children should not be encoded by super, obviously.  But also, we
-  // can and should refuse to encode them or their children even when referenced by other
-  // object variables: Whoever unencodes this object is going to need to recreate the
-  // no-coding children, and when they do, they will be creating new objects which will
-  // have to be re-registered with the HLScene.
-
-  // noob: In fact, there is a more general problem here: The possibility of persistent
-  // memory leaks caused by nodes removed from the node tree by the subclass (and
-  // dereferenced) but which the subclass forgot to unregister.
-  
-  if (!childReferences) {
-    return;
-  }
-
-  NSMutableSet *filteredChildReferences = [NSMutableSet set];
-  for (SKNode *node in childReferences) {
-    BOOL noCoding = NO;
-    SKNode *n = node;
-    while (n) {
-      if ([self->_childNoCoding containsObject:node]) {
-        noCoding = YES;
-        break;
-      }
-      n = n.parent;
-    }
-    if (!noCoding) {
-      [filteredChildReferences addObject:node];
-    }
-  }
-
-  // TODO: Can fix the memory leak problem.  For now we've got a warning hacked in there.
-  // Another idea is to use the equivalent of weak pointers to avoid encoding objects that
-  // only we reference.  However, even that isn't complete enough, since someone else might
-  // currently have a reference, but then choose not to encode the object.  I'm thinking the
-  // best idea is this: (temporarily?) encode the registration information on the node itself,
-  // and then do a one-time (or lazy-loading) scan of the entire node-tree at decode time to
-  // recreate our child sets.  Probably store it on the nodes itself using SKNode's userData.
-  [filteredChildReferences enumerateObjectsUsingBlock:^(id obj, BOOL *stop){
-    SKNode *node = (SKNode *)obj;
-    if (!node.scene) {
-      HLError(HLLevelWarning, [NSString stringWithFormat:@"HLScene encoding reference to child node with no scene: %@", node]);
-    }
-  }];
-
-  [aCoder encodeObject:filteredChildReferences forKey:key];
+  [NSException raise:@"HLCopyingNotImplemented" format:@"Copying not implemented for this descendant of an NSCopying parent."];
+  return nil;
 }
 
 - (void)didMoveToView:(SKView *)view
@@ -297,11 +294,16 @@ static BOOL HLSceneAssetsLoaded = NO;
     // target usually wants to block gestures of all types if they are "inside"
     // the target.
 
-    if ((_childTapTargets && [_childTapTargets containsObject:node])
-        || (_childDoubleTapTargets && [_childDoubleTapTargets containsObject:node])
-        || (_childLongPressTargets && [_childLongPressTargets containsObject:node])
-        || (_childPanTargets && [_childPanTargets containsObject:node])
-        || (_childPinchTargets && [_childPinchTargets containsObject:node])) {
+    // Commented out: Assume that checking userData is faster.  But keep this here
+    // just in case we're ever looking for an alternative.
+    //    if ((_childTapTargets && [_childTapTargets containsObject:node])
+    //        || (_childDoubleTapTargets && [_childDoubleTapTargets containsObject:node])
+    //        || (_childLongPressTargets && [_childLongPressTargets containsObject:node])
+    //        || (_childPanTargets && [_childPanTargets containsObject:node])
+    //        || (_childPinchTargets && [_childPinchTargets containsObject:node])) {
+
+    NSNumber *optionBits = [node.userData objectForKey:HLSceneChildUserDataKey];
+    if (optionBits && ([optionBits unsignedIntegerValue] & HLSceneChildBitGestureTarget) != 0) {
       SKNode <HLGestureTarget> *target = (SKNode <HLGestureTarget> *)node;
       BOOL isInside = NO;
       if ([target addToGesture:gestureRecognizer firstTouch:touch isInside:&isInside]) {
@@ -337,7 +339,14 @@ static BOOL HLSceneAssetsLoaded = NO;
 
 - (void)registerDescendant:(SKNode *)node withOptions:(NSSet *)options
 {
+  NSUInteger optionBits = 0;
+  NSNumber *optionBitsNumber = [node.userData objectForKey:HLSceneChildUserDataKey];
+  if (optionBitsNumber) {
+    optionBits = [optionBitsNumber unsignedIntegerValue];
+  }
+
   if ([options containsObject:HLSceneChildNoCoding]) {
+    optionBits |= HLSceneChildBitNoCoding;
     if (!_childNoCoding) {
       _childNoCoding = [NSMutableSet setWithObject:node];
     } else {
@@ -349,6 +358,7 @@ static BOOL HLSceneAssetsLoaded = NO;
     if (![node respondsToSelector:@selector(setSize:)]) {
       [NSException raise:@"HLSceneBadRegistration" format:@"Node registered for 'HLSceneChildResizeWithScene' does not support setSize: selector."];
     }
+    optionBits |= HLSceneChildBitResizeWithScene;
     if (!_childResizeWithScene) {
       _childResizeWithScene = [NSMutableSet setWithObject:node];
     } else {
@@ -360,46 +370,57 @@ static BOOL HLSceneAssetsLoaded = NO;
     if (![node conformsToProtocol:@protocol(HLGestureTarget)]) {
       [NSException raise:@"HLSceneBadRegistration" format:@"Node registered for 'HLSceneChildGestureTarget' does not conform to HLGestureTarget protocol."];
     }
-    SKNode <HLGestureTarget> *target = (SKNode <HLGestureTarget> *)node;
-    if ([target addsToTapGestureRecognizer]) {
-      if (!_childTapTargets) {
-        _childTapTargets = [NSMutableSet setWithObject:target];
-        [self needSharedTapGestureRecognizer];
-      } else {
-        [_childTapTargets addObject:target];
-      }
+    optionBits |= HLSceneChildBitGestureTarget;
+    [self HLScene_addTargetToGestureSets:(SKNode <HLGestureTarget> *)node];
+  }
+
+  if (!node.userData) {
+    node.userData = [NSMutableDictionary dictionaryWithObject:[NSNumber numberWithUnsignedInteger:optionBits] forKey:HLSceneChildUserDataKey];
+  } else {
+    [node.userData setObject:[NSNumber numberWithUnsignedInteger:optionBits] forKey:HLSceneChildUserDataKey];
+  }
+}
+
+- (void)HLScene_addTargetToGestureSets:(SKNode <HLGestureTarget> *)target
+{
+  if ([target addsToTapGestureRecognizer]) {
+    if (!_childTapTargets) {
+      _childTapTargets = [NSMutableSet setWithObject:target];
+      [self needSharedTapGestureRecognizer];
+    } else {
+      [_childTapTargets addObject:target];
     }
-    if ([target addsToDoubleTapGestureRecognizer]) {
-      if (!_childDoubleTapTargets) {
-        _childDoubleTapTargets = [NSMutableSet setWithObject:target];
-        [self needSharedDoubleTapGestureRecognizer];
-      } else {
-        [_childDoubleTapTargets addObject:target];
-      }
+  }
+  if ([target addsToDoubleTapGestureRecognizer]) {
+    if (!_childDoubleTapTargets) {
+      _childDoubleTapTargets = [NSMutableSet setWithObject:target];
+      [self needSharedDoubleTapGestureRecognizer];
+    } else {
+      [_childDoubleTapTargets addObject:target];
     }
-    if ([target addsToLongPressGestureRecognizer]) {
-      if (!_childLongPressTargets) {
-        _childLongPressTargets = [NSMutableSet setWithObject:target];
-        [self needSharedLongPressGestureRecognizer];
-      } else {
-        [_childLongPressTargets addObject:target];
-      }
+  }
+  if ([target addsToLongPressGestureRecognizer]) {
+    if (!_childLongPressTargets) {
+      _childLongPressTargets = [NSMutableSet setWithObject:target];
+      [self needSharedLongPressGestureRecognizer];
+    } else {
+      [_childLongPressTargets addObject:target];
     }
-    if ([target addsToPanGestureRecognizer]) {
-      if (!_childPanTargets) {
-        _childPanTargets = [NSMutableSet setWithObject:target];
-        [self needSharedPanGestureRecognizer];
-      } else {
-        [_childPanTargets addObject:target];
-      }
+  }
+  if ([target addsToPanGestureRecognizer]) {
+    if (!_childPanTargets) {
+      _childPanTargets = [NSMutableSet setWithObject:target];
+      [self needSharedPanGestureRecognizer];
+    } else {
+      [_childPanTargets addObject:target];
     }
-    if ([target addsToPinchGestureRecognizer]) {
-      if (!_childPinchTargets) {
-        _childPinchTargets = [NSMutableSet setWithObject:target];
-        [self needSharedPinchGestureRecognizer];
-      } else {
-        [_childPinchTargets addObject:target];
-      }
+  }
+  if ([target addsToPinchGestureRecognizer]) {
+    if (!_childPinchTargets) {
+      _childPinchTargets = [NSMutableSet setWithObject:target];
+      [self needSharedPinchGestureRecognizer];
+    } else {
+      [_childPinchTargets addObject:target];
     }
   }
 }
@@ -450,6 +471,8 @@ static BOOL HLSceneAssetsLoaded = NO;
       _childPinchTargets = nil;
     }
   }
+  
+  [node.userData removeObjectForKey:HLSceneChildUserDataKey];
 }
 
 #pragma mark -
