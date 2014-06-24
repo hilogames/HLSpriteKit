@@ -123,14 +123,25 @@ static UIColor *HLToolbarColorButtonHighlighted;
   // result from any fractional pixel sizes when scaling internally.  Most obvious: As the toolbar
   // increases in size by one full pixel, the extra row of pixels will appear to be allocated to
   // either the top border, or the bottom border, or the tools; the border sizes will look off-by-one.
-  // A guess: Try integer rounding on the natural tool size, because the rotation code tends to leave size
-  // values looking like 161.9999999985.
+  // So, clearly, if the owner is scaling us then our only solution would be to keep pad/border
+  // sizes constant regardless of scale.  Better, but perhaps mathy, would be to solve the tool scaling
+  // so that the pad/border sizes are always integer and symmetrical.  Or can we blame the resampling/aliasing
+  // of sprite nodes during scaling -- shouldn't the darker border appear to blend better with it children,
+  // even if it jumps from 2 pixels wide down to 1 pixel?  Okay, so then we're left with problems that
+  // might be our own fault -- perhaps it's because we're calculating fractional pixel widths for our
+  // components, and instead we should always calculate integer pixel widths.  (Also, that way we could
+  // choose where to remove a row of pixels, and/or only resize in increments so that all components
+  // lose a line of pixels at the same time.)  One note: The rotation code leaves size values with
+  // floating point error; maybe that's the problem.  I guess overall I can't decide if this is a simple
+  // problem or a complicated one; need to look further.
   //
-  // TODO: It might be the same problem causing e.g. segment tools to look bad when scaled down
-  // less than 1.0 to fit the toolbar, but on the other hand, that might just be the "nearest"
-  // filtering mode of the texture as specified in the texture store.  However, I tried changing
-  // it to "linear" and it didn't antialias as far as I could tell, so maybe there's something else
-  // going on, as in the first paragraph above.
+  // TODO: There is also some ugly scaling going on for the segment tools because they are usually
+  // larger than the toolbar size, but their texture filtering mode is usually set to "nearest"
+  // (for intentionally-pixellated upscaling).  But that's different.  As a tangent, though, I seem
+  // to get strange behavior when I mess with this: For instance, if I copy the texture from the
+  // texture store and force it here to use linear filtering, then it looks nice in the toolbar...
+  // but then all my segment textures dragged into the track seem to take on the same filtering.
+  // And testing the value of texture.filteringMode gives unexpected results.
 
   // Calculate tool scale.
   //

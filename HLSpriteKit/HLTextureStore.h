@@ -32,8 +32,8 @@
 - (UIImage *)imageForKey:(NSString *)key;
 
 /**
- * Sets an already-loaded texture and image in the store.  Throws an exception if the
- * texture cannot be created.  Returns the texture by reference for (optional) configuration.
+ * Sets a texture and image in the store using an already-loaded image.  Throws an exception if
+ * the texture cannot be created.  Returns the texture by reference for (optional) configuration.
  */
 - (SKTexture *)setTextureWithImage:(UIImage *)image forKey:(NSString *)key filteringMode:(SKTextureFilteringMode)filteringMode;
 
