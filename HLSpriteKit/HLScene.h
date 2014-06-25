@@ -88,9 +88,8 @@ FOUNDATION_EXPORT NSString * const HLSceneChildGestureTarget;
  * impact.  Some memory overhead is to be expected, both for the class and for registered
  * nodes; nodes can be unregistered by unregisterDescendant:.
  *
- * Failure to unregister nodes often has little functional impact, but it might cause
- * memory leaks.  Worse, the memory leaks might be persistent, since references to
- * registered nodes are often encoded along with the HLScene.
+ * Failure to unregister nodes often has little functional impact, but it will retain
+ * references unnecessarily.
  *
  * note: One problem with the current design, for the record: Each node gets registered as
  * a pointer in an NSSet for its feature.  If many nodes are registered, then the memory
