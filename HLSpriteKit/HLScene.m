@@ -209,11 +209,6 @@ static BOOL HLSceneAssetsLoaded = NO;
   _doubleTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(HLScene_handleGesture:)];
   _doubleTapRecognizer.delegate = self;
   _doubleTapRecognizer.numberOfTapsRequired = 2;
-  // noob: Requiring single-tap recognizer to fail can be very nice, since a double-tap
-  // will certainly be recognized as a single tap first.  But requiring it to fail slows
-  // down the single-tap recognizer more than seems appropriate; there must be a better
-  // way.
-  //[_tapRecognizer requireGestureRecognizerToFail:_doubleTapRecognizer];
   UIView *view = self.view;
   if (view) {
     [view addGestureRecognizer:_doubleTapRecognizer];
