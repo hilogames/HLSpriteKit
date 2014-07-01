@@ -10,47 +10,55 @@
 
 @implementation HLMessageNode
 {
+  SKSpriteNode *_backgroundNode;
   SKLabelNode *_labelNode;
 }
 
 - (id)initWithColor:(UIColor *)color size:(CGSize)size
 {
-  self = [super initWithColor:color size:size];
+  self = [super init];
   if (self) {
-    [self HL_messageNodeInitCommon];
+    SKSpriteNode *backgroundNode = [[SKSpriteNode alloc] initWithColor:color size:size];
+    [self HL_messageNodeInitCommon:backgroundNode];
   }
   return self;
 }
 
 - (id)initWithImageNamed:(NSString *)name
 {
-  self = [super initWithImageNamed:name];
+  self = [super init];
   if (self) {
-    [self HL_messageNodeInitCommon];
+    SKSpriteNode *backgroundNode = [[SKSpriteNode alloc] initWithImageNamed:name];
+    [self HL_messageNodeInitCommon:backgroundNode];
   }
   return self;
 }
 
 - (id)initWithTexture:(SKTexture *)texture
 {
-  self = [super initWithTexture:texture];
+  self = [super init];
   if (self) {
-    [self HL_messageNodeInitCommon];
+    SKSpriteNode *backgroundNode = [[SKSpriteNode alloc] initWithTexture:texture];
+    [self HL_messageNodeInitCommon:backgroundNode];
   }
   return self;
 }
 
 - (id)initWithTexture:(SKTexture *)texture color:(UIColor *)color size:(CGSize)size
 {
-  self = [super initWithTexture:texture color:color size:size];
+  self = [super init];
   if (self) {
-    [self HL_messageNodeInitCommon];
+    SKSpriteNode *backgroundNode = [[SKSpriteNode alloc] initWithTexture:texture color:color size:size];
+    [self HL_messageNodeInitCommon:backgroundNode];
   }
   return self;
 }
 
-- (void)HL_messageNodeInitCommon
+- (void)HL_messageNodeInitCommon:(SKSpriteNode *)backgroundNode
 {
+  _backgroundNode = backgroundNode;
+  [self addChild:_backgroundNode];
+
   _verticalAlignmentMode = HLLabelNodeVerticalAlignFont;
 
   _messageAnimationDuration = 0.1;
@@ -59,8 +67,8 @@
   _labelNode = [SKLabelNode labelNodeWithFontNamed:@"Courier"];
   _labelNode.fontSize = 14.0f;
   _labelNode.fontColor = [UIColor whiteColor];
-  [self addChild:_labelNode];
-
+  [_backgroundNode addChild:_labelNode];
+  
   [self HL_layoutLabelNode];
 }
 
@@ -68,14 +76,29 @@
 {
   HLMessageNode *copy = [super copyWithZone:zone];
   for (SKNode *child in copy.children) {
-    if ([child isKindOfClass:[SKLabelNode class]]) {
-      copy->_labelNode = (SKLabelNode *)child;
+    if ([child isKindOfClass:[SKSpriteNode class]]) {
+      copy->_backgroundNode = (SKSpriteNode *)child;
+      for (SKNode *childChild in child.children) {
+        if ([childChild isKindOfClass:[SKLabelNode class]]) {
+          copy->_labelNode = (SKLabelNode *)childChild;
+        }
+      }
     }
   }
   copy->_verticalAlignmentMode = _verticalAlignmentMode;
   copy->_messageAnimationDuration = _messageAnimationDuration;
   copy->_messageLingerDuration = _messageLingerDuration;
   return nil;
+}
+
+- (CGSize)size
+{
+  return _backgroundNode.size;
+}
+
+- (void)setSize:(CGSize)size
+{
+  _backgroundNode.size = size;
 }
 
 - (void)setVerticalAlignmentMode:(HLLabelNodeVerticalAlignmentMode)verticalAlignmentMode
@@ -119,25 +142,29 @@
 - (void)showMessage:(NSString *)message parent:(SKNode *)parent
 {
   _labelNode.text = message;
-    
+
   if (!self.parent || self.parent != parent) {
     [parent addChild:self];
-    CGPoint messageNodePosition = self.position;
-    messageNodePosition.x = self.size.width;
-    self.position = messageNodePosition;
+    _backgroundNode.position = CGPointMake(_backgroundNode.size.width, 0.0f);
     SKAction *slideIn = [SKAction moveToX:0.0f duration:_messageAnimationDuration];
     SKAction *wait = [SKAction waitForDuration:_messageLingerDuration];
-    SKAction *slideOut = [SKAction moveToX:-self.size.width duration:_messageAnimationDuration];
-    SKAction *remove = [SKAction removeFromParent];
+    SKAction *slideOut = [SKAction moveToX:-_backgroundNode.size.width duration:_messageAnimationDuration];
+    SKAction *remove = [SKAction runBlock:^{
+      [self removeFromParent];
+    }];
     SKAction *show = [SKAction sequence:@[slideIn, wait, slideOut, remove ]];
-    [self runAction:show withKey:@"show"];
+    [_backgroundNode runAction:show withKey:@"show"];
   } else {
-    [self removeActionForKey:@"show"];
+    // note: Remove animation and reset position to home (in case the animation was in the middle of running).
+    [_backgroundNode removeActionForKey:@"show"];
+    _backgroundNode.position = CGPointZero;
     SKAction *wait = [SKAction waitForDuration:_messageLingerDuration];
-    SKAction *slideOut = [SKAction moveToX:-self.size.width duration:_messageAnimationDuration];
-    SKAction *remove = [SKAction removeFromParent];
+    SKAction *slideOut = [SKAction moveToX:-_backgroundNode.size.width duration:_messageAnimationDuration];
+    SKAction *remove = [SKAction runBlock:^{
+      [self removeFromParent];
+    }];
     SKAction *show = [SKAction sequence:@[ wait, slideOut, remove ]];
-    [self runAction:show withKey:@"show"];
+    [_backgroundNode runAction:show withKey:@"show"];
   }
 }
 
@@ -153,7 +180,7 @@
 {
   SKLabelVerticalAlignmentMode skVerticalAlignmentMode;
   CGFloat alignedYPosition;
-  [_labelNode getAlignmentInNode:self
+  [_labelNode getAlignmentInNode:_backgroundNode
       forHLVerticalAlignmentMode:_verticalAlignmentMode
          skVerticalAlignmentMode:&skVerticalAlignmentMode
                      labelHeight:nil

@@ -10,7 +10,9 @@
 
 #import "SKLabelNode+HLLabelNodeAdditions.h"
 
-@interface HLMessageNode : SKSpriteNode
+@interface HLMessageNode : SKNode
+
+@property (nonatomic, assign) CGSize size;
 
 @property (nonatomic, assign) HLLabelNodeVerticalAlignmentMode verticalAlignmentMode;
 
@@ -23,6 +25,14 @@
 @property (nonatomic, assign) CGFloat fontSize;
 
 @property (nonatomic, strong) SKColor *fontColor;
+
+- (id)initWithColor:(UIColor *)color size:(CGSize)size;
+
+- (id)initWithImageNamed:(NSString *)name;
+
+- (id)initWithTexture:(SKTexture *)texture;
+
+- (id)initWithTexture:(SKTexture *)texture color:(UIColor *)color size:(CGSize)size;
 
 - (void)showMessage:(NSString *)message parent:(SKNode *)parent;
 
