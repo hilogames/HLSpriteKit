@@ -371,6 +371,16 @@ static UIColor *HLToolbarColorButtonHighlighted;
   }
 }
 
+- (BOOL)enabledForTool:(NSString *)key
+{
+  for (SKSpriteNode *toolButtonNode in _toolButtonNodes) {
+    if ([toolButtonNode.name isEqualToString:key]) {
+      return (toolButtonNode.alpha > 0.5f);
+    }
+  }
+  return NO;
+}
+
 - (void)showWithOrigin:(CGPoint)origin finalPosition:(CGPoint)finalPosition fullScale:(CGFloat)fullScale animated:(BOOL)animated
 {
   // noob: I'm encapsulating this animation within the toolbar, since the toolbar knows cool ways to make itself

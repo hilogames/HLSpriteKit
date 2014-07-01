@@ -79,6 +79,8 @@ typedef enum HLToolbarNodeAnimation {
 
 - (void)setEnabled:(BOOL)enabled forTool:(NSString *)key;
 
+- (BOOL)enabledForTool:(NSString *)key;
+
 - (void)showWithOrigin:(CGPoint)origin finalPosition:(CGPoint)finalPosition fullScale:(CGFloat)fullScale animated:(BOOL)animated;
 
 - (void)hideAnimated:(BOOL)animated;
