@@ -11,6 +11,7 @@
 		CB2EB30F193E603C00CD3924 /* SKLabelNode+HLLabelNodeAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = CB2EB30D193E603C00CD3924 /* SKLabelNode+HLLabelNodeAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CB2EB310193E603C00CD3924 /* SKLabelNode+HLLabelNodeAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = CB2EB30E193E603C00CD3924 /* SKLabelNode+HLLabelNodeAdditions.m */; };
 		CB4BE95519421254001C9E79 /* HLError.h in Headers */ = {isa = PBXBuildFile; fileRef = CB4BE95319421254001C9E79 /* HLError.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CB61C289196F6EC2002ED23F /* HLGestureTarget.m in Sources */ = {isa = PBXBuildFile; fileRef = CB61C287196F6EC2002ED23F /* HLGestureTarget.m */; };
 		CB63B0B11926AB6300091907 /* HLToolbarNode.h in Headers */ = {isa = PBXBuildFile; fileRef = CB63B0AF1926AB6300091907 /* HLToolbarNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CB63B0B21926AB6300091907 /* HLToolbarNode.m in Sources */ = {isa = PBXBuildFile; fileRef = CB63B0B01926AB6300091907 /* HLToolbarNode.m */; };
 		CB6872E619258F37008415E1 /* HLMenuNode.m in Sources */ = {isa = PBXBuildFile; fileRef = CB6872E419258F37008415E1 /* HLMenuNode.m */; };
@@ -63,6 +64,7 @@
 		CB2EB30D193E603C00CD3924 /* SKLabelNode+HLLabelNodeAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SKLabelNode+HLLabelNodeAdditions.h"; sourceTree = "<group>"; };
 		CB2EB30E193E603C00CD3924 /* SKLabelNode+HLLabelNodeAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SKLabelNode+HLLabelNodeAdditions.m"; sourceTree = "<group>"; };
 		CB4BE95319421254001C9E79 /* HLError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLError.h; sourceTree = "<group>"; };
+		CB61C287196F6EC2002ED23F /* HLGestureTarget.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLGestureTarget.m; sourceTree = "<group>"; };
 		CB63B0AF1926AB6300091907 /* HLToolbarNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLToolbarNode.h; sourceTree = "<group>"; };
 		CB63B0B01926AB6300091907 /* HLToolbarNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLToolbarNode.m; sourceTree = "<group>"; };
 		CB6872E319258F37008415E1 /* HLMenuNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLMenuNode.h; sourceTree = "<group>"; };
@@ -151,6 +153,7 @@
 				CB4BE95319421254001C9E79 /* HLError.h */,
 				CB79D705192C2A900014E267 /* HLEmitterStore.m */,
 				CB26105C1934E4E40095856E /* HLGestureTarget.h */,
+				CB61C287196F6EC2002ED23F /* HLGestureTarget.m */,
 				CBD9E929191426D0002533DF /* HLLabelButtonNode.h */,
 				CBD9E92A191426D0002533DF /* HLLabelButtonNode.m */,
 				CB6872E319258F37008415E1 /* HLMenuNode.h */,
@@ -308,6 +311,7 @@
 				CBA8988B1926BFE500849215 /* HLTextureStore.m in Sources */,
 				CB79D707192C2A900014E267 /* HLEmitterStore.m in Sources */,
 				CB2EB310193E603C00CD3924 /* SKLabelNode+HLLabelNodeAdditions.m in Sources */,
+				CB61C289196F6EC2002ED23F /* HLGestureTarget.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

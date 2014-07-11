@@ -350,15 +350,22 @@
   [aCoder encodeObject:_soundFile forKey:@"soundFile"];
 }
 
-- (NSString *)path
+- (NSArray *)pathComponents
+{
+  return [self HL_pathComponentsMutable];
+}
+
+- (NSMutableArray *)HL_pathComponentsMutable
 {
   HLMenu *parent = _parent;
   // note: The top-level menu, by convention, has no text, and so is not
   // included in the path.
   if (!parent || !parent.parent) {
-    return self.text;
+    return [NSMutableArray arrayWithObject:self.text];
   }
-  return [NSString stringWithFormat:@"%@/%@", [parent path], self.text];
+  NSMutableArray *pathComponents = [parent HL_pathComponentsMutable];
+  [pathComponents addObject:self.text];
+  return pathComponents;
 }
 
 @end

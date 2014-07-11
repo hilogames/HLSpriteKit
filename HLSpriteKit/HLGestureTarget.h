@@ -19,6 +19,7 @@
  */
 
 #import <Foundation/Foundation.h>
+#import <SpriteKit/SpriteKit.h>
 
 @protocol HLGestureTarget <NSObject>
 
@@ -82,3 +83,29 @@
 - (BOOL)addsToPinchGestureRecognizer;
 
 @end
+
+/**
+ * An SKSpriteNode which implements HLGestureTarget using an owner-provided blocks.
+ *
+ * Okay, so it's a bit convoluted.  But this is nice for situations when a simple
+ * node needs to handle a simple gesture and subclassing seems like overkill.
+ * Call it experimental.
+ */
+@interface HLGestureTargetSpriteNode : SKSpriteNode <HLGestureTarget>
+
+@property (nonatomic, assign) BOOL addsToTapGestureRecognizer;
+@property (nonatomic, assign) BOOL addsToDoubleTapGestureRecognizer;
+@property (nonatomic, assign) BOOL addsToLongPressGestureRecognizer;
+@property (nonatomic, assign) BOOL addsToPanGestureRecognizer;
+@property (nonatomic, assign) BOOL addsToPinchGestureRecognizer;
+@property (nonatomic, copy) void (^handleGestureBlock)(UIGestureRecognizer *);
+
+- (BOOL)addToGesture:(UIGestureRecognizer *)gestureRecognizer firstTouch:(UITouch *)touch isInside:(BOOL *)isInside;
+- (BOOL)addsToTapGestureRecognizer;
+- (BOOL)addsToDoubleTapGestureRecognizer;
+- (BOOL)addsToLongPressGestureRecognizer;
+- (BOOL)addsToPanGestureRecognizer;
+- (BOOL)addsToPinchGestureRecognizer;
+
+@end
+

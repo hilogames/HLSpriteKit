@@ -203,7 +203,8 @@ FOUNDATION_EXPORT NSString * const HLSceneChildGestureTarget;
  * provide an appropriate zPosition range that can be used by this scene to display the
  * presented node and other related decorations and animations.  The presented node will
  * have its zPosition set to a value in the provided range, but exactly what value is
- * implementation-specific.  The range may be empty; that is, min and max may be the same.
+ * implementation-specific.  The range may be passed empty; that is, min and max may the
+ * the same.
  *
  * @param The node to present modally.  The scene will not automatically dismiss the
  *        presented node.  (As with all HLScene nodes, if the node or any of its children

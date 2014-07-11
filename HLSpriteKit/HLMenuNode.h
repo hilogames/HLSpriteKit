@@ -96,7 +96,7 @@ typedef enum HLMenuNodeAnimation {
 
 - (id)initWithText:(NSString *)text;
 
-- (NSString *)path;
+- (NSArray *)pathComponents;
 
 @end
 
