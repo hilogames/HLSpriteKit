@@ -23,6 +23,8 @@ static NSUInteger HLSceneChildBitGestureTarget = (1 << 2);
 
 static BOOL HLSceneAssetsLoaded = NO;
 
+static NSTimeInterval HLScenePresentationAnimationFadeDuration = 0.2f;
+
 @implementation HLScene
 {
   NSMutableSet *_childNoCoding;
@@ -508,11 +510,15 @@ static BOOL HLSceneAssetsLoaded = NO;
 #pragma mark Modal Presentation
 
 - (void)presentModalNode:(SKNode *)node
+               animation:(HLScenePresentationAnimation)animation
 {
-  [self presentModalNode:node zPositionMin:0.0f zPositionMax:0.0f];
+  [self presentModalNode:node animation:animation zPositionMin:0.0f zPositionMax:0.0f];
 }
 
-- (void)presentModalNode:(SKNode *)node zPositionMin:(CGFloat)zPositionMin zPositionMax:(CGFloat)zPositionMax
+- (void)presentModalNode:(SKNode *)node
+               animation:(HLScenePresentationAnimation)animation
+            zPositionMin:(CGFloat)zPositionMin
+            zPositionMax:(CGFloat)zPositionMax
 {
   const CGFloat HLBackgroundFadeAlpha = 0.7f;
 
@@ -534,16 +540,39 @@ static BOOL HLSceneAssetsLoaded = NO;
 
   node.zPosition = (zPositionMax - zPositionMin);
   [_modalPresentationNode addChild:node];
+
+  switch (animation) {
+    case HLScenePresentationAnimationFade:
+      _modalPresentationNode.alpha = 0.0f;
+      [_modalPresentationNode runAction:[SKAction fadeInWithDuration:HLScenePresentationAnimationFadeDuration]];
+      break;
+    case HLScenePresentationAnimationNone:
+    default:
+      break;
+  }
 }
 
-- (void)dismissModalNode
+- (void)dismissModalNodeAnimation:(HLScenePresentationAnimation)animation
 {
   if (!_modalPresentationNode) {
     return;
   }
-  [_modalPresentationNode removeFromParent];
-  [_modalPresentationNode removeAllChildren];
-  _modalPresentationNode = nil;
+  switch (animation) {
+    case HLScenePresentationAnimationFade: {
+      [_modalPresentationNode runAction:[SKAction fadeOutWithDuration:HLScenePresentationAnimationFadeDuration] completion:^{
+        [self->_modalPresentationNode removeFromParent];
+        [self->_modalPresentationNode removeAllChildren];
+        self->_modalPresentationNode = nil;
+      }];
+      break;
+    }
+    case HLScenePresentationAnimationNone:
+    default:
+      [_modalPresentationNode removeFromParent];
+      [_modalPresentationNode removeAllChildren];
+      _modalPresentationNode = nil;
+      break;
+  }
 }
 
 - (BOOL)modalNodePresented

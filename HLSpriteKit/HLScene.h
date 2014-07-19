@@ -193,6 +193,11 @@ FOUNDATION_EXPORT NSString * const HLSceneChildGestureTarget;
 
 // Functionality for presenting a node modally above the scene.
 
+typedef enum HLScenePresentationAnimation {
+  HLScenePresentationAnimationNone,
+  HLScenePresentationAnimationFade,
+} HLScenePresentationAnimation;
+
 /**
  * Presents a node modally above the current scene, disabling other interaction.
  *
@@ -211,6 +216,8 @@ FOUNDATION_EXPORT NSString * const HLSceneChildGestureTarget;
  *        are HLGestureTargets registered with the scene as HLSceneChildGestureTarget then
  *        it will have gestures forwarded to it by the HLScene's gesture handling code.)
  *
+ * @param Optional animation for the presentation.  See HLScenePresentationAnimation.
+ *
  * @param A lower bound (inclusive) for a range of zPositions to be used by the presented
  *        node and other related decorations and animations.  See note above.
  *
@@ -218,22 +225,24 @@ FOUNDATION_EXPORT NSString * const HLSceneChildGestureTarget;
  *        node and other related decorations and animations.  See note above.
  */
 - (void)presentModalNode:(SKNode *)node
+               animation:(HLScenePresentationAnimation)animation
             zPositionMin:(CGFloat)zPositionMin
             zPositionMax:(CGFloat)zPositionMax;
 
 /**
- * Convenience method for calling presentModalNode:zPositionMin:zPositionMax: with 0.0f
- * passed to the second two parameters.  This is a more readable (more sensible looking)
+ * Convenience method for calling presentModalNode:animated:zPositionMin:zPositionMax: with
+ * 0.0f passed to the last two parameters.  This is a more readable (more sensible looking)
  * version when the scene does not need zPositions passed in; usually if the HLScene is
  * subclassed, this will be the preferred invocation (since the subclass will override
  * the main present modal node method to ignore the passed-in zPositions).
  */
--(void)presentModalNode:(SKNode *)node;
+-(void)presentModalNode:(SKNode *)node
+              animation:(HLScenePresentationAnimation)animation;
 
 /**
  * Dismisses the node currently presented by presentModalNode (if any).
  */
-- (void)dismissModalNode;
+- (void)dismissModalNodeAnimation:(HLScenePresentationAnimation)animation;
 
 /**
  * Returns true if a modal node is currently presented by presentModalNode.
