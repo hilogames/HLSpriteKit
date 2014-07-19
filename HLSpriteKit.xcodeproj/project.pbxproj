@@ -35,6 +35,8 @@
 		CBD9E941191434AF002533DF /* HLLabelButtonNode.m in Sources */ = {isa = PBXBuildFile; fileRef = CBD9E92A191426D0002533DF /* HLLabelButtonNode.m */; };
 		CBD9E9441914353A002533DF /* HLLabelButtonNode.h in Headers */ = {isa = PBXBuildFile; fileRef = CBD9E929191426D0002533DF /* HLLabelButtonNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CBD9E9451914353A002533DF /* HLSpriteKit.h in Headers */ = {isa = PBXBuildFile; fileRef = CBD9E93F1914334C002533DF /* HLSpriteKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CBEDEAA51976D73D00D563F0 /* HLButtonGrid.h in Headers */ = {isa = PBXBuildFile; fileRef = CBEDEAA31976D73D00D563F0 /* HLButtonGrid.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CBEDEAA61976D73D00D563F0 /* HLButtonGrid.m in Sources */ = {isa = PBXBuildFile; fileRef = CBEDEAA41976D73D00D563F0 /* HLButtonGrid.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -90,6 +92,8 @@
 		CBD9E92A191426D0002533DF /* HLLabelButtonNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLLabelButtonNode.m; sourceTree = "<group>"; };
 		CBD9E92C19142738002533DF /* SpriteKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SpriteKit.framework; path = System/Library/Frameworks/SpriteKit.framework; sourceTree = SDKROOT; };
 		CBD9E93F1914334C002533DF /* HLSpriteKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HLSpriteKit.h; sourceTree = "<group>"; };
+		CBEDEAA31976D73D00D563F0 /* HLButtonGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLButtonGrid.h; sourceTree = "<group>"; };
+		CBEDEAA41976D73D00D563F0 /* HLButtonGrid.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLButtonGrid.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -149,9 +153,11 @@
 		CB923F951914230E00419AD1 /* HLSpriteKit */ = {
 			isa = PBXGroup;
 			children = (
+				CBEDEAA31976D73D00D563F0 /* HLButtonGrid.h */,
+				CBEDEAA41976D73D00D563F0 /* HLButtonGrid.m */,
 				CB79D704192C2A900014E267 /* HLEmitterStore.h */,
-				CB4BE95319421254001C9E79 /* HLError.h */,
 				CB79D705192C2A900014E267 /* HLEmitterStore.m */,
+				CB4BE95319421254001C9E79 /* HLError.h */,
 				CB26105C1934E4E40095856E /* HLGestureTarget.h */,
 				CB61C287196F6EC2002ED23F /* HLGestureTarget.m */,
 				CBD9E929191426D0002533DF /* HLLabelButtonNode.h */,
@@ -207,6 +213,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CBEDEAA51976D73D00D563F0 /* HLButtonGrid.h in Headers */,
 				CB79D706192C2A900014E267 /* HLEmitterStore.h in Headers */,
 				CB4BE95519421254001C9E79 /* HLError.h in Headers */,
 				CB26105D1934E4E40095856E /* HLGestureTarget.h in Headers */,
@@ -306,6 +313,7 @@
 				CB8DD9D2192CEBC600C0704D /* HLScene.m in Sources */,
 				CB63B0B21926AB6300091907 /* HLToolbarNode.m in Sources */,
 				CBD9E941191434AF002533DF /* HLLabelButtonNode.m in Sources */,
+				CBEDEAA61976D73D00D563F0 /* HLButtonGrid.m in Sources */,
 				CB6872E619258F37008415E1 /* HLMenuNode.m in Sources */,
 				CB8D5D93193CB481003CC055 /* HLMessageNode.m in Sources */,
 				CBA8988B1926BFE500849215 /* HLTextureStore.m in Sources */,

@@ -60,6 +60,10 @@ typedef enum HLToolbarNodeAnimation {
  * or automaticHeight properties are true (and according to the textures of the
  * passed tools); if false, then the size used will be according to the size
  * property (inherited from SKSpriteNode).
+ *
+ * TODO: Have the caller pass in SKNodes rather than texture keys.  Then
+ * rotations and offsets can be set on the nodes by the caller, and the
+ * whole texture store issue can be avoided.  See HLButtonGrid.
  */
 - (void)setToolsWithTextureKeys:(NSArray *)keys store:(HLTextureStore *)textureStore rotations:(NSArray *)rotations offsets:(NSArray *)offsets animation:(HLToolbarNodeAnimation)animation;
 
