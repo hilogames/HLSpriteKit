@@ -1,5 +1,5 @@
 //
-//  HLButtonGrid.h
+//  HLButtonGridNode.h
 //  HLSpriteKit
 //
 //  Created by Karl Voskuil on 7/14/14.
@@ -10,7 +10,7 @@
 
 #import "HLGestureTarget.h"
 
-@interface HLButtonGrid : SKNode <HLGestureTarget>
+@interface HLButtonGridNode : SKNode <HLGestureTarget>
 
 /**
  * A callback invoked when a button in the grid is tapped.  The callback parameter is
@@ -33,16 +33,16 @@
  * The layout mode for the button grid.  Primarily affects how squares are layed out when
  * they don't fit exactly into rows.
  *
- *   HLButtonGridLayoutModeFill: Squares in the last row of the grid are widened so that
- *                               the row space is divided evenly among them.
+ *   HLButtonGridNodeLayoutModeFill: Squares in the last row of the grid are widened so that
+ *                                   the row space is divided evenly among them.
  *
- *   HLButtonGridLayoutModeAlignLeft: Squares in the last row of the grid align to the
- *                                    left, perhaps leaving extra space on the right.
+ *   HLButtonGridNodeLayoutModeAlignLeft: Squares in the last row of the grid align to the
+ *                                        left, perhaps leaving extra space on the right.
  */
-typedef enum HLButtonGridLayoutMode {
-  HLButtonGridLayoutModeFill,
-  HLButtonGridLayoutModeAlignLeft,
-} HLButtonGridLayoutMode;
+typedef enum HLButtonGridNodeLayoutMode {
+  HLButtonGridNodeLayoutModeFill,
+  HLButtonGridNodeLayoutModeAlignLeft,
+} HLButtonGridNodeLayoutMode;
 
 /**
  * Initialize with values for layout-affecting parameters.
@@ -69,7 +69,7 @@ typedef enum HLButtonGridLayoutMode {
  */
 - (id)initWithGridWidth:(int)gridWidth
             squareCount:(int)squareCount
-             layoutMode:(HLButtonGridLayoutMode)layoutMode
+             layoutMode:(HLButtonGridNodeLayoutMode)layoutMode
              squareSize:(CGSize)squareSize
    backgroundBorderSize:(CGFloat)backgroundBorderSize
     squareSeparatorSize:(CGFloat)squareSeparatorSize;
@@ -88,7 +88,7 @@ typedef enum HLButtonGridLayoutMode {
  * Returns the index of the square at the passed location, or -1 for none.  The location
  * is expected to be in the coordinate system of this node.
  */
-- (int)squareIndexAtLocation:(CGPoint)location;
+- (int)squareAtLocation:(CGPoint)location;
 
 /**
  * Set enabled state of a square, setting its alpha either to enabledAlpha or

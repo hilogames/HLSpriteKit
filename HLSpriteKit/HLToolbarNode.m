@@ -12,106 +12,104 @@
 
 #import "HLToolbarNode.h"
 
-#include <tgmath.h>
-
+#import "HLMath.h"
 #import "HLTextureStore.h"
 
-static UIColor *HLToolbarColorBackground;
-static UIColor *HLToolbarColorButtonNormal;
-static UIColor *HLToolbarColorButtonHighlighted;
+typedef struct {
+  BOOL enabled;
+  BOOL highlight;
+} HLToolbarNodeSquareState;
 
 @implementation HLToolbarNode
 {
+  SKSpriteNode *_toolbarNode;
   SKCropNode *_cropNode;
-  SKNode *_toolsNode;
-  NSMutableArray *_toolButtonNodes;
+  SKNode *_squaresNode;
   CGPoint _lastOrigin;
-}
-
-+ (void)initialize
-{
-  HLToolbarColorBackground = [UIColor colorWithWhite:0.0f alpha:0.5f];
-  HLToolbarColorButtonNormal = [UIColor colorWithWhite:0.7f alpha:0.5f];
-  HLToolbarColorButtonHighlighted = [UIColor colorWithWhite:1.0f alpha:0.8f];
+  HLToolbarNodeSquareState *_squareState;
 }
 
 - (id)init
 {
-  return [self initWithSize:CGSizeZero];
-}
-
-- (id)initWithSize:(CGSize)size
-{
-  self = [super initWithColor:HLToolbarColorBackground size:size];
+  self = [super init];
   if (self) {
-    _toolPad = 0.0f;
-    _automaticHeight = NO;
+
+    _squareColor = [SKColor colorWithWhite:0.7f alpha:0.5f];
+    _highlightColor = [SKColor colorWithWhite:1.0f alpha:0.8f];
+    _enabledAlpha = 1.0f;
+    _disabledAlpha = 0.4f;
     _automaticWidth = NO;
+    _automaticHeight = NO;
     _justification = HLToolbarNodeJustificationCenter;
-    _borderSize = 4.0f;
-    _toolSeparatorSize = 4.0f;
-    
+    _backgroundBorderSize = 4.0f;
+    _squareSeparatorSize = 4.0f;
+    _toolPad = 0.0f;
+
+    _toolbarNode = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithWhite:0.0f alpha:0.5f] size:CGSizeZero];
+    [self addChild:_toolbarNode];
+
     // note: All animations happen within a cropped area, currently.
     _cropNode = [SKCropNode node];
-    _cropNode.maskNode = [SKSpriteNode spriteNodeWithColor:[UIColor colorWithWhite:1.0f alpha:1.0f] size:size];
-    _cropNode.maskNode.position = CGPointMake((0.5f - self.anchorPoint.x) * size.width, (0.5f - self.anchorPoint.y) * size.height);
+    _cropNode.maskNode = [SKSpriteNode spriteNodeWithColor:[UIColor colorWithWhite:1.0f alpha:1.0f] size:CGSizeZero];
     [self addChild:_cropNode];
+
+    _squareState = NULL;
   }
   return self;
 }
 
+- (void)dealloc
+{
+  [self HL_freeSquareState];
+}
+
+- (void)setBackgroundColor:(SKColor *)backgroundColor
+{
+  _toolbarNode.color = backgroundColor;
+}
+
+- (SKColor *)backgroundColor
+{
+  return _toolbarNode.color;
+}
+
 - (void)setSize:(CGSize)size
 {
-  [super setSize:size];
+  _toolbarNode.size = size;
   [(SKSpriteNode *)_cropNode.maskNode setSize:size];
-  _cropNode.maskNode.position = CGPointMake((0.5f - self.anchorPoint.x) * self.size.width, (0.5f - self.anchorPoint.y) * self.size.height);
+}
+
+- (CGSize)size
+{
+  return _toolbarNode.size;
 }
 
 - (void)setAnchorPoint:(CGPoint)anchorPoint
 {
-  [super setAnchorPoint:anchorPoint];
-  _cropNode.maskNode.position = CGPointMake((0.5f - self.anchorPoint.x) * self.size.width, (0.5f - self.anchorPoint.y) * self.size.height);
+  _toolbarNode.anchorPoint = anchorPoint;
+  [(SKSpriteNode *)_cropNode.maskNode setAnchorPoint:anchorPoint];
 }
 
-- (void)setToolsWithTextureKeys:(NSArray *)keys store:(HLTextureStore *)textureStore rotations:(NSArray *)rotations offsets:(NSArray *)offsets animation:(HLToolbarNodeAnimation)animation
+- (CGPoint)anchorPoint
+{
+  return _toolbarNode.anchorPoint;
+}
+
+- (void)setTools:(NSArray *)toolNodes tags:(NSArray *)toolTags animation:(HLToolbarNodeAnimation)animation
 {
   const NSTimeInterval HLToolbarResizeDuration = 0.15f;
   const NSTimeInterval HLToolbarSlideDuration = 0.15f;
 
-  // noob: If we can assume properties of the toolbar node, like anchorPoint and zPosition,
-  // then we could use simpler calculations here.  But no, for now assume those properties
-  // should be determined by the owner, and we should always set our children relative.
-  
-  _toolButtonNodes = [NSMutableArray array];
-  SKNode *toolsNode = [SKNode node];
+  SKNode *squaresNode = [SKNode node];
 
-  // noob: Calculate sizes in an unscaled environment, and then re-apply scale once finished.
-  // I'm pretty sure this is a hack, but I'm too lazy to prove it (and fix it).  The self.size
-  // and self.frame.size both account for current scale.  Doing the math without changing the
-  // current scale should just mean multiplying all the non-scaled values (texture natural size,
-  // pads and borders) by self.scale, or, alternately, dividing self.size by self.scale for
-  // calculation and then multiplying/dividing right before actually setting dimensions in the
-  // scaled world (?).  But a quick attempt to do so didn't give the exact right results, and
-  // so I gave up; this is easier, and immediately worked.  Like I said: probably a hack.
-  CGFloat oldXScale = self.xScale;
-  CGFloat oldYScale = self.yScale;
-  self.xScale = 1.0f;
-  self.yScale = 1.0f;
-  
-  // Find natural tool sizes (based on sizes of textures).
-  NSUInteger toolsCount = [keys count];
+  // Find natural tool sizes.
+  NSUInteger toolCount = [toolNodes count];
   CGSize naturalToolsSize = CGSizeZero;
-  for (NSUInteger i = 0; i < toolsCount; ++i) {
-    NSString *key = [keys objectAtIndex:i];
-    SKTexture *toolTexture = [textureStore textureForKey:key];
-    if (!toolTexture) {
-      [NSException raise:@"HLToolbarNodeMissingTexture" format:@"Missing texture for key '%@'.", key];
-    }
-    CGFloat rotation = (CGFloat)M_PI_2;
-    if (rotations) {
-      rotation = [[rotations objectAtIndex:i] floatValue];
-    }
-    CGSize naturalToolSize = HL_rotatedSizeBounds(toolTexture.size, rotation);
+  for (SKNode *toolNode in toolNodes) {
+    // note: The tool's frame.size only includes what is visible.  Instead, require that the
+    // tool implement a size method.  Assume that the reported size, however, does not yet
+    // account for rotation.
+    CGSize naturalToolSize = HLGetBoundsForTransformation([(id)toolNode size], toolNode.zRotation);
     naturalToolsSize.width += naturalToolSize.width;
     if (naturalToolSize.height > naturalToolsSize.height) {
       naturalToolsSize.height = naturalToolSize.height;
@@ -148,8 +146,8 @@ static UIColor *HLToolbarColorButtonHighlighted;
   // note: If caller would like to prevent tools from growing past their natural size,
   // even when a large toolbar size is specified, we could add an option to limit
   // finalToolsScale to 1.0f.
-  CGSize toolbarConstantSize = CGSizeMake(_toolSeparatorSize * (toolsCount - 1) + _toolPad * (toolsCount * 2) + _borderSize * 2,
-                                          _toolPad * 2 + _borderSize * 2);
+  CGSize toolbarConstantSize = CGSizeMake(_squareSeparatorSize * (toolCount - 1) + _toolPad * (toolCount * 2) + _backgroundBorderSize * 2,
+                                          _toolPad * 2 + _backgroundBorderSize * 2);
   CGFloat finalToolsScale;
   CGSize finalToolbarSize;
   BOOL shouldSetToolbarSize = NO;
@@ -159,35 +157,34 @@ static UIColor *HLToolbarColorButtonHighlighted;
                                   naturalToolsSize.height + toolbarConstantSize.height);
     shouldSetToolbarSize = YES;
   } else if (_automaticWidth) {
-    finalToolsScale = (self.size.height - toolbarConstantSize.height) / naturalToolsSize.height;
+    finalToolsScale = (_toolbarNode.size.height - toolbarConstantSize.height) / naturalToolsSize.height;
     finalToolbarSize = CGSizeMake(naturalToolsSize.width * finalToolsScale + toolbarConstantSize.width,
-                                  self.size.height);
+                                  _toolbarNode.size.height);
     shouldSetToolbarSize = YES;
   } else if (_automaticHeight) {
-    finalToolsScale = (self.size.width - toolbarConstantSize.width) / naturalToolsSize.width;
-    finalToolbarSize = CGSizeMake(self.size.width,
+    finalToolsScale = (_toolbarNode.size.width - toolbarConstantSize.width) / naturalToolsSize.width;
+    finalToolbarSize = CGSizeMake(_toolbarNode.size.width,
                                   naturalToolsSize.height * finalToolsScale + toolbarConstantSize.height);
     shouldSetToolbarSize = YES;
   } else {
-    finalToolsScale = MIN((self.size.width - toolbarConstantSize.width) / naturalToolsSize.width,
-                          (self.size.height - toolbarConstantSize.height) / naturalToolsSize.height);
-    finalToolbarSize = self.size;
+    finalToolsScale = MIN((_toolbarNode.size.width - toolbarConstantSize.width) / naturalToolsSize.width,
+                          (_toolbarNode.size.height - toolbarConstantSize.height) / naturalToolsSize.height);
+    finalToolbarSize = _toolbarNode.size;
   }
-  
+
   // Set toolbar size.
   if (shouldSetToolbarSize) {
     if (animation == HLToolbarNodeAnimationNone) {
-      self.size = finalToolbarSize;
+      _toolbarNode.size = finalToolbarSize;
+      [(SKSpriteNode *)_cropNode.maskNode setSize:finalToolbarSize];
     } else {
       SKAction *resize = [SKAction resizeToWidth:finalToolbarSize.width height:finalToolbarSize.height duration:HLToolbarResizeDuration];
       resize.timingMode = SKActionTimingEaseOut;
-      [self runAction:resize];
-      // noob: The cropNode mask must be resized (and maybe repositioned) along with the toolbar size.  The property mutator
-      // of the toolbar (setSize, above) is not called by the animation, so we must explicitly update during the animation.
+      [_toolbarNode runAction:resize];
+      // noob: The cropNode mask must be resized along with the toolbar size.  Or am I missing something?
       SKAction *resizeMaskNode = [SKAction customActionWithDuration:HLToolbarResizeDuration actionBlock:^(SKNode *node, CGFloat elapsedTime){
         SKSpriteNode *maskNode = (SKSpriteNode *)node;
-        maskNode.size = self.size;
-        maskNode.position = CGPointMake((0.5f - self.anchorPoint.x) * self.size.width, (0.5f - self.anchorPoint.y) * self.size.height);
+        maskNode.size = self->_toolbarNode.size;
       }];
       resizeMaskNode.timingMode = resize.timingMode;
       [_cropNode.maskNode runAction:resizeMaskNode];
@@ -206,144 +203,139 @@ static UIColor *HLToolbarColorButtonHighlighted;
       justificationOffset = remainingToolsWidth;
     }
   }
-  
+
   // Set tools (scaled and positioned appropriately).
-  CGFloat x = self.anchorPoint.x * finalToolbarSize.width * -1.0f + _borderSize + justificationOffset;
-  CGFloat y = self.anchorPoint.y * finalToolbarSize.height * -1.0f + finalToolbarSize.height / 2.0f;
-  for (NSUInteger i = 0; i < toolsCount; ++i) {
+  CGFloat x = _toolbarNode.anchorPoint.x * -finalToolbarSize.width + _backgroundBorderSize + justificationOffset;
+  CGFloat y = _toolbarNode.anchorPoint.y * -finalToolbarSize.height + finalToolbarSize.height / 2.0f;
+  for (NSUInteger i = 0; i < toolCount; ++i) {
+    SKNode *toolNode = [toolNodes objectAtIndex:i];
+    NSString *toolTag = [toolTags objectAtIndex:i];
 
-    NSString *key = [keys objectAtIndex:i];
-    CGFloat rotation = (CGFloat)M_PI_2;
-    if (rotations) {
-      rotation = [[rotations objectAtIndex:i] floatValue];
-    }
-    CGPoint offset = CGPointZero;
-    if (offsets) {
-      [[offsets objectAtIndex:i] getValue:&offset];
-    }
-
-    // note: Here the "tool" refers to the rectangular button area created in which
-    // to draw the tool texture.
-    SKTexture *toolTexture = [textureStore textureForKey:key];
-    CGSize naturalToolSize = HL_rotatedSizeBounds(toolTexture.size, rotation);
+    CGSize naturalToolSize = HLGetBoundsForTransformation([(id)toolNode size], toolNode.zRotation);
+    // note: Can multiply toolNode.scale by finalToolsScale, directly.  But that's messing
+    // with the properties of the nodes passed in to us.  Instead, set the scale of the
+    // square, which will then be inherited (multiplied) automatically.
     CGSize finalToolSize = CGSizeMake(naturalToolSize.width * finalToolsScale,
                                       naturalToolSize.height * finalToolsScale);
+    CGSize squareSize = CGSizeMake(finalToolSize.width + _toolPad * 2.0f,
+                                   finalToolSize.height + _toolPad * 2.0f);
+    SKSpriteNode *squareNode = [SKSpriteNode spriteNodeWithColor:_squareColor size:CGSizeMake(squareSize.width / finalToolsScale,
+                                                                                              squareSize.height / finalToolsScale)];
+    squareNode.name = toolTag;
+    squareNode.xScale = finalToolsScale;
+    squareNode.yScale = finalToolsScale;
+    squareNode.alpha = _enabledAlpha;
+    squareNode.zPosition = 0.1f;
+    squareNode.position = CGPointMake(x + finalToolSize.width / 2.0f + _toolPad, y);
+    [squaresNode addChild:squareNode];
 
-    SKSpriteNode *toolButtonNode = [SKSpriteNode spriteNodeWithColor:HLToolbarColorButtonNormal
-                                                                size:CGSizeMake(finalToolSize.width + _toolPad * 2,
-                                                                                finalToolSize.height + _toolPad * 2)];
-    toolButtonNode.name = key;
-    toolButtonNode.zPosition = 0.1f;
-    toolButtonNode.anchorPoint = CGPointMake(0.0f, 0.5f);
-    toolButtonNode.position = CGPointMake(x, y);
-    [toolsNode addChild:toolButtonNode];
-    [_toolButtonNodes addObject:toolButtonNode];
-
-    SKSpriteNode *toolNode = [SKSpriteNode spriteNodeWithTexture:toolTexture size:finalToolSize];
+    //toolNode.xScale *= finalToolsScale;
+    //toolNode.yScale *= finalToolsScale;
     toolNode.zPosition = 0.1f;
-    toolNode.anchorPoint = CGPointMake(0.5f, 0.5f);
-    toolNode.position = CGPointMake(offset.x * finalToolsScale + finalToolSize.width / 2.0f + _toolPad,
-                                    offset.y * finalToolsScale);
-    toolNode.zRotation = rotation;
-    [toolButtonNode addChild:toolNode];
+    [squareNode addChild:toolNode];
 
-    x += finalToolSize.width + _toolPad * 2 + _toolSeparatorSize;
+    x += finalToolSize.width + _toolPad * 2 + _squareSeparatorSize;
   }
-  
-  SKNode *oldToolsNode = _toolsNode;
-  _toolsNode = toolsNode;
-  [_cropNode addChild:toolsNode];
+  // note: Allocate square state; note that it will be initalized as enabled and unhighlighted,
+  // as in code above.
+  [self HL_allocateSquareState];
+
+  SKNode *oldSquaresNode = _squaresNode;
+  _squaresNode = squaresNode;
+  [_cropNode addChild:squaresNode];
   if (animation == HLToolbarNodeAnimationNone) {
-    if (oldToolsNode) {
-      [oldToolsNode removeFromParent];
+    if (oldSquaresNode) {
+      [oldSquaresNode removeFromParent];
     }
   } else {
     // note: If toolbar is not animated to change size, then we don't need the MAXs below.
     CGPoint delta;
     switch (animation) {
       case HLToolbarNodeAnimationSlideUp:
-        delta = CGPointMake(0.0f, MAX(finalToolbarSize.height, self.size.height));
+        delta = CGPointMake(0.0f, MAX(finalToolbarSize.height, _toolbarNode.size.height));
         break;
       case HLToolbarNodeAnimationSlideDown:
-        delta = CGPointMake(0.0f, -1.0f * MAX(finalToolbarSize.height, self.size.height));
+        delta = CGPointMake(0.0f, -1.0f * MAX(finalToolbarSize.height, _toolbarNode.size.height));
         break;
       case HLToolbarNodeAnimationSlideLeft:
-        delta = CGPointMake(-1.0f * MAX(finalToolbarSize.width, self.size.width), 0.0f);
+        delta = CGPointMake(-1.0f * MAX(finalToolbarSize.width, _toolbarNode.size.width), 0.0f);
         break;
       case HLToolbarNodeAnimationSlideRight:
-        delta = CGPointMake(MAX(finalToolbarSize.width, self.size.width), 0.0f);
+        delta = CGPointMake(MAX(finalToolbarSize.width, _toolbarNode.size.width), 0.0f);
         break;
       default:
         [NSException raise:@"HLToolbarNodeUnhandledAnimation" format:@"Unhandled animation %d.", animation];
         break;
     }
-    toolsNode.position = CGPointMake(-delta.x, -delta.y);
-    [toolsNode runAction:[SKAction moveByX:delta.x y:delta.y duration:HLToolbarSlideDuration]];
-    if (oldToolsNode) {
-      [oldToolsNode runAction:[SKAction sequence:@[ [SKAction moveByX:delta.x y:delta.y duration:HLToolbarSlideDuration],
-                                                    [SKAction removeFromParent] ]]];
+    squaresNode.position = CGPointMake(-delta.x, -delta.y);
+    [squaresNode runAction:[SKAction moveByX:delta.x y:delta.y duration:HLToolbarSlideDuration]];
+    if (oldSquaresNode) {
+      [oldSquaresNode runAction:[SKAction sequence:@[ [SKAction moveByX:delta.x y:delta.y duration:HLToolbarSlideDuration],
+                                                      [SKAction removeFromParent] ]]];
     }
   }
-  
-  self.xScale = oldXScale;
-  self.yScale = oldYScale;
 }
 
 - (NSUInteger)toolCount
 {
-  return [_toolButtonNodes count];
+  return [_squaresNode.children count];
 }
 
 - (NSString *)toolAtLocation:(CGPoint)location
 {
-  for (SKSpriteNode *toolButtonNode in _toolButtonNodes) {
-    if ([toolButtonNode containsPoint:location]) {
-      return toolButtonNode.name;
+  for (SKSpriteNode *squareNode in _squaresNode.children) {
+    if ([squareNode containsPoint:location]) {
+      return squareNode.name;
     }
   }
   return nil;
 }
 
-- (CGRect)toolFrame:(NSString *)key
+- (CGRect)frameForTool:(NSString *)toolTag
 {
-  for (SKSpriteNode *toolButtonNode in _toolButtonNodes) {
-    if ([toolButtonNode.name isEqualToString:key]) {
-      return toolButtonNode.frame;
+  for (SKSpriteNode *squareNode in _squaresNode.children) {
+    if ([squareNode.name isEqualToString:toolTag]) {
+      return squareNode.frame;
     }
   }
   return CGRectZero;
 }
 
-- (void)setHighlight:(BOOL)highlight forTool:(NSString *)key
+- (void)setHighlight:(BOOL)highlight forTool:(NSString *)toolTag
 {
-  SKSpriteNode *toolButtonNode = nil;
-  for (toolButtonNode in _toolButtonNodes) {
-    if ([toolButtonNode.name isEqualToString:key]) {
+  int s = 0;
+  for (SKSpriteNode *squareNode in _squaresNode.children) {
+    if ([squareNode.name isEqualToString:toolTag]) {
+      _squareState[s].highlight = highlight;
       if (highlight) {
-        toolButtonNode.color = HLToolbarColorButtonHighlighted;
+        squareNode.color = _highlightColor;
       } else {
-        toolButtonNode.color = HLToolbarColorButtonNormal;
+        squareNode.color = _squareColor;
       }
+      break;
     }
+    ++s;
   }
 }
 
-- (void)animateHighlight:(BOOL)finalHighlight count:(int)blinkCount halfCycleDuration:(NSTimeInterval)halfCycleDuration forTool:(NSString *)key
+- (void)animateHighlight:(BOOL)finalHighlight count:(int)blinkCount halfCycleDuration:(NSTimeInterval)halfCycleDuration forTool:(NSString *)toolTag
 {
-  SKSpriteNode *toolButtonNode = nil;
-  for (toolButtonNode in _toolButtonNodes) {
-    if ([toolButtonNode.name isEqualToString:key]) {
+  int s = 0;
+  SKSpriteNode *squareNode = nil;
+  for (squareNode in _squaresNode.children) {
+    if ([squareNode.name isEqualToString:toolTag]) {
       break;
     }
+    ++s;
   }
-  if (!toolButtonNode) {
+  if (!squareNode) {
     return;
   }
-
-  BOOL startingHighlight = (toolButtonNode.color == HLToolbarColorButtonHighlighted);
-  SKAction *blinkIn = [SKAction colorizeWithColor:(startingHighlight ? HLToolbarColorButtonNormal : HLToolbarColorButtonHighlighted) colorBlendFactor:1.0f duration:halfCycleDuration];
+  
+  BOOL startingHighlight = _squareState[s].highlight;
+  SKAction *blinkIn = [SKAction colorizeWithColor:(startingHighlight ? _squareColor : _highlightColor) colorBlendFactor:1.0f duration:halfCycleDuration];
   blinkIn.timingMode = SKActionTimingEaseIn;
-  SKAction *blinkOut = [SKAction colorizeWithColor:(startingHighlight ? HLToolbarColorButtonHighlighted : HLToolbarColorButtonNormal) colorBlendFactor:1.0f duration:halfCycleDuration];
+  SKAction *blinkOut = [SKAction colorizeWithColor:(startingHighlight ? _highlightColor : _squareColor) colorBlendFactor:1.0f duration:halfCycleDuration];
   blinkOut.timingMode = SKActionTimingEaseOut;
   NSMutableArray *blinkActions = [NSMutableArray array];
   for (int b = 0; b < blinkCount; ++b) {
@@ -354,31 +346,36 @@ static UIColor *HLToolbarColorButtonHighlighted;
     [blinkActions addObject:blinkIn];
   }
 
-  [toolButtonNode runAction:[SKAction sequence:blinkActions]];
+  [squareNode runAction:[SKAction sequence:blinkActions]];
 }
 
-- (void)setEnabled:(BOOL)enabled forTool:(NSString *)key
+- (void)setEnabled:(BOOL)enabled forTool:(NSString *)toolTag
 {
-  for (SKSpriteNode *toolButtonNode in _toolButtonNodes) {
-    if ([toolButtonNode.name isEqualToString:key]) {
+  int s = 0;
+  for (SKSpriteNode *squareNode in _squaresNode.children) {
+    if ([squareNode.name isEqualToString:toolTag]) {
+      _squareState[s].enabled = enabled;
       if (enabled) {
-        toolButtonNode.alpha = 1.0f;
+        squareNode.alpha = _enabledAlpha;
       } else {
-        toolButtonNode.alpha = 0.4f;
+        squareNode.alpha = _disabledAlpha;
       }
       break;
     }
+    ++s;
   }
 }
 
-- (BOOL)enabledForTool:(NSString *)key
+- (BOOL)enabledForTool:(NSString *)toolTag
 {
-  for (SKSpriteNode *toolButtonNode in _toolButtonNodes) {
-    if ([toolButtonNode.name isEqualToString:key]) {
-      return (toolButtonNode.alpha > 0.5f);
+  int s = 0;
+  for (SKSpriteNode *squareNode in _squaresNode.children) {
+    if ([squareNode.name isEqualToString:toolTag]) {
+      return _squareState[s].enabled;
     }
+    ++s;
   }
-  return NO;
+  return YES;
 }
 
 - (void)showWithOrigin:(CGPoint)origin finalPosition:(CGPoint)finalPosition fullScale:(CGFloat)fullScale animated:(BOOL)animated
@@ -389,7 +386,7 @@ static UIColor *HLToolbarColorButtonHighlighted;
 
   // noob: I assume this will always take effect before we are removed from parent (at the end of the hide).
   [self removeActionForKey:@"hide"];
-  
+
   if (animated) {
     const NSTimeInterval HLToolbarNodeShowDuration = 0.15;
     self.xScale = 0.0f;
@@ -424,18 +421,22 @@ static UIColor *HLToolbarColorButtonHighlighted;
   }
 }
 
-CGSize HL_rotatedSizeBounds(CGSize size, CGFloat theta)
+#pragma mark -
+#pragma mark Private
+
+- (void)HL_allocateSquareState
 {
-  // note: These casts back to CGFloat are supposed to be unnecessary because of
-  // the type-generic cos() macro defined in tgmath.h.  But I get loss-of-precision
-  // warnings when compiling for 32-bit simulator without the casts; I'm not sure who
-  // is to blame.
-  CGFloat widthRotatedWidth = size.width * (CGFloat)cos(theta);
-  CGFloat widthRotatedHeight = size.width * (CGFloat)sin(theta);
-  CGFloat heightRotatedWidth = size.height * (CGFloat)sin(theta);
-  CGFloat heightRotatedHeight = size.height * (CGFloat)cos(theta);
-  return CGSizeMake(widthRotatedWidth + heightRotatedWidth,
-                    widthRotatedHeight + heightRotatedHeight);
+  int squareCount = (int)[_toolbarNode.children count];
+  _squareState = (HLToolbarNodeSquareState *)malloc(sizeof(HLToolbarNodeSquareState) * (size_t)squareCount);
+  for (int s = 0; s < squareCount; ++s) {
+    _squareState[s].enabled = NO;
+    _squareState[s].highlight = NO;
+  }
+}
+
+- (void)HL_freeSquareState
+{
+  free(_squareState);
 }
 
 @end

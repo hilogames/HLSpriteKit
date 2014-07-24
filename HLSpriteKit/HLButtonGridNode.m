@@ -1,22 +1,22 @@
 //
-//  HLButtonGrid.m
+//  HLButtonGridNode.m
 //  HLSpriteKit
 //
 //  Created by Karl Voskuil on 7/14/14.
 //  Copyright (c) 2014 Hilo. All rights reserved.
 //
 
-#import "HLButtonGrid.h"
+#import "HLButtonGridNode.h"
 
 typedef struct {
   BOOL enabled;
   BOOL highlight;
-} HLSquareState;
+} HLButtonGridNodeSquareState;
 
-@implementation HLButtonGrid
+@implementation HLButtonGridNode
 {
   SKSpriteNode *_gridNode;
-  HLSquareState *_squareState;
+  HLButtonGridNodeSquareState *_squareState;
   int _selectionSquareIndex;
 
   // Primary layout-affecting parameters.
@@ -25,7 +25,7 @@ typedef struct {
   // are set individually).
   int _gridWidth;
   int _squareCount;
-  HLButtonGridLayoutMode _layoutMode;
+  HLButtonGridNodeLayoutMode _layoutMode;
   CGSize _squareSize;
   CGFloat _backgroundBorderSize;
   CGFloat _squareSeparatorSize;
@@ -33,7 +33,7 @@ typedef struct {
 
 - (id)initWithGridWidth:(int)gridWidth
             squareCount:(int)squareCount
-             layoutMode:(HLButtonGridLayoutMode)layoutMode
+             layoutMode:(HLButtonGridNodeLayoutMode)layoutMode
              squareSize:(CGSize)squareSize
    backgroundBorderSize:(CGFloat)backgroundBorderSize
     squareSeparatorSize:(CGFloat)squareSeparatorSize{
@@ -85,7 +85,7 @@ typedef struct {
   }
 }
 
-- (int)squareIndexAtLocation:(CGPoint)location
+- (int)squareAtLocation:(CGPoint)location
 {
   CGPoint lowerLeftPoint = CGPointMake(-_gridNode.anchorPoint.x * _gridNode.size.width,
                                        -_gridNode.anchorPoint.y * _gridNode.size.height);
@@ -98,14 +98,14 @@ typedef struct {
   } else {
     int squaresInRow = (_squareCount - 1) % _gridWidth + 1;
     CGFloat squareWidthInRow;
-    if (_layoutMode == HLButtonGridLayoutModeFill) {
+    if (_layoutMode == HLButtonGridNodeLayoutModeFill) {
       squareWidthInRow = (_gridNode.size.width - 2.0f * _backgroundBorderSize - (squaresInRow - 1) * _squareSeparatorSize) / squaresInRow;
     } else {
       squareWidthInRow = _squareSize.width;
     }
 
     x = (int)((location.x - lowerLeftPoint.x + _squareSeparatorSize) / (squareWidthInRow + _squareSeparatorSize));
-    if (_layoutMode == HLButtonGridLayoutModeAlignLeft && x >= squaresInRow) {
+    if (_layoutMode == HLButtonGridNodeLayoutModeAlignLeft && x >= squaresInRow) {
       return -1;
     }
   }
@@ -113,7 +113,7 @@ typedef struct {
   return y * _gridWidth + x;
 }
 
-- (void)setBackgroundColor:(UIColor *)backgroundColor
+- (void)setBackgroundColor:(SKColor *)backgroundColor
 {
   _gridNode.color = backgroundColor;
 }
@@ -149,7 +149,7 @@ typedef struct {
   }
 }
 
-- (void)setSquareColor:(UIColor *)squareColor
+- (void)setSquareColor:(SKColor *)squareColor
 {
   _squareColor = squareColor;
   NSArray *squareNodes = _gridNode.children;
@@ -162,7 +162,7 @@ typedef struct {
   }
 }
 
-- (void)setHighlightColor:(UIColor *)highlightColor
+- (void)setHighlightColor:(SKColor *)highlightColor
 {
   _highlightColor = highlightColor;
   NSArray *squareNodes = _gridNode.children;
@@ -310,7 +310,7 @@ typedef struct {
   CGPoint sceneLocation = [self.scene convertPointFromView:viewLocation];
   CGPoint location = [self convertPoint:sceneLocation fromNode:self.scene];
 
-  int squareIndex = [self squareIndexAtLocation:location];
+  int squareIndex = [self squareAtLocation:location];
   if (squareIndex >= 0) {
     self.squareTappedBlock(squareIndex);
   }
@@ -321,7 +321,7 @@ typedef struct {
 
 - (void)HL_allocateSquareState
 {
-  _squareState = (HLSquareState *)malloc(sizeof(HLSquareState) * (size_t)_squareCount);
+  _squareState = (HLButtonGridNodeSquareState *)malloc(sizeof(HLButtonGridNodeSquareState) * (size_t)_squareCount);
   for (int s = 0; s < _squareCount; ++s) {
     _squareState[s].enabled = NO;
     _squareState[s].highlight = NO;
@@ -361,7 +361,7 @@ typedef struct {
     } else {
       squaresInRow = (_squareCount - 1) % _gridWidth + 1;
       squareSizeInRow = _squareSize;
-      if (_layoutMode == HLButtonGridLayoutModeFill) {
+      if (_layoutMode == HLButtonGridNodeLayoutModeFill) {
         squareSizeInRow.width = (squaresArea.width - (squaresInRow - 1) * _squareSeparatorSize) / squaresInRow;
       }
     }
