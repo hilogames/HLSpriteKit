@@ -16,7 +16,7 @@
 		CB63B0B21926AB6300091907 /* HLToolbarNode.m in Sources */ = {isa = PBXBuildFile; fileRef = CB63B0B01926AB6300091907 /* HLToolbarNode.m */; };
 		CB6872E619258F37008415E1 /* HLMenuNode.m in Sources */ = {isa = PBXBuildFile; fileRef = CB6872E419258F37008415E1 /* HLMenuNode.m */; };
 		CB6872EE192591C9008415E1 /* HLMenuNode.h in Headers */ = {isa = PBXBuildFile; fileRef = CB6872E319258F37008415E1 /* HLMenuNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		CB6B816C197DFA4600EF68BA /* HLMath.h in Headers */ = {isa = PBXBuildFile; fileRef = CB6B816A197DFA4600EF68BA /* HLMath.h */; };
+		CB6B816C197DFA4600EF68BA /* HLMath.h in Headers */ = {isa = PBXBuildFile; fileRef = CB6B816A197DFA4600EF68BA /* HLMath.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CB6B816D197DFA4600EF68BA /* HLMath.m in Sources */ = {isa = PBXBuildFile; fileRef = CB6B816B197DFA4600EF68BA /* HLMath.m */; };
 		CB79D706192C2A900014E267 /* HLEmitterStore.h in Headers */ = {isa = PBXBuildFile; fileRef = CB79D704192C2A900014E267 /* HLEmitterStore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CB79D707192C2A900014E267 /* HLEmitterStore.m in Sources */ = {isa = PBXBuildFile; fileRef = CB79D705192C2A900014E267 /* HLEmitterStore.m */; };
@@ -224,12 +224,12 @@
 				CB4BE95519421254001C9E79 /* HLError.h in Headers */,
 				CB26105D1934E4E40095856E /* HLGestureTarget.h in Headers */,
 				CBD9E9441914353A002533DF /* HLLabelButtonNode.h in Headers */,
+				CB6B816C197DFA4600EF68BA /* HLMath.h in Headers */,
 				CB6872EE192591C9008415E1 /* HLMenuNode.h in Headers */,
 				CB8D5D92193CB481003CC055 /* HLMessageNode.h in Headers */,
 				CB8DD9D1192CEBC600C0704D /* HLScene.h in Headers */,
 				CBD9E9451914353A002533DF /* HLSpriteKit.h in Headers */,
 				CBA8988A1926BFE500849215 /* HLTextureStore.h in Headers */,
-				CB6B816C197DFA4600EF68BA /* HLMath.h in Headers */,
 				CB2EB30F193E603C00CD3924 /* SKLabelNode+HLLabelNodeAdditions.h in Headers */,
 				CB63B0B11926AB6300091907 /* HLToolbarNode.h in Headers */,
 			);
