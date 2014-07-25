@@ -559,10 +559,13 @@ static NSTimeInterval HLScenePresentationAnimationFadeDuration = 0.2f;
   }
   switch (animation) {
     case HLScenePresentationAnimationFade: {
-      [_modalPresentationNode runAction:[SKAction fadeOutWithDuration:HLScenePresentationAnimationFadeDuration] completion:^{
-        [self->_modalPresentationNode removeFromParent];
-        [self->_modalPresentationNode removeAllChildren];
-        self->_modalPresentationNode = nil;
+      // note: Retain node in a separate variable so that another modal node may immediately
+      // be presented.
+      SKNode *modalPresentationNode = _modalPresentationNode;
+      _modalPresentationNode = nil;
+      [modalPresentationNode runAction:[SKAction fadeOutWithDuration:HLScenePresentationAnimationFadeDuration] completion:^{
+        [modalPresentationNode removeFromParent];
+        [modalPresentationNode removeAllChildren];
       }];
       break;
     }
