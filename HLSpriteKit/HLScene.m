@@ -528,6 +528,12 @@ static NSTimeInterval HLScenePresentationAnimationFadeDuration = 0.2f;
     HLError(HLLevelError, @"HLScene already presenting a modal node; call dismissModalNode to dismiss.");
     return;
   }
+  if (node.parent) {
+    // note: Compromise between soft and hard fail: This is sloppiness on the part of the caller which
+    // might reveal a logic error . . . but on the other hand, from our point of view it's no big deal.
+    HLError(HLLevelWarning, @"Node for modal presentation in HLScene already has a parent; removing.");
+    [node removeFromParent];
+  }
 
   // note: The background node is important to our gesture recognition code (as well as
   // important visually): Any gestures starting off the modal node will find the
