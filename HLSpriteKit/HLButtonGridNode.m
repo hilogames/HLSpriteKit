@@ -66,6 +66,11 @@ typedef struct {
   [self HL_freeSquareState];
 }
 
+- (CGSize)size
+{
+  return _gridNode.size;
+}
+
 - (void)setButtons:(NSArray *)buttonNodes
 {
   NSArray *squareNodes = [_gridNode children];

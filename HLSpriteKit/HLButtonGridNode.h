@@ -30,6 +30,12 @@
 @property (nonatomic, assign) CGFloat disabledAlpha;
 
 /**
+ * The size of the overall grid node is derived from the layout-affecting parameters.
+ * (Currently the layout-affecting parameters are all passed into the init method.)
+ */
+@property (nonatomic, readonly) CGSize size;
+
+/**
  * The layout mode for the button grid.  Primarily affects how squares are layed out when
  * they don't fit exactly into rows.
  *
