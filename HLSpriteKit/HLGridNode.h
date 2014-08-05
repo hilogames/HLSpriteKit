@@ -1,5 +1,5 @@
 //
-//  HLButtonGridNode.h
+//  HLGridNode.h
 //  HLSpriteKit
 //
 //  Created by Karl Voskuil on 7/14/14.
@@ -10,11 +10,13 @@
 
 #import "HLGestureTarget.h"
 
-@interface HLButtonGridNode : SKNode <HLGestureTarget>
+@interface HLGridNode : SKNode <HLGestureTarget>
 
 /**
- * A callback invoked when a button in the grid is tapped.  The callback parameter is
- * passed as the index (in the buttons array) of the tapped button.
+ * A callback invoked when a square in the grid is tapped.  The callback parameter is
+ * passed as the index of the tapped square.  (Square indexes, here as elsewhere, start
+ * at zero for the top-left square in the grid, and then increase to the right row by
+ * row.)
  *
  * note: For now, use callbacks rather than delegation.
  */
@@ -36,19 +38,19 @@
 @property (nonatomic, readonly) CGSize size;
 
 /**
- * The layout mode for the button grid.  Primarily affects how squares are layed out when
- * they don't fit exactly into rows.
+ * The layout mode for the grid.  Primarily affects how squares are layed out when they
+ * don't fit exactly into rows.
  *
- *   HLButtonGridNodeLayoutModeFill: Squares in the last row of the grid are widened so that
- *                                   the row space is divided evenly among them.
+ *   HLGridNodeLayoutModeFill: Squares in the last row of the grid are widened so that
+ *                             the row space is divided evenly among them.
  *
- *   HLButtonGridNodeLayoutModeAlignLeft: Squares in the last row of the grid align to the
- *                                        left, perhaps leaving extra space on the right.
+ *   HLGridNodeLayoutModeAlignLeft: Squares in the last row of the grid align to the
+ *                                  left, perhaps leaving extra space on the right.
  */
-typedef enum HLButtonGridNodeLayoutMode {
-  HLButtonGridNodeLayoutModeFill,
-  HLButtonGridNodeLayoutModeAlignLeft,
-} HLButtonGridNodeLayoutMode;
+typedef enum HLGridNodeLayoutMode {
+  HLGridNodeLayoutModeFill,
+  HLGridNodeLayoutModeAlignLeft,
+} HLGridNodeLayoutMode;
 
 /**
  * Initialize with values for layout-affecting parameters.
@@ -62,9 +64,9 @@ typedef enum HLButtonGridNodeLayoutMode {
  * @param The total number of squares to create in the grid.
  *
  * @param The layout mode for the grid (pertaining chiefly to handling the layout of
- *        squares that don't fit exactly into rows); see HLButtonGridLayoutMode.
+ *        squares that don't fit exactly into rows); see HLGridNodeLayoutMode.
  *
- * @param The normal size of a square when it fits in a row; see HLButtonGridLayoutMode
+ * @param The normal size of a square when it fits in a row; see HLGridNodeLayoutMode
  *        for exceptions.
  *
  * @param The distance, in pixels, between the edge of the background and the nearest
@@ -75,20 +77,20 @@ typedef enum HLButtonGridNodeLayoutMode {
  */
 - (id)initWithGridWidth:(int)gridWidth
             squareCount:(int)squareCount
-             layoutMode:(HLButtonGridNodeLayoutMode)layoutMode
+             layoutMode:(HLGridNodeLayoutMode)layoutMode
              squareSize:(CGSize)squareSize
    backgroundBorderSize:(CGFloat)backgroundBorderSize
     squareSeparatorSize:(CGFloat)squareSeparatorSize;
 
 /**
- * Set buttons in the squares of the grid.  As many buttons as fit in the grid will be
+ * Set content nodes in the squares of the grid.  As many nodes as fit in the grid will be
  * shown, starting at the upper left of the grid and filling rows before columns; the rest
  * will be ignored.
  *
- * The square node that holds each button has anchorPoint (0.5, 0.5).  Typically the size
- * of the square is squareSize; see HLButtonGridLayoutMode for exceptions.
+ * The square node that holds each content node has anchorPoint (0.5, 0.5).  Typically the
+ * size of the square is squareSize; see HLGridNodeLayoutMode for exceptions.
  */
-- (void)setButtons:(NSArray *)buttonNodes;
+- (void)setContent:(NSArray *)contentNodes;
 
 /**
  * Returns the index of the square at the passed location, or -1 for none.  The location

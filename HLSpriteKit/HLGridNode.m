@@ -1,22 +1,22 @@
 //
-//  HLButtonGridNode.m
+//  HLGridNode.m
 //  HLSpriteKit
 //
 //  Created by Karl Voskuil on 7/14/14.
 //  Copyright (c) 2014 Hilo. All rights reserved.
 //
 
-#import "HLButtonGridNode.h"
+#import "HLGridNode.h"
 
 typedef struct {
   BOOL enabled;
   BOOL highlight;
-} HLButtonGridNodeSquareState;
+} HLGridNodeSquareState;
 
-@implementation HLButtonGridNode
+@implementation HLGridNode
 {
   SKSpriteNode *_gridNode;
-  HLButtonGridNodeSquareState *_squareState;
+  HLGridNodeSquareState *_squareState;
   int _selectionSquareIndex;
 
   // Primary layout-affecting parameters.
@@ -25,7 +25,7 @@ typedef struct {
   // are set individually).
   int _gridWidth;
   int _squareCount;
-  HLButtonGridNodeLayoutMode _layoutMode;
+  HLGridNodeLayoutMode _layoutMode;
   CGSize _squareSize;
   CGFloat _backgroundBorderSize;
   CGFloat _squareSeparatorSize;
@@ -33,7 +33,7 @@ typedef struct {
 
 - (id)initWithGridWidth:(int)gridWidth
             squareCount:(int)squareCount
-             layoutMode:(HLButtonGridNodeLayoutMode)layoutMode
+             layoutMode:(HLGridNodeLayoutMode)layoutMode
              squareSize:(CGSize)squareSize
    backgroundBorderSize:(CGFloat)backgroundBorderSize
     squareSeparatorSize:(CGFloat)squareSeparatorSize{
@@ -71,21 +71,21 @@ typedef struct {
   return _gridNode.size;
 }
 
-- (void)setButtons:(NSArray *)buttonNodes
+- (void)setContent:(NSArray *)contentNodes
 {
   NSArray *squareNodes = [_gridNode children];
   for (SKSpriteNode *squareNode in squareNodes) {
     [squareNode removeAllChildren];
   }
 
-  NSUInteger buttonCount = [buttonNodes count];
+  NSUInteger contentCount = [contentNodes count];
   NSUInteger i = 0;
-  while (i < buttonCount && i < (NSUInteger)_squareCount) {
-    SKNode *buttonNode = (SKNode *)[buttonNodes objectAtIndex:i];
+  while (i < contentCount && i < (NSUInteger)_squareCount) {
+    SKNode *contentNode = (SKNode *)[contentNodes objectAtIndex:i];
     SKSpriteNode *squareNode = (SKSpriteNode *)[squareNodes objectAtIndex:i];
     // note: Could let caller worry about zPosition.
-    buttonNode.zPosition = 0.1f;
-    [squareNode addChild:buttonNode];
+    contentNode.zPosition = 0.1f;
+    [squareNode addChild:contentNode];
     ++i;
   }
 }
@@ -103,14 +103,14 @@ typedef struct {
   } else {
     int squaresInRow = (_squareCount - 1) % _gridWidth + 1;
     CGFloat squareWidthInRow;
-    if (_layoutMode == HLButtonGridNodeLayoutModeFill) {
+    if (_layoutMode == HLGridNodeLayoutModeFill) {
       squareWidthInRow = (_gridNode.size.width - 2.0f * _backgroundBorderSize - (squaresInRow - 1) * _squareSeparatorSize) / squaresInRow;
     } else {
       squareWidthInRow = _squareSize.width;
     }
 
     x = (int)((location.x - lowerLeftPoint.x + _squareSeparatorSize) / (squareWidthInRow + _squareSeparatorSize));
-    if (_layoutMode == HLButtonGridNodeLayoutModeAlignLeft && x >= squaresInRow) {
+    if (_layoutMode == HLGridNodeLayoutModeAlignLeft && x >= squaresInRow) {
       return -1;
     }
   }
@@ -183,7 +183,7 @@ typedef struct {
 - (void)setEnabled:(BOOL)enabled forSquare:(int)squareIndex
 {
   if (squareIndex > _squareCount) {
-    [NSException raise:@"HLButtonGridInvalidIndex" format:@"Square index %d out of range.", squareIndex];
+    [NSException raise:@"HLGridNodeInvalidIndex" format:@"Square index %d out of range.", squareIndex];
   }
   NSArray *squareNodes = _gridNode.children;
   SKSpriteNode *squareNode = [squareNodes objectAtIndex:(NSUInteger)squareIndex];
@@ -199,7 +199,7 @@ typedef struct {
 - (void)setHighlight:(BOOL)highlight forSquare:(int)squareIndex
 {
   if (squareIndex > _squareCount) {
-    [NSException raise:@"HLButtonGridInvalidIndex" format:@"Square index %d out of range.", squareIndex];
+    [NSException raise:@"HLGridNodeInvalidIndex" format:@"Square index %d out of range.", squareIndex];
   }
   NSArray *squareNodes = _gridNode.children;
   SKSpriteNode *squareNode = [squareNodes objectAtIndex:(NSUInteger)squareIndex];
@@ -219,7 +219,7 @@ typedef struct {
               completion:(void(^)(void))completion
 {
   if (squareIndex > _squareCount) {
-    [NSException raise:@"HLButtonGridInvalidIndex" format:@"Square index %d out of range.", squareIndex];
+    [NSException raise:@"HLGridNodeInvalidIndex" format:@"Square index %d out of range.", squareIndex];
   }
   NSArray *squareNodes = _gridNode.children;
   SKSpriteNode *squareNode = [squareNodes objectAtIndex:(NSUInteger)squareIndex];
@@ -326,7 +326,7 @@ typedef struct {
 
 - (void)HL_allocateSquareState
 {
-  _squareState = (HLButtonGridNodeSquareState *)malloc(sizeof(HLButtonGridNodeSquareState) * (size_t)_squareCount);
+  _squareState = (HLGridNodeSquareState *)malloc(sizeof(HLGridNodeSquareState) * (size_t)_squareCount);
   for (int s = 0; s < _squareCount; ++s) {
     _squareState[s].enabled = NO;
     _squareState[s].highlight = NO;
@@ -353,9 +353,6 @@ typedef struct {
                                        _gridNode.anchorPoint.y * gridNodeSize.height - _backgroundBorderSize);
 
   // Arrange square nodes in grid.
-  //
-  // note: Add to parent _gridNode in the display order of buttons property; currently,
-  // that's documented as starting upper-left and filling rows before columns.
   for (int y = 0; y < gridHeight; ++y) {
 
     int squaresInRow;
@@ -366,7 +363,7 @@ typedef struct {
     } else {
       squaresInRow = (_squareCount - 1) % _gridWidth + 1;
       squareSizeInRow = _squareSize;
-      if (_layoutMode == HLButtonGridNodeLayoutModeFill) {
+      if (_layoutMode == HLGridNodeLayoutModeFill) {
         squareSizeInRow.width = (squaresArea.width - (squaresInRow - 1) * _squareSeparatorSize) / squaresInRow;
       }
     }

@@ -6,9 +6,9 @@
 //  Copyright (c) 2014 Hilo. All rights reserved.
 //
 
-#import <HLSpriteKit/HLButtonGridNode.h>
 #import <HLSpriteKit/HLEmitterStore.h>
 #import <HLSpriteKit/HLGestureTarget.h>
+#import <HLSpriteKit/HLGridNode.h>
 #import <HLSpriteKit/HLLabelButtonNode.h>
 #import <HLSpriteKit/HLMath.h>
 #import <HLSpriteKit/HLMenuNode.h>
