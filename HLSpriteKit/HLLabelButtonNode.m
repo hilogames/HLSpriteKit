@@ -244,6 +244,13 @@
 
 - (void)HL_layout
 {
+  // note: Don't layout if text not set; this allows the owner some small control over
+  // when layout is performed, e.g. when setting a whole bunch of layout-affecting
+  // properties individually.
+  if (!_labelNode.text) {
+    return;
+  }
+
   CGSize newSize;
   // note: Support non-uniform scaling of texture according to the size property
   // (of this object) by setting the scale property of _backgroundNode rather

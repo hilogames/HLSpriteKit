@@ -8,10 +8,17 @@
 
 #import <SpriteKit/SpriteKit.h>
 
+#import "HLGestureTarget.h"
 #import "SKLabelNode+HLLabelNodeAdditions.h"
 
-@interface HLLabelButtonNode : SKNode <NSCopying, NSCoding>
+@interface HLLabelButtonNode : HLGestureTargetSpriteNode <NSCopying, NSCoding, HLGestureTarget>
 
+/**
+ * The text of the label in the HLLabelButtonNode.  Layout of the components
+ * of the label button will not be performed if the text is unset; during initialization,
+ * then, the caller may set the text after setting all other layout-affecting properties,
+ * and layout will only be performed once.
+ */
 @property (nonatomic, copy) NSString *text;
 
 @property (nonatomic, assign) CGSize size;

@@ -93,26 +93,49 @@
 @end
 
 /**
- * An SKSpriteNode which implements HLGestureTarget using an owner-provided blocks.
+ * An SKNode and common subclasses which implement HLGestureTarget using an owner-provided block.
  *
  * Okay, so it's a bit convoluted.  But this is nice for situations when a simple node
  * needs to handle a simple gesture and subclassing seems like overkill.  Call it
  * experimental.
+ *    I think the challenge is going to be this: Subclassing to get gesture-target behavior must
+ * have zero overhead, since all standard HL nodes will have to do it (in case their owners want
+ * them to be gesture targets without having to do their own subclassing).  So composition of
+ * some kind would be a better model: We only want to add in these data members and overrides if
+ * the child-class owner activates it.
+ *   Okay, but "activation" via composition will require at least one data member in the 
+ * HLGestureTarget superclass, right?  And in that case, we can do the same here: We add a
+ * single dictionary (or dynamically-allocated struct) rather than a bunch of individual
+ * properties.  It's not clear that's much better.
+ *
  */
-@interface HLGestureTargetSpriteNode : SKSpriteNode <HLGestureTarget>
-
+@interface HLGestureTargetNode : SKNode <HLGestureTarget>
 @property (nonatomic, assign) BOOL addsToTapGestureRecognizer;
 @property (nonatomic, assign) BOOL addsToDoubleTapGestureRecognizer;
 @property (nonatomic, assign) BOOL addsToLongPressGestureRecognizer;
 @property (nonatomic, assign) BOOL addsToPanGestureRecognizer;
 @property (nonatomic, assign) BOOL addsToPinchGestureRecognizer;
 @property (nonatomic, copy) void (^handleGestureBlock)(UIGestureRecognizer *);
-
 - (BOOL)addToGesture:(UIGestureRecognizer *)gestureRecognizer firstTouch:(UITouch *)touch isInside:(BOOL *)isInside;
 - (BOOL)addsToTapGestureRecognizer;
 - (BOOL)addsToDoubleTapGestureRecognizer;
 - (BOOL)addsToLongPressGestureRecognizer;
 - (BOOL)addsToPanGestureRecognizer;
 - (BOOL)addsToPinchGestureRecognizer;
-
 @end
+
+@interface HLGestureTargetSpriteNode : SKSpriteNode <HLGestureTarget>
+@property (nonatomic, assign) BOOL addsToTapGestureRecognizer;
+@property (nonatomic, assign) BOOL addsToDoubleTapGestureRecognizer;
+@property (nonatomic, assign) BOOL addsToLongPressGestureRecognizer;
+@property (nonatomic, assign) BOOL addsToPanGestureRecognizer;
+@property (nonatomic, assign) BOOL addsToPinchGestureRecognizer;
+@property (nonatomic, copy) void (^handleGestureBlock)(UIGestureRecognizer *);
+- (BOOL)addToGesture:(UIGestureRecognizer *)gestureRecognizer firstTouch:(UITouch *)touch isInside:(BOOL *)isInside;
+- (BOOL)addsToTapGestureRecognizer;
+- (BOOL)addsToDoubleTapGestureRecognizer;
+- (BOOL)addsToLongPressGestureRecognizer;
+- (BOOL)addsToPanGestureRecognizer;
+- (BOOL)addsToPinchGestureRecognizer;
+@end
+
