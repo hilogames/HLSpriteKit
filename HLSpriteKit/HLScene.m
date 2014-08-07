@@ -298,6 +298,10 @@ static NSTimeInterval HLScenePresentationAnimationFadeDuration = 0.2f;
     //        || (_childLongPressTargets && [_childLongPressTargets containsObject:node])
     //        || (_childPanTargets && [_childPanTargets containsObject:node])
     //        || (_childPinchTargets && [_childPinchTargets containsObject:node])) {
+    
+    // TODO: If the scene has lots of gesture recognizers, then each one will be calling
+    // this same code, including the call to target's addToGesture.  That might lead to
+    // a lot of redundant checking.
 
     NSNumber *optionBits = [node.userData objectForKey:HLSceneChildUserDataKey];
     if (optionBits && ([optionBits unsignedIntegerValue] & HLSceneChildBitGestureTarget) != 0) {

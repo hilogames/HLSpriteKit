@@ -73,6 +73,22 @@ typedef struct {
   return _toolbarNode.color;
 }
 
+- (BOOL)containsPoint:(CGPoint)p
+{
+  // note: A bug, I think, in SpriteKit and SKCropNode: When the toolbar is animated to change tools,
+  // the old squares node has a position animation within its parent (the crop node), and then the
+  // old squares node is removed.  But even after it is removed, the crop node will still report it
+  // as part of its accumulated frame.
+  //
+  // noob: Not sure if I'm correcting a bug here or causing more problems.  This could be seen as
+  // mostly impacting the HLGestureTarget stuff, in which case a possible solution would be to
+  // have HLGestureTargets define their custom hit test methods (with default implementation of
+  // containsPoint).  But if I'm really correcting a bug here, then this is bigger than just
+  // HLGestureTarget and should apply to all callers.  (Well, and all callers of calculateAccumualtedFrame,
+  // too.)
+  return [_toolbarNode containsPoint:[self convertPoint:p fromNode:self.parent]];
+}
+
 - (void)setSize:(CGSize)size
 {
   _toolbarNode.size = size;
@@ -272,6 +288,7 @@ typedef struct {
     if (oldSquaresNode) {
       [oldSquaresNode runAction:[SKAction sequence:@[ [SKAction moveByX:delta.x y:delta.y duration:HLToolbarSlideDuration],
                                                       [SKAction removeFromParent] ]]];
+      // note: See containsPoint; after this animation the accumulated from of the crop node is unreliable.
     }
   }
 }
