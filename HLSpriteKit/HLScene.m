@@ -301,7 +301,7 @@ static NSTimeInterval HLScenePresentationAnimationFadeDuration = 0.2f;
     
     // TODO: If the scene has lots of gesture recognizers, then each one will be calling
     // this same code, including the call to target's addToGesture.  That might lead to
-    // a lot of redundant checking.
+    // a lot of redundant checking.  Come up with a better design?
 
     NSNumber *optionBits = [node.userData objectForKey:HLSceneChildUserDataKey];
     if (optionBits && ([optionBits unsignedIntegerValue] & HLSceneChildBitGestureTarget) != 0) {
@@ -428,6 +428,10 @@ static NSTimeInterval HLScenePresentationAnimationFadeDuration = 0.2f;
 
 - (void)unregisterDescendant:(SKNode *)node
 {
+  if (!node) {
+    return;
+  }
+  
   if (_childNoCoding) {
     [_childNoCoding removeObject:node];
     if ([_childNoCoding count] == 0) {

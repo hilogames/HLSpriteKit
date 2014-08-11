@@ -11,7 +11,7 @@
 #import "HLGestureTarget.h"
 #import "SKLabelNode+HLLabelNodeAdditions.h"
 
-@interface HLLabelButtonNode : HLGestureTargetSpriteNode <NSCopying, NSCoding, HLGestureTarget>
+@interface HLLabelButtonNode : HLGestureTargetNode <NSCopying, NSCoding, HLGestureTarget>
 
 /**
  * The text of the label in the HLLabelButtonNode.  Layout of the components
