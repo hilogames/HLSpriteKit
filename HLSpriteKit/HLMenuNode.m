@@ -31,6 +31,8 @@
     _itemButtonPrototype.fontSize = 24.0f;
     _itemButtonPrototype.fontColor = [UIColor whiteColor];
     _itemButtonPrototype.verticalAlignmentMode = HLLabelNodeVerticalAlignFont;
+    _menuItemButtonPrototype = nil;
+    _backItemButtonPrototype = nil;
     _itemAnimation = HLMenuNodeAnimationSlideLeft;
     _itemAnimationDuration = 0.25;
   }
@@ -45,6 +47,8 @@
     _currentMenu = [aDecoder decodeObjectForKey:@"currentMenu"];
     _itemSpacing = [aDecoder decodeFloatForKey:@"itemSpacing"];
     _itemButtonPrototype = [aDecoder decodeObjectForKey:@"itemButtonPrototype"];
+    _menuItemButtonPrototype = [aDecoder decodeObjectForKey:@"menuItemButtonPrototype"];
+    _backItemButtonPrototype = [aDecoder decodeObjectForKey:@"backItemButtonPrototype"];
     _itemAnimation = (HLMenuNodeAnimation)[aDecoder decodeIntForKey:@"itemAnimation"];
     _itemAnimationDuration = [aDecoder decodeDoubleForKey:@"itemAnimationDuration"];
     _itemSoundFile = [aDecoder decodeObjectForKey:@"itemSoundFile"];
@@ -68,6 +72,8 @@
   [aCoder encodeObject:_currentMenu forKey:@"currentMenu"];
   [aCoder encodeDouble:_itemSpacing forKey:@"itemSpacing"];
   [aCoder encodeObject:_itemButtonPrototype forKey:@"itemButtonPrototype"];
+  [aCoder encodeObject:_menuItemButtonPrototype forKey:@"menuItemButtonPrototype"];
+  [aCoder encodeObject:_backItemButtonPrototype forKey:@"backItemButtonPrototype"];
   [aCoder encodeInt:(int)_itemAnimation forKey:@"itemAnimation"];
   [aCoder encodeDouble:_itemAnimationDuration forKey:@"itemAnimationDuration"];
   [aCoder encodeObject:_itemSoundFile forKey:@"itemSoundFile"];
@@ -185,10 +191,22 @@
 
   for (NSUInteger i = 0; i < [_currentMenu itemCount]; ++i) {
     HLMenuItem *item = [_currentMenu itemAtIndex:i];
-    HLLabelButtonNode *buttonPrototype = (item.buttonPrototype ? item.buttonPrototype : self.itemButtonPrototype);
+
+    HLLabelButtonNode *buttonPrototype = item.buttonPrototype;
+    if (!buttonPrototype) {
+      if ([item isMemberOfClass:[HLMenuItem class]]) {
+        buttonPrototype = _menuItemButtonPrototype;
+      } else if ([item isMemberOfClass:[HLMenuBackItem class]]) {
+        buttonPrototype = _backItemButtonPrototype;
+      }
+      if (!buttonPrototype) {
+        buttonPrototype = _itemButtonPrototype;
+      }
+    }
     if (!buttonPrototype) {
       [NSException raise:@"HLMenuNodeMissingButtonPrototype" format:@"Missing button prototype for menu item."];
     }
+
     HLLabelButtonNode *buttonNode = [buttonPrototype copy];
     buttonNode.text = item.text;
     buttonNode.position = CGPointMake(0.0f, -self.itemSpacing * i);
@@ -203,14 +221,13 @@
   
   } else {
 
-    CGFloat buttonWidthMax = self.itemButtonPrototype.size.width;
-    for (NSUInteger i = 0; i < [_currentMenu itemCount]; ++i) {
-      HLMenuItem *item = [_currentMenu itemAtIndex:i];
-      if (item.buttonPrototype && item.buttonPrototype.size.width > buttonWidthMax) {
-        buttonWidthMax = item.buttonPrototype.size.width;
+    CGFloat buttonWidthMax = 0.0f;
+    for (HLLabelButtonNode *buttonNode in _buttonsNode.children) {
+      if (buttonNode.size.width > buttonWidthMax) {
+        buttonWidthMax = buttonNode.size.width;
       }
     }
-  
+
     CGPoint delta;
     switch (animation) {
       case HLMenuNodeAnimationSlideLeft:

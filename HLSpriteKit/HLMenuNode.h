@@ -50,7 +50,28 @@ typedef enum HLMenuNodeAnimation {
 
 @property (nonatomic, assign) CGFloat itemSpacing;
 
+/**
+ * Basic prototype button that will be copied for each item in the menu hierarchy,
+ * unless more-specific prototypes are provided.  In particular, a prototype for
+ * an item is found in the following order, from most-specific to least-specific:
+ *
+ *  . The HLMenuItem's buttonPrototype property, if set;
+ *
+ *  . otherwise, the HLMenuNode's menuItemButtonPrototype for HLMenuItems,
+ *    if set, and the HLMenuNode's backItemButtonPrototype for HLMenuBackItems,
+ *    if set;
+ *
+ *  . otherwise, the HLMenuNode's itemButtonPrototype.
+ *
+ * All buttons in the menu hierarchy must have a button prototype, or an exception
+ * is raised at runtime.  Setting this property (itemButtonPrototype) is the easiest
+ * way to ensure prototypes for all items.
+ */
 @property (nonatomic, strong) HLLabelButtonNode *itemButtonPrototype;
+
+@property (nonatomic, strong) HLLabelButtonNode *menuItemButtonPrototype;
+
+@property (nonatomic, strong) HLLabelButtonNode *backItemButtonPrototype;
 
 @property (nonatomic, assign) HLMenuNodeAnimation itemAnimation;
 
