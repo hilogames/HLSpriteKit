@@ -137,12 +137,16 @@ typedef enum HLToolbarNodeAnimation {
 - (void)setTools:(NSArray *)tools tags:(NSArray *)toolTags animation:(HLToolbarNodeAnimation)animation;
 
 /**
- * Returns the tag of the tool at the passed location, or -1 for none.  The location is
+ * Returns the tag of the tool at the passed location, or nil for none.  The location is
  * expected to be in the coordinate system of this node.
  */
 - (NSString *)toolAtLocation:(CGPoint)location;
 
-- (CGRect)frameForTool:(NSString *)toolTag;
+/**
+ * Returns the square node that contains the tool node corresponding to the passed tag,
+ * or nil for none.  Modification of the square node is neither expected nor recommended.
+ */
+- (SKSpriteNode *)squareNodeForTool:(NSString *)toolTag;
 
 - (NSUInteger)toolCount;
 

@@ -61,7 +61,7 @@
   _labelPadX = 0.0f;
   _labelPadY = 0.0f;
   _labelNode = [SKLabelNode labelNodeWithFontNamed:@"Helvetica"];
-  _labelNode.zPosition = 1.0f;
+  _labelNode.zPosition = 0.1f;
   [self addChild:_labelNode];
   [self HL_layout];
 }

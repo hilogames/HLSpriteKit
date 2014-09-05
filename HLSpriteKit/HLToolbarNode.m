@@ -308,14 +308,14 @@ typedef struct {
   return nil;
 }
 
-- (CGRect)frameForTool:(NSString *)toolTag
+- (SKSpriteNode *)squareNodeForTool:(NSString *)toolTag
 {
   for (SKSpriteNode *squareNode in _squaresNode.children) {
     if ([squareNode.name isEqualToString:toolTag]) {
-      return squareNode.frame;
+      return squareNode;
     }
   }
-  return CGRectZero;
+  return nil;
 }
 
 - (void)setHighlight:(BOOL)highlight forTool:(NSString *)toolTag

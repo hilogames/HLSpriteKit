@@ -17,13 +17,13 @@ NSString * const HLSceneChildGestureTarget = @"HLSceneChildGestureTarget";
 
 static NSString * const HLSceneChildUserDataKey = @"HLScene";
 
-static NSUInteger HLSceneChildBitNoCoding = (1 << 0);
-static NSUInteger HLSceneChildBitResizeWithScene = (1 << 1);
-static NSUInteger HLSceneChildBitGestureTarget = (1 << 2);
+static const NSUInteger HLSceneChildBitNoCoding = (1 << 0);
+static const NSUInteger HLSceneChildBitResizeWithScene = (1 << 1);
+static const NSUInteger HLSceneChildBitGestureTarget = (1 << 2);
 
-static BOOL HLSceneAssetsLoaded = NO;
+static const NSTimeInterval HLScenePresentationAnimationFadeDuration = 0.2f;
 
-static NSTimeInterval HLScenePresentationAnimationFadeDuration = 0.2f;
+static BOOL _sceneAssetsLoaded = NO;
 
 @implementation HLScene
 {
@@ -499,17 +499,17 @@ static NSTimeInterval HLScenePresentationAnimationFadeDuration = 0.2f;
 + (void)loadSceneAssets
 {
   // note: To be overridden by subclasses.
-  HLSceneAssetsLoaded = YES;
+  _sceneAssetsLoaded = YES;
 }
 
 + (BOOL)sceneAssetsLoaded
 {
-  return HLSceneAssetsLoaded;
+  return _sceneAssetsLoaded;
 }
 
 + (void)assertSceneAssetsLoaded
 {
-  if (!HLSceneAssetsLoaded) {
+  if (!_sceneAssetsLoaded) {
     HLError(HLLevelError, @"Scene assets not yet loaded.");
   }
 }
