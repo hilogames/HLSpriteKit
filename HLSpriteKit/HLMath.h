@@ -20,5 +20,4 @@
  * but unfortunately the calculated frame only contains visible areas of the node, which
  * is not the same as its desired display size.)
  */
-CGSize
-HLGetBoundsForTransformation(CGSize size, CGFloat theta);
+FOUNDATION_EXPORT CGSize HLGetBoundsForTransformation(CGSize size, CGFloat theta);

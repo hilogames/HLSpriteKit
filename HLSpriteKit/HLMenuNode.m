@@ -45,7 +45,7 @@
   if (self) {
     _menu = [aDecoder decodeObjectForKey:@"menu"];
     _currentMenu = [aDecoder decodeObjectForKey:@"currentMenu"];
-    _itemSpacing = [aDecoder decodeFloatForKey:@"itemSpacing"];
+    _itemSpacing = (CGFloat)[aDecoder decodeDoubleForKey:@"itemSpacing"];
     _itemButtonPrototype = [aDecoder decodeObjectForKey:@"itemButtonPrototype"];
     _menuItemButtonPrototype = [aDecoder decodeObjectForKey:@"menuItemButtonPrototype"];
     _backItemButtonPrototype = [aDecoder decodeObjectForKey:@"backItemButtonPrototype"];

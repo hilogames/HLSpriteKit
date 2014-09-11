@@ -82,8 +82,8 @@
     _automaticWidth = [aDecoder decodeBoolForKey:@"automaticWidth"];
     _automaticHeight = [aDecoder decodeBoolForKey:@"automaticHeight"];
     _verticalAlignmentMode = (HLLabelNodeVerticalAlignmentMode)[aDecoder decodeIntForKey:@"verticalAlignmentMode"];
-    _labelPadX = [aDecoder decodeFloatForKey:@"labelPadX"];
-    _labelPadY = [aDecoder decodeFloatForKey:@"labelPadY"];
+    _labelPadX = (CGFloat)[aDecoder decodeDoubleForKey:@"labelPadX"];
+    _labelPadY = (CGFloat)[aDecoder decodeDoubleForKey:@"labelPadY"];
   }
   return self;
 }
