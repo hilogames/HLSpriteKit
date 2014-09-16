@@ -20,6 +20,8 @@
 
 @property (nonatomic, assign) NSTimeInterval messageLingerDuration;
 
+@property (nonatomic, copy) NSString *messageSoundFile;
+
 @property (nonatomic, copy) NSString *fontName;
 
 @property (nonatomic, assign) CGFloat fontSize;

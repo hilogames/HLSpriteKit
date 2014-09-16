@@ -280,14 +280,14 @@
 {
   HLMenuItem *item = [_currentMenu itemAtIndex:itemIndex];
 
-  id<HLMenuNodeDelegate> delegate = self.delegate;
-  if (delegate) {
-    if ([delegate respondsToSelector:@selector(menuNode:shouldTapMenuItem:itemIndex:)]
-        && ![delegate menuNode:self shouldTapMenuItem:item itemIndex:itemIndex]) {
-      return;
-    }
-  }
-
+  // note: Current use prefers playing the sound effect regardless of what
+  // shouldTapMenuItem returns: This is an interface acknowledgement of the
+  // gesture, no matter what happens.  In particular, there's a use case for
+  // a menu button which decides to skip a submenu and navigate to a different
+  // location than normal in the hierarchy, so it returns NO for shouldTapMenuItem
+  // and instead calls navigateToSubmenuWithPathComponents.  Many alternate
+  // solutions and implementations come to mind; wait for a compelling competing
+  // use case.
   NSString *soundFile = (item.soundFile ? item.soundFile : _itemSoundFile);
   if (soundFile) {
     // noob: Have the scene run it in case we are pressing some kind of "dismiss" button
@@ -295,6 +295,14 @@
     // way of thinking about this?  After all, this isn't extreme enough: The scene
     // might be about to be dismissed, too.
     [self.scene runAction:[SKAction playSoundFileNamed:soundFile waitForCompletion:NO]];
+  }
+  
+  id<HLMenuNodeDelegate> delegate = self.delegate;
+  if (delegate) {
+    if ([delegate respondsToSelector:@selector(menuNode:shouldTapMenuItem:itemIndex:)]
+        && ![delegate menuNode:self shouldTapMenuItem:item itemIndex:itemIndex]) {
+      return;
+    }
   }
 
   if ([item isKindOfClass:[HLMenu class]]) {

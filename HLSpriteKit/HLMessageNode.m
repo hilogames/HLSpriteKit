@@ -166,6 +166,9 @@
     SKAction *show = [SKAction sequence:@[ wait, slideOut, remove ]];
     [_backgroundNode runAction:show withKey:@"show"];
   }
+  if (_messageSoundFile) {
+    [_backgroundNode runAction:[SKAction playSoundFileNamed:_messageSoundFile waitForCompletion:NO]];
+  }
 }
 
 - (void)hideMessage
