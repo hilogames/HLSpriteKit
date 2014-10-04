@@ -286,8 +286,11 @@ typedef struct {
     squaresNode.position = CGPointMake(-delta.x, -delta.y);
     [squaresNode runAction:[SKAction moveByX:delta.x y:delta.y duration:HLToolbarSlideDuration]];
     if (oldSquaresNode) {
-      [oldSquaresNode runAction:[SKAction sequence:@[ [SKAction moveByX:delta.x y:delta.y duration:HLToolbarSlideDuration],
-                                                      [SKAction removeFromParent] ]]];
+      // note: In iOS8, removeFromParent as SKAction in a sequence causes an untraceable EXC_BAD_ACCESS.
+      // Change to a completion block.
+      [oldSquaresNode runAction:[SKAction moveByX:delta.x y:delta.y duration:HLToolbarSlideDuration] completion:^{
+        [oldSquaresNode removeFromParent];
+      }];
       // note: See containsPoint; after this animation the accumulated from of the crop node is unreliable.
     }
   }

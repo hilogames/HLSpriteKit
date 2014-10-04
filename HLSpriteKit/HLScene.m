@@ -557,7 +557,8 @@ static BOOL _sceneAssetsLoaded = NO;
 
   switch (animation) {
     case HLScenePresentationAnimationFade:
-      _modalPresentationNode.alpha = 0.0f;
+      // TODO: Hack fix for iOS8; when fading in from (the intended) alpha 0.0f this crashes with EXC_BAD_ACCESS.
+      _modalPresentationNode.alpha = 0.01f;
       [_modalPresentationNode runAction:[SKAction fadeInWithDuration:HLScenePresentationAnimationFadeDuration]];
       break;
     case HLScenePresentationAnimationNone:

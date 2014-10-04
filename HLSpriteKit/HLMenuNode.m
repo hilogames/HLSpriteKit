@@ -245,7 +245,10 @@
     [_buttonsNode runAction:animationAction];
 
     if (oldButtonsNode) {
-      [oldButtonsNode runAction:[SKAction sequence:@[ animationAction, [SKAction removeFromParent] ]]];
+      // note: As of iOS8, doing the remove using an SKAction causes EXC_BAD_ACCESS.
+      [oldButtonsNode runAction:animationAction completion:^{
+        [oldButtonsNode removeFromParent];
+      }];
     }
   }
 
