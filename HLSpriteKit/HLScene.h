@@ -170,6 +170,39 @@ FOUNDATION_EXPORT NSString * const HLSceneChildGestureTarget;
  */
 
 /**
+ * HLScene implements gestureRecognizer:shouldReceiveTouch: to look for HLGestureTarget
+ * nodes which intersect the touch and see if any of them want to handle the gesture.
+ * The HLSceneGestureTargetHitTestMode determines the way that the method finds targets:
+ * Should it start with the node deepest in the tree, or with the highest zPosition?
+ * If not stopping with the first node hit, should it then look for more targets by
+ * traversing parents in the node tree, or again by zPosition?  Here are the current
+ * options:
+ *
+ *   HLSceneGestureTargetHitTestModeDeepestThenParent: Uses [SKNode nodeAtPoint] to
+ *   find the deepest intersecting node, and then traverses up the node tree looking
+ *   for handlers.  Presumably this mode works best with SKScenes where
+ *   ignoresSiblingOrder == NO (the default), so that this hit-test finds things in
+ *   render order.
+ *
+ *   HLSceneGestureTargetHitTestModeZPositionThenParent: Uses [SKNode nodesAtPoint] to
+ *   find the intersecting node with the highest zPosition, and then traverses up the
+ *   node tree looking for handlers.  Presumably this mode works best with SKScenes
+ *   where ignoresSiblingOrder == YES, so that this hit-test finds things in render order.
+ *
+ * noob: Seemingly obvious, but currently unimplemented, would be a mode where intersecting
+ * nodes are collected by [nodesAtPoint] and then traversed in order of zPosition (highest
+ * to lowest).  HLSceneGestureTargetHitTestModeZPosition, presumably.  But parent-traversal
+ * is already coded, and works in simple cases, so I'm delaying implementation until I have
+ * a use-case for zPosition-only.
+ */
+typedef enum {
+  HLSceneGestureTargetHitTestModeDeepestThenParent,
+  HLSceneGestureTargetHitTestModeZPositionThenParent,
+//  HLSceneGestureTargetHitTestModeZPosition,
+} HLSceneGestureTargetHitTestMode;
+@property (nonatomic, assign) HLSceneGestureTargetHitTestMode gestureTargetHitTestMode;
+
+/**
  * If the shared gesture recognizer does not already exist:
  *
  *   - creates a shared gesture recognizer;

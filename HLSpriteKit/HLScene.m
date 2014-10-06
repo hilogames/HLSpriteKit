@@ -44,6 +44,9 @@ static BOOL _sceneAssetsLoaded = NO;
 {
   self = [super initWithCoder:aDecoder];
   if (self) {
+  
+    _gestureTargetHitTestMode = (HLSceneGestureTargetHitTestMode)[aDecoder decodeIntForKey:@"gestureTargetHitTestMode"];
+
     NSMutableArray *childrenArrayQueue = [NSMutableArray arrayWithObject:self.children];
     NSUInteger a = 0;
     while (a < [childrenArrayQueue count]) {
@@ -110,6 +113,8 @@ static BOOL _sceneAssetsLoaded = NO;
   }
 
   [super encodeWithCoder:aCoder];
+  
+  [aCoder encodeInt:_gestureTargetHitTestMode forKey:@"gestureTargetHitTestMode"];
   
   [removedChildren enumerateKeysAndObjectsUsingBlock:^(id key, id object, BOOL *stop){
     SKNode *child = [key pointerValue];
@@ -276,13 +281,26 @@ static BOOL _sceneAssetsLoaded = NO;
   [gestureRecognizer removeTarget:nil action:nil];
   CGPoint sceneLocation = [touch locationInNode:self];
 
-  // note: This works well for me so far, but we might need to try nodesAtPoint
-  // or something else, depending on the needs of the owner.
-
-  // noob: And come to think of it, this has only been tested when the SKView
-  // ignores sibling order.  How do things change when it doesn't?
-
-  SKNode *node = [self nodeAtPoint:sceneLocation];
+  SKNode *node = nil;
+  if (_gestureTargetHitTestMode == HLSceneGestureTargetHitTestModeDeepestThenParent) {
+    node = [self nodeAtPoint:sceneLocation];
+  } else if (_gestureTargetHitTestMode == HLSceneGestureTargetHitTestModeZPositionThenParent) {
+    NSArray *nodesAtPoint = [self nodesAtPoint:sceneLocation];
+    CGFloat highestGlobalZPosition = 0.0f;
+    for (SKNode *n in nodesAtPoint) {
+      CGFloat globalZPosition = n.zPosition;
+      for (SKNode *p = n.parent; p != nil; p = p.parent) {
+        globalZPosition += p.zPosition;
+      }
+      if (!node || globalZPosition > highestGlobalZPosition) {
+        node = n;
+        highestGlobalZPosition = globalZPosition;
+      }
+    }
+  } else {
+    [NSException raise:@"HLSceneUnknownGestureTargetHitTestMode" format:@"Unknown gesture target hit test mode %d.", _gestureTargetHitTestMode];
+  }
+  
   while (node != self) {
 
     // note: Any target registered for gesture recognition should be called to

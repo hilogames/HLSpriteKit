@@ -265,8 +265,10 @@
 
   // noob: Okay to keep preloading the main sound over and over again?
   // Or is that dumb?
-  NSLog(@"loading sound %@", self.itemSoundFile);
-  [SKAction playSoundFileNamed:self.itemSoundFile waitForCompletion:NO];
+  if (self.itemSoundFile) {
+    NSLog(@"loading sound %@", self.itemSoundFile);
+    [SKAction playSoundFileNamed:self.itemSoundFile waitForCompletion:NO];
+  }
   
   for (NSUInteger i = 0; i < [_currentMenu itemCount]; ++i) {
     HLMenuItem *item = [_currentMenu itemAtIndex:i];
