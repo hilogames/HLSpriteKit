@@ -107,7 +107,6 @@
  * HLGestureTarget superclass, right?  And in that case, we can do the same here: We add a
  * single dictionary (or dynamically-allocated struct) rather than a bunch of individual
  * properties.  It's not clear that's much better.
- *
  */
 @interface HLGestureTargetNode : SKNode <HLGestureTarget>
 @property (nonatomic, assign) BOOL addsToTapGestureRecognizer;

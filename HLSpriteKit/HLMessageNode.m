@@ -8,6 +8,12 @@
 
 #import "HLMessageNode.h"
 
+enum {
+  HLMessageNodeZPositionLayerBackground = 0,
+  HLMessageNodeZPositionLayerLabel,
+  HLMessageNodeZPositionLayerCount
+};
+
 @implementation HLMessageNode
 {
   SKSpriteNode *_backgroundNode;
@@ -70,6 +76,7 @@
   _messageLingerDuration = 2.0;
 
   _labelNode = [SKLabelNode labelNodeWithFontNamed:@"Courier"];
+  _labelNode.zPosition = self.zPositionScale / HLMessageNodeZPositionLayerCount;
   _labelNode.fontSize = 14.0f;
   _labelNode.fontColor = [UIColor whiteColor];
   [_backgroundNode addChild:_labelNode];
@@ -77,7 +84,14 @@
   [self HL_layoutLabelNode];
 }
 
-- (id)copyWithZone:(NSZone *)zone
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+  [NSException raise:@"HLCodingNotImplemented" format:@"Coding not implemented for this descendant of an NSCoding parent."];
+  // note: Call [init] for the sake of the compiler trying to detect problems with designated initializers.
+  return [self init];
+}
+
+- (instancetype)copyWithZone:(NSZone *)zone
 {
   HLMessageNode *copy = [super copyWithZone:zone];
   for (SKNode *child in copy.children) {
@@ -93,7 +107,7 @@
   copy->_verticalAlignmentMode = _verticalAlignmentMode;
   copy->_messageAnimationDuration = _messageAnimationDuration;
   copy->_messageLingerDuration = _messageLingerDuration;
-  return nil;
+  return copy;
 }
 
 - (CGSize)size

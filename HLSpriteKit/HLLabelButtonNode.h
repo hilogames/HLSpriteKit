@@ -11,6 +11,7 @@
 #import "HLGestureTarget.h"
 #import "SKLabelNode+HLLabelNodeAdditions.h"
 
+// TODO: Change to inherit from HLComponentNode.
 @interface HLLabelButtonNode : HLGestureTargetNode <NSCopying, NSCoding, HLGestureTarget>
 
 /**

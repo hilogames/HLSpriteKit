@@ -11,6 +11,11 @@
 
 #import "HLLabelButtonNode.h"
 
+enum {
+  HLMenuNodeZPositionLayerButtons = 0,
+  HLMenuNodeZPositionLayerCount
+};
+
 @implementation HLMenuNode
 {
   SKNode *_buttonsNode;
@@ -84,7 +89,7 @@
   }
 }
 
-- (id)copyWithZone:(NSZone *)zone
+- (instancetype)copyWithZone:(NSZone *)zone
 {
   [NSException raise:@"HLCopyingNotImplemented" format:@"Copying not implemented for this descendant of an NSCopying parent."];
   return nil;
@@ -209,6 +214,8 @@
 
     HLLabelButtonNode *buttonNode = [buttonPrototype copy];
     buttonNode.text = item.text;
+    // TODO: Use zPositionScale on button when it is a component too.
+    //buttonNode.zPositionScale = self.zPositionScale / HLMenuNodeZPositionLayerCount;
     buttonNode.position = CGPointMake(0.0f, -self.itemSpacing * i);
     [_buttonsNode addChild:buttonNode];
   }

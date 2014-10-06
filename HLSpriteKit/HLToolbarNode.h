@@ -8,6 +8,8 @@
 
 #import <SpriteKit/SpriteKit.h>
 
+#import "HLComponentNode.h"
+
 @class HLTextureStore;
 
 typedef enum HLToolbarNodeJustification {
@@ -24,7 +26,7 @@ typedef enum HLToolbarNodeAnimation {
   HLToolbarNodeAnimationSlideRight
 } HLToolbarNodeAnimation;
 
-@interface HLToolbarNode : SKNode <NSCoding>
+@interface HLToolbarNode : HLComponentNode <NSCoding>
 
 /**
  * Main toolbar color, showing as background behind tool squares.  Changes will not take
@@ -99,6 +101,8 @@ typedef enum HLToolbarNodeAnimation {
  * setTools.
  */
 @property (nonatomic, assign) CGFloat toolPad;
+
+- (instancetype)init NS_DESIGNATED_INITIALIZER;
 
 /**
  * Sets tool nodes in the toolbar and effects layout according to all object properties.

@@ -8,6 +8,7 @@
 
 #import <SpriteKit/SpriteKit.h>
 
+#import "HLComponentNode.h"
 #import "HLGestureTarget.h"
 
 /**
@@ -28,7 +29,7 @@ typedef enum HLMenuNodeAnimation {
   HLMenuNodeAnimationSlideRight
 } HLMenuNodeAnimation;
 
-@interface HLMenuNode : SKNode <NSCoding, HLGestureTarget>
+@interface HLMenuNode : HLComponentNode <NSCoding, HLGestureTarget>
 
 @property (nonatomic, weak) id<HLMenuNodeDelegate> delegate;
 

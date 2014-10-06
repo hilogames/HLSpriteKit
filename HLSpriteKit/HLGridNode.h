@@ -8,9 +8,10 @@
 
 #import <SpriteKit/SpriteKit.h>
 
+#import "HLComponentNode.h"
 #import "HLGestureTarget.h"
 
-@interface HLGridNode : SKNode <HLGestureTarget>
+@interface HLGridNode : HLComponentNode <HLGestureTarget>
 
 /**
  * A callback invoked when a square in the grid is tapped.  The callback parameter is

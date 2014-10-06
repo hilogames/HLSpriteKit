@@ -122,7 +122,7 @@ static BOOL _sceneAssetsLoaded = NO;
   }];
 }
 
-- (id)copyWithZone:(NSZone *)zone
+- (instancetype)copyWithZone:(NSZone *)zone
 {
   [NSException raise:@"HLCopyingNotImplemented" format:@"Copying not implemented for this descendant of an NSCopying parent."];
   return nil;

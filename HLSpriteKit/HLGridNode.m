@@ -13,6 +13,13 @@ typedef struct {
   BOOL highlight;
 } HLGridNodeSquareState;
 
+enum {
+  HLGridNodeZPositionLayerBackground = 0,
+  HLGridNodeZPositionLayerSquares,
+  HLGridNodeZPositionLayerContent,
+  HLGridNodeZPositionLayerCount
+};
+
 @implementation HLGridNode
 {
   SKSpriteNode *_gridNode;
@@ -72,6 +79,19 @@ typedef struct {
   return self;
 }
 
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+  [NSException raise:@"HLCodingNotImplemented" format:@"Coding not implemented for this descendant of an NSCoding parent."];
+  // note: Call [init] for the sake of the compiler trying to detect problems with designated initializers.
+  return [self init];
+}
+
+- (instancetype)copyWithZone:(NSZone *)zone
+{
+  [NSException raise:@"HLCopyingNotImplemented" format:@"Copying not implemented for this descendant of an NSCopying parent."];
+  return nil;
+}
+
 - (void)dealloc
 {
   [self HL_freeSquareState];
@@ -91,11 +111,12 @@ typedef struct {
 
   NSUInteger contentCount = [contentNodes count];
   NSUInteger i = 0;
+  CGFloat zPositionLayerIncrement = self.zPositionScale / HLGridNodeZPositionLayerCount;
   while (i < contentCount && i < (NSUInteger)_squareCount) {
     SKNode *contentNode = (SKNode *)contentNodes[i];
     SKSpriteNode *squareNode = (SKSpriteNode *)squareNodes[i];
     // note: Could let caller worry about zPosition.
-    contentNode.zPosition = 0.1f;
+    contentNode.zPosition = zPositionLayerIncrement;
     [squareNode addChild:contentNode];
     ++i;
   }
@@ -364,6 +385,7 @@ typedef struct {
                                        _gridNode.anchorPoint.y * gridNodeSize.height - _backgroundBorderSize);
 
   // Arrange square nodes in grid.
+  CGFloat zPositionLayerIncrement = self.zPositionScale / HLGridNodeZPositionLayerCount;
   for (int y = 0; y < gridHeight; ++y) {
 
     int squaresInRow;
@@ -381,7 +403,7 @@ typedef struct {
 
     for (int x = 0; x < squaresInRow; ++x) {
       SKSpriteNode *squareNode = [SKSpriteNode spriteNodeWithColor:_squareColor size:squareSizeInRow];
-      squareNode.zPosition = 0.1f;
+      squareNode.zPosition = zPositionLayerIncrement;
       squareNode.position = CGPointMake(upperLeftPoint.x + squareSizeInRow.width / 2.0f + x * (squareSizeInRow.width + _squareSeparatorSize),
                                         upperLeftPoint.y - squareSizeInRow.height / 2.0f - y * (squareSizeInRow.height + _squareSeparatorSize));
       [_gridNode addChild:squareNode];

@@ -8,9 +8,10 @@
 
 #import <SpriteKit/SpriteKit.h>
 
+#import "HLComponentNode.h"
 #import "SKLabelNode+HLLabelNodeAdditions.h"
 
-@interface HLMessageNode : SKNode
+@interface HLMessageNode : HLComponentNode <NSCopying>
 
 @property (nonatomic, assign) CGSize size;
 

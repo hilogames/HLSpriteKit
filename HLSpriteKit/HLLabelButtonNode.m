@@ -8,6 +8,13 @@
 
 #import "HLLabelButtonNode.h"
 
+// TODO: Change to inherit from HLComponentNode.
+//enum {
+//  HLLabelButtonNodeZPositionLayerBackground = 0,
+//  HLLabelButtonNodeZPositionLayerLabel,
+//  HLLabelButtonNodeZPositionLayerCount
+//};
+
 @implementation HLLabelButtonNode
 {
   // note: In the first draft, the HLLabelButtonNode *was* the background node.
@@ -61,6 +68,8 @@
   _labelPadX = 0.0f;
   _labelPadY = 0.0f;
   _labelNode = [SKLabelNode labelNodeWithFontNamed:@"Helvetica"];
+  // TODO: Change to inherit from HLComponentNode.
+  //_labelNode.zPosition = self.zPositionScale / HLLabelButtonNodeZPositionLayerCount * HLLabelButtonNodeZPositionLayerLabel;
   _labelNode.zPosition = 0.1f;
   [self addChild:_labelNode];
   [self HL_layout];
@@ -101,7 +110,7 @@
   [aCoder encodeDouble:_labelPadY forKey:@"labelPadY"];
 }
 
-- (id)copyWithZone:(NSZone *)zone
+- (instancetype)copyWithZone:(NSZone *)zone
 {
   HLLabelButtonNode *copy = [super copyWithZone:zone];
   // noob: SKNode copy deep-copies all children; need to hook up our

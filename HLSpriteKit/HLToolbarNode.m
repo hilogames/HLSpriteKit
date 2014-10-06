@@ -20,6 +20,13 @@ typedef struct {
   BOOL highlight;
 } HLToolbarNodeSquareState;
 
+enum {
+  HLToolbarNodeZPositionLayerBackground = 0,
+  HLToolbarNodeZPositionLayerSquares,
+  HLToolbarNodeZPositionLayerTools,
+  HLToolbarNodeZPositionLayerCount
+};
+
 @implementation HLToolbarNode
 {
   SKSpriteNode *_toolbarNode;
@@ -61,6 +68,19 @@ typedef struct {
 - (void)dealloc
 {
   [self HL_freeSquareState];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+  [NSException raise:@"HLCodingNotImplemented" format:@"Coding not implemented for this descendant of an NSCoding parent."];
+  // note: Call [init] for the sake of the compiler trying to detect problems with designated initializers.
+  return [self init];
+}
+
+- (instancetype)copyWithZone:(NSZone *)zone
+{
+  [NSException raise:@"HLCopyingNotImplemented" format:@"Copying not implemented for this descendant of an NSCopying parent."];
+  return nil;
 }
 
 - (void)setBackgroundColor:(SKColor *)backgroundColor
@@ -223,6 +243,7 @@ typedef struct {
   // Set tools (scaled and positioned appropriately).
   CGFloat x = _toolbarNode.anchorPoint.x * -finalToolbarSize.width + _backgroundBorderSize + justificationOffset;
   CGFloat y = _toolbarNode.anchorPoint.y * -finalToolbarSize.height + finalToolbarSize.height / 2.0f;
+  CGFloat zPositionLayerIncrement = self.zPositionScale / HLToolbarNodeZPositionLayerCount;
   for (NSUInteger i = 0; i < toolCount; ++i) {
     SKNode *toolNode = toolNodes[i];
     NSString *toolTag = toolTags[i];
@@ -241,13 +262,13 @@ typedef struct {
     squareNode.xScale = finalToolsScale;
     squareNode.yScale = finalToolsScale;
     squareNode.alpha = _enabledAlpha;
-    squareNode.zPosition = 0.1f;
+    squareNode.zPosition = zPositionLayerIncrement;
     squareNode.position = CGPointMake(x + finalToolSize.width / 2.0f + _toolPad, y);
     [squaresNode addChild:squareNode];
 
     //toolNode.xScale *= finalToolsScale;
     //toolNode.yScale *= finalToolsScale;
-    toolNode.zPosition = 0.1f;
+    toolNode.zPosition = zPositionLayerIncrement;
     [squareNode addChild:toolNode];
 
     x += finalToolSize.width + _toolPad * 2 + _squareSeparatorSize;
