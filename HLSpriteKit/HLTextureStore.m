@@ -23,7 +23,7 @@
   return sharedStore;
 }
 
-- (id)init
+- (instancetype)init
 {
   self = [super init];
   if (self) {
@@ -35,17 +35,17 @@
 
 - (SKTexture *)textureForKey:(NSString *)key
 {
-  return [_textures objectForKey:key];
+  return _textures[key];
 }
 
 - (UIImage *)imageForKey:(NSString *)key
 {
-  UIImage *image = [_images objectForKey:key];
+  UIImage *image = _images[key];
   if (!image) {
     [NSException raise:@"HLTextureStoreImageNotFound"
                 format:@"Could not find image with key '%@'.  (If the image is part of a texture atlas, it must also be included as a resource in the application bundle with the suffix '-nonatlas'.)", key];
   }
-  return [_images objectForKey:key];
+  return _images[key];
 }
 
 - (SKTexture *)setTextureWithImage:(UIImage *)image forKey:(NSString *)key filteringMode:(SKTextureFilteringMode)filteringMode

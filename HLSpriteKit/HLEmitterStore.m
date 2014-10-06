@@ -22,7 +22,7 @@
   return sharedStore;
 }
 
-- (id)init
+- (instancetype)init
 {
   self = [super init];
   if (self) {
@@ -33,7 +33,7 @@
 
 - (SKEmitterNode *)emitterCopyForKey:(NSString *)key
 {
-  SKEmitterNode *emitter = [_emitters objectForKey:key];
+  SKEmitterNode *emitter = _emitters[key];
   if (!emitter) {
     return nil;
   }
@@ -42,7 +42,7 @@
 
 - (void)setEmitter:(SKEmitterNode *)emitterNode forKey:(NSString *)key
 {
-  [_emitters setObject:emitterNode forKey:key];
+  _emitters[key] = emitterNode;
 }
 
 - (SKEmitterNode *)setEmitterWithResource:(NSString *)name forKey:(NSString *)key
@@ -51,7 +51,7 @@
   if (!emitter) {
     [NSException raise:@"HLEmitterStoreEmitterNotFound" format:@"Could not find emitter in bundle with name '%@' and type 'sks'.", name];
   }
-  [_emitters setObject:emitter forKey:key];
+  _emitters[key] = emitter;
   return emitter;
 }
 

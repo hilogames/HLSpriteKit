@@ -17,7 +17,7 @@
   HLMenu *_currentMenu;
 }
 
-- (id)init
+- (instancetype)init
 {
   self = [super init];
   if (self) {
@@ -39,7 +39,7 @@
   return self;
 }
 
-- (id)initWithCoder:(NSCoder *)aDecoder
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
 {
   self = [super initWithCoder:aDecoder];
   if (self) {
@@ -351,7 +351,7 @@
   return [[[self class] alloc] initWithText:text];
 }
 
-- (id)initWithText:(NSString *)text
+- (instancetype)initWithText:(NSString *)text
 {
   self = [super init];
   if (self) {
@@ -360,7 +360,7 @@
   return self;
 }
 
-- (id)initWithCoder:(NSCoder *)aDecoder
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
 {
   self = [super init];
   if (self) {
@@ -410,37 +410,30 @@
   return [[[self class] alloc] initWithText:text items:items];
 }
 
-- (id)init
+- (instancetype)init
 {
-  self = [super initWithText:@""];
-  if (self) {
-    _items = [NSMutableArray array];
-  }
-  return self;
+  return [self initWithText:@"" items:nil];
 }
 
-- (id)initWithText:(NSString *)text
+- (instancetype)initWithText:(NSString *)text
+{
+  return [self initWithText:text items:nil];
+}
+
+- (instancetype)initWithText:(NSString *)text items:(NSArray *)items
 {
   self = [super initWithText:text];
   if (self) {
-    _items = [NSMutableArray array];
-  }
-  return self;
-}
-
-- (id)initWithText:(NSString *)text items:(NSArray *)items
-{
-  self = [super initWithText:text];
-  if (self) {
-    _items = [NSMutableArray array];
-    for (HLMenuItem *item in items) {
-      [self addItem:item];
+    if (items) {
+      _items = [NSMutableArray arrayWithArray:items];
+    } else {
+      _items = [NSMutableArray array];
     }
   }
   return self;
 }
 
-- (id)initWithCoder:(NSCoder *)aDecoder
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
 {
   self = [super initWithCoder:aDecoder];
   if (self) {
@@ -468,7 +461,7 @@
 
 - (HLMenuItem *)itemAtIndex:(NSUInteger)index
 {
-  return (HLMenuItem *)[_items objectAtIndex:index];
+  return (HLMenuItem *)_items[index];
 }
 
 - (HLMenuItem *)itemForPathComponents:(NSArray *)pathComponents
@@ -476,7 +469,7 @@
   HLMenuItem *matchingItem = self;
   NSUInteger pathComponentCount = [pathComponents count];
   for (NSUInteger pc = 0; pc < pathComponentCount; ++pc) {
-    NSString *pathComponent = [pathComponents objectAtIndex:pc];
+    NSString *pathComponent = pathComponents[pc];
     BOOL foundMatchingItem = NO;
     for (HLMenuItem *item in ((HLMenu *)matchingItem)->_items) {
       if ([item.text isEqualToString:pathComponent]) {

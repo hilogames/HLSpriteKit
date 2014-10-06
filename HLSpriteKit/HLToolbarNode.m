@@ -29,7 +29,7 @@ typedef struct {
   HLToolbarNodeSquareState *_squareState;
 }
 
-- (id)init
+- (instancetype)init
 {
   self = [super init];
   if (self) {
@@ -224,8 +224,8 @@ typedef struct {
   CGFloat x = _toolbarNode.anchorPoint.x * -finalToolbarSize.width + _backgroundBorderSize + justificationOffset;
   CGFloat y = _toolbarNode.anchorPoint.y * -finalToolbarSize.height + finalToolbarSize.height / 2.0f;
   for (NSUInteger i = 0; i < toolCount; ++i) {
-    SKNode *toolNode = [toolNodes objectAtIndex:i];
-    NSString *toolTag = [toolTags objectAtIndex:i];
+    SKNode *toolNode = toolNodes[i];
+    NSString *toolTag = toolTags[i];
 
     CGSize naturalToolSize = HLGetBoundsForTransformation([(id)toolNode size], toolNode.zRotation);
     // note: Can multiply toolNode.scale by finalToolsScale, directly.  But that's messing

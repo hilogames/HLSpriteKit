@@ -40,7 +40,7 @@ static BOOL _sceneAssetsLoaded = NO;
   SKNode *_modalPresentationNode;
 }
 
-- (id)initWithCoder:(NSCoder *)aDecoder
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
 {
   self = [super initWithCoder:aDecoder];
   if (self) {
@@ -50,13 +50,13 @@ static BOOL _sceneAssetsLoaded = NO;
     NSMutableArray *childrenArrayQueue = [NSMutableArray arrayWithObject:self.children];
     NSUInteger a = 0;
     while (a < [childrenArrayQueue count]) {
-      NSArray *childrenArray = [childrenArrayQueue objectAtIndex:a];
+      NSArray *childrenArray = childrenArrayQueue[a];
       ++a;
       for (SKNode *node in childrenArray) {
         if ([node.children count] > 0) {
           [childrenArrayQueue addObject:node.children];
         }
-        NSNumber *optionBitsNumber = [node.userData objectForKey:HLSceneChildUserDataKey];
+        NSNumber *optionBitsNumber = (node.userData)[HLSceneChildUserDataKey];
         if (!optionBitsNumber) {
           continue;
         }
@@ -106,7 +106,7 @@ static BOOL _sceneAssetsLoaded = NO;
   if (_childNoCoding) {
     for (SKNode *child in _childNoCoding) {
       if (child.parent) {
-        [removedChildren setObject:child.parent forKey:[NSValue valueWithPointer:(__bridge const void *)(child)]];
+        removedChildren[[NSValue valueWithPointer:(__bridge const void *)(child)]] = child.parent;
         [child removeFromParent];
       }
     }
@@ -321,7 +321,7 @@ static BOOL _sceneAssetsLoaded = NO;
     // this same code, including the call to target's addToGesture.  That might lead to
     // a lot of redundant checking.  Come up with a better design?
 
-    NSNumber *optionBits = [node.userData objectForKey:HLSceneChildUserDataKey];
+    NSNumber *optionBits = (node.userData)[HLSceneChildUserDataKey];
     if (optionBits && ([optionBits unsignedIntegerValue] & HLSceneChildBitGestureTarget) != 0) {
       SKNode <HLGestureTarget> *target = (SKNode <HLGestureTarget> *)node;
       BOOL isInside = NO;
@@ -359,7 +359,7 @@ static BOOL _sceneAssetsLoaded = NO;
 - (void)registerDescendant:(SKNode *)node withOptions:(NSSet *)options
 {
   NSUInteger optionBits = 0;
-  NSNumber *optionBitsNumber = [node.userData objectForKey:HLSceneChildUserDataKey];
+  NSNumber *optionBitsNumber = (node.userData)[HLSceneChildUserDataKey];
   if (optionBitsNumber) {
     optionBits = [optionBitsNumber unsignedIntegerValue];
   }
@@ -394,9 +394,9 @@ static BOOL _sceneAssetsLoaded = NO;
   }
 
   if (!node.userData) {
-    node.userData = [NSMutableDictionary dictionaryWithObject:[NSNumber numberWithUnsignedInteger:optionBits] forKey:HLSceneChildUserDataKey];
+    node.userData = [NSMutableDictionary dictionaryWithObject:@(optionBits) forKey:HLSceneChildUserDataKey];
   } else {
-    [node.userData setObject:[NSNumber numberWithUnsignedInteger:optionBits] forKey:HLSceneChildUserDataKey];
+    (node.userData)[HLSceneChildUserDataKey] = @(optionBits);
   }
 }
 

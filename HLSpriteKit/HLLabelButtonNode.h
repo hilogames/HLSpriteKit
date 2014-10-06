@@ -57,10 +57,10 @@
 
 @property (nonatomic, assign) CGRect centerRect;
 
-- (id)initWithColor:(UIColor *)color size:(CGSize)size;
+- (instancetype)initWithColor:(SKColor *)color size:(CGSize)size;
 
-- (id)initWithTexture:(SKTexture *)texture;
+- (instancetype)initWithTexture:(SKTexture *)texture;
 
-- (id)initWithImageNamed:(NSString *)name;
+- (instancetype)initWithImageNamed:(NSString *)name;
 
 @end

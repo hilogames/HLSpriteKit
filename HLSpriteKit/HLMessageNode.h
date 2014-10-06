@@ -28,13 +28,13 @@
 
 @property (nonatomic, strong) SKColor *fontColor;
 
-- (id)initWithColor:(UIColor *)color size:(CGSize)size;
+- (instancetype)initWithColor:(SKColor *)color size:(CGSize)size NS_DESIGNATED_INITIALIZER;
 
-- (id)initWithImageNamed:(NSString *)name;
+- (instancetype)initWithImageNamed:(NSString *)name NS_DESIGNATED_INITIALIZER;
 
-- (id)initWithTexture:(SKTexture *)texture;
+- (instancetype)initWithTexture:(SKTexture *)texture NS_DESIGNATED_INITIALIZER;
 
-- (id)initWithTexture:(SKTexture *)texture color:(UIColor *)color size:(CGSize)size;
+- (instancetype)initWithTexture:(SKTexture *)texture color:(UIColor *)color size:(CGSize)size NS_DESIGNATED_INITIALIZER;
 
 - (void)showMessage:(NSString *)message parent:(SKNode *)parent;
 

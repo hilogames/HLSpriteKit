@@ -20,7 +20,7 @@
   SKLabelNode *_labelNode;
 }
 
-- (id)initWithColor:(UIColor *)color size:(CGSize)size
+- (instancetype)initWithColor:(SKColor *)color size:(CGSize)size
 {
   self = [super init];
   if (self) {
@@ -31,7 +31,7 @@
   return self;
 }
 
-- (id)initWithTexture:(SKTexture *)texture
+- (instancetype)initWithTexture:(SKTexture *)texture
 {
   self = [super init];
   if (self) {
@@ -42,7 +42,7 @@
   return self;
 }
 
-- (id)initWithImageNamed:(NSString *)name
+- (instancetype)initWithImageNamed:(NSString *)name
 {
   self = [super init];
   if (self) {
@@ -66,7 +66,7 @@
   [self HL_layout];
 }
 
-- (id)initWithCoder:(NSCoder *)aDecoder
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
 {
   // note: '"Error loading image resource: "MissingResource.png"' during this call to super;
   // it happens when decoding a SKLabelNode on 7.1 devices/simulator.  (If you set Deployment

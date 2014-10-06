@@ -14,7 +14,12 @@
   SKLabelNode *_labelNode;
 }
 
-- (id)initWithColor:(UIColor *)color size:(CGSize)size
+- (instancetype)init
+{
+  return [self initWithColor:[SKColor whiteColor] size:CGSizeMake(320.0f, 40.0f)];
+}
+
+- (instancetype)initWithColor:(SKColor *)color size:(CGSize)size
 {
   self = [super init];
   if (self) {
@@ -24,7 +29,7 @@
   return self;
 }
 
-- (id)initWithImageNamed:(NSString *)name
+- (instancetype)initWithImageNamed:(NSString *)name
 {
   self = [super init];
   if (self) {
@@ -34,7 +39,7 @@
   return self;
 }
 
-- (id)initWithTexture:(SKTexture *)texture
+- (instancetype)initWithTexture:(SKTexture *)texture
 {
   self = [super init];
   if (self) {
@@ -44,7 +49,7 @@
   return self;
 }
 
-- (id)initWithTexture:(SKTexture *)texture color:(UIColor *)color size:(CGSize)size
+- (instancetype)initWithTexture:(SKTexture *)texture color:(UIColor *)color size:(CGSize)size
 {
   self = [super init];
   if (self) {

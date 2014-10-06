@@ -195,11 +195,11 @@ FOUNDATION_EXPORT NSString * const HLSceneChildGestureTarget;
  * is already coded, and works in simple cases, so I'm delaying implementation until I have
  * a use-case for zPosition-only.
  */
-typedef enum {
+typedef NS_ENUM(NSInteger, HLSceneGestureTargetHitTestMode) {
   HLSceneGestureTargetHitTestModeDeepestThenParent,
   HLSceneGestureTargetHitTestModeZPositionThenParent,
 //  HLSceneGestureTargetHitTestModeZPosition,
-} HLSceneGestureTargetHitTestMode;
+};
 @property (nonatomic, assign) HLSceneGestureTargetHitTestMode gestureTargetHitTestMode;
 
 /**

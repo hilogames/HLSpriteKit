@@ -75,12 +75,12 @@ typedef enum HLGridNodeLayoutMode {
  * @param The distance, in pixels, between squares; the background color shows through in
  *        this area.
  */
-- (id)initWithGridWidth:(int)gridWidth
-            squareCount:(int)squareCount
-             layoutMode:(HLGridNodeLayoutMode)layoutMode
-             squareSize:(CGSize)squareSize
-   backgroundBorderSize:(CGFloat)backgroundBorderSize
-    squareSeparatorSize:(CGFloat)squareSeparatorSize;
+- (instancetype)initWithGridWidth:(int)gridWidth
+                      squareCount:(int)squareCount
+                       layoutMode:(HLGridNodeLayoutMode)layoutMode
+                       squareSize:(CGSize)squareSize
+             backgroundBorderSize:(CGFloat)backgroundBorderSize
+              squareSeparatorSize:(CGFloat)squareSeparatorSize NS_DESIGNATED_INITIALIZER;
 
 /**
  * Set content nodes in the squares of the grid.  As many nodes as fit in the grid will be

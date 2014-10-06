@@ -31,12 +31,23 @@ typedef struct {
   CGFloat _squareSeparatorSize;
 }
 
-- (id)initWithGridWidth:(int)gridWidth
-            squareCount:(int)squareCount
-             layoutMode:(HLGridNodeLayoutMode)layoutMode
-             squareSize:(CGSize)squareSize
-   backgroundBorderSize:(CGFloat)backgroundBorderSize
-    squareSeparatorSize:(CGFloat)squareSeparatorSize{
+- (instancetype)init
+{
+  return [self initWithGridWidth:3
+                     squareCount:9
+                      layoutMode:HLGridNodeLayoutModeAlignLeft
+                      squareSize:CGSizeMake(10.0f, 10.0f)
+            backgroundBorderSize:3.0f
+             squareSeparatorSize:1.0f];
+}
+
+- (instancetype)initWithGridWidth:(int)gridWidth
+                      squareCount:(int)squareCount
+                       layoutMode:(HLGridNodeLayoutMode)layoutMode
+                       squareSize:(CGSize)squareSize
+             backgroundBorderSize:(CGFloat)backgroundBorderSize
+              squareSeparatorSize:(CGFloat)squareSeparatorSize
+{
   self = [super init];
   if (self) {
 
@@ -81,8 +92,8 @@ typedef struct {
   NSUInteger contentCount = [contentNodes count];
   NSUInteger i = 0;
   while (i < contentCount && i < (NSUInteger)_squareCount) {
-    SKNode *contentNode = (SKNode *)[contentNodes objectAtIndex:i];
-    SKSpriteNode *squareNode = (SKSpriteNode *)[squareNodes objectAtIndex:i];
+    SKNode *contentNode = (SKNode *)contentNodes[i];
+    SKSpriteNode *squareNode = (SKSpriteNode *)squareNodes[i];
     // note: Could let caller worry about zPosition.
     contentNode.zPosition = 0.1f;
     [squareNode addChild:contentNode];
@@ -186,7 +197,7 @@ typedef struct {
     [NSException raise:@"HLGridNodeInvalidIndex" format:@"Square index %d out of range.", squareIndex];
   }
   NSArray *squareNodes = _gridNode.children;
-  SKSpriteNode *squareNode = [squareNodes objectAtIndex:(NSUInteger)squareIndex];
+  SKSpriteNode *squareNode = squareNodes[(NSUInteger)squareIndex];
 
   _squareState[squareIndex].enabled = enabled;
   if (enabled) {
@@ -202,7 +213,7 @@ typedef struct {
     [NSException raise:@"HLGridNodeInvalidIndex" format:@"Square index %d out of range.", squareIndex];
   }
   NSArray *squareNodes = _gridNode.children;
-  SKSpriteNode *squareNode = [squareNodes objectAtIndex:(NSUInteger)squareIndex];
+  SKSpriteNode *squareNode = squareNodes[(NSUInteger)squareIndex];
 
   _squareState[squareIndex].highlight = highlight;
   if (highlight) {
@@ -222,7 +233,7 @@ typedef struct {
     [NSException raise:@"HLGridNodeInvalidIndex" format:@"Square index %d out of range.", squareIndex];
   }
   NSArray *squareNodes = _gridNode.children;
-  SKSpriteNode *squareNode = [squareNodes objectAtIndex:(NSUInteger)squareIndex];
+  SKSpriteNode *squareNode = squareNodes[(NSUInteger)squareIndex];
 
   BOOL startingHighlight = _squareState[squareIndex].highlight;
   SKAction *blinkIn = [SKAction colorizeWithColor:(startingHighlight ? _squareColor : _highlightColor) colorBlendFactor:1.0f duration:halfCycleDuration];
