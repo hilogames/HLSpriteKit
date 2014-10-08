@@ -48,10 +48,4 @@
  */
 @property (nonatomic, assign) CGFloat zPositionScale;
 
-// TODO: These are declared for the sake of the NS_DESIGNATED_INITIALIZER; I expected
-// a superclass to do this for me, and not to need to repeat them here.  Give it some
-// time and then try to remove these declarations.
-- (instancetype)init NS_DESIGNATED_INITIALIZER;
-- (instancetype)initWithCoder:(NSCoder *)aDecoder NS_DESIGNATED_INITIALIZER;
-
 @end

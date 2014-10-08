@@ -29,9 +29,20 @@ typedef enum HLMenuNodeAnimation {
   HLMenuNodeAnimationSlideRight
 } HLMenuNodeAnimation;
 
-@interface HLMenuNode : HLComponentNode <NSCoding, HLGestureTarget>
+@interface HLMenuNode : HLComponentNode <NSCoding, HLGestureTarget, HLGestureTargetDelegate>
 
-@property (nonatomic, weak) id<HLMenuNodeDelegate> delegate;
+/**
+ * Common gesture handling configurations:
+ *
+ *   - Set the gesture target delegate to the gesture target (this HLMenuNode)
+ *     to get a callbacks via the HLMenuNodeDelegate interface.
+ *     (Set the delegate weakly to avoid retain cycles.)
+ */
+- (void)setGestureTargetDelegateWeak:(id<HLGestureTargetDelegate>)delegate;
+- (void)setGestureTargetDelegateStrong:(id<HLGestureTargetDelegate>)delegate;
+- (id<HLGestureTargetDelegate>)gestureTargetDelegate;
+
+@property (nonatomic, weak) id <HLMenuNodeDelegate> delegate;
 
 /**
  * The hierarchical menu displayed by the menu node.

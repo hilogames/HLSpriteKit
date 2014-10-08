@@ -8,11 +8,36 @@
 
 #import <SpriteKit/SpriteKit.h>
 
+#import "HLComponentNode.h"
 #import "HLGestureTarget.h"
 #import "SKLabelNode+HLLabelNodeAdditions.h"
 
-// TODO: Change to inherit from HLComponentNode.
-@interface HLLabelButtonNode : HLGestureTargetNode <NSCopying, NSCoding, HLGestureTarget>
+@interface HLLabelButtonNode : HLComponentNode <NSCopying, NSCoding, HLGestureTarget>
+
+/**
+ * Common gesture handling configurations:
+ *
+ *   - Leave the gesture target delegate unset for no gesture handling.
+ *
+ *   - Allocate a HLGestureTargetTapDelegate, initialize it with a block for execution
+ *     on tap, and set it as gesture target delegate here.  (Set strong if the object
+ *     is not retained elsewhere.)
+ *
+ *   - For double-tap, long press, or other button-ish gestures, use an
+ *     HLGestureTargetConfigurableDelegate instead.
+ *
+ * note: There is no current self-delegation option for HLLabelButtonNode (as there
+ * is in, for example, HLGridNode and HLMenuNode).  It would be pretty easy to make
+ * one: A callback block for taps, probably.  But of course that functionality is
+ * pretty easily specified by instantiating a tap delegate.  Other components have
+ * more-complex interactions (e.g. for HLGridNode, not just that a tap occurred,
+ * but *which* square it occurred on) (and e.g. for HLMenuNode, both shouldTap and
+ * didTap delegate methods).  The button is too generic and simple to have a
+ * natural self-delegation built-in behavior.
+ */
+- (void)setGestureTargetDelegateWeak:(id<HLGestureTargetDelegate>)delegate;
+- (void)setGestureTargetDelegateStrong:(id<HLGestureTargetDelegate>)delegate;
+- (id<HLGestureTargetDelegate>)gestureTargetDelegate;
 
 /**
  * The text of the label in the HLLabelButtonNode.  Layout of the components

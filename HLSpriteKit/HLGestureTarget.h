@@ -22,7 +22,74 @@
 #import <Foundation/Foundation.h>
 #import <SpriteKit/SpriteKit.h>
 
-@protocol HLGestureTarget <NSObject>
+@protocol HLGestureTargetDelegate;
+
+/**
+ * A gesture target implements a property that can get or set the gesture target
+ * delegate, which does all the work.  This allows for easy reuse of common delegate
+ * implementations; see HLGestureTargetDelegate documentation.
+ *
+ * Important notes for implementers:
+ *
+ *   . A particular gesture target might want either a retained or a non-retained delegate,
+ *     and the difference is important.  Therefore this "property" needs to be implemented
+ *     as a single getter with two setters and two ivars, to make the interface explicit
+ *     and harder to misuse.  Sorry, it's annoying.  Here is the recommended implementation:
+ 
+         @implementation MyClass {
+           __weak id <HLGestureTargetDelegate> _gestureTargetDelegateWeak;
+           id <HLGestureTargetDelegate> _gestureTargetDelegateStrong;
+         }
+ 
+         - (void)setGestureTargetDelegateWeak:(id<HLGestureTargetDelegate>)delegate
+         {
+           _gestureTargetDelegateWeak = delegate;
+           _gestureTargetDelegateStrong = nil;
+         }
+         
+         - (void)setGestureTargetDelegateStrong:(id<HLGestureTargetDelegate>)delegate
+         {
+           _gestureTargetDelegateStrong = delegate;
+           _gestureTargetDelegateWeak = nil;
+         }
+         
+         - (id<HLGestureTargetDelegate>)gestureTargetDelegate
+         {
+           if (_gestureTargetDelegateWeak) {
+             return _gestureTargetDelegateWeak;
+           } else {
+             return _gestureTargetDelegateStrong;
+           }
+         }
+
+ *     Motivating examples: If a delegate is a pluggable standalone object
+ *     (e.g. HLGestureTargetConfigurableDelegate) then it's convenient to have the
+ *     gestureTargetDelegate property retained.  But if the delegate is set to the gesture
+ *     target owner or the gesture target itself, then retaining the delegate would easily
+ *     lead to retain cycles.
+ *
+ *   . Since gesture targets are often encoded as part of an SKScene's node hierarchy,
+ *     it's important that the HLGestureTarget implements encoding methods to encode
+ *     and decode its delegate along with the target.  Example implementation:
+
+         [aCoder encodeObject:_gestureTargetDelegateWeak forKey:@"gestureTargetDelegateWeak"];
+         [aCoder encodeObject:_gestureTargetDelegateStrong forKey:@"gestureTargetDelegateStrong"];
+         
+         _gestureTargetDelegateWeak = [aDecoder decodeObjectForKey:@"gestureTargetDelegateWeak"];
+         _gestureTargetDelegateStrong = [aDecoder decodeObjectForKey:@"gestureTargetDelegateStrong"];
+ *
+ *   . NSCopying is not necessarily implemented by gesture targets, but if it is, some
+ *     thought should be given as to whether copied targets should share delegates or not.
+ */
+@protocol HLGestureTarget <NSCoding>
+- (void)setGestureTargetDelegateWeak:(id<HLGestureTargetDelegate>)delegate;
+- (void)setGestureTargetDelegateStrong:(id<HLGestureTargetDelegate>)delegate;
+- (id<HLGestureTargetDelegate>)gestureTargetDelegate;
+- (instancetype)initWithCoder:(NSCoder *)aDecoder;
+- (void)encodeWithCoder:(NSCoder *)aCoder;
+@end
+
+@protocol HLGestureTargetDelegate <NSObject>
 
 /**
  * Adds itself (as target of an action) to the passed gesture recognizer if it is
@@ -44,7 +111,7 @@
  * inside the button: The button does not care about pans, and so does not add itself as a
  * target to the gesture, but it returns isInside YES, so the caller knows that the pan
  * should probably not fall through to other targets.  (This could be separated out as a
- * separate method in HLGestureTarget, but the logic is often computationally redundant
+ * separate method in HLGestureTargetDelegate, but the logic is often computationally redundant
  * with the decision to add self as target.)  (Also, as an motivating example: If all
  * targets were SKNodes and the caller could use containsPoint to determine whether a
  * gesture first touch was "inside" a particular target, then the target wouldn't have to
@@ -93,22 +160,16 @@
 @end
 
 /**
- * An SKNode and common subclasses which implement HLGestureTarget using an owner-provided block.
+ * A externally-configurable gesture target delegate which can be configured to add to any and
+ * all gesture recognizers.  Added gesture recognizers will be forwarded to an owner-provided
+ * handling block to handle their recognized gestures.
  *
- * Okay, so it's a bit convoluted.  But this is nice for situations when a simple node
- * needs to handle a simple gesture and subclassing seems like overkill.  Call it
- * experimental.
- *    I think the challenge is going to be this: Subclassing to get gesture-target behavior must
- * have zero overhead, since all standard HL nodes will have to do it (in case their owners want
- * them to be gesture targets without having to do their own subclassing).  So composition of
- * some kind would be a better model: We only want to add in these data members and overrides if
- * the child-class owner activates it.
- *   Okay, but "activation" via composition will require at least one data member in the 
- * HLGestureTarget superclass, right?  And in that case, we can do the same here: We add a
- * single dictionary (or dynamically-allocated struct) rather than a bunch of individual
- * properties.  It's not clear that's much better.
+ * note: The handling block is not encodable, so the caller will have to reset it on decode.
+ *
+ * note: Consider making a version of this (or extension of this) which itself can have a
+ * gesture handling delegate set, rather than a block.  That would be encodable.
  */
-@interface HLGestureTargetNode : SKNode <HLGestureTarget>
+@interface HLGestureTargetConfigurableDelegate : NSObject <HLGestureTargetDelegate, NSCoding>
 @property (nonatomic, assign) BOOL addsToTapGestureRecognizer;
 @property (nonatomic, assign) BOOL addsToDoubleTapGestureRecognizer;
 @property (nonatomic, assign) BOOL addsToLongPressGestureRecognizer;
@@ -123,18 +184,48 @@
 - (BOOL)addsToPinchGestureRecognizer;
 @end
 
-@interface HLGestureTargetSpriteNode : SKSpriteNode <HLGestureTarget>
-@property (nonatomic, assign) BOOL addsToTapGestureRecognizer;
-@property (nonatomic, assign) BOOL addsToDoubleTapGestureRecognizer;
-@property (nonatomic, assign) BOOL addsToLongPressGestureRecognizer;
-@property (nonatomic, assign) BOOL addsToPanGestureRecognizer;
-@property (nonatomic, assign) BOOL addsToPinchGestureRecognizer;
+/**
+ * An externally-configurable gesture target delegate which only adds to the tap gesture
+ * recognizer.  When a tap is recognized, it is forwarded to an owner-provided handling
+ * block.
+ *
+ * This is a stripped-down version of HLGestureTargetConfigurableDelegate, appropriate for
+ * simple button-like behavior.
+ *
+ * note: The handling block is not encodable, so the caller will have to reset it on decode.
+ *
+ * note: Consider making a version of this (or extension of this) which itself can have a
+ * gesture handling delegate set, rather than a block.  That would be encodable.
+ */
+@interface HLGestureTargetTapDelegate : NSObject <HLGestureTargetDelegate, NSCoding>
+- (instancetype)initWithHandleGestureBlock:(void(^)(UIGestureRecognizer *))handleGestureBlock;
 @property (nonatomic, copy) void (^handleGestureBlock)(UIGestureRecognizer *);
-- (BOOL)addToGesture:(UIGestureRecognizer *)gestureRecognizer firstTouch:(UITouch *)touch isInside:(BOOL *)isInside;
-- (BOOL)addsToTapGestureRecognizer;
-- (BOOL)addsToDoubleTapGestureRecognizer;
-- (BOOL)addsToLongPressGestureRecognizer;
-- (BOOL)addsToPanGestureRecognizer;
-- (BOOL)addsToPinchGestureRecognizer;
 @end
 
+/**
+ * A set of common node classes subclassed to be gesture targets.
+ *
+ * This is useful for a caller who is composing a display of nodes with minimal functionality,
+ * e.g. an information label on a background which is dismissed on tap.  Rather than subclass an
+ * SKNode and conform to <HLGestureTarget> for the purpose, the caller can declare an ad-hoc set
+ * of nodes: a background SKSpriteNode; a centered, superimposed SKLabelNode; and then an
+ * HKGestureTargetSpriteNode to cover the whole thing and respond to taps.  (An out-of-the-box
+ * gesture target delgate can be provided which detects only taps handles them with an owner-
+ * provided block.)
+ */
+
+@interface HLGestureTargetNode : SKNode <HLGestureTarget, NSCoding>
+- (void)setGestureTargetDelegateWeak:(id<HLGestureTargetDelegate>)delegate;
+- (void)setGestureTargetDelegateStrong:(id<HLGestureTargetDelegate>)delegate;
+- (id<HLGestureTargetDelegate>)gestureTargetDelegate;
+- (instancetype)initWithCoder:(NSCoder *)aDecoder;
+- (void)encodeWithCoder:(NSCoder *)aCoder;
+@end
+
+@interface HLGestureTargetSpriteNode : SKSpriteNode <HLGestureTarget, NSCoding>
+- (void)setGestureTargetDelegateWeak:(id<HLGestureTargetDelegate>)delegate;
+- (void)setGestureTargetDelegateStrong:(id<HLGestureTargetDelegate>)delegate;
+- (id<HLGestureTargetDelegate>)gestureTargetDelegate;
+- (instancetype)initWithCoder:(NSCoder *)aDecoder;
+- (void)encodeWithCoder:(NSCoder *)aCoder;
+@end

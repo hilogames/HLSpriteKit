@@ -8,15 +8,16 @@
 
 #import "HLLabelButtonNode.h"
 
-// TODO: Change to inherit from HLComponentNode.
-//enum {
-//  HLLabelButtonNodeZPositionLayerBackground = 0,
-//  HLLabelButtonNodeZPositionLayerLabel,
-//  HLLabelButtonNodeZPositionLayerCount
-//};
+enum {
+  HLLabelButtonNodeZPositionLayerBackground = 0,
+  HLLabelButtonNodeZPositionLayerLabel,
+  HLLabelButtonNodeZPositionLayerCount
+};
 
 @implementation HLLabelButtonNode
 {
+  __weak id <HLGestureTargetDelegate> _gestureTargetDelegateWeak;
+  id <HLGestureTargetDelegate> _gestureTargetDelegateStrong;
   // note: In the first draft, the HLLabelButtonNode *was* the background node.
   // However, I split it out due to a limitation in the current iOS 7.1 SDK:
   // namely, that centerRect is not supported with changes to the size property
@@ -68,9 +69,7 @@
   _labelPadX = 0.0f;
   _labelPadY = 0.0f;
   _labelNode = [SKLabelNode labelNodeWithFontNamed:@"Helvetica"];
-  // TODO: Change to inherit from HLComponentNode.
-  //_labelNode.zPosition = self.zPositionScale / HLLabelButtonNodeZPositionLayerCount * HLLabelButtonNodeZPositionLayerLabel;
-  _labelNode.zPosition = 0.1f;
+  _labelNode.zPosition = self.zPositionScale / HLLabelButtonNodeZPositionLayerCount * HLLabelButtonNodeZPositionLayerLabel;
   [self addChild:_labelNode];
   [self HL_layout];
 }
@@ -84,6 +83,8 @@
   // http://stackoverflow.com/questions/22701029/ios-keyed-archive-sprite-kit-decode-error-sktexture-error-loading-image-resour
   self = [super initWithCoder:aDecoder];
   if (self) {
+    _gestureTargetDelegateWeak = [aDecoder decodeObjectForKey:@"gestureTargetDelegateWeak"];
+    _gestureTargetDelegateStrong = [aDecoder decodeObjectForKey:@"gestureTargetDelegateStrong"];
     // note: Child nodes already decoded in super.  Here we're just hooking up
     // the pointers.
     _backgroundNode = [aDecoder decodeObjectForKey:@"backgroundNode"];
@@ -100,6 +101,8 @@
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
   [super encodeWithCoder:aCoder];
+  [aCoder encodeObject:_gestureTargetDelegateWeak forKey:@"gestureTargetDelegateWeak"];
+  [aCoder encodeObject:_gestureTargetDelegateStrong forKey:@"gestureTargetDelegateStrong"];
   // note: Child nodes already decoded in super.  Here we're just recording the pointers.
   [aCoder encodeObject:_backgroundNode forKey:@"backgroundNode"];
   [aCoder encodeObject:_labelNode forKey:@"labelNode"];
@@ -113,6 +116,9 @@
 - (instancetype)copyWithZone:(NSZone *)zone
 {
   HLLabelButtonNode *copy = [super copyWithZone:zone];
+  // noob: Deep copy delegate?  Hm.  For now, just share delegates.
+  copy->_gestureTargetDelegateWeak = _gestureTargetDelegateWeak;
+  copy->_gestureTargetDelegateStrong = _gestureTargetDelegateStrong;
   // noob: SKNode copy deep-copies all children; need to hook up our
   // pointers, though.  (I guess this is why finding nodes by name is
   // recommended.)
@@ -129,6 +135,27 @@
   copy->_labelPadX = _labelPadX;
   copy->_labelPadY = _labelPadY;
   return copy;
+}
+
+- (void)setGestureTargetDelegateWeak:(id<HLGestureTargetDelegate>)delegate
+{
+  _gestureTargetDelegateWeak = delegate;
+  _gestureTargetDelegateStrong = nil;
+}
+
+- (void)setGestureTargetDelegateStrong:(id<HLGestureTargetDelegate>)delegate
+{
+  _gestureTargetDelegateStrong = delegate;
+  _gestureTargetDelegateWeak = nil;
+}
+
+- (id<HLGestureTargetDelegate>)gestureTargetDelegate
+{
+  if (_gestureTargetDelegateWeak) {
+    return _gestureTargetDelegateWeak;
+  } else {
+    return _gestureTargetDelegateStrong;
+  }
 }
 
 - (void)setText:(NSString *)text

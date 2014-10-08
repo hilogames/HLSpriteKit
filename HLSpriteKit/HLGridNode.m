@@ -22,6 +22,9 @@ enum {
 
 @implementation HLGridNode
 {
+  __weak id <HLGestureTargetDelegate> _gestureTargetDelegateWeak;
+  id <HLGestureTargetDelegate> _gestureTargetDelegateStrong;
+
   SKSpriteNode *_gridNode;
   HLGridNodeSquareState *_squareState;
   int _selectionSquareIndex;
@@ -95,6 +98,27 @@ enum {
 - (void)dealloc
 {
   [self HL_freeSquareState];
+}
+
+- (void)setGestureTargetDelegateWeak:(id<HLGestureTargetDelegate>)delegate
+{
+  _gestureTargetDelegateWeak = delegate;
+  _gestureTargetDelegateStrong = nil;
+}
+
+- (void)setGestureTargetDelegateStrong:(id<HLGestureTargetDelegate>)delegate
+{
+  _gestureTargetDelegateStrong = delegate;
+  _gestureTargetDelegateWeak = nil;
+}
+
+- (id<HLGestureTargetDelegate>)gestureTargetDelegate
+{
+  if (_gestureTargetDelegateWeak) {
+    return _gestureTargetDelegateWeak;
+  } else {
+    return _gestureTargetDelegateStrong;
+  }
 }
 
 - (CGSize)size
@@ -303,7 +327,7 @@ enum {
 }
 
 #pragma mark -
-#pragma mark HLGestureTarget
+#pragma mark HLGestureTargetDelegate
 
 - (BOOL)addsToTapGestureRecognizer
 {

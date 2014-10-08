@@ -26,6 +26,7 @@ typedef enum HLToolbarNodeAnimation {
   HLToolbarNodeAnimationSlideRight
 } HLToolbarNodeAnimation;
 
+// TODO: Make this an HLGestureTarget.
 @interface HLToolbarNode : HLComponentNode <NSCoding>
 
 /**

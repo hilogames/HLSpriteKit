@@ -11,7 +11,31 @@
 #import "HLComponentNode.h"
 #import "HLGestureTarget.h"
 
-@interface HLGridNode : HLComponentNode <HLGestureTarget>
+@interface HLGridNode : HLComponentNode <HLGestureTarget, HLGestureTargetDelegate>
+
+/**
+ * Common gesture handling configurations:
+ *
+ *   - Set the gesture target delegate to the gesture target (this HLGridNode)
+ *     to get a simple callback for taps via the squareTappedBlock property.
+ *     (Set the delegate weakly to avoid retain cycles.)
+ *
+ *   - Set the gesture target delegate to an HLGestureTargetConfigurableDelegate
+ *     or a custom delegate to recognize and respond to other gestures.
+ *     (Convert touch locations to this node's coordinate system and call
+ *     squareAtLocation as desired.)
+ *
+ *   - Leave the gesture target delegate unset for no gesture handling.
+ *
+ * note: The class was originally created with only the squareTappedBlock
+ * option, but since then has been extended to allow for arbitrary gesture
+ * target delegates.  Consider deprecating squareTappedBlock (and self-
+ * delegation); the owner would use HLGestureTargetTapDelegate to get
+ * almost-as-convenient functionality.
+ */
+- (void)setGestureTargetDelegateWeak:(id<HLGestureTargetDelegate>)delegate;
+- (void)setGestureTargetDelegateStrong:(id<HLGestureTargetDelegate>)delegate;
+- (id<HLGestureTargetDelegate>)gestureTargetDelegate;
 
 /**
  * A callback invoked when a square in the grid is tapped.  The callback parameter is

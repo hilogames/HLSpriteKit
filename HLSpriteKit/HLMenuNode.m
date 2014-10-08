@@ -9,6 +9,7 @@
 
 #import "HLMenuNode.h"
 
+#import "HLError.h"
 #import "HLLabelButtonNode.h"
 
 enum {
@@ -18,6 +19,9 @@ enum {
 
 @implementation HLMenuNode
 {
+  __weak id <HLGestureTargetDelegate> _gestureTargetDelegateWeak;
+  id <HLGestureTargetDelegate> _gestureTargetDelegateStrong;
+
   SKNode *_buttonsNode;
   HLMenu *_currentMenu;
 }
@@ -95,12 +99,71 @@ enum {
   return nil;
 }
 
+- (void)setGestureTargetDelegateWeak:(id<HLGestureTargetDelegate>)delegate
+{
+  _gestureTargetDelegateWeak = delegate;
+  _gestureTargetDelegateStrong = nil;
+}
+
+- (void)setGestureTargetDelegateStrong:(id<HLGestureTargetDelegate>)delegate
+{
+  _gestureTargetDelegateStrong = delegate;
+  _gestureTargetDelegateWeak = nil;
+}
+
+- (id<HLGestureTargetDelegate>)gestureTargetDelegate
+{
+  if (_gestureTargetDelegateWeak) {
+    return _gestureTargetDelegateWeak;
+  } else {
+    return _gestureTargetDelegateStrong;
+  }
+}
+
 - (void)setMenu:(HLMenu *)menu animation:(HLMenuNodeAnimation)animation
 {
   _menu = menu;
   _currentMenu = menu;
   if (_currentMenu) {
     [self HL_showCurrentMenuAnimation:animation];
+  }
+}
+
+- (void)setItemButtonPrototype:(HLLabelButtonNode *)itemButtonPrototype
+{
+  // noob: Because I'm just starting to think through this, a note: The buttons are currently
+  // rendered in the same layer as the main HLCompomentNode, because they aren't expected to
+  // be gesture targets themselves, so it doesn't matter which one of them is hit-test
+  // first on a recognized gesture.  To back up this assumption, we check here that, in fact,
+  // the prototype doesn't have a gestureTargetDelegate.  So sure, this is an edge case: It
+  // only will make a difference in case the hit-test for gesture targets is using zPosition
+  // and not the hierarchy, and it would be easily be permitted by putting these buttons in
+  // their own layer above the component base node.  BUT.  It makes sense to me that these
+  // HLLabelButtons should *not* be gesture targets, anyway, and it makes sense to me that
+  // a component like HLMenuNode (which incorporates other components like HLLabelButtons)
+  // should be totally in control.  So.  Do these checks for consistency with those thoughts.
+  _itemButtonPrototype = itemButtonPrototype;
+  if (_itemButtonPrototype.gestureTargetDelegate) {
+    HLError(HLLevelError, @"HLMenuNode: itemButtonPrototype is not expected to be a gesture target; removing delegate.");
+    _itemButtonPrototype.gestureTargetDelegateWeak = nil;
+  }
+}
+
+- (void)setMenuItemButtonPrototype:(HLLabelButtonNode *)menuItemButtonPrototype
+{
+  _menuItemButtonPrototype = menuItemButtonPrototype;
+  if (_menuItemButtonPrototype.gestureTargetDelegate) {
+    HLError(HLLevelError, @"HLMenuNode: menuItemButtonPrototype is not expected to be a gesture target; removing delegate.");
+    _menuItemButtonPrototype.gestureTargetDelegateWeak = nil;
+  }
+}
+
+- (void)setBackItemButtonPrototype:(HLLabelButtonNode *)backItemButtonPrototype
+{
+  _backItemButtonPrototype = backItemButtonPrototype;
+  if (_backItemButtonPrototype.gestureTargetDelegate) {
+    HLError(HLLevelError, @"HLMenuNode: backItemButtonPrototype is not expected to be a gesture target; removing delegate.");
+    _backItemButtonPrototype.gestureTargetDelegateWeak = nil;
   }
 }
 
@@ -122,7 +185,7 @@ enum {
 }
 
 #pragma mark -
-#pragma mark HLGestureTarget
+#pragma mark HLGestureTargetDelegate
 
 - (BOOL)addToGesture:(UIGestureRecognizer *)gestureRecognizer firstTouch:(UITouch *)touch isInside:(BOOL *)isInside
 {
@@ -214,8 +277,7 @@ enum {
 
     HLLabelButtonNode *buttonNode = [buttonPrototype copy];
     buttonNode.text = item.text;
-    // TODO: Use zPositionScale on button when it is a component too.
-    //buttonNode.zPositionScale = self.zPositionScale / HLMenuNodeZPositionLayerCount;
+    buttonNode.zPositionScale = self.zPositionScale / HLMenuNodeZPositionLayerCount;
     buttonNode.position = CGPointMake(0.0f, -self.itemSpacing * i);
     [_buttonsNode addChild:buttonNode];
   }
@@ -385,6 +447,15 @@ enum {
   [aCoder encodeObject:_text forKey:@"text"];
   [aCoder encodeObject:_buttonPrototype forKey:@"buttonPrototype"];
   [aCoder encodeObject:_soundFile forKey:@"soundFile"];
+}
+
+- (void)setButtonPrototype:(HLLabelButtonNode *)buttonPrototype
+{
+  _buttonPrototype = buttonPrototype;
+  if (_buttonPrototype.gestureTargetDelegate) {
+    HLError(HLLevelError, @"HLMenuItem: buttonPrototype is not expected to be a gesture target; removing delegate.");
+    _buttonPrototype.gestureTargetDelegateWeak = nil;
+  }
 }
 
 - (NSArray *)pathComponents

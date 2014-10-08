@@ -76,7 +76,12 @@ static BOOL _sceneAssetsLoaded = NO;
           }
         }
         if ((optionBits & HLSceneChildBitGestureTarget) != 0) {
-          [self HLScene_addTargetToGestureSets:(SKNode <HLGestureTarget> *)node];
+          SKNode <HLGestureTarget> *target = (SKNode <HLGestureTarget> *)node;
+          id <HLGestureTargetDelegate> targetDelegate = target.gestureTargetDelegate;
+          if (!targetDelegate) {
+            [NSException raise:@"HLSceneBadRegistration" format:@"Gesture target node decoded without a gesture target delegate (perhaps missing override of initWithCoder): %@", target];
+          }
+          [self HLScene_addTargetToGestureSets:target withDelegate:targetDelegate];
         }
       }
     }
@@ -324,11 +329,14 @@ static BOOL _sceneAssetsLoaded = NO;
     NSNumber *optionBits = (node.userData)[HLSceneChildUserDataKey];
     if (optionBits && ([optionBits unsignedIntegerValue] & HLSceneChildBitGestureTarget) != 0) {
       SKNode <HLGestureTarget> *target = (SKNode <HLGestureTarget> *)node;
-      BOOL isInside = NO;
-      if ([target addToGesture:gestureRecognizer firstTouch:touch isInside:&isInside]) {
-        return YES;
-      } else if (isInside) {
-        return NO;
+      id <HLGestureTargetDelegate> targetDelegate = target.gestureTargetDelegate;
+      if (targetDelegate) {
+        BOOL isInside = NO;
+        if ([targetDelegate addToGesture:gestureRecognizer firstTouch:touch isInside:&isInside]) {
+          return YES;
+        } else if (isInside) {
+          return NO;
+        }
       }
     }
     node = node.parent;
@@ -389,8 +397,13 @@ static BOOL _sceneAssetsLoaded = NO;
     if (![node conformsToProtocol:@protocol(HLGestureTarget)]) {
       [NSException raise:@"HLSceneBadRegistration" format:@"Node registered for 'HLSceneChildGestureTarget' does not conform to HLGestureTarget protocol."];
     }
+    SKNode <HLGestureTarget> *target = (SKNode <HLGestureTarget> *)node;
+    id <HLGestureTargetDelegate> targetDelegate = target.gestureTargetDelegate;
+    if (!targetDelegate) {
+      [NSException raise:@"HLSceneBadRegistration" format:@"Node registered for 'HLSceneChildGestureTarget' must have a non-nil gesture target delegate (@property gestureTargetDelegate)."];
+    }
     optionBits |= HLSceneChildBitGestureTarget;
-    [self HLScene_addTargetToGestureSets:(SKNode <HLGestureTarget> *)node];
+    [self HLScene_addTargetToGestureSets:target withDelegate:targetDelegate];
   }
 
   if (!node.userData) {
@@ -400,9 +413,9 @@ static BOOL _sceneAssetsLoaded = NO;
   }
 }
 
-- (void)HLScene_addTargetToGestureSets:(SKNode <HLGestureTarget> *)target
+- (void)HLScene_addTargetToGestureSets:(SKNode <HLGestureTarget> *)target withDelegate:(id <HLGestureTargetDelegate>)targetDelegate
 {
-  if ([target addsToTapGestureRecognizer]) {
+  if ([targetDelegate addsToTapGestureRecognizer]) {
     if (!_childTapTargets) {
       _childTapTargets = [NSMutableSet setWithObject:target];
       [self needSharedTapGestureRecognizer];
@@ -410,7 +423,7 @@ static BOOL _sceneAssetsLoaded = NO;
       [_childTapTargets addObject:target];
     }
   }
-  if ([target addsToDoubleTapGestureRecognizer]) {
+  if ([targetDelegate addsToDoubleTapGestureRecognizer]) {
     if (!_childDoubleTapTargets) {
       _childDoubleTapTargets = [NSMutableSet setWithObject:target];
       [self needSharedDoubleTapGestureRecognizer];
@@ -418,7 +431,7 @@ static BOOL _sceneAssetsLoaded = NO;
       [_childDoubleTapTargets addObject:target];
     }
   }
-  if ([target addsToLongPressGestureRecognizer]) {
+  if ([targetDelegate addsToLongPressGestureRecognizer]) {
     if (!_childLongPressTargets) {
       _childLongPressTargets = [NSMutableSet setWithObject:target];
       [self needSharedLongPressGestureRecognizer];
@@ -426,7 +439,7 @@ static BOOL _sceneAssetsLoaded = NO;
       [_childLongPressTargets addObject:target];
     }
   }
-  if ([target addsToPanGestureRecognizer]) {
+  if ([targetDelegate addsToPanGestureRecognizer]) {
     if (!_childPanTargets) {
       _childPanTargets = [NSMutableSet setWithObject:target];
       [self needSharedPanGestureRecognizer];
@@ -434,7 +447,7 @@ static BOOL _sceneAssetsLoaded = NO;
       [_childPanTargets addObject:target];
     }
   }
-  if ([target addsToPinchGestureRecognizer]) {
+  if ([targetDelegate addsToPinchGestureRecognizer]) {
     if (!_childPinchTargets) {
       _childPinchTargets = [NSMutableSet setWithObject:target];
       [self needSharedPinchGestureRecognizer];
