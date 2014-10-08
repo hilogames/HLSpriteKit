@@ -17,9 +17,11 @@ NSString * const HLSceneChildGestureTarget = @"HLSceneChildGestureTarget";
 
 static NSString * const HLSceneChildUserDataKey = @"HLScene";
 
-static const NSUInteger HLSceneChildBitNoCoding = (1 << 0);
-static const NSUInteger HLSceneChildBitResizeWithScene = (1 << 1);
-static const NSUInteger HLSceneChildBitGestureTarget = (1 << 2);
+typedef NS_OPTIONS(NSUInteger, HLSceneChildOptionBits) {
+  HLSceneChildBitNoCoding = (1 << 0),
+  HLSceneChildBitResizeWithScene = (1 << 1),
+  HLSceneChildBitGestureTarget = (1 << 2),
+};
 
 static const NSTimeInterval HLScenePresentationAnimationFadeDuration = 0.2f;
 
@@ -45,7 +47,7 @@ static BOOL _sceneAssetsLoaded = NO;
   self = [super initWithCoder:aDecoder];
   if (self) {
   
-    _gestureTargetHitTestMode = (HLSceneGestureTargetHitTestMode)[aDecoder decodeIntForKey:@"gestureTargetHitTestMode"];
+    _gestureTargetHitTestMode = (HLSceneGestureTargetHitTestMode)[aDecoder decodeIntegerForKey:@"gestureTargetHitTestMode"];
 
     NSMutableArray *childrenArrayQueue = [NSMutableArray arrayWithObject:self.children];
     NSUInteger a = 0;
@@ -60,7 +62,7 @@ static BOOL _sceneAssetsLoaded = NO;
         if (!optionBitsNumber) {
           continue;
         }
-        NSUInteger optionBits = [optionBitsNumber unsignedIntegerValue];
+        HLSceneChildOptionBits optionBits = [optionBitsNumber unsignedIntegerValue];
         if ((optionBits & HLSceneChildBitNoCoding) != 0) {
           if (!_childNoCoding) {
             _childNoCoding = [NSMutableSet setWithObject:node];
@@ -119,7 +121,7 @@ static BOOL _sceneAssetsLoaded = NO;
 
   [super encodeWithCoder:aCoder];
   
-  [aCoder encodeInt:_gestureTargetHitTestMode forKey:@"gestureTargetHitTestMode"];
+  [aCoder encodeInteger:_gestureTargetHitTestMode forKey:@"gestureTargetHitTestMode"];
   
   [removedChildren enumerateKeysAndObjectsUsingBlock:^(id key, id object, BOOL *stop){
     SKNode *child = [key pointerValue];
@@ -303,7 +305,7 @@ static BOOL _sceneAssetsLoaded = NO;
       }
     }
   } else {
-    [NSException raise:@"HLSceneUnknownGestureTargetHitTestMode" format:@"Unknown gesture target hit test mode %d.", _gestureTargetHitTestMode];
+    [NSException raise:@"HLSceneUnknownGestureTargetHitTestMode" format:@"Unknown gesture target hit test mode %ld.", (long)_gestureTargetHitTestMode];
   }
   
   while (node != self) {
@@ -366,7 +368,7 @@ static BOOL _sceneAssetsLoaded = NO;
 
 - (void)registerDescendant:(SKNode *)node withOptions:(NSSet *)options
 {
-  NSUInteger optionBits = 0;
+  HLSceneChildOptionBits optionBits = 0;
   NSNumber *optionBitsNumber = (node.userData)[HLSceneChildUserDataKey];
   if (optionBitsNumber) {
     optionBits = [optionBitsNumber unsignedIntegerValue];

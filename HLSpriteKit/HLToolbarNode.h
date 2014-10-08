@@ -12,19 +12,19 @@
 
 @class HLTextureStore;
 
-typedef enum HLToolbarNodeJustification {
+typedef NS_ENUM(NSInteger, HLToolbarNodeJustification) {
   HLToolbarNodeJustificationCenter,
   HLToolbarNodeJustificationLeft,
   HLToolbarNodeJustificationRight
-} HLToolbarNodeJustification;
+};
 
-typedef enum HLToolbarNodeAnimation {
+typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
   HLToolbarNodeAnimationNone,
   HLToolbarNodeAnimationSlideUp,
   HLToolbarNodeAnimationSlideDown,
   HLToolbarNodeAnimationSlideLeft,
   HLToolbarNodeAnimationSlideRight
-} HLToolbarNodeAnimation;
+};
 
 // TODO: Make this an HLGestureTarget.
 @interface HLToolbarNode : HLComponentNode <NSCoding>

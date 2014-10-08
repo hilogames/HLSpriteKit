@@ -72,10 +72,10 @@
  *   HLGridNodeLayoutModeAlignLeft: Squares in the last row of the grid align to the
  *                                  left, perhaps leaving extra space on the right.
  */
-typedef enum HLGridNodeLayoutMode {
+typedef NS_ENUM(NSInteger, HLGridNodeLayoutMode) {
   HLGridNodeLayoutModeFill,
   HLGridNodeLayoutModeAlignLeft,
-} HLGridNodeLayoutMode;
+};
 
 /**
  * Initialize with values for layout-affecting parameters.

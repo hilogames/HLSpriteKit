@@ -8,10 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
-typedef enum HLErrorLevel {
+typedef NS_ENUM(NSInteger, HLErrorLevel) {
   HLLevelError,
   HLLevelWarning,
-} HLErrorLevel;
+};
 
 static void
 HLError(HLErrorLevel level, NSString *message)

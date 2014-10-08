@@ -91,7 +91,7 @@ enum {
     _labelNode = [aDecoder decodeObjectForKey:@"labelNode"];
     _automaticWidth = [aDecoder decodeBoolForKey:@"automaticWidth"];
     _automaticHeight = [aDecoder decodeBoolForKey:@"automaticHeight"];
-    _verticalAlignmentMode = (HLLabelNodeVerticalAlignmentMode)[aDecoder decodeIntForKey:@"verticalAlignmentMode"];
+    _verticalAlignmentMode = (HLLabelNodeVerticalAlignmentMode)[aDecoder decodeIntegerForKey:@"verticalAlignmentMode"];
     _labelPadX = (CGFloat)[aDecoder decodeDoubleForKey:@"labelPadX"];
     _labelPadY = (CGFloat)[aDecoder decodeDoubleForKey:@"labelPadY"];
   }
@@ -108,7 +108,7 @@ enum {
   [aCoder encodeObject:_labelNode forKey:@"labelNode"];
   [aCoder encodeBool:_automaticWidth forKey:@"automaticWidth"];
   [aCoder encodeBool:_automaticHeight forKey:@"automaticHeight"];
-  [aCoder encodeInt:(int)_verticalAlignmentMode forKey:@"verticalAlignmentMode"];
+  [aCoder encodeInteger:_verticalAlignmentMode forKey:@"verticalAlignmentMode"];
   [aCoder encodeDouble:_labelPadX forKey:@"labelPadX"];
   [aCoder encodeDouble:_labelPadY forKey:@"labelPadY"];
 }

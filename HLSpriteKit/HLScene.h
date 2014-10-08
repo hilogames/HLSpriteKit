@@ -226,10 +226,10 @@ typedef NS_ENUM(NSInteger, HLSceneGestureTargetHitTestMode) {
 
 // Functionality for presenting a node modally above the scene.
 
-typedef enum HLScenePresentationAnimation {
+typedef NS_ENUM(NSInteger, HLScenePresentationAnimation) {
   HLScenePresentationAnimationNone,
   HLScenePresentationAnimationFade,
-} HLScenePresentationAnimation;
+};
 
 /**
  * Presents a node modally above the current scene, disabling other interaction.

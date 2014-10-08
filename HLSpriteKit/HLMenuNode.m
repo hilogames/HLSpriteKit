@@ -58,7 +58,7 @@ enum {
     _itemButtonPrototype = [aDecoder decodeObjectForKey:@"itemButtonPrototype"];
     _menuItemButtonPrototype = [aDecoder decodeObjectForKey:@"menuItemButtonPrototype"];
     _backItemButtonPrototype = [aDecoder decodeObjectForKey:@"backItemButtonPrototype"];
-    _itemAnimation = (HLMenuNodeAnimation)[aDecoder decodeIntForKey:@"itemAnimation"];
+    _itemAnimation = (HLMenuNodeAnimation)[aDecoder decodeIntegerForKey:@"itemAnimation"];
     _itemAnimationDuration = [aDecoder decodeDoubleForKey:@"itemAnimationDuration"];
     _itemSoundFile = [aDecoder decodeObjectForKey:@"itemSoundFile"];
     if (_currentMenu) {
@@ -83,7 +83,7 @@ enum {
   [aCoder encodeObject:_itemButtonPrototype forKey:@"itemButtonPrototype"];
   [aCoder encodeObject:_menuItemButtonPrototype forKey:@"menuItemButtonPrototype"];
   [aCoder encodeObject:_backItemButtonPrototype forKey:@"backItemButtonPrototype"];
-  [aCoder encodeInt:(int)_itemAnimation forKey:@"itemAnimation"];
+  [aCoder encodeInteger:_itemAnimation forKey:@"itemAnimation"];
   [aCoder encodeDouble:_itemAnimationDuration forKey:@"itemAnimationDuration"];
   [aCoder encodeObject:_itemSoundFile forKey:@"itemSoundFile"];
 

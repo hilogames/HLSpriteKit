@@ -301,7 +301,7 @@ enum {
         delta = CGPointMake(MAX(finalToolbarSize.width, _toolbarNode.size.width), 0.0f);
         break;
       default:
-        [NSException raise:@"HLToolbarNodeUnhandledAnimation" format:@"Unhandled animation %d.", animation];
+        [NSException raise:@"HLToolbarNodeUnhandledAnimation" format:@"Unhandled animation %ld.", (long)animation];
         break;
     }
     squaresNode.position = CGPointMake(-delta.x, -delta.y);

@@ -48,12 +48,12 @@
  *   for instance for mixed-case text, and yet the full font height
  *   just seems to leave a little too much space below the baseline.
  */
-typedef enum HLLabelNodeVerticalAlignmentMode {
+typedef NS_ENUM(NSInteger, HLLabelNodeVerticalAlignmentMode) {
   HLLabelNodeVerticalAlignText,
   HLLabelNodeVerticalAlignFont,
   HLLabelNodeVerticalAlignFontAscender,
   HLLabelNodeVerticalAlignFontAscenderBias
-} HLLabelNodeVerticalAlignmentMode;
+};
 
 @interface SKLabelNode (HLLabelNodeAdditions)
 
