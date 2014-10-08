@@ -29,15 +29,9 @@ static BOOL _sceneAssetsLoaded = NO;
 
 @implementation HLScene
 {
-  NSMutableSet *_childNoCoding;
-
-  NSMutableSet *_childResizeWithScene;
-
-  NSMutableSet *_childTapTargets;
-  NSMutableSet *_childDoubleTapTargets;
-  NSMutableSet *_childLongPressTargets;
-  NSMutableSet *_childPanTargets;
-  NSMutableSet *_childPinchTargets;
+  NSMutableDictionary *_childNoCoding;
+  NSMutableDictionary *_childResizeWithScene;
+  BOOL _childGestureTargetsExisted;
 
   SKNode *_modalPresentationNode;
 }
@@ -49,6 +43,7 @@ static BOOL _sceneAssetsLoaded = NO;
   
     _gestureTargetHitTestMode = (HLSceneGestureTargetHitTestMode)[aDecoder decodeIntegerForKey:@"gestureTargetHitTestMode"];
 
+    _childGestureTargetsExisted = NO;
     NSMutableArray *childrenArrayQueue = [NSMutableArray arrayWithObject:self.children];
     NSUInteger a = 0;
     while (a < [childrenArrayQueue count]) {
@@ -65,16 +60,16 @@ static BOOL _sceneAssetsLoaded = NO;
         HLSceneChildOptionBits optionBits = [optionBitsNumber unsignedIntegerValue];
         if ((optionBits & HLSceneChildBitNoCoding) != 0) {
           if (!_childNoCoding) {
-            _childNoCoding = [NSMutableSet setWithObject:node];
+            _childNoCoding = [NSMutableDictionary dictionaryWithObject:node forKey:[NSValue valueWithNonretainedObject:node]];
           } else {
-            [_childNoCoding addObject:node];
+            [_childNoCoding setObject:node forKey:[NSValue valueWithNonretainedObject:node]];
           }
         }
         if ((optionBits & HLSceneChildBitResizeWithScene) != 0) {
           if (!_childResizeWithScene) {
-            _childResizeWithScene = [NSMutableSet setWithObject:node];
+            _childResizeWithScene = [NSMutableDictionary dictionaryWithObject:node forKey:[NSValue valueWithNonretainedObject:node]];
           } else {
-            [_childResizeWithScene addObject:node];
+            [_childResizeWithScene setObject:node forKey:[NSValue valueWithNonretainedObject:node]];
           }
         }
         if ((optionBits & HLSceneChildBitGestureTarget) != 0) {
@@ -83,7 +78,8 @@ static BOOL _sceneAssetsLoaded = NO;
           if (!targetDelegate) {
             [NSException raise:@"HLSceneBadRegistration" format:@"Gesture target node decoded without a gesture target delegate (perhaps missing override of initWithCoder): %@", target];
           }
-          [self HLScene_addTargetToGestureSets:target withDelegate:targetDelegate];
+          _childGestureTargetsExisted = YES;
+          [self HLScene_needSharedGestureRecognizersForTargetDelegate:targetDelegate];
         }
       }
     }
@@ -113,7 +109,7 @@ static BOOL _sceneAssetsLoaded = NO;
   if (_childNoCoding) {
     for (SKNode *child in _childNoCoding) {
       if (child.parent) {
-        removedChildren[[NSValue valueWithPointer:(__bridge const void *)(child)]] = child.parent;
+        removedChildren[[NSValue valueWithPointer:(__bridge void *)(child)]] = child.parent;
         [child removeFromParent];
       }
     }
@@ -275,13 +271,17 @@ static BOOL _sceneAssetsLoaded = NO;
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
 {
-  // note: If no nodes are registered for our gesture recognition system, then don't try
+  // If no nodes are registered for our gesture recognition system, then don't try
   // to do any of our own processing.  This will prevent us from accidentally hijacking
   // gestures from a subclass which isn't interested in this provided system.  (We could
   // make our gesture handler delegate private as a way to handle the issue, but on the
   // other hand, we might have subclasses which want to cooperate with our system by doing
   // some selective overriding.)
-  if (!_childTapTargets && !_childDoubleTapTargets && !_childLongPressTargets && !_childPanTargets && !_childPinchTargets) {
+  //
+  // note: Current implementation makes it easy to check whether gesture targets were
+  // ever registered, but not easy to check whether gesture targets are currently registered.
+  // That seems good enough.
+  if (!_childGestureTargetsExisted) {
     return YES;
   }
 
@@ -316,14 +316,6 @@ static BOOL _sceneAssetsLoaded = NO;
     // target usually wants to block gestures of all types if they are "inside"
     // the target.
 
-    // Commented out: Assume that checking userData is faster.  But keep this here
-    // just in case we're ever looking for an alternative.
-    //    if ((_childTapTargets && [_childTapTargets containsObject:node])
-    //        || (_childDoubleTapTargets && [_childDoubleTapTargets containsObject:node])
-    //        || (_childLongPressTargets && [_childLongPressTargets containsObject:node])
-    //        || (_childPanTargets && [_childPanTargets containsObject:node])
-    //        || (_childPinchTargets && [_childPinchTargets containsObject:node])) {
-    
     // TODO: If the scene has lots of gesture recognizers, then each one will be calling
     // this same code, including the call to target's addToGesture.  That might lead to
     // a lot of redundant checking.  Come up with a better design?
@@ -377,9 +369,9 @@ static BOOL _sceneAssetsLoaded = NO;
   if ([options containsObject:HLSceneChildNoCoding]) {
     optionBits |= HLSceneChildBitNoCoding;
     if (!_childNoCoding) {
-      _childNoCoding = [NSMutableSet setWithObject:node];
+      _childNoCoding = [NSMutableDictionary dictionaryWithObject:node forKey:[NSValue valueWithNonretainedObject:node]];
     } else {
-      [_childNoCoding addObject:node];
+      [_childNoCoding setObject:node forKey:[NSValue valueWithNonretainedObject:node]];
     }
   }
 
@@ -389,9 +381,9 @@ static BOOL _sceneAssetsLoaded = NO;
     }
     optionBits |= HLSceneChildBitResizeWithScene;
     if (!_childResizeWithScene) {
-      _childResizeWithScene = [NSMutableSet setWithObject:node];
+      _childResizeWithScene = [NSMutableDictionary dictionaryWithObject:node forKey:[NSValue valueWithNonretainedObject:node]];
     } else {
-      [_childResizeWithScene addObject:node];
+      [_childResizeWithScene setObject:node forKey:[NSValue valueWithNonretainedObject:node]];
     }
   }
 
@@ -405,7 +397,8 @@ static BOOL _sceneAssetsLoaded = NO;
       [NSException raise:@"HLSceneBadRegistration" format:@"Node registered for 'HLSceneChildGestureTarget' must have a non-nil gesture target delegate (@property gestureTargetDelegate)."];
     }
     optionBits |= HLSceneChildBitGestureTarget;
-    [self HLScene_addTargetToGestureSets:target withDelegate:targetDelegate];
+    _childGestureTargetsExisted = YES;
+    [self HLScene_needSharedGestureRecognizersForTargetDelegate:targetDelegate];
   }
 
   if (!node.userData) {
@@ -415,47 +408,22 @@ static BOOL _sceneAssetsLoaded = NO;
   }
 }
 
-- (void)HLScene_addTargetToGestureSets:(SKNode <HLGestureTarget> *)target withDelegate:(id <HLGestureTargetDelegate>)targetDelegate
+- (void)HLScene_needSharedGestureRecognizersForTargetDelegate:(id <HLGestureTargetDelegate>)targetDelegate
 {
   if ([targetDelegate addsToTapGestureRecognizer]) {
-    if (!_childTapTargets) {
-      _childTapTargets = [NSMutableSet setWithObject:target];
-      [self needSharedTapGestureRecognizer];
-    } else {
-      [_childTapTargets addObject:target];
-    }
+    [self needSharedTapGestureRecognizer];
   }
   if ([targetDelegate addsToDoubleTapGestureRecognizer]) {
-    if (!_childDoubleTapTargets) {
-      _childDoubleTapTargets = [NSMutableSet setWithObject:target];
-      [self needSharedDoubleTapGestureRecognizer];
-    } else {
-      [_childDoubleTapTargets addObject:target];
-    }
+    [self needSharedDoubleTapGestureRecognizer];
   }
   if ([targetDelegate addsToLongPressGestureRecognizer]) {
-    if (!_childLongPressTargets) {
-      _childLongPressTargets = [NSMutableSet setWithObject:target];
-      [self needSharedLongPressGestureRecognizer];
-    } else {
-      [_childLongPressTargets addObject:target];
-    }
+    [self needSharedLongPressGestureRecognizer];
   }
   if ([targetDelegate addsToPanGestureRecognizer]) {
-    if (!_childPanTargets) {
-      _childPanTargets = [NSMutableSet setWithObject:target];
-      [self needSharedPanGestureRecognizer];
-    } else {
-      [_childPanTargets addObject:target];
-    }
+    [self needSharedPanGestureRecognizer];
   }
   if ([targetDelegate addsToPinchGestureRecognizer]) {
-    if (!_childPinchTargets) {
-      _childPinchTargets = [NSMutableSet setWithObject:target];
-      [self needSharedPinchGestureRecognizer];
-    } else {
-      [_childPinchTargets addObject:target];
-    }
+    [self needSharedPinchGestureRecognizer];
   }
 }
 
@@ -466,49 +434,21 @@ static BOOL _sceneAssetsLoaded = NO;
   }
   
   if (_childNoCoding) {
-    [_childNoCoding removeObject:node];
+    [_childNoCoding removeObjectForKey:[NSValue valueWithNonretainedObject:node]];
     if ([_childNoCoding count] == 0) {
       _childNoCoding = nil;
     }
   }
 
   if (_childResizeWithScene) {
-    [_childResizeWithScene removeObject:node];
+    [_childResizeWithScene removeObjectForKey:[NSValue valueWithNonretainedObject:node]];
     if ([_childResizeWithScene count] == 0) {
       _childResizeWithScene = nil;
     }
   }
 
-  if (_childTapTargets) {
-    [_childTapTargets removeObject:node];
-    if ([_childTapTargets count] == 0) {
-      _childTapTargets = nil;
-    }
-  }
-  if (_childDoubleTapTargets) {
-    [_childDoubleTapTargets removeObject:node];
-    if ([_childDoubleTapTargets count] == 0) {
-      _childDoubleTapTargets = nil;
-    }
-  }
-  if (_childLongPressTargets) {
-    [_childLongPressTargets removeObject:node];
-    if ([_childLongPressTargets count] == 0) {
-      _childLongPressTargets = nil;
-    }
-  }
-  if (_childPanTargets) {
-    [_childPanTargets removeObject:node];
-    if ([_childPanTargets count] == 0) {
-      _childPanTargets = nil;
-    }
-  }
-  if (_childPinchTargets) {
-    [_childPinchTargets removeObject:node];
-    if ([_childPinchTargets count] == 0) {
-      _childPinchTargets = nil;
-    }
-  }
+  // note: _childGestureTargets existed tracks whether any gesture target
+  // was ever registered, not whether one is currently registered.
   
   [node.userData removeObjectForKey:HLSceneChildUserDataKey];
 }

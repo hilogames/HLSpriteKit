@@ -91,12 +91,10 @@ FOUNDATION_EXPORT NSString * const HLSceneChildGestureTarget;
  * Failure to unregister nodes often has little functional impact, but it will retain
  * references unnecessarily.
  *
- * note: One problem with the current design, for the record: Each node gets registered as
- * a pointer in an NSSet for its feature.  If many nodes are registered, then the memory
+ * note: One problem with the current design, for the record: Each node (usually) gets
+ * retained in a collection for its feature.  If many nodes are registered, then the memory
  * use will be significant.  That said, the options do not lend themselves to widespread
- * use on lots and lots of nodes in the scene.  One option to keep an eye on is gesture
- * target registration: Probably HLScene's gesture recognition system is not suited to use
- * for lots and lots of targets.
+ * use on lots and lots of nodes in the scene.
  *
  * note: An alternate design would be to put requests for scene behavior in the nodes
  * themselves (perhaps by having them conform to protocols, or perhaps by having them
