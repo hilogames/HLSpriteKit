@@ -13,6 +13,8 @@
 		CB2EB30F193E603C00CD3924 /* SKLabelNode+HLLabelNodeAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = CB2EB30D193E603C00CD3924 /* SKLabelNode+HLLabelNodeAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CB2EB310193E603C00CD3924 /* SKLabelNode+HLLabelNodeAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = CB2EB30E193E603C00CD3924 /* SKLabelNode+HLLabelNodeAdditions.m */; };
 		CB4BE95519421254001C9E79 /* HLError.h in Headers */ = {isa = PBXBuildFile; fileRef = CB4BE95319421254001C9E79 /* HLError.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CB5DBDA919E5CF0F008861A3 /* HLTiledNode.h in Headers */ = {isa = PBXBuildFile; fileRef = CB5DBDA719E5CF0F008861A3 /* HLTiledNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CB5DBDAA19E5CF0F008861A3 /* HLTiledNode.m in Sources */ = {isa = PBXBuildFile; fileRef = CB5DBDA819E5CF0F008861A3 /* HLTiledNode.m */; };
 		CB61C289196F6EC2002ED23F /* HLGestureTarget.m in Sources */ = {isa = PBXBuildFile; fileRef = CB61C287196F6EC2002ED23F /* HLGestureTarget.m */; };
 		CB63B0B11926AB6300091907 /* HLToolbarNode.h in Headers */ = {isa = PBXBuildFile; fileRef = CB63B0AF1926AB6300091907 /* HLToolbarNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CB63B0B21926AB6300091907 /* HLToolbarNode.m in Sources */ = {isa = PBXBuildFile; fileRef = CB63B0B01926AB6300091907 /* HLToolbarNode.m */; };
@@ -74,6 +76,8 @@
 		CB2EB30D193E603C00CD3924 /* SKLabelNode+HLLabelNodeAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SKLabelNode+HLLabelNodeAdditions.h"; sourceTree = "<group>"; };
 		CB2EB30E193E603C00CD3924 /* SKLabelNode+HLLabelNodeAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SKLabelNode+HLLabelNodeAdditions.m"; sourceTree = "<group>"; };
 		CB4BE95319421254001C9E79 /* HLError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLError.h; sourceTree = "<group>"; };
+		CB5DBDA719E5CF0F008861A3 /* HLTiledNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLTiledNode.h; sourceTree = "<group>"; };
+		CB5DBDA819E5CF0F008861A3 /* HLTiledNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLTiledNode.m; sourceTree = "<group>"; };
 		CB61C287196F6EC2002ED23F /* HLGestureTarget.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLGestureTarget.m; sourceTree = "<group>"; };
 		CB63B0AF1926AB6300091907 /* HLToolbarNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLToolbarNode.h; sourceTree = "<group>"; };
 		CB63B0B01926AB6300091907 /* HLToolbarNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLToolbarNode.m; sourceTree = "<group>"; };
@@ -187,6 +191,8 @@
 				CBD9E93F1914334C002533DF /* HLSpriteKit.h */,
 				CBA898881926BFE500849215 /* HLTextureStore.h */,
 				CBA898891926BFE500849215 /* HLTextureStore.m */,
+				CB5DBDA719E5CF0F008861A3 /* HLTiledNode.h */,
+				CB5DBDA819E5CF0F008861A3 /* HLTiledNode.m */,
 				CB63B0AF1926AB6300091907 /* HLToolbarNode.h */,
 				CB63B0B01926AB6300091907 /* HLToolbarNode.m */,
 				CB2EB30D193E603C00CD3924 /* SKLabelNode+HLLabelNodeAdditions.h */,
@@ -243,6 +249,7 @@
 				CB8DD9D1192CEBC600C0704D /* HLScene.h in Headers */,
 				CBD9E9451914353A002533DF /* HLSpriteKit.h in Headers */,
 				CBA8988A1926BFE500849215 /* HLTextureStore.h in Headers */,
+				CB5DBDA919E5CF0F008861A3 /* HLTiledNode.h in Headers */,
 				CB63B0B11926AB6300091907 /* HLToolbarNode.h in Headers */,
 				CB0DCDA319C9CBCD008DF70A /* UIImage+HLImageAdditions.h in Headers */,
 				CB2EB30F193E603C00CD3924 /* SKLabelNode+HLLabelNodeAdditions.h in Headers */,
@@ -343,6 +350,7 @@
 				CB79D707192C2A900014E267 /* HLEmitterStore.m in Sources */,
 				CB99D82919E318F40034A262 /* HLComponentNode.m in Sources */,
 				CB2EB310193E603C00CD3924 /* SKLabelNode+HLLabelNodeAdditions.m in Sources */,
+				CB5DBDAA19E5CF0F008861A3 /* HLTiledNode.m in Sources */,
 				CB61C289196F6EC2002ED23F /* HLGestureTarget.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
