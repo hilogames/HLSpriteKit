@@ -35,9 +35,6 @@
  * didTap delegate methods).  The button is too generic and simple to have a
  * natural self-delegation built-in behavior.
  */
-- (void)setGestureTargetDelegateWeak:(id<HLGestureTargetDelegate>)delegate;
-- (void)setGestureTargetDelegateStrong:(id<HLGestureTargetDelegate>)delegate;
-- (id<HLGestureTargetDelegate>)gestureTargetDelegate;
 
 /**
  * The text of the label in the HLLabelButtonNode.  Layout of the components

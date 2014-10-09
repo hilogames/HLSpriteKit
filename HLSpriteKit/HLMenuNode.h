@@ -38,9 +38,6 @@ typedef enum HLMenuNodeAnimation {
  *     to get a callbacks via the HLMenuNodeDelegate interface.
  *     (Set the delegate weakly to avoid retain cycles.)
  */
-- (void)setGestureTargetDelegateWeak:(id<HLGestureTargetDelegate>)delegate;
-- (void)setGestureTargetDelegateStrong:(id<HLGestureTargetDelegate>)delegate;
-- (id<HLGestureTargetDelegate>)gestureTargetDelegate;
 
 @property (nonatomic, weak) id <HLMenuNodeDelegate> delegate;
 

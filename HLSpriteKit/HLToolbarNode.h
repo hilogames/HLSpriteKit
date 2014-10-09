@@ -26,8 +26,19 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
   HLToolbarNodeAnimationSlideRight
 };
 
-// TODO: Make this an HLGestureTarget.
 @interface HLToolbarNode : HLComponentNode <NSCoding>
+
+/**
+ * Common gesture handling configurations:
+ *
+ *   - Leave the gesture target delegate unset for no gesture handling.  This is the
+ *     historical option: the owner handles all interaction with the toolbar node,
+ *     using toolAtLocation: to discover what tool is being tapped or panned or
+ *     whatever.
+ *
+ *   . TODO: Implement a nice simple HLGestureTargetDelegate interface with callback(s)
+ *     like HLGridNode for button-ish gestures.
+ */
 
 /**
  * Main toolbar color, showing as background behind tool squares.  Changes will not take

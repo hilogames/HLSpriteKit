@@ -19,9 +19,6 @@ enum {
 
 @implementation HLMenuNode
 {
-  __weak id <HLGestureTargetDelegate> _gestureTargetDelegateWeak;
-  id <HLGestureTargetDelegate> _gestureTargetDelegateStrong;
-
   SKNode *_buttonsNode;
   HLMenu *_currentMenu;
 }
@@ -97,27 +94,6 @@ enum {
 {
   [NSException raise:@"HLCopyingNotImplemented" format:@"Copying not implemented for this descendant of an NSCopying parent."];
   return nil;
-}
-
-- (void)setGestureTargetDelegateWeak:(id<HLGestureTargetDelegate>)delegate
-{
-  _gestureTargetDelegateWeak = delegate;
-  _gestureTargetDelegateStrong = nil;
-}
-
-- (void)setGestureTargetDelegateStrong:(id<HLGestureTargetDelegate>)delegate
-{
-  _gestureTargetDelegateStrong = delegate;
-  _gestureTargetDelegateWeak = nil;
-}
-
-- (id<HLGestureTargetDelegate>)gestureTargetDelegate
-{
-  if (_gestureTargetDelegateWeak) {
-    return _gestureTargetDelegateWeak;
-  } else {
-    return _gestureTargetDelegateStrong;
-  }
 }
 
 - (void)setMenu:(HLMenu *)menu animation:(HLMenuNodeAnimation)animation

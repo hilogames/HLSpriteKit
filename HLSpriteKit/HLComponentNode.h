@@ -8,7 +8,19 @@
 
 #import <SpriteKit/SpriteKit.h>
 
-@interface HLComponentNode : SKNode <NSCoding, NSCopying>
+#import "HLGestureTarget.h"
+
+@interface HLComponentNode : SKNode <NSCoding, NSCopying, HLGestureTarget>
+
+/**
+ * The HLGestureTarget interface is fairly lightweight, so all HLComponents are provided with
+ * an implementation of it, even if they don't seem particularly gesture-targety (e.g. HLTiledNode).
+ * See notes in HLComponent subclass header files on common gesture target configurations for
+ * the particular component.
+ */
+- (void)setGestureTargetDelegateWeak:(id<HLGestureTargetDelegate>)delegate;
+- (void)setGestureTargetDelegateStrong:(id<HLGestureTargetDelegate>)delegate;
+- (id<HLGestureTargetDelegate>)gestureTargetDelegate;
 
 /**
  * By default, because of SKScene's ignoresSiblingOrder property, scenes use node tree structure

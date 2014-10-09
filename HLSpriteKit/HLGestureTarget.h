@@ -80,6 +80,10 @@
  *
  *   . NSCopying is not necessarily implemented by gesture targets, but if it is, some
  *     thought should be given as to whether copied targets should share delegates or not.
+
+         copy->_gestureTargetDelegateWeak = _gestureTargetDelegateWeak;
+         copy->_gestureTargetDelegateStrong = _gestureTargetDelegateStrong;
+
  */
 @protocol HLGestureTarget <NSCoding>
 - (void)setGestureTargetDelegateWeak:(id<HLGestureTargetDelegate>)delegate;

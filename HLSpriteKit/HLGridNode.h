@@ -33,9 +33,6 @@
  * delegation); the owner would use HLGestureTargetTapDelegate to get
  * almost-as-convenient functionality.
  */
-- (void)setGestureTargetDelegateWeak:(id<HLGestureTargetDelegate>)delegate;
-- (void)setGestureTargetDelegateStrong:(id<HLGestureTargetDelegate>)delegate;
-- (id<HLGestureTargetDelegate>)gestureTargetDelegate;
 
 /**
  * A callback invoked when a square in the grid is tapped.  The callback parameter is

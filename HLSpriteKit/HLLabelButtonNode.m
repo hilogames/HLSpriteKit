@@ -83,8 +83,6 @@ enum {
   // http://stackoverflow.com/questions/22701029/ios-keyed-archive-sprite-kit-decode-error-sktexture-error-loading-image-resour
   self = [super initWithCoder:aDecoder];
   if (self) {
-    _gestureTargetDelegateWeak = [aDecoder decodeObjectForKey:@"gestureTargetDelegateWeak"];
-    _gestureTargetDelegateStrong = [aDecoder decodeObjectForKey:@"gestureTargetDelegateStrong"];
     // note: Child nodes already decoded in super.  Here we're just hooking up
     // the pointers.
     _backgroundNode = [aDecoder decodeObjectForKey:@"backgroundNode"];
@@ -101,8 +99,6 @@ enum {
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
   [super encodeWithCoder:aCoder];
-  [aCoder encodeObject:_gestureTargetDelegateWeak forKey:@"gestureTargetDelegateWeak"];
-  [aCoder encodeObject:_gestureTargetDelegateStrong forKey:@"gestureTargetDelegateStrong"];
   // note: Child nodes already decoded in super.  Here we're just recording the pointers.
   [aCoder encodeObject:_backgroundNode forKey:@"backgroundNode"];
   [aCoder encodeObject:_labelNode forKey:@"labelNode"];
@@ -116,9 +112,6 @@ enum {
 - (instancetype)copyWithZone:(NSZone *)zone
 {
   HLLabelButtonNode *copy = [super copyWithZone:zone];
-  // noob: Deep copy delegate?  Hm.  For now, just share delegates.
-  copy->_gestureTargetDelegateWeak = _gestureTargetDelegateWeak;
-  copy->_gestureTargetDelegateStrong = _gestureTargetDelegateStrong;
   // noob: SKNode copy deep-copies all children; need to hook up our
   // pointers, though.  (I guess this is why finding nodes by name is
   // recommended.)
@@ -135,27 +128,6 @@ enum {
   copy->_labelPadX = _labelPadX;
   copy->_labelPadY = _labelPadY;
   return copy;
-}
-
-- (void)setGestureTargetDelegateWeak:(id<HLGestureTargetDelegate>)delegate
-{
-  _gestureTargetDelegateWeak = delegate;
-  _gestureTargetDelegateStrong = nil;
-}
-
-- (void)setGestureTargetDelegateStrong:(id<HLGestureTargetDelegate>)delegate
-{
-  _gestureTargetDelegateStrong = delegate;
-  _gestureTargetDelegateWeak = nil;
-}
-
-- (id<HLGestureTargetDelegate>)gestureTargetDelegate
-{
-  if (_gestureTargetDelegateWeak) {
-    return _gestureTargetDelegateWeak;
-  } else {
-    return _gestureTargetDelegateStrong;
-  }
 }
 
 - (void)setText:(NSString *)text

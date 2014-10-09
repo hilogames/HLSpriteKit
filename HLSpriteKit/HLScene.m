@@ -62,14 +62,14 @@ static BOOL _sceneAssetsLoaded = NO;
           if (!_childNoCoding) {
             _childNoCoding = [NSMutableDictionary dictionaryWithObject:node forKey:[NSValue valueWithNonretainedObject:node]];
           } else {
-            [_childNoCoding setObject:node forKey:[NSValue valueWithNonretainedObject:node]];
+            _childNoCoding[[NSValue valueWithNonretainedObject:node]] = node;
           }
         }
         if ((optionBits & HLSceneChildBitResizeWithScene) != 0) {
           if (!_childResizeWithScene) {
             _childResizeWithScene = [NSMutableDictionary dictionaryWithObject:node forKey:[NSValue valueWithNonretainedObject:node]];
           } else {
-            [_childResizeWithScene setObject:node forKey:[NSValue valueWithNonretainedObject:node]];
+            _childResizeWithScene[[NSValue valueWithNonretainedObject:node]] = node;
           }
         }
         if ((optionBits & HLSceneChildBitGestureTarget) != 0) {
@@ -107,12 +107,13 @@ static BOOL _sceneAssetsLoaded = NO;
   
   NSMutableDictionary *removedChildren = [NSMutableDictionary dictionary];
   if (_childNoCoding) {
-    for (SKNode *child in _childNoCoding) {
+    [_childNoCoding enumerateKeysAndObjectsUsingBlock:^(id key, id object, BOOL *stop){
+      SKNode *child = (SKNode *)object;
       if (child.parent) {
-        removedChildren[[NSValue valueWithPointer:(__bridge void *)(child)]] = child.parent;
+        removedChildren[[NSValue valueWithNonretainedObject:child]] = child.parent;
         [child removeFromParent];
       }
-    }
+    }];
   }
 
   [super encodeWithCoder:aCoder];
@@ -120,8 +121,9 @@ static BOOL _sceneAssetsLoaded = NO;
   [aCoder encodeInteger:_gestureTargetHitTestMode forKey:@"gestureTargetHitTestMode"];
   
   [removedChildren enumerateKeysAndObjectsUsingBlock:^(id key, id object, BOOL *stop){
-    SKNode *child = [key pointerValue];
-    [object addChild:child];
+    SKNode *child = [key nonretainedObjectValue];
+    SKNode *parent = (SKNode *)object;
+    [parent addChild:child];
   }];
 }
 
@@ -178,8 +180,8 @@ static BOOL _sceneAssetsLoaded = NO;
   [super didChangeSize:oldSize];
 
   if (_childResizeWithScene) {
-    for (id child in _childResizeWithScene) {
-      [child setSize:self.size];
+    [_childResizeWithScene enumerateKeysAndObjectsUsingBlock:^(id key, id object, BOOL *stop){
+      [object setSize:self.size];
       // Commented out: This generates code without warnings if child is declared SKNode *.
       //    SEL selector = @selector(setSize:);
       //    NSMethodSignature *methodSignature = [child methodSignatureForSelector:@selector(setSize:)];
@@ -190,7 +192,7 @@ static BOOL _sceneAssetsLoaded = NO;
       //      [invocation setArgument:&selfSize atIndex:2];
       //      [invocation invoke];
       //    }
-    }
+    }];
   }
 }
 
@@ -371,7 +373,7 @@ static BOOL _sceneAssetsLoaded = NO;
     if (!_childNoCoding) {
       _childNoCoding = [NSMutableDictionary dictionaryWithObject:node forKey:[NSValue valueWithNonretainedObject:node]];
     } else {
-      [_childNoCoding setObject:node forKey:[NSValue valueWithNonretainedObject:node]];
+      _childNoCoding[[NSValue valueWithNonretainedObject:node]] = node;
     }
   }
 
@@ -383,7 +385,7 @@ static BOOL _sceneAssetsLoaded = NO;
     if (!_childResizeWithScene) {
       _childResizeWithScene = [NSMutableDictionary dictionaryWithObject:node forKey:[NSValue valueWithNonretainedObject:node]];
     } else {
-      [_childResizeWithScene setObject:node forKey:[NSValue valueWithNonretainedObject:node]];
+      _childResizeWithScene[[NSValue valueWithNonretainedObject:node]] = node;
     }
   }
 
@@ -447,7 +449,7 @@ static BOOL _sceneAssetsLoaded = NO;
     }
   }
 
-  // note: _childGestureTargets existed tracks whether any gesture target
+  // note: _childGestureTargetsExisted tracks whether any gesture target
   // was ever registered, not whether one is currently registered.
   
   [node.userData removeObjectForKey:HLSceneChildUserDataKey];
