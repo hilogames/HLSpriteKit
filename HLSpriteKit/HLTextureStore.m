@@ -55,8 +55,8 @@
     [NSException raise:@"HLTextureStoreTextureFailed" format:@"Could not create texture with passed image for key '%@'.", key];
   }
   texture.filteringMode = filteringMode;
-  [_textures setValue:texture forKey:key];
-  [_images setValue:image forKey:key];
+  _textures[key] = texture;
+  _images[key] = image;
   return texture;
 }
 
@@ -67,8 +67,8 @@
     [NSException raise:@"HLTextureStoreTextureNotFound" format:@"Could not find texture with image name '%@' for key '%@'.", imageName, key];
   }
   texture.filteringMode = filteringMode;
-  [_textures setValue:texture forKey:key];
-  [_images setValue:nil forKey:key];
+  _textures[key] = texture;
+  [_images removeObjectForKey:key];
   return texture;
 }
 
@@ -85,8 +85,8 @@
     [NSException raise:@"HLTextureStoreImageNotFound" format:@"Could not find image with image name '%@' for key '%@'.", imageImageName, key];
   }
   texture.filteringMode = filteringMode;
-  [_textures setValue:texture forKey:key];
-  [_images setValue:image forKey:key];
+  _textures[key] = texture;
+  _images[key] = image;
   return texture;
 }
 
