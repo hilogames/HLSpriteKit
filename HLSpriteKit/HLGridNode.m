@@ -330,6 +330,11 @@ enum {
   return NO;
 }
 
+- (BOOL)addsToRotationGestureRecognizer
+{
+  return NO;
+}
+
 - (BOOL)addToGesture:(UIGestureRecognizer *)gestureRecognizer firstTouch:(UITouch *)touch isInside:(BOOL *)isInside
 {
   *isInside = YES;

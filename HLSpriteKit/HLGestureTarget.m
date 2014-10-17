@@ -19,6 +19,7 @@
     _addsToLongPressGestureRecognizer = [aDecoder decodeBoolForKey:@"addsToLongPressGestureRecognizer"];
     _addsToPanGestureRecognizer = [aDecoder decodeBoolForKey:@"addsToPanGestureRecognizer"];
     _addsToPinchGestureRecognizer = [aDecoder decodeBoolForKey:@"addsToPinchGestureRecognizer"];
+    _addsToRotationGestureRecognizer = [aDecoder decodeBoolForKey:@"addsToRotationGestureRecognizer"];
     // note: Cannot decode _handleGestureBlock.
   }
   return self;
@@ -31,6 +32,7 @@
   [aCoder encodeBool:_addsToLongPressGestureRecognizer forKey:@"addsToLongPressGestureRecognizer"];
   [aCoder encodeBool:_addsToPanGestureRecognizer forKey:@"addsToPanGestureRecognizer"];
   [aCoder encodeBool:_addsToPinchGestureRecognizer forKey:@"addsToPinchGestureRecognizer"];
+  [aCoder encodeBool:_addsToRotationGestureRecognizer forKey:@"addsToRotationGestureRecognizer"];
   // note: Cannot encode _handleGestureBlock.
 }
 
@@ -59,6 +61,10 @@
     }
   } else if ([gestureRecognizer isKindOfClass:[UIPinchGestureRecognizer class]]) {
     if (_addsToPinchGestureRecognizer) {
+      handleGesture = YES;
+    }
+  } else if ([gestureRecognizer isKindOfClass:[UIRotationGestureRecognizer class]]) {
+    if (_addsToRotationGestureRecognizer) {
       handleGesture = YES;
     }
   }
@@ -94,6 +100,11 @@
 - (BOOL)addsToPinchGestureRecognizer
 {
   return _addsToPinchGestureRecognizer;
+}
+
+- (BOOL)addsToRotationGestureRecognizer
+{
+  return _addsToRotationGestureRecognizer;
 }
 
 - (void)HLGestureTargetConfigurableDelegate_handleGesture:(UIGestureRecognizer *)gestureRecognizer
@@ -170,6 +181,11 @@
 }
 
 - (BOOL)addsToPinchGestureRecognizer
+{
+  return NO;
+}
+
+- (BOOL)addsToRotationGestureRecognizer
 {
   return NO;
 }

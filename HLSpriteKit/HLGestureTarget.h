@@ -160,6 +160,7 @@
 - (BOOL)addsToLongPressGestureRecognizer;
 - (BOOL)addsToPanGestureRecognizer;
 - (BOOL)addsToPinchGestureRecognizer;
+- (BOOL)addsToRotationGestureRecognizer;
 
 @end
 
@@ -179,6 +180,7 @@
 @property (nonatomic, assign) BOOL addsToLongPressGestureRecognizer;
 @property (nonatomic, assign) BOOL addsToPanGestureRecognizer;
 @property (nonatomic, assign) BOOL addsToPinchGestureRecognizer;
+@property (nonatomic, assign) BOOL addsToRotationGestureRecognizer;
 @property (nonatomic, copy) void (^handleGestureBlock)(UIGestureRecognizer *);
 - (BOOL)addToGesture:(UIGestureRecognizer *)gestureRecognizer firstTouch:(UITouch *)touch isInside:(BOOL *)isInside;
 - (BOOL)addsToTapGestureRecognizer;
@@ -186,6 +188,7 @@
 - (BOOL)addsToLongPressGestureRecognizer;
 - (BOOL)addsToPanGestureRecognizer;
 - (BOOL)addsToPinchGestureRecognizer;
+- (BOOL)addsToRotationGestureRecognizer;
 @end
 
 /**

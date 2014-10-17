@@ -57,6 +57,7 @@ FOUNDATION_EXPORT NSString * const HLSceneChildGestureTarget;
   UILongPressGestureRecognizer *_longPressRecognizer;
   UIPanGestureRecognizer *_panRecognizer;
   UIPinchGestureRecognizer *_pinchRecognizer;
+  UIRotationGestureRecognizer *_rotationRecognizer;
 }
 
 // Functionality for loading scene assets.
@@ -221,6 +222,7 @@ typedef NS_ENUM(NSInteger, HLSceneGestureTargetHitTestMode) {
 - (BOOL)needSharedLongPressGestureRecognizer;
 - (BOOL)needSharedPanGestureRecognizer;
 - (BOOL)needSharedPinchGestureRecognizer;
+- (BOOL)needSharedRotationGestureRecognizer;
 
 // Functionality for presenting a node modally above the scene.
 

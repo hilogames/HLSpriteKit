@@ -152,6 +152,9 @@ static BOOL _sceneAssetsLoaded = NO;
   if (_pinchRecognizer) {
     [view addGestureRecognizer:_pinchRecognizer];
   }
+  if (_rotationRecognizer) {
+    [view addGestureRecognizer:_rotationRecognizer];
+  }
 }
 
 - (void)willMoveFromView:(SKView *)view
@@ -172,6 +175,9 @@ static BOOL _sceneAssetsLoaded = NO;
   }
   if (_pinchRecognizer) {
     [view removeGestureRecognizer:_pinchRecognizer];
+  }
+  if (_rotationRecognizer) {
+    [view removeGestureRecognizer:_rotationRecognizer];
   }
 }
 
@@ -267,6 +273,20 @@ static BOOL _sceneAssetsLoaded = NO;
   UIView *view = self.view;
   if (view) {
     [view addGestureRecognizer:_pinchRecognizer];
+  }
+  return YES;
+}
+
+- (BOOL)needSharedRotationGestureRecognizer
+{
+  if (_rotationRecognizer) {
+    return NO;
+  }
+  _rotationRecognizer = [[UIRotationGestureRecognizer alloc] initWithTarget:self action:@selector(HLScene_handleGesture:)];
+  _rotationRecognizer.delegate = self;
+  UIView *view = self.view;
+  if (view) {
+    [view addGestureRecognizer:_rotationRecognizer];
   }
   return YES;
 }
@@ -426,6 +446,9 @@ static BOOL _sceneAssetsLoaded = NO;
   }
   if ([targetDelegate addsToPinchGestureRecognizer]) {
     [self needSharedPinchGestureRecognizer];
+  }
+  if ([targetDelegate addsToRotationGestureRecognizer]) {
+    [self needSharedRotationGestureRecognizer];
   }
 }
 

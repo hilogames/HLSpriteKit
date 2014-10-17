@@ -206,6 +206,11 @@ enum {
   return NO;
 }
 
+- (BOOL)addsToRotationGestureRecognizer
+{
+  return NO;
+}
+
 - (void)handleTap:(UIGestureRecognizer *)gestureRecognizer
 {
   // note: Clearly, could retain state from addToGesture if it improved
