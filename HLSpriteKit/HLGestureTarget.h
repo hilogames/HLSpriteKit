@@ -22,6 +22,22 @@
 #import <Foundation/Foundation.h>
 #import <SpriteKit/SpriteKit.h>
 
+/**
+ * Returns true if the passed gesture recognizers are of the same type and are configured
+ * in an equivalent way (dependent on class).  For example, if the two passed gesture
+ * recognizers are both UITapGestureRecognizers configured with the same number of
+ * required taps and touches, then this method will return YES.
+ *
+ * Use case: Gesture targets return a list of gesture recognizers to which they might
+ * add themselves.  It is then the responsibility of the UIGestureRecognizer delegate
+ * (usually an SKScene or UIViewController) to add gesture recognizers to the view.
+ * But if the delegate already has an equivalent gesture recognizer added, then there's
+ * no need to add another.  This method can be used to decide what counts as "equivalent".
+ *
+ * noob: Might be worth comparing and contrasting with [UIGestureTarget isEqual:].
+ */
+BOOL HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIGestureRecognizer *b);
+
 @protocol HLGestureTargetDelegate;
 
 /**
@@ -35,24 +51,24 @@
  *     and the difference is important.  Therefore this "property" needs to be implemented
  *     as a single getter with two setters and two ivars, to make the interface explicit
  *     and harder to misuse.  Sorry, it's annoying.  Here is the recommended implementation:
- 
+
          @implementation MyClass {
            __weak id <HLGestureTargetDelegate> _gestureTargetDelegateWeak;
            id <HLGestureTargetDelegate> _gestureTargetDelegateStrong;
          }
- 
+
          - (void)setGestureTargetDelegateWeak:(id<HLGestureTargetDelegate>)delegate
          {
            _gestureTargetDelegateWeak = delegate;
            _gestureTargetDelegateStrong = nil;
          }
-         
+
          - (void)setGestureTargetDelegateStrong:(id<HLGestureTargetDelegate>)delegate
          {
            _gestureTargetDelegateStrong = delegate;
            _gestureTargetDelegateWeak = nil;
          }
-         
+
          - (id<HLGestureTargetDelegate>)gestureTargetDelegate
          {
            if (_gestureTargetDelegateWeak) {
@@ -74,7 +90,7 @@
 
          [aCoder encodeObject:_gestureTargetDelegateWeak forKey:@"gestureTargetDelegateWeak"];
          [aCoder encodeObject:_gestureTargetDelegateStrong forKey:@"gestureTargetDelegateStrong"];
-         
+
          _gestureTargetDelegateWeak = [aDecoder decodeObjectForKey:@"gestureTargetDelegateWeak"];
          _gestureTargetDelegateStrong = [aDecoder decodeObjectForKey:@"gestureTargetDelegateStrong"];
  *
@@ -155,40 +171,8 @@
  * addToGesture (which is assumed to be more costly), but typically a target still must
  * evaluate "is inside" even if it isn't interested in a certain kind of gesture.
  */
-- (BOOL)addsToTapGestureRecognizer;
-- (BOOL)addsToDoubleTapGestureRecognizer;
-- (BOOL)addsToLongPressGestureRecognizer;
-- (BOOL)addsToPanGestureRecognizer;
-- (BOOL)addsToPinchGestureRecognizer;
-- (BOOL)addsToRotationGestureRecognizer;
+- (NSArray *)addsToGestureRecognizers;
 
-@end
-
-/**
- * A externally-configurable gesture target delegate which can be configured to add to any and
- * all gesture recognizers.  Added gesture recognizers will be forwarded to an owner-provided
- * handling block to handle their recognized gestures.
- *
- * note: The handling block is not encodable, so the caller will have to reset it on decode.
- *
- * note: Consider making a version of this (or extension of this) which itself can have a
- * gesture handling delegate set, rather than a block.  That would be encodable.
- */
-@interface HLGestureTargetConfigurableDelegate : NSObject <HLGestureTargetDelegate, NSCoding>
-@property (nonatomic, assign) BOOL addsToTapGestureRecognizer;
-@property (nonatomic, assign) BOOL addsToDoubleTapGestureRecognizer;
-@property (nonatomic, assign) BOOL addsToLongPressGestureRecognizer;
-@property (nonatomic, assign) BOOL addsToPanGestureRecognizer;
-@property (nonatomic, assign) BOOL addsToPinchGestureRecognizer;
-@property (nonatomic, assign) BOOL addsToRotationGestureRecognizer;
-@property (nonatomic, copy) void (^handleGestureBlock)(UIGestureRecognizer *);
-- (BOOL)addToGesture:(UIGestureRecognizer *)gestureRecognizer firstTouch:(UITouch *)touch isInside:(BOOL *)isInside;
-- (BOOL)addsToTapGestureRecognizer;
-- (BOOL)addsToDoubleTapGestureRecognizer;
-- (BOOL)addsToLongPressGestureRecognizer;
-- (BOOL)addsToPanGestureRecognizer;
-- (BOOL)addsToPinchGestureRecognizer;
-- (BOOL)addsToRotationGestureRecognizer;
 @end
 
 /**
@@ -201,8 +185,9 @@
  *
  * note: The handling block is not encodable, so the caller will have to reset it on decode.
  *
- * note: Consider making a version of this (or extension of this) which itself can have a
- * gesture handling delegate set, rather than a block.  That would be encodable.
+ * note: Consider making a version of this (or extension of this) which itself uses
+ * delegation for the call to handle the gesture, rather than a block; the delegate, then,
+ * would be encodable.
  */
 @interface HLGestureTargetTapDelegate : NSObject <HLGestureTargetDelegate, NSCoding>
 - (instancetype)initWithHandleGestureBlock:(void(^)(UIGestureRecognizer *))handleGestureBlock;

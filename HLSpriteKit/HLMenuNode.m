@@ -163,6 +163,11 @@ enum {
 #pragma mark -
 #pragma mark HLGestureTargetDelegate
 
+- (NSArray *)addsToGestureRecognizers
+{
+  return @[ [[UITapGestureRecognizer alloc] init] ];
+}
+
 - (BOOL)addToGesture:(UIGestureRecognizer *)gestureRecognizer firstTouch:(UITouch *)touch isInside:(BOOL *)isInside
 {
   CGPoint location = [touch locationInNode:self];
@@ -172,42 +177,14 @@ enum {
     if ([buttonNode containsPoint:location]) {
       *isInside = YES;
       if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
+        // note: Require only one tap and one touch, same as our gesture recognizer returned
+        // from addsToGestureRecognizers?  I think it's okay to be non-strict.
         [gestureRecognizer addTarget:self action:@selector(handleTap:)];
         return YES;
       }
       break;
     }
   }
-  return NO;
-}
-
-- (BOOL)addsToTapGestureRecognizer
-{
-  return YES;
-}
-
-- (BOOL)addsToDoubleTapGestureRecognizer
-{
-  return NO;
-}
-
-- (BOOL)addsToLongPressGestureRecognizer
-{
-  return NO;
-}
-
-- (BOOL)addsToPanGestureRecognizer
-{
-  return NO;
-}
-
-- (BOOL)addsToPinchGestureRecognizer
-{
-  return NO;
-}
-
-- (BOOL)addsToRotationGestureRecognizer
-{
   return NO;
 }
 
@@ -268,7 +245,7 @@ enum {
     if (oldButtonsNode) {
       [oldButtonsNode removeFromParent];
     }
-  
+
   } else {
 
     CGFloat buttonWidthMax = 0.0f;
@@ -289,7 +266,7 @@ enum {
       default:
         [NSException raise:@"HLMenuNodeUnhandledAnimation" format:@"Unhandled animation %d.", animation];
     }
-  
+
     _buttonsNode.position = CGPointMake(-delta.x, -delta.y);
     SKAction *animationAction = [SKAction moveByX:delta.x y:delta.y duration:_itemAnimationDuration];
     [_buttonsNode runAction:animationAction];
@@ -319,7 +296,7 @@ enum {
     NSLog(@"loading sound %@", self.itemSoundFile);
     [SKAction playSoundFileNamed:self.itemSoundFile waitForCompletion:NO];
   }
-  
+
   for (NSUInteger i = 0; i < [_currentMenu itemCount]; ++i) {
     HLMenuItem *item = [_currentMenu itemAtIndex:i];
     if (item.soundFile) {
@@ -351,7 +328,7 @@ enum {
     // might be about to be dismissed, too.
     [self.scene runAction:[SKAction playSoundFileNamed:soundFile waitForCompletion:NO]];
   }
-  
+
   id<HLMenuNodeDelegate> delegate = self.delegate;
   if (delegate) {
     if ([delegate respondsToSelector:@selector(menuNode:shouldTapMenuItem:itemIndex:)]

@@ -305,41 +305,21 @@ enum {
 #pragma mark -
 #pragma mark HLGestureTargetDelegate
 
-- (BOOL)addsToTapGestureRecognizer
+- (NSArray *)addsToGestureRecognizers
 {
-  return YES;
-}
-
-- (BOOL)addsToDoubleTapGestureRecognizer
-{
-  return NO;
-}
-
-- (BOOL)addsToLongPressGestureRecognizer
-{
-  return NO;
-}
-
-- (BOOL)addsToPanGestureRecognizer
-{
-  return NO;
-}
-
-- (BOOL)addsToPinchGestureRecognizer
-{
-  return NO;
-}
-
-- (BOOL)addsToRotationGestureRecognizer
-{
-  return NO;
+  return @[ [[UITapGestureRecognizer alloc] init] ];
 }
 
 - (BOOL)addToGesture:(UIGestureRecognizer *)gestureRecognizer firstTouch:(UITouch *)touch isInside:(BOOL *)isInside
 {
   *isInside = YES;
-  [gestureRecognizer addTarget:self action:@selector(handleTap:)];
-  return YES;
+  if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
+    // note: Require only one tap and one touch, same as our gesture recognizer returned
+    // from addsToGestureRecognizers?  I think it's okay to be non-strict.
+    [gestureRecognizer addTarget:self action:@selector(handleTap:)];
+    return YES;
+  }
+  return NO;
 }
 
 - (void)handleTap:(UIGestureRecognizer *)gestureRecognizer

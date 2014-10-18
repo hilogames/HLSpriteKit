@@ -8,113 +8,80 @@
 
 #import "HLGestureTarget.h"
 
-@implementation HLGestureTargetConfigurableDelegate
-
-- (instancetype)initWithCoder:(NSCoder *)aDecoder
+BOOL
+HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIGestureRecognizer *b)
 {
-  self = [super init];
-  if (self) {
-    _addsToTapGestureRecognizer = [aDecoder decodeBoolForKey:@"addsToTapGestureRecognizer"];
-    _addsToDoubleTapGestureRecognizer = [aDecoder decodeBoolForKey:@"addsToDoubleTapGestureRecognizer"];
-    _addsToLongPressGestureRecognizer = [aDecoder decodeBoolForKey:@"addsToLongPressGestureRecognizer"];
-    _addsToPanGestureRecognizer = [aDecoder decodeBoolForKey:@"addsToPanGestureRecognizer"];
-    _addsToPinchGestureRecognizer = [aDecoder decodeBoolForKey:@"addsToPinchGestureRecognizer"];
-    _addsToRotationGestureRecognizer = [aDecoder decodeBoolForKey:@"addsToRotationGestureRecognizer"];
-    // note: Cannot decode _handleGestureBlock.
-  }
-  return self;
-}
-
-- (void)encodeWithCoder:(NSCoder *)aCoder
-{
-  [aCoder encodeBool:_addsToTapGestureRecognizer forKey:@"addsToTapGestureRecognizer"];
-  [aCoder encodeBool:_addsToDoubleTapGestureRecognizer forKey:@"addsToDoubleTapGestureRecognizer"];
-  [aCoder encodeBool:_addsToLongPressGestureRecognizer forKey:@"addsToLongPressGestureRecognizer"];
-  [aCoder encodeBool:_addsToPanGestureRecognizer forKey:@"addsToPanGestureRecognizer"];
-  [aCoder encodeBool:_addsToPinchGestureRecognizer forKey:@"addsToPinchGestureRecognizer"];
-  [aCoder encodeBool:_addsToRotationGestureRecognizer forKey:@"addsToRotationGestureRecognizer"];
-  // note: Cannot encode _handleGestureBlock.
-}
-
-- (BOOL)addToGesture:(UIGestureRecognizer *)gestureRecognizer firstTouch:(UITouch *)touch isInside:(BOOL *)isInside
-{
-  BOOL handleGesture = NO;
-
-  if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
-    UITapGestureRecognizer *tapGestureRecognizer = (UITapGestureRecognizer *)gestureRecognizer;
-    if (tapGestureRecognizer.numberOfTapsRequired == 1) {
-      if (_addsToTapGestureRecognizer) {
-        handleGesture = YES;
-      }
-    } else if (tapGestureRecognizer.numberOfTapsRequired == 2) {
-      if (_addsToDoubleTapGestureRecognizer) {
-        handleGesture = YES;
-      }
-    }
-  } else if ([gestureRecognizer isKindOfClass:[UILongPressGestureRecognizer class]]) {
-    if (_addsToLongPressGestureRecognizer) {
-      handleGesture = YES;
-    }
-  } else if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
-    if (_addsToPanGestureRecognizer) {
-      handleGesture = YES;
-    }
-  } else if ([gestureRecognizer isKindOfClass:[UIPinchGestureRecognizer class]]) {
-    if (_addsToPinchGestureRecognizer) {
-      handleGesture = YES;
-    }
-  } else if ([gestureRecognizer isKindOfClass:[UIRotationGestureRecognizer class]]) {
-    if (_addsToRotationGestureRecognizer) {
-      handleGesture = YES;
-    }
+  Class classA = [a class];
+  if (classA != [b class]) {
+    return NO;
   }
 
-  // note: Simple implementation says everything is inside.
-  *isInside = YES;
-  if (handleGesture) {
-    [gestureRecognizer addTarget:self action:@selector(HLGestureTargetConfigurableDelegate_handleGesture:)];
+  if (classA == [UITapGestureRecognizer class]) {
+    UITapGestureRecognizer *tapA = (UITapGestureRecognizer *)a;
+    UITapGestureRecognizer *tapB = (UITapGestureRecognizer *)b;
+    if (tapA.numberOfTapsRequired != tapB.numberOfTapsRequired) {
+      return NO;
+    }
+    if (tapA.numberOfTouchesRequired != tapB.numberOfTouchesRequired) {
+      return NO;
+    }
+    return YES;
   }
-  return handleGesture;
-}
-
-- (BOOL)addsToTapGestureRecognizer
-{
-  return _addsToTapGestureRecognizer;
-}
-
-- (BOOL)addsToDoubleTapGestureRecognizer
-{
-  return _addsToDoubleTapGestureRecognizer;
-}
-
-- (BOOL)addsToLongPressGestureRecognizer
-{
-  return _addsToLongPressGestureRecognizer;
-}
-
-- (BOOL)addsToPanGestureRecognizer
-{
-  return _addsToPanGestureRecognizer;
-}
-
-- (BOOL)addsToPinchGestureRecognizer
-{
-  return _addsToPinchGestureRecognizer;
-}
-
-- (BOOL)addsToRotationGestureRecognizer
-{
-  return _addsToRotationGestureRecognizer;
-}
-
-- (void)HLGestureTargetConfigurableDelegate_handleGesture:(UIGestureRecognizer *)gestureRecognizer
-{
-  if (_handleGestureBlock) {
-    _handleGestureBlock(gestureRecognizer);
+  
+  if (classA == [UISwipeGestureRecognizer class]) {
+    UISwipeGestureRecognizer *swipeA = (UISwipeGestureRecognizer *)a;
+    UISwipeGestureRecognizer *swipeB = (UISwipeGestureRecognizer *)b;
+    if (swipeA.direction != swipeB.direction) {
+      return NO;
+    }
+    if (swipeA.numberOfTouchesRequired != swipeB.numberOfTouchesRequired) {
+      return NO;
+    }
+    return YES;
   }
-}
 
-@end
+  if (classA == [UIPanGestureRecognizer class]) {
+    UIPanGestureRecognizer *panA = (UIPanGestureRecognizer *)a;
+    UIPanGestureRecognizer *panB = (UIPanGestureRecognizer *)b;
+    if (panA.minimumNumberOfTouches != panB.minimumNumberOfTouches) {
+      return NO;
+    }
+    if (panA.maximumNumberOfTouches != panB.maximumNumberOfTouches) {
+      return NO;
+    }
+    return YES;
+  }
+
+  if (classA == [UIScreenEdgePanGestureRecognizer class]) {
+    UIScreenEdgePanGestureRecognizer *screenEdgePanA = (UIScreenEdgePanGestureRecognizer *)a;
+    UIScreenEdgePanGestureRecognizer *screenEdgePanB = (UIScreenEdgePanGestureRecognizer *)b;
+    if (screenEdgePanA.edges != screenEdgePanB.edges) {
+      return NO;
+    }
+    return YES;
+  }
+  
+  if (classA == [UILongPressGestureRecognizer class]) {
+    UILongPressGestureRecognizer *longPressA = (UILongPressGestureRecognizer *)a;
+    UILongPressGestureRecognizer *longPressB = (UILongPressGestureRecognizer *)b;
+    if (longPressA.numberOfTapsRequired != longPressB.numberOfTapsRequired) {
+      return NO;
+    }
+    if (longPressA.numberOfTouchesRequired != longPressB.numberOfTouchesRequired) {
+      return NO;
+    }
+    const CFTimeInterval HLGestureTargetLongPressMinimumPressDurationEpsilon = 0.01;
+    if (fabs(longPressA.minimumPressDuration - longPressB.minimumPressDuration) > HLGestureTargetLongPressMinimumPressDurationEpsilon) {
+      return NO;
+    }
+    const CGFloat HLGestureTargetLongPressAllowableMovementEpsilon = 0.1f;
+    if (fabs(longPressA.allowableMovement - longPressB.allowableMovement) > HLGestureTargetLongPressAllowableMovementEpsilon) {
+      return NO;
+    }
+    return YES;
+  }
+  return YES;
+}
 
 @implementation HLGestureTargetTapDelegate
 
@@ -144,14 +111,14 @@
 - (BOOL)addToGesture:(UIGestureRecognizer *)gestureRecognizer firstTouch:(UITouch *)touch isInside:(BOOL *)isInside
 {
   BOOL handleGesture = NO;
-  
+
   if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
     UITapGestureRecognizer *tapGestureRecognizer = (UITapGestureRecognizer *)gestureRecognizer;
     if (tapGestureRecognizer.numberOfTapsRequired == 1) {
       handleGesture = YES;
     }
   }
-  
+
   // note: Simple implementation says everything is inside.
   *isInside = YES;
   if (handleGesture) {
@@ -160,34 +127,9 @@
   return handleGesture;
 }
 
-- (BOOL)addsToTapGestureRecognizer
+- (NSArray *)addsToGestureRecognizers
 {
-  return YES;
-}
-
-- (BOOL)addsToDoubleTapGestureRecognizer
-{
-  return NO;
-}
-
-- (BOOL)addsToLongPressGestureRecognizer
-{
-  return NO;
-}
-
-- (BOOL)addsToPanGestureRecognizer
-{
-  return NO;
-}
-
-- (BOOL)addsToPinchGestureRecognizer
-{
-  return NO;
-}
-
-- (BOOL)addsToRotationGestureRecognizer
-{
-  return NO;
+  return @[ [[UITapGestureRecognizer alloc] init] ];
 }
 
 - (void)HLGestureTargetTapDelegate_handleGesture:(UIGestureRecognizer *)gestureRecognizer

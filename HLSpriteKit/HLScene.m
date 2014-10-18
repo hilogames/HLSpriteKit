@@ -40,7 +40,7 @@ static BOOL _sceneAssetsLoaded = NO;
 {
   self = [super initWithCoder:aDecoder];
   if (self) {
-  
+
     _gestureTargetHitTestMode = (HLSceneGestureTargetHitTestMode)[aDecoder decodeIntegerForKey:@"gestureTargetHitTestMode"];
 
     _childGestureTargetsExisted = NO;
@@ -79,7 +79,7 @@ static BOOL _sceneAssetsLoaded = NO;
             [NSException raise:@"HLSceneBadRegistration" format:@"Gesture target node decoded without a gesture target delegate (perhaps missing override of initWithCoder): %@", target];
           }
           _childGestureTargetsExisted = YES;
-          [self HLScene_needSharedGestureRecognizersForTargetDelegate:targetDelegate];
+          [self needSharedGestureRecognizers:[targetDelegate addsToGestureRecognizers]];
         }
       }
     }
@@ -94,7 +94,7 @@ static BOOL _sceneAssetsLoaded = NO;
   // good because it's otherwise quite hard to figure out whether a certain node
   // will be encoded or not -- and if the node won't be encoded, then we don't
   // want to encode our reference.
-  
+
   // note: The shortcoming is this, though: If a node is registered to the scene
   // but then encoded separately from the scene's node hierarchy, it will have
   // the lingering userData flags attached to it, but this object won't have it
@@ -104,7 +104,7 @@ static BOOL _sceneAssetsLoaded = NO;
   // addNode:, but that again means going down the path of implicit registration,
   // which would involve a recursive check of all added nodes, which doesn't seem
   // lightweight or unintrusive.)
-  
+
   NSMutableDictionary *removedChildren = [NSMutableDictionary dictionary];
   if (_childNoCoding) {
     [_childNoCoding enumerateKeysAndObjectsUsingBlock:^(id key, id object, BOOL *stop){
@@ -117,9 +117,9 @@ static BOOL _sceneAssetsLoaded = NO;
   }
 
   [super encodeWithCoder:aCoder];
-  
+
   [aCoder encodeInteger:_gestureTargetHitTestMode forKey:@"gestureTargetHitTestMode"];
-  
+
   [removedChildren enumerateKeysAndObjectsUsingBlock:^(id key, id object, BOOL *stop){
     SKNode *child = [key nonretainedObjectValue];
     SKNode *parent = (SKNode *)object;
@@ -136,48 +136,20 @@ static BOOL _sceneAssetsLoaded = NO;
 - (void)didMoveToView:(SKView *)view
 {
   [super didMoveToView:view];
-
-  if (_tapRecognizer) {
-    [view addGestureRecognizer:_tapRecognizer];
-  }
-  if (_doubleTapRecognizer) {
-    [view addGestureRecognizer:_doubleTapRecognizer];
-  }
-  if (_longPressRecognizer) {
-    [view addGestureRecognizer:_longPressRecognizer];
-  }
-  if (_panRecognizer) {
-    [view addGestureRecognizer:_panRecognizer];
-  }
-  if (_pinchRecognizer) {
-    [view addGestureRecognizer:_pinchRecognizer];
-  }
-  if (_rotationRecognizer) {
-    [view addGestureRecognizer:_rotationRecognizer];
+  if (_sharedGestureRecognizers) {
+    for (UIGestureRecognizer *sharedGestureRecognizer in _sharedGestureRecognizers) {
+      [view addGestureRecognizer:sharedGestureRecognizer];
+    }
   }
 }
 
 - (void)willMoveFromView:(SKView *)view
 {
   [super willMoveFromView:view];
-
-  if (_tapRecognizer) {
-    [view removeGestureRecognizer:_tapRecognizer];
-  }
-  if (_doubleTapRecognizer) {
-    [view removeGestureRecognizer:_doubleTapRecognizer];
-  }
-  if (_longPressRecognizer) {
-    [view removeGestureRecognizer:_longPressRecognizer];
-  }
-  if (_panRecognizer) {
-    [view removeGestureRecognizer:_panRecognizer];
-  }
-  if (_pinchRecognizer) {
-    [view removeGestureRecognizer:_pinchRecognizer];
-  }
-  if (_rotationRecognizer) {
-    [view removeGestureRecognizer:_rotationRecognizer];
+  if (_sharedGestureRecognizers) {
+    for (UIGestureRecognizer *sharedGestureRecognizer in _sharedGestureRecognizers) {
+      [view removeGestureRecognizer:sharedGestureRecognizer];
+    }
   }
 }
 
@@ -205,90 +177,32 @@ static BOOL _sceneAssetsLoaded = NO;
 #pragma mark -
 #pragma mark Shared Gesture Recognizers
 
-- (BOOL)needSharedTapGestureRecognizer
+- (void)needSharedGestureRecognizers:(NSArray *)gestureRecognizers
 {
-  if (_tapRecognizer) {
-    return NO;
+  if (!_sharedGestureRecognizers) {
+    _sharedGestureRecognizers = [NSMutableArray array];
   }
-  _tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(HLScene_handleGesture:)];
-  _tapRecognizer.delegate = self;
-  UIView *view = self.view;
-  if (view) {
-    [view addGestureRecognizer:_tapRecognizer];
+  // note: Uses an n*m search rather than something indexed, because it is assumed the
+  // number of gesture recognizers is kept reasonably small.  For adding a large number
+  // of targets to the scene, this might be problematic.
+  for (UIGestureRecognizer *neededGestureRecognizer in gestureRecognizers) {
+    BOOL foundShared = NO;
+    for (UIGestureRecognizer *sharedGestureRecognizer in _sharedGestureRecognizers) {
+      if (HLGestureTarget_areEquivalentGestureRecognizers(neededGestureRecognizer, sharedGestureRecognizer)) {
+        foundShared = YES;
+        break;
+      }
+    }
+    if (!foundShared) {
+      [neededGestureRecognizer removeTarget:nil action:NULL];
+      neededGestureRecognizer.delegate = self;
+      [_sharedGestureRecognizers addObject:neededGestureRecognizer];
+      UIView *view = self.view;
+      if (view) {
+        [view addGestureRecognizer:neededGestureRecognizer];
+      }
+    }
   }
-  return YES;
-}
-
-- (BOOL)needSharedDoubleTapGestureRecognizer
-{
-  if (_doubleTapRecognizer) {
-    return NO;
-  }
-  _doubleTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(HLScene_handleGesture:)];
-  _doubleTapRecognizer.delegate = self;
-  _doubleTapRecognizer.numberOfTapsRequired = 2;
-  UIView *view = self.view;
-  if (view) {
-    [view addGestureRecognizer:_doubleTapRecognizer];
-  }
-  return YES;
-}
-
-- (BOOL)needSharedLongPressGestureRecognizer
-{
-  if (_longPressRecognizer) {
-    return NO;
-  }
-  _longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(HLScene_handleGesture:)];
-  _longPressRecognizer.delegate = self;
-  UIView *view = self.view;
-  if (view) {
-    [view addGestureRecognizer:_longPressRecognizer];
-  }
-  return YES;
-}
-
-- (BOOL)needSharedPanGestureRecognizer
-{
-  if (_panRecognizer) {
-    return NO;
-  }
-  _panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(HLScene_handleGesture:)];
-  _panRecognizer.delegate = self;
-  _panRecognizer.maximumNumberOfTouches = 1;
-  UIView *view = self.view;
-  if (view) {
-    [view addGestureRecognizer:_panRecognizer];
-  }
-  return YES;
-}
-
-- (BOOL)needSharedPinchGestureRecognizer
-{
-  if (_pinchRecognizer) {
-    return NO;
-  }
-  _pinchRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(HLScene_handleGesture:)];
-  _pinchRecognizer.delegate = self;
-  UIView *view = self.view;
-  if (view) {
-    [view addGestureRecognizer:_pinchRecognizer];
-  }
-  return YES;
-}
-
-- (BOOL)needSharedRotationGestureRecognizer
-{
-  if (_rotationRecognizer) {
-    return NO;
-  }
-  _rotationRecognizer = [[UIRotationGestureRecognizer alloc] initWithTarget:self action:@selector(HLScene_handleGesture:)];
-  _rotationRecognizer.delegate = self;
-  UIView *view = self.view;
-  if (view) {
-    [view addGestureRecognizer:_rotationRecognizer];
-  }
-  return YES;
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
@@ -307,7 +221,7 @@ static BOOL _sceneAssetsLoaded = NO;
     return YES;
   }
 
-  [gestureRecognizer removeTarget:nil action:nil];
+  [gestureRecognizer removeTarget:nil action:NULL];
   CGPoint sceneLocation = [touch locationInNode:self];
 
   SKNode *node = nil;
@@ -329,14 +243,13 @@ static BOOL _sceneAssetsLoaded = NO;
   } else {
     [NSException raise:@"HLSceneUnknownGestureTargetHitTestMode" format:@"Unknown gesture target hit test mode %ld.", (long)_gestureTargetHitTestMode];
   }
-  
+
   while (node != self) {
 
-    // note: Any target registered for gesture recognition should be called to
-    // add itself to any type of gesture, even if that target returns NO from
-    // addsTo*GestureRecognizer for the gesture type.  Because, of course, the
-    // target usually wants to block gestures of all types if they are "inside"
-    // the target.
+    // note: Any target registered for gesture recognition should be called to add itself
+    // to any type of gesture, even if the gesture handler was not returned from the
+    // target's addsToGestureRecognizers.  Because, of course, the target usually wants to
+    // block gestures of all types if they are "inside" the target.
 
     // TODO: If the scene has lots of gesture recognizers, then each one will be calling
     // this same code, including the call to target's addToGesture.  That might lead to
@@ -420,7 +333,7 @@ static BOOL _sceneAssetsLoaded = NO;
     }
     optionBits |= HLSceneChildBitGestureTarget;
     _childGestureTargetsExisted = YES;
-    [self HLScene_needSharedGestureRecognizersForTargetDelegate:targetDelegate];
+    [self needSharedGestureRecognizers:[targetDelegate addsToGestureRecognizers]];
   }
 
   if (!node.userData) {
@@ -430,34 +343,12 @@ static BOOL _sceneAssetsLoaded = NO;
   }
 }
 
-- (void)HLScene_needSharedGestureRecognizersForTargetDelegate:(id <HLGestureTargetDelegate>)targetDelegate
-{
-  if ([targetDelegate addsToTapGestureRecognizer]) {
-    [self needSharedTapGestureRecognizer];
-  }
-  if ([targetDelegate addsToDoubleTapGestureRecognizer]) {
-    [self needSharedDoubleTapGestureRecognizer];
-  }
-  if ([targetDelegate addsToLongPressGestureRecognizer]) {
-    [self needSharedLongPressGestureRecognizer];
-  }
-  if ([targetDelegate addsToPanGestureRecognizer]) {
-    [self needSharedPanGestureRecognizer];
-  }
-  if ([targetDelegate addsToPinchGestureRecognizer]) {
-    [self needSharedPinchGestureRecognizer];
-  }
-  if ([targetDelegate addsToRotationGestureRecognizer]) {
-    [self needSharedRotationGestureRecognizer];
-  }
-}
-
 - (void)unregisterDescendant:(SKNode *)node
 {
   if (!node) {
     return;
   }
-  
+
   if (_childNoCoding) {
     [_childNoCoding removeObjectForKey:[NSValue valueWithNonretainedObject:node]];
     if ([_childNoCoding count] == 0) {
@@ -474,7 +365,7 @@ static BOOL _sceneAssetsLoaded = NO;
 
   // note: _childGestureTargetsExisted tracks whether any gesture target
   // was ever registered, not whether one is currently registered.
-  
+
   [node.userData removeObjectForKey:HLSceneChildUserDataKey];
 }
 

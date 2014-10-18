@@ -52,12 +52,7 @@ FOUNDATION_EXPORT NSString * const HLSceneChildGestureTarget;
    * Shared gesture recognizers for common gesture types.  See notes on the shared gesture
    * recognizer system, below.
    */
-  UITapGestureRecognizer *_tapRecognizer;
-  UITapGestureRecognizer *_doubleTapRecognizer;
-  UILongPressGestureRecognizer *_longPressRecognizer;
-  UIPanGestureRecognizer *_panRecognizer;
-  UIPinchGestureRecognizer *_pinchRecognizer;
-  UIRotationGestureRecognizer *_rotationRecognizer;
+  NSMutableArray *_sharedGestureRecognizers;
 }
 
 // Functionality for loading scene assets.
@@ -202,27 +197,21 @@ typedef NS_ENUM(NSInteger, HLSceneGestureTargetHitTestMode) {
 @property (nonatomic, assign) HLSceneGestureTargetHitTestMode gestureTargetHitTestMode;
 
 /**
- * If the shared gesture recognizer does not already exist:
+ * For each shared gesture recognizer passed: If the shared gesture recognizer does not
+ * already exist with the same class and (especially in the case of taps and swipes) the
+ * same configuration:
  *
- *   - creates a shared gesture recognizer;
- *   - adds it to the scene's view (if it exists);
+ *   - adds the gesture recognizer to the shared list;
+ *   - adds it to the scene's view (if the view exists);
  *   - sets the HLScene as delegate;
- *   - and configures the recognizer with a dummy target.
+ *   - and removes any existing target/action pairs.
  *
- * If the recognizer already exists, does nothing.  Returns a boolean indicating whether
- * or not the recognizer was created.  (This might be useful for subclasses which want to
- * allow the default implementation to create the recognizer, but then configure it when
- * first created.)
+ * If an identical recognizer already exists, does nothing.
  *
- * Note that recognizers created before the scene's view exists will be added to the view
- * by HLScene's didMoveToView.
+ * Note that recognizers added before the scene's view exists will be added to the view by
+ * HLScene's didMoveToView.
  */
-- (BOOL)needSharedTapGestureRecognizer;
-- (BOOL)needSharedDoubleTapGestureRecognizer;
-- (BOOL)needSharedLongPressGestureRecognizer;
-- (BOOL)needSharedPanGestureRecognizer;
-- (BOOL)needSharedPinchGestureRecognizer;
-- (BOOL)needSharedRotationGestureRecognizer;
+- (void)needSharedGestureRecognizers:(NSArray *)gestureRecognizer;
 
 // Functionality for presenting a node modally above the scene.
 
