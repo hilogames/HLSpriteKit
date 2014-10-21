@@ -90,6 +90,7 @@ HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIGestur
   self = [super init];
   if (self) {
     _handleGestureBlock = handleGestureBlock;
+    _gestureTransparent = NO;
   }
   return self;
 }
@@ -99,6 +100,7 @@ HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIGestur
   self = [super init];
   if (self) {
     // note: Cannot decode _handleGestureBlock.
+    _gestureTransparent = [aDecoder decodeBoolForKey:@"gestureTransparent"];
   }
   return self;
 }
@@ -106,6 +108,7 @@ HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIGestur
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
   // note: Cannot encode _handleGestureBlock.
+  [aCoder encodeBool:_gestureTransparent forKey:@"gestureTransparent"];
 }
 
 - (BOOL)addToGesture:(UIGestureRecognizer *)gestureRecognizer firstTouch:(UITouch *)touch isInside:(BOOL *)isInside
@@ -115,12 +118,12 @@ HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIGestur
   if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
     UITapGestureRecognizer *tapGestureRecognizer = (UITapGestureRecognizer *)gestureRecognizer;
     if (tapGestureRecognizer.numberOfTapsRequired == 1) {
+      *isInside = YES;
       handleGesture = YES;
     }
   }
 
-  // note: Simple implementation says everything is inside.
-  *isInside = YES;
+  *isInside = !_gestureTransparent;
   if (handleGesture) {
     [gestureRecognizer addTarget:self action:@selector(HLGestureTargetTapDelegate_handleGesture:)];
   }

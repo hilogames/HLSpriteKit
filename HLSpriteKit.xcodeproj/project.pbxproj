@@ -39,6 +39,8 @@
 		CB99D82919E318F40034A262 /* HLComponentNode.m in Sources */ = {isa = PBXBuildFile; fileRef = CB99D82719E318F40034A262 /* HLComponentNode.m */; };
 		CBA8988A1926BFE500849215 /* HLTextureStore.h in Headers */ = {isa = PBXBuildFile; fileRef = CBA898881926BFE500849215 /* HLTextureStore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CBA8988B1926BFE500849215 /* HLTextureStore.m in Sources */ = {isa = PBXBuildFile; fileRef = CBA898891926BFE500849215 /* HLTextureStore.m */; };
+		CBABD3D519F5E99100220634 /* HLScrollNode.h in Headers */ = {isa = PBXBuildFile; fileRef = CBABD3D319F5E99100220634 /* HLScrollNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CBABD3D619F5E99100220634 /* HLScrollNode.m in Sources */ = {isa = PBXBuildFile; fileRef = CBABD3D419F5E99100220634 /* HLScrollNode.m */; };
 		CBB84B931991222200A96C7A /* HLGridNode.h in Headers */ = {isa = PBXBuildFile; fileRef = CBB84B911991222200A96C7A /* HLGridNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CBB84B941991222200A96C7A /* HLGridNode.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB84B921991222200A96C7A /* HLGridNode.m */; };
 		CBD9E92D19142738002533DF /* SpriteKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CBD9E92C19142738002533DF /* SpriteKit.framework */; };
@@ -104,6 +106,8 @@
 		CB99D82719E318F40034A262 /* HLComponentNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLComponentNode.m; sourceTree = "<group>"; };
 		CBA898881926BFE500849215 /* HLTextureStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLTextureStore.h; sourceTree = "<group>"; };
 		CBA898891926BFE500849215 /* HLTextureStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLTextureStore.m; sourceTree = "<group>"; };
+		CBABD3D319F5E99100220634 /* HLScrollNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLScrollNode.h; sourceTree = "<group>"; };
+		CBABD3D419F5E99100220634 /* HLScrollNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLScrollNode.m; sourceTree = "<group>"; };
 		CBB84B911991222200A96C7A /* HLGridNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLGridNode.h; sourceTree = "<group>"; };
 		CBB84B921991222200A96C7A /* HLGridNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLGridNode.m; sourceTree = "<group>"; };
 		CBD9E929191426D0002533DF /* HLLabelButtonNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLLabelButtonNode.h; sourceTree = "<group>"; };
@@ -188,6 +192,8 @@
 				CB8D5D91193CB481003CC055 /* HLMessageNode.m */,
 				CB8DD9CF192CEBC600C0704D /* HLScene.h */,
 				CB8DD9D0192CEBC600C0704D /* HLScene.m */,
+				CBABD3D319F5E99100220634 /* HLScrollNode.h */,
+				CBABD3D419F5E99100220634 /* HLScrollNode.m */,
 				CBD9E93F1914334C002533DF /* HLSpriteKit.h */,
 				CBA898881926BFE500849215 /* HLTextureStore.h */,
 				CBA898891926BFE500849215 /* HLTextureStore.m */,
@@ -247,6 +253,7 @@
 				CB6872EE192591C9008415E1 /* HLMenuNode.h in Headers */,
 				CB8D5D92193CB481003CC055 /* HLMessageNode.h in Headers */,
 				CB8DD9D1192CEBC600C0704D /* HLScene.h in Headers */,
+				CBABD3D519F5E99100220634 /* HLScrollNode.h in Headers */,
 				CBD9E9451914353A002533DF /* HLSpriteKit.h in Headers */,
 				CBA8988A1926BFE500849215 /* HLTextureStore.h in Headers */,
 				CB5DBDA919E5CF0F008861A3 /* HLTiledNode.h in Headers */,
@@ -352,6 +359,7 @@
 				CB2EB310193E603C00CD3924 /* SKLabelNode+HLLabelNodeAdditions.m in Sources */,
 				CB5DBDAA19E5CF0F008861A3 /* HLTiledNode.m in Sources */,
 				CB61C289196F6EC2002ED23F /* HLGestureTarget.m in Sources */,
+				CBABD3D619F5E99100220634 /* HLScrollNode.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

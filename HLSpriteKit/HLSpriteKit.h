@@ -15,6 +15,7 @@
 #import <HLSpriteKit/HLMenuNode.h>
 #import <HLSpriteKit/HLMessageNode.h>
 #import <HLSpriteKit/HLScene.h>
+#import <HLSpriteKit/HLScrollNode.h>
 #import <HLSpriteKit/HLTextureStore.h>
 #import <HLSpriteKit/HLTiledNode.h>
 #import <HLSpriteKit/HLToolbarNode.h>

@@ -180,9 +180,6 @@ BOOL HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIG
  * recognizer.  When a tap is recognized, it is forwarded to an owner-provided handling
  * block.
  *
- * This is a stripped-down version of HLGestureTargetConfigurableDelegate, appropriate for
- * simple button-like behavior.
- *
  * note: The handling block is not encodable, so the caller will have to reset it on decode.
  *
  * note: Consider making a version of this (or extension of this) which itself uses
@@ -192,6 +189,10 @@ BOOL HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIG
 @interface HLGestureTargetTapDelegate : NSObject <HLGestureTargetDelegate, NSCoding>
 - (instancetype)initWithHandleGestureBlock:(void(^)(UIGestureRecognizer *))handleGestureBlock;
 @property (nonatomic, copy) void (^handleGestureBlock)(UIGestureRecognizer *);
+// Whether or not unhandled gestures are considered "isInside" the gesture target.  If NO,
+// then typically the gesture recognizer delegate will not allow any gesture inside the
+// target to "fall through" to gesture targets below this one.  Default value is NO.
+@property (nonatomic, assign, getter=isGestureTransparent) BOOL gestureTransparent;
 @end
 
 /**

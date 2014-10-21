@@ -86,6 +86,11 @@ enum {
   return [self init];
 }
 
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+  [NSException raise:@"HLCodingNotImplemented" format:@"Coding not implemented for this descendant of an NSCoding parent."];
+}
+
 - (instancetype)copyWithZone:(NSZone *)zone
 {
   [NSException raise:@"HLCopyingNotImplemented" format:@"Copying not implemented for this descendant of an NSCopying parent."];
