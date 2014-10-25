@@ -107,9 +107,19 @@ enum {
   return _gridNode.size;
 }
 
+- (int)gridWidth
+{
+  return _gridWidth;
+}
+
+- (int)gridHeight
+{
+  return (_squareCount - 1) / _gridWidth + 1;
+}
+
 - (void)setContent:(NSArray *)contentNodes
 {
-  NSArray *squareNodes = [_gridNode children];
+  NSArray *squareNodes = _gridNode.children;
   for (SKSpriteNode *squareNode in squareNodes) {
     [squareNode removeAllChildren];
   }
@@ -118,13 +128,51 @@ enum {
   NSUInteger i = 0;
   CGFloat zPositionLayerIncrement = self.zPositionScale / HLGridNodeZPositionLayerCount;
   while (i < contentCount && i < (NSUInteger)_squareCount) {
-    SKNode *contentNode = (SKNode *)contentNodes[i];
-    SKSpriteNode *squareNode = (SKSpriteNode *)squareNodes[i];
-    // note: Could let caller worry about zPosition.
-    contentNode.zPosition = zPositionLayerIncrement;
-    [squareNode addChild:contentNode];
-    ++i;
+    if (contentNodes[i] != [NSNull null]) {
+      SKNode *contentNode = (SKNode *)contentNodes[i];
+      SKSpriteNode *squareNode = (SKSpriteNode *)squareNodes[i];
+      contentNode.zPosition = zPositionLayerIncrement;
+      [squareNode addChild:contentNode];
+      ++i;
+    }
   }
+}
+
+- (void)setContent:(SKNode *)contentNode forSquare:(int)squareIndex
+{
+  if (squareIndex < 0 || squareIndex >= _squareCount) {
+    [NSException raise:@"HLGridNodeInvalidIndex" format:@"Square index %d out of range.", squareIndex];
+  }
+  NSArray *squareNodes = _gridNode.children;
+  SKSpriteNode *squareNode = squareNodes[(NSUInteger)squareIndex];
+  [squareNode removeAllChildren];
+  if (contentNode) {
+    contentNode.zPosition = self.zPositionScale / HLGridNodeZPositionLayerCount;
+    [squareNode addChild:contentNode];
+  }
+}
+
+- (SKNode *)contentForSquare:(int)squareIndex
+{
+  if (squareIndex < 0 || squareIndex >= _squareCount) {
+    [NSException raise:@"HLGridNodeInvalidIndex" format:@"Square index %d out of range.", squareIndex];
+  }
+  NSArray *squareNodes = _gridNode.children;
+  SKSpriteNode *squareNode = squareNodes[(NSUInteger)squareIndex];
+  NSArray *squareNodeChildren = squareNode.children;
+  if ([squareNodeChildren count] == 0) {
+    return nil;
+  }
+  return (SKNode *)(squareNodeChildren.firstObject);
+}
+
+- (SKSpriteNode *)squareNodeForSquare:(int)squareIndex
+{
+  if (squareIndex < 0 || squareIndex >= _squareCount) {
+    [NSException raise:@"HLGridNodeInvalidIndex" format:@"Square index %d out of range.", squareIndex];
+  }
+  NSArray *squareNodes = _gridNode.children;
+  return squareNodes[(NSUInteger)squareIndex];
 }
 
 - (int)squareAtLocation:(CGPoint)location
@@ -219,7 +267,7 @@ enum {
 
 - (void)setEnabled:(BOOL)enabled forSquare:(int)squareIndex
 {
-  if (squareIndex > _squareCount) {
+  if (squareIndex < 0 || squareIndex >= _squareCount) {
     [NSException raise:@"HLGridNodeInvalidIndex" format:@"Square index %d out of range.", squareIndex];
   }
   NSArray *squareNodes = _gridNode.children;
@@ -235,7 +283,7 @@ enum {
 
 - (void)setHighlight:(BOOL)highlight forSquare:(int)squareIndex
 {
-  if (squareIndex > _squareCount) {
+  if (squareIndex < 0 || squareIndex >= _squareCount) {
     [NSException raise:@"HLGridNodeInvalidIndex" format:@"Square index %d out of range.", squareIndex];
   }
   NSArray *squareNodes = _gridNode.children;
@@ -249,13 +297,13 @@ enum {
   }
 }
 
-- (void)animateHighlight:(BOOL)finalHighlight
-              blinkCount:(int)blinkCount
-       halfCycleDuration:(NSTimeInterval)halfCycleDuration
-               forSquare:(int)squareIndex
-              completion:(void(^)(void))completion
+- (void)setHighlight:(BOOL)finalHighlight
+           forSquare:(int)squareIndex
+          blinkCount:(int)blinkCount
+   halfCycleDuration:(NSTimeInterval)halfCycleDuration
+          completion:(void(^)(void))completion
 {
-  if (squareIndex > _squareCount) {
+  if (squareIndex < 0 || squareIndex >= _squareCount) {
     [NSException raise:@"HLGridNodeInvalidIndex" format:@"Square index %d out of range.", squareIndex];
   }
   NSArray *squareNodes = _gridNode.children;
@@ -296,7 +344,7 @@ enum {
   if (_selectionSquareIndex >= 0) {
     [self setHighlight:NO forSquare:_selectionSquareIndex];
   }
-  [self animateHighlight:YES blinkCount:blinkCount halfCycleDuration:halfCycleDuration forSquare:squareIndex completion:completion];
+  [self setHighlight:YES forSquare:squareIndex blinkCount:blinkCount halfCycleDuration:halfCycleDuration completion:completion];
   _selectionSquareIndex = squareIndex;
 }
 

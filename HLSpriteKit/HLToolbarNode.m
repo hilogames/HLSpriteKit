@@ -359,7 +359,10 @@ enum {
   }
 }
 
-- (void)animateHighlight:(BOOL)finalHighlight count:(int)blinkCount halfCycleDuration:(NSTimeInterval)halfCycleDuration forTool:(NSString *)toolTag
+- (void)setHighlight:(BOOL)finalHighlight
+             forTool:(NSString *)toolTag
+          blinkCount:(int)blinkCount
+   halfCycleDuration:(NSTimeInterval)halfCycleDuration
 {
   int s = 0;
   SKSpriteNode *squareNode = nil;

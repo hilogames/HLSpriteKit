@@ -54,10 +54,24 @@
 @property (nonatomic, assign) CGFloat disabledAlpha;
 
 /**
- * The size of the overall grid node is derived from the layout-affecting parameters.
- * (Currently the layout-affecting parameters are all passed into the init method.)
+ * Returns the size of the overall grid node, which is derived from the layout-affecting
+ * parameters.  (Currently the layout-affecting parameters are all passed into the init
+ * method.)
  */
 @property (nonatomic, readonly) CGSize size;
+
+/**
+ * Returns the width of the grid (column count), which is passed into init by the owner.
+ * It is made available here (readonly) for the owner's convenience.
+ */
+@property (nonatomic, readonly) int gridWidth;
+
+/**
+ * Returns the height of the grid (row count), which is trivially derived from the gridWidth
+ * and squareCount passed into init by the owner.  It is made available here (readonly) for
+ * the owner's convenience.
+ */
+@property (nonatomic, readonly) int gridHeight;
 
 /**
  * The layout mode for the grid.  Primarily affects how squares are layed out when they
@@ -107,12 +121,32 @@ typedef NS_ENUM(NSInteger, HLGridNodeLayoutMode) {
 /**
  * Set content nodes in the squares of the grid.  As many nodes as fit in the grid will be
  * shown, starting at the upper left of the grid and filling rows before columns; the rest
- * will be ignored.
+ * will be ignored.  A content node may be left unset by passing [NSNull null] in the
+ * appropriate position in the array.
  *
  * The square node that holds each content node has anchorPoint (0.5, 0.5).  Typically the
  * size of the square is squareSize; see HLGridNodeLayoutMode for exceptions.
  */
 - (void)setContent:(NSArray *)contentNodes;
+
+/**
+ * Sets a single content node in a square of the grid, or unsets it if the content node
+ * is passed as nil.  See notes on setContent:.  Throws an exception if the square index
+ * is out of bounds.
+ */
+- (void)setContent:(SKNode *)contentNode forSquare:(int)squareIndex;
+
+/**
+ * Returns the content node assigned to a square by setContent*.  Returns nil if the content
+ * node was left unset.  Throws an exception if the square index is out of bounds.
+ */
+- (SKNode *)contentForSquare:(int)squareIndex;
+
+/**
+ * Returns the square node for the passed square index.  Modification of the square node is
+ * neither expected nor recommended.  Throws an exception if the square index is out of bounds.
+ */
+- (SKSpriteNode *)squareNodeForSquare:(int)squareIndex;
 
 /**
  * Returns the index of the square at the passed location, or -1 for none.  The location
@@ -122,21 +156,21 @@ typedef NS_ENUM(NSInteger, HLGridNodeLayoutMode) {
 
 /**
  * Set enabled state of a square, setting its alpha either to enabledAlpha or
- * disabledAlpha.
+ * disabledAlpha.  Throws an exception if the square index is out of bounds.
  */
 - (void)setEnabled:(BOOL)enabled forSquare:(int)squareIndex;
 
 /**
  * Sets highlight state of a square, setting its color either to highlightColor or
- * squareColor.
+ * squareColor.  Throws an exception if the square index is out of bounds.
  */
 - (void)setHighlight:(BOOL)highlight forSquare:(int)squareIndex;
 
-- (void)animateHighlight:(BOOL)finalHighlight
-              blinkCount:(int)blinkCount
-       halfCycleDuration:(NSTimeInterval)halfCycleDuration
-               forSquare:(int)squareIndex
-              completion:(void(^)(void))completion;
+- (void)setHighlight:(BOOL)finalHighlight
+           forSquare:(int)squareIndex
+          blinkCount:(int)blinkCount
+   halfCycleDuration:(NSTimeInterval)halfCycleDuration
+          completion:(void(^)(void))completion;
 
 /**
  * Convenience method for managing highlight of a single square: Sets highlight YES for
