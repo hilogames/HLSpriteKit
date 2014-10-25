@@ -20,9 +20,9 @@ enum {
   CGFloat _contentScaleOffline;
 
   CGPoint _panLastNodeLocation;
+  CGPoint _pinchPinContentLocation;
+  CGPoint _pinchPinNodeLocation;
   CGFloat _pinchOriginalContentScale;
-  CGPoint _pinchOriginalContentPosition;
-  CGPoint _pinchCenterNodeLocation;
 }
 
 - (instancetype)init
@@ -541,18 +541,19 @@ enum {
     // that point throughout the gesture (if possible).
     CGPoint viewLocation = [gestureRecognizer locationInView:self.scene.view];
     CGPoint sceneLocation = [self.scene convertPointFromView:viewLocation];
-    _pinchCenterNodeLocation = [self convertPoint:sceneLocation fromNode:self.scene];
-    _pinchOriginalContentPosition = _contentNode.position;
+    _pinchPinNodeLocation = [self convertPoint:sceneLocation fromNode:self.scene];
+    CGPoint contentPosition = _contentNode.position;
     _pinchOriginalContentScale = _contentNode.xScale;
+    _pinchPinContentLocation = CGPointMake((_pinchPinNodeLocation.x - contentPosition.x) / _pinchOriginalContentScale,
+                                           (_pinchPinNodeLocation.y - contentPosition.y) / _pinchOriginalContentScale);
 
   } else if (gestureRecognizer.state == UIGestureRecognizerStateChanged) {
 
     CGFloat constrainedScale = [self HL_contentConstrainedScale:(gestureRecognizer.scale * _pinchOriginalContentScale)];
     _contentNode.xScale = constrainedScale;
     _contentNode.yScale = constrainedScale;
-    CGFloat constrainedScaleFactor = constrainedScale / _pinchOriginalContentScale;
-    _contentNode.position = [self HL_contentConstrainedPositionX:((_pinchOriginalContentPosition.x - _pinchCenterNodeLocation.x) * constrainedScaleFactor - _pinchCenterNodeLocation.x)
-                                                       positionY:((_pinchOriginalContentPosition.y - _pinchCenterNodeLocation.y) * constrainedScaleFactor - _pinchCenterNodeLocation.y)
+    _contentNode.position = [self HL_contentConstrainedPositionX:(_pinchPinNodeLocation.x - _pinchPinContentLocation.x * constrainedScale)
+                                                       positionY:(_pinchPinNodeLocation.y - _pinchPinContentLocation.y * constrainedScale)
                                                            scale:constrainedScale];
 
   }
