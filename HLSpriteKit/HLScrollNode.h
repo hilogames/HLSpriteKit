@@ -87,9 +87,11 @@ typedef NS_ENUM(NSInteger, HLScrollNodeContentScaleMinimumMode)
 
 /**
  * The offset of the content's origin from the HLScrollNode's origin.  Default
- * value (0.0,0.0).
+ * value (0.0,0.0).  See methods for other ways of setting contentOffset.
  */
 @property (nonatomic, assign) CGPoint contentOffset;
+
+- (void)setContentOffset:(CGPoint)contentOffset animatedDuration:(NSTimeInterval)duration completion:(void (^)(void))completion;
 
 /**
  * The distance that the content is inset from the enclosing HLScrollNode.
@@ -100,9 +102,11 @@ typedef NS_ENUM(NSInteger, HLScrollNodeContentScaleMinimumMode)
 /**
  * The scale of the content inside the HLScrollNode.  Scale changes can be
  * animated using setContentScale:animatedDuration:completion:.  Default
- * value 1.0.
+ * value 1.0.  See methods for other ways of setting contentScale.
  */
 @property (nonatomic, assign) CGFloat contentScale;
+
+- (void)setContentScale:(CGFloat)scale animatedDuration:(NSTimeInterval)duration completion:(void (^)(void))completion;
 
 /**
  * The configured minimum value for content scale (when zooming out).  See
@@ -163,8 +167,35 @@ typedef NS_ENUM(NSInteger, HLScrollNodeContentScaleMinimumMode)
      contentScaleMinimumMode:(HLScrollNodeContentScaleMinimumMode)contentScaleMinimumMode
          contentScaleMaximum:(CGFloat)contentScaleMaximum NS_DESIGNATED_INITIALIZER;
 
-- (void)setContentOffset:(CGPoint)contentOffset animatedDuration:(NSTimeInterval)duration completion:(void (^)(void))completion;
+/**
+ * Set contentOffset and contentScale at the same time.  Since the offset is sometimes
+ * constrained by the current scale, it makes sense to set them together if both are
+ * going to change.
+ */
+- (void)setContentOffset:(CGPoint)contentOffset contentScale:(CGFloat)contentScale;
 
-- (void)setContentScale:(CGFloat)scale animatedDuration:(NSTimeInterval)duration completion:(void (^)(void))completion;
+- (void)setContentOffset:(CGPoint)contentOffset contentScale:(CGFloat)contentScale animatedDuration:(NSTimeInterval)duration completion:(void (^)(void))completion;
+
+/**
+ * Set contentOffset and/or contentScale using locations in the content coordinate
+ * system (rather than the offset, which is always an offset in the HLScrollNode's
+ * coordinate system).
+ *
+ * For the most part, these could be implemented as convenience helper methods in the
+ * class namespace (i.e. using only the public interface of the HLScrollNode), but
+ * there are a few shortcuts and cheats possible when implementing them privately.
+ */
+
+- (void)scrollContentLocation:(CGPoint)contentLocation toNodeLocation:(CGPoint)nodeLocation;
+
+- (void)scrollContentLocation:(CGPoint)contentLocation toNodeLocation:(CGPoint)nodeLocation animatedDuration:(NSTimeInterval)duration completion:(void (^)(void))completion;
+
+- (void)scrollContentLocation:(CGPoint)contentLocation toNodeLocation:(CGPoint)nodeLocation andSetContentScale:(CGFloat)contentScale;
+
+- (void)scrollContentLocation:(CGPoint)contentLocation toNodeLocation:(CGPoint)nodeLocation andSetContentScale:(CGFloat)contentScale animatedDuration:(NSTimeInterval)duration completion:(void (^)(void))completion;
+
+- (void)pinContentLocation:(CGPoint)contentLocation andSetContentScale:(CGFloat)contentScale;
+
+- (void)pinContentLocation:(CGPoint)contentLocation andSetContentScale:(CGFloat)contentScale animatedDuration:(NSTimeInterval)duration completion:(void (^)(void))completion;
 
 @end

@@ -105,7 +105,7 @@ enum {
   CGFloat constrainedScale = [self HL_contentConstrainedScale:_contentNode.xScale];
   _contentNode.xScale = constrainedScale;
   _contentNode.yScale = constrainedScale;
-  _contentNode.position = [self HL_contentConstrainedPositionX:_contentNode.position.x positionY:_contentNode.position.y];
+  _contentNode.position = [self HL_contentConstrainedPositionX:_contentNode.position.x positionY:_contentNode.position.y scale:constrainedScale];
 }
 
 - (void)setAnchorPoint:(CGPoint)anchorPoint
@@ -114,7 +114,7 @@ enum {
   if (!_contentNode) {
     return;
   }
-  _contentNode.position = [self HL_contentConstrainedPositionX:_contentNode.position.x positionY:_contentNode.position.y];
+  _contentNode.position = [self HL_contentConstrainedPositionX:_contentNode.position.x positionY:_contentNode.position.y scale:_contentNode.xScale];
 }
 
 - (void)setContentNode:(SKNode *)contentNode
@@ -140,7 +140,7 @@ enum {
     CGFloat constrainedScale = [self HL_contentConstrainedScale:_contentScaleOffline];
     _contentNode.xScale = constrainedScale;
     _contentNode.yScale = constrainedScale;
-    _contentNode.position = [self HL_contentConstrainedPositionX:_contentOffsetOffline.x positionY:_contentOffsetOffline.y];
+    _contentNode.position = [self HL_contentConstrainedPositionX:_contentOffsetOffline.x positionY:_contentOffsetOffline.y scale:constrainedScale];
   }
 }
 
@@ -153,7 +153,7 @@ enum {
   CGFloat constrainedScale = [self HL_contentConstrainedScale:_contentNode.xScale];
   _contentNode.xScale = constrainedScale;
   _contentNode.yScale = constrainedScale;
-  _contentNode.position = [self HL_contentConstrainedPositionX:_contentNode.position.x positionY:_contentNode.position.y];
+  _contentNode.position = [self HL_contentConstrainedPositionX:_contentNode.position.x positionY:_contentNode.position.y scale:constrainedScale];
 }
 
 - (void)setContentAnchorPoint:(CGPoint)contentAnchorPoint
@@ -162,7 +162,7 @@ enum {
   if (!_contentNode) {
     return;
   }
-  _contentNode.position = [self HL_contentConstrainedPositionX:_contentNode.position.x positionY:_contentNode.position.y];
+  _contentNode.position = [self HL_contentConstrainedPositionX:_contentNode.position.x positionY:_contentNode.position.y scale:_contentNode.xScale];
 }
 
 - (CGPoint)contentOffset
@@ -179,7 +179,7 @@ enum {
     _contentOffsetOffline = contentOffset;
     return;
   }
-  _contentNode.position = [self HL_contentConstrainedPositionX:contentOffset.x positionY:contentOffset.y];
+  _contentNode.position = [self HL_contentConstrainedPositionX:contentOffset.x positionY:contentOffset.y scale:_contentNode.xScale];
 }
 
 - (void)setContentOffset:(CGPoint)contentOffset animatedDuration:(NSTimeInterval)duration completion:(void (^)(void))completion
@@ -191,7 +191,7 @@ enum {
   // note: Assume it is acceptable to constrain position once rather than continually during animation.
   // One example how that might not be acceptable: If the caller expects the movement to take less
   // than the full animation duration if constrained.
-  CGPoint constrainedPosition = [self HL_contentConstrainedPositionX:contentOffset.x positionY:contentOffset.y];
+  CGPoint constrainedPosition = [self HL_contentConstrainedPositionX:contentOffset.x positionY:contentOffset.y scale:_contentNode.xScale];
   SKAction *moveTo = [SKAction moveTo:constrainedPosition duration:duration];
   moveTo.timingMode = SKActionTimingEaseInEaseOut;
   [_contentNode runAction:moveTo completion:completion];
@@ -206,7 +206,7 @@ enum {
   CGFloat constrainedScale = [self HL_contentConstrainedScale:_contentNode.xScale];
   _contentNode.xScale = constrainedScale;
   _contentNode.yScale = constrainedScale;
-  _contentNode.position = [self HL_contentConstrainedPositionX:_contentNode.position.x positionY:_contentNode.position.y];
+  _contentNode.position = [self HL_contentConstrainedPositionX:_contentNode.position.x positionY:_contentNode.position.y scale:constrainedScale];
 }
 
 - (CGFloat)contentScale
@@ -226,7 +226,7 @@ enum {
   CGFloat constrainedScale = [self HL_contentConstrainedScale:contentScale];
   _contentNode.xScale = constrainedScale;
   _contentNode.yScale = constrainedScale;
-  _contentNode.position = [self HL_contentConstrainedPositionX:_contentNode.position.x positionY:_contentNode.position.y];
+  _contentNode.position = [self HL_contentConstrainedPositionX:_contentNode.position.x positionY:_contentNode.position.y scale:constrainedScale];
 }
 
 - (void)setContentScale:(CGFloat)contentScale animatedDuration:(NSTimeInterval)duration completion:(void (^)(void))completion
@@ -237,16 +237,17 @@ enum {
   }
   // note: Assume it is acceptable to constrain scale once rather than continually during animation.
   // Position, however, must be continually constrained based on interpolated scale values.
-  CGFloat constrainedScale = [self HL_contentConstrainedScale:contentScale];
+  CGFloat startConstrainedScale = _contentNode.xScale;
+  CGFloat endConstrainedScale = [self HL_contentConstrainedScale:contentScale];
   // note: Remember original position and keep trying to get back to it throughout the animation.
   // An alternate implementation could calculate the constrained final position based on the
   // constrained final scale, and then head there smoothly throughout the animation.
   CGPoint constrainedPosition = _contentNode.position;
   SKAction *scaleTo = [SKAction customActionWithDuration:duration actionBlock:^(SKNode *node, CGFloat elapsedTime){
-    CGFloat interpolatedScale = constrainedScale * (CGFloat)(elapsedTime / duration);
+    CGFloat interpolatedScale = startConstrainedScale + (endConstrainedScale - startConstrainedScale) * (CGFloat)(elapsedTime / duration);
     self->_contentNode.xScale = interpolatedScale;
     self->_contentNode.yScale = interpolatedScale;
-    self->_contentNode.position = [self HL_contentConstrainedPositionX:constrainedPosition.x positionY:constrainedPosition.y];
+    self->_contentNode.position = [self HL_contentConstrainedPositionX:constrainedPosition.x positionY:constrainedPosition.y scale:interpolatedScale];
   }];
   scaleTo.timingMode = SKActionTimingEaseInEaseOut;
   [_contentNode runAction:scaleTo completion:completion];
@@ -261,7 +262,7 @@ enum {
   CGFloat constrainedScale = [self HL_contentConstrainedScale:_contentNode.xScale];
   _contentNode.xScale = constrainedScale;
   _contentNode.yScale = constrainedScale;
-  _contentNode.position = [self HL_contentConstrainedPositionX:_contentNode.position.x positionY:_contentNode.position.y];
+  _contentNode.position = [self HL_contentConstrainedPositionX:_contentNode.position.x positionY:_contentNode.position.y scale:constrainedScale];
 }
 
 - (void)setContentScaleMaximum:(CGFloat)contentScaleMaximum
@@ -273,7 +274,7 @@ enum {
   CGFloat constrainedScale = [self HL_contentConstrainedScale:_contentNode.xScale];
   _contentNode.xScale = constrainedScale;
   _contentNode.yScale = constrainedScale;
-  _contentNode.position = [self HL_contentConstrainedPositionX:_contentNode.position.x positionY:_contentNode.position.y];
+  _contentNode.position = [self HL_contentConstrainedPositionX:_contentNode.position.x positionY:_contentNode.position.y scale:constrainedScale];
 }
 
 - (void)setZPositionScale:(CGFloat)zPositionScale
@@ -287,6 +288,191 @@ enum {
   if ([_contentNode isKindOfClass:[HLComponentNode class]]) {
     [(HLComponentNode *)_contentNode setZPositionScale:zPositionLayerSize];
   }
+}
+
+- (void)setContentOffset:(CGPoint)contentOffset contentScale:(CGFloat)contentScale
+{
+  if (!_contentNode) {
+    _contentOffsetOffline = contentOffset;
+    _contentScaleOffline = contentScale;
+    return;
+  }
+  CGFloat constrainedScale = [self HL_contentConstrainedScale:contentScale];
+  _contentNode.xScale = constrainedScale;
+  _contentNode.yScale = constrainedScale;
+  _contentNode.position = [self HL_contentConstrainedPositionX:contentOffset.x positionY:contentOffset.y scale:constrainedScale];
+}
+
+- (void)setContentOffset:(CGPoint)contentOffset
+            contentScale:(CGFloat)contentScale
+        animatedDuration:(NSTimeInterval)duration
+              completion:(void (^)(void))completion
+{
+  if (!_contentNode) {
+    _contentScaleOffline = contentScale;
+    return;
+  }
+  // note: Assume it is acceptable to constrain scale once rather than continually during animation.
+  // Handle position as in setContentOffset:animatedDuration:completion:, although it's worth noting
+  // that here there is more risk of intermediate illegal values for position since scale is changing.
+  CGFloat startConstrainedScale = _contentNode.xScale;
+  CGFloat endConstrainedScale = [self HL_contentConstrainedScale:contentScale];
+  CGPoint startConstrainedPosition = _contentNode.position;
+  CGPoint endConstrainedPosition = [self HL_contentConstrainedPositionX:contentOffset.x positionY:contentOffset.y scale:endConstrainedScale];
+  SKAction *scaleAndMoveTo = [SKAction customActionWithDuration:duration actionBlock:^(SKNode *node, CGFloat elapsedTime){
+    CGFloat elapsedProportion = (CGFloat)(elapsedTime / duration);
+    CGFloat interpolatedScale = startConstrainedScale + (endConstrainedScale - startConstrainedScale) * elapsedProportion;
+    self->_contentNode.xScale = interpolatedScale;
+    self->_contentNode.yScale = interpolatedScale;
+    CGPoint interpolatedPosition = CGPointMake(startConstrainedPosition.x + (endConstrainedPosition.x - startConstrainedPosition.x) * elapsedProportion,
+                                               startConstrainedPosition.y + (endConstrainedPosition.y - startConstrainedPosition.y) * elapsedProportion);
+    // note: Here the interpolatedPosition might not be constrained correctly for the current (interpolated)
+    // scale.  But we allow intermediate illegal position values in order to make a smoother animation.
+    //self->_contentNode.position = [self HL_contentConstrainedPositionX:interpolatedPosition.x positionY:interpolatedPosition.y scale:interpolatedScale];
+    self->_contentNode.position = interpolatedPosition;
+  }];
+  scaleAndMoveTo.timingMode = SKActionTimingEaseInEaseOut;
+  [_contentNode runAction:scaleAndMoveTo completion:completion];
+}
+
+- (void)scrollContentLocation:(CGPoint)contentLocation toNodeLocation:(CGPoint)nodeLocation
+{
+  if (!_contentNode) {
+    return;
+  }
+  // note: Use similar mechanics as setContentOffset:.
+  CGFloat constrainedScale = _contentNode.xScale;
+  CGPoint contentOffset = CGPointMake(nodeLocation.x - contentLocation.x * constrainedScale,
+                                      nodeLocation.y - contentLocation.y * constrainedScale);
+  _contentNode.position = [self HL_contentConstrainedPositionX:contentOffset.x positionY:contentOffset.y scale:constrainedScale];
+}
+
+- (void)scrollContentLocation:(CGPoint)contentLocation
+               toNodeLocation:(CGPoint)nodeLocation
+             animatedDuration:(NSTimeInterval)duration
+                   completion:(void (^)(void))completion
+{
+  if (!_contentNode) {
+    return;
+  }
+  // note: Use similar mechanics as setContentOffset:animatedDuration:completion:.
+  CGFloat constrainedScale = _contentNode.xScale;
+  CGPoint contentOffset = CGPointMake(nodeLocation.x - contentLocation.x * constrainedScale,
+                                      nodeLocation.y - contentLocation.y * constrainedScale);
+  CGPoint constrainedPosition = [self HL_contentConstrainedPositionX:contentOffset.x positionY:contentOffset.y scale:constrainedScale];
+  SKAction *moveTo = [SKAction moveTo:constrainedPosition duration:duration];
+  moveTo.timingMode = SKActionTimingEaseInEaseOut;
+  [_contentNode runAction:moveTo completion:completion];
+}
+
+- (void)scrollContentLocation:(CGPoint)contentLocation toNodeLocation:(CGPoint)nodeLocation andSetContentScale:(CGFloat)contentScale
+{
+  if (!_contentNode) {
+    _contentScaleOffline = contentScale;
+    return;
+  }
+  // note: Use similar mechanics as setContentOffset:contentScale:.
+  CGFloat constrainedScale = [self HL_contentConstrainedScale:contentScale];
+  _contentNode.xScale = constrainedScale;
+  _contentNode.yScale = constrainedScale;
+  CGPoint contentOffset = CGPointMake(nodeLocation.x - contentLocation.x * constrainedScale,
+                                      nodeLocation.y - contentLocation.y * constrainedScale);
+  _contentNode.position = [self HL_contentConstrainedPositionX:contentOffset.x positionY:contentOffset.y scale:constrainedScale];
+}
+
+- (void)scrollContentLocation:(CGPoint)contentLocation
+               toNodeLocation:(CGPoint)nodeLocation
+           andSetContentScale:(CGFloat)contentScale
+             animatedDuration:(NSTimeInterval)duration
+                   completion:(void (^)(void))completion
+{
+  if (!_contentNode) {
+    _contentScaleOffline = contentScale;
+    return;
+  }
+  // note: Use similar mechanics as setContentOffset:contentScale:animatedDuration:completion:.
+  CGFloat startConstrainedScale = _contentNode.xScale;
+  CGFloat endConstrainedScale = [self HL_contentConstrainedScale:contentScale];
+  CGPoint startConstrainedPosition = _contentNode.position;
+  CGPoint endConstrainedPosition = [self HL_contentConstrainedPositionX:(nodeLocation.x - contentLocation.x * endConstrainedScale)
+                                                              positionY:(nodeLocation.y - contentLocation.y * endConstrainedScale)
+                                                                  scale:endConstrainedScale];
+  SKAction *scaleAndMoveTo = [SKAction customActionWithDuration:duration actionBlock:^(SKNode *node, CGFloat elapsedTime){
+    CGFloat elapsedProportion = (CGFloat)(elapsedTime / duration);
+    CGFloat interpolatedScale = startConstrainedScale + (endConstrainedScale - startConstrainedScale) * elapsedProportion;
+    self->_contentNode.xScale = interpolatedScale;
+    self->_contentNode.yScale = interpolatedScale;
+    CGPoint interpolatedPosition = CGPointMake(startConstrainedPosition.x + (endConstrainedPosition.x - startConstrainedPosition.x) * elapsedProportion,
+                                               startConstrainedPosition.y + (endConstrainedPosition.y - startConstrainedPosition.y) * elapsedProportion);
+    // note: Here the interpolatedPosition might not be constrained correctly for the current (interpolated)
+    // scale.  But like setContentOffset:contentScale:animatedDuration:completion:, we allow intermediate
+    // illegal position values in order to make a smoother animation.
+    //self->_contentNode.position = [self HL_contentConstrainedPositionX:interpolatedPosition.x positionY:interpolatedPosition.y scale:interpolatedScale];
+    self->_contentNode.position = interpolatedPosition;
+  }];
+  scaleAndMoveTo.timingMode = SKActionTimingEaseInEaseOut;
+  [_contentNode runAction:scaleAndMoveTo completion:completion];
+}
+
+- (void)pinContentLocation:(CGPoint)contentLocation andSetContentScale:(CGFloat)contentScale
+{
+  if (!_contentNode) {
+    _contentScaleOffline = contentScale;
+    return;
+  }
+  // note: Use similar mechanics as setContentOffset:contentScale:.
+  CGFloat startConstrainedScale = _contentNode.xScale;
+  CGFloat endConstrainedScale = [self HL_contentConstrainedScale:contentScale];
+  CGPoint startConstrainedPosition = _contentNode.position;
+  CGPoint nodeLocation = CGPointMake(startConstrainedPosition.x + contentLocation.x * startConstrainedScale,
+                                     startConstrainedPosition.y + contentLocation.y * startConstrainedScale);
+  _contentNode.xScale = endConstrainedScale;
+  _contentNode.yScale = endConstrainedScale;
+  _contentNode.position = [self HL_contentConstrainedPositionX:(nodeLocation.x - contentLocation.x * endConstrainedScale)
+                                                     positionY:(nodeLocation.y - contentLocation.y * endConstrainedScale)
+                                                         scale:endConstrainedScale];
+}
+
+- (void)pinContentLocation:(CGPoint)contentLocation
+        andSetContentScale:(CGFloat)contentScale
+          animatedDuration:(NSTimeInterval)duration
+                completion:(void (^)(void))completion
+{
+  if (!_contentNode) {
+    _contentScaleOffline = contentScale;
+    return;
+  }
+  // note: Use similar mechanics as setContentOffset:contentScale:animatedDuration:completion:.
+  CGFloat startConstrainedScale = _contentNode.xScale;
+  CGFloat endConstrainedScale = [self HL_contentConstrainedScale:contentScale];
+  CGPoint startConstrainedPosition = _contentNode.position;
+  CGPoint nodeLocation = CGPointMake(startConstrainedPosition.x + contentLocation.x * startConstrainedScale,
+                                     startConstrainedPosition.y + contentLocation.y * startConstrainedScale);
+  CGPoint endConstrainedPosition = [self HL_contentConstrainedPositionX:(nodeLocation.x - contentLocation.x * endConstrainedScale)
+                                                              positionY:(nodeLocation.y - contentLocation.y * endConstrainedScale)
+                                                                  scale:endConstrainedScale];
+  SKAction *scaleAndMoveTo = [SKAction customActionWithDuration:duration actionBlock:^(SKNode *node, CGFloat elapsedTime){
+    CGFloat elapsedProportion = (CGFloat)(elapsedTime / duration);
+    CGFloat interpolatedScale = startConstrainedScale + (endConstrainedScale - startConstrainedScale) * elapsedProportion;
+    self->_contentNode.xScale = interpolatedScale;
+    self->_contentNode.yScale = interpolatedScale;
+    // note: Three options (?) here:
+    // Could find intermediate positions by calculating them from nodePosition and contentLocation and contraining:
+    //self->_contentNode.position = [self HL_contentConstrainedPositionX:(nodeLocation.x - contentLocation.x * interpolatedScale)
+    //                                                         positionY:(nodeLocation.y - contentLocation.y * interpolatedScale)
+    //                                                             scale:interpolatedScale];
+    // But, as elsewhere, that can make things a little jerky.  One smoother way to do it is to skip the constraint:
+    //self->_contentNode.position = CGPointMake(nodeLocation.x - contentLocation.x * interpolatedScale,
+    //                                          nodeLocation.y - contentLocation.y * interpolatedScale);
+    // But then the final position needs to be constrained.  The best result seems to be doing it the same way as
+    // other scroll-and-scales: Pre-calculating a final constrained position and doing a straightforward (non-constrained)
+    // interpolation.
+    CGPoint interpolatedPosition = CGPointMake(startConstrainedPosition.x + (endConstrainedPosition.x - startConstrainedPosition.x) * elapsedProportion,
+                                               startConstrainedPosition.y + (endConstrainedPosition.y - startConstrainedPosition.y) * elapsedProportion);
+    self->_contentNode.position = interpolatedPosition;
+  }];
+  scaleAndMoveTo.timingMode = SKActionTimingEaseInEaseOut;
+  [_contentNode runAction:scaleAndMoveTo completion:completion];
 }
 
 #pragma mark -
@@ -337,7 +523,8 @@ enum {
   CGPoint translationInNode = CGPointMake(nodeLocation.x - _panLastNodeLocation.x,
                                           nodeLocation.y - _panLastNodeLocation.y);
   _contentNode.position = [self HL_contentConstrainedPositionX:(_contentNode.position.x + translationInNode.x)
-                                                     positionY:(_contentNode.position.y + translationInNode.y)];
+                                                     positionY:(_contentNode.position.y + translationInNode.y)
+                                                         scale:_contentNode.xScale];
   _panLastNodeLocation = nodeLocation;
 }
 
@@ -365,7 +552,8 @@ enum {
     _contentNode.yScale = constrainedScale;
     CGFloat constrainedScaleFactor = constrainedScale / _pinchOriginalContentScale;
     _contentNode.position = [self HL_contentConstrainedPositionX:((_pinchOriginalContentPosition.x - _pinchCenterNodeLocation.x) * constrainedScaleFactor - _pinchCenterNodeLocation.x)
-                                                       positionY:((_pinchOriginalContentPosition.y - _pinchCenterNodeLocation.y) * constrainedScaleFactor - _pinchCenterNodeLocation.y)];
+                                                       positionY:((_pinchOriginalContentPosition.y - _pinchCenterNodeLocation.y) * constrainedScaleFactor - _pinchCenterNodeLocation.y)
+                                                           scale:constrainedScale];
 
   }
 
@@ -374,9 +562,9 @@ enum {
 #pragma mark -
 #pragma mark Private
 
-- (CGPoint)HL_contentConstrainedPositionX:(CGFloat)positionX positionY:(CGFloat)positionY
+- (CGPoint)HL_contentConstrainedPositionX:(CGFloat)positionX positionY:(CGFloat)positionY scale:(CGFloat)scale
 {
-  CGFloat contentWidthScaled = _contentSize.width * _contentNode.xScale;
+  CGFloat contentWidthScaled = _contentSize.width * scale;
   CGFloat positionXMax = _size.width * -1.0f * _anchorPoint.x - contentWidthScaled * -1.0f * self.contentAnchorPoint.x + _contentInset.left;
   CGFloat positionXMin = _size.width * (1.0f - _anchorPoint.x) - contentWidthScaled * (1.0f - self.contentAnchorPoint.x) - _contentInset.right;
   if (positionXMax < positionXMin) {
@@ -388,7 +576,7 @@ enum {
   } else if (positionX > positionXMax) {
     positionX = positionXMax;
   }
-  CGFloat contentHeightScaled = _contentSize.height * _contentNode.yScale;
+  CGFloat contentHeightScaled = _contentSize.height * scale;
   CGFloat positionYMax = _size.height * -1.0f * _anchorPoint.y - contentHeightScaled * -1.0f * self.contentAnchorPoint.y + _contentInset.bottom;
   CGFloat positionYMin = _size.height * (1.0f - _anchorPoint.y) - contentHeightScaled * (1.0f - self.contentAnchorPoint.y) - _contentInset.top;
   if (positionYMax < positionYMin) {
