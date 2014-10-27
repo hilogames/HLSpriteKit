@@ -16,8 +16,10 @@
 #import <HLSpriteKit/HLMessageNode.h>
 #import <HLSpriteKit/HLScene.h>
 #import <HLSpriteKit/HLScrollNode.h>
+#import <HLSpriteKit/HLTableLayoutManager.h>
 #import <HLSpriteKit/HLTextureStore.h>
 #import <HLSpriteKit/HLTiledNode.h>
 #import <HLSpriteKit/HLToolbarNode.h>
 #import <HLSpriteKit/SKLabelNode+HLLabelNodeAdditions.h>
+#import <HLSpriteKit/SKNode+HLLayoutManager.h>
 #import <HLSpriteKit/UIImage+HLImageAdditions.h>

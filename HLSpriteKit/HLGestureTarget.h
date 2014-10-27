@@ -40,6 +40,12 @@ BOOL HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIG
 
 @protocol HLGestureTargetDelegate;
 
+// TODO: Consider doing HLGestureTarget like HLLayoutManager: a category providing access to
+// a data member in userData, which is the HLGestureTargetDelegate (but instead called the
+// gestureManager or back to gestureTarget or something).  No more need for weak pointer to
+// self if the SKNode is its own gestureTargetDelegate: Instead, the accessor method to get
+// the delegate would just store a special flag meaning "return self" for delegate.
+
 /**
  * A gesture target implements a property that can get or set the gesture target
  * delegate, which does all the work.  This allows for easy reuse of common delegate
