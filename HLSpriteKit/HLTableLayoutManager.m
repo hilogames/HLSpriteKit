@@ -8,7 +8,7 @@
 
 #import "HLTableLayoutManager.h"
 
-const CGFloat HLTableLayoutManagerEpsilon = 0.1f;
+const CGFloat HLTableLayoutManagerEpsilon = 0.001f;
 
 @implementation HLTableLayoutManager
 
@@ -108,99 +108,124 @@ const CGFloat HLTableLayoutManagerEpsilon = 0.1f;
 
   _rowCount = (nodesCount - 1) / _columnCount + 1;
 
+  CGFloat *columnWidthsPartiallyCalculated = (CGFloat *)malloc(_columnCount * sizeof(CGFloat));
   CGFloat widthTotalFixed = 0.0f;
-  NSUInteger widthExpandingColumnCount = 0;
+  CGFloat widthExpandingColumnRatioSum = 0.0f;
   {
-    CGFloat width = 0.0f;
-    for (NSNumber *widthNumber in _columnWidths) {
-      width = (CGFloat)[widthNumber doubleValue];
-      if (width < HLTableLayoutManagerEpsilon) {
-        ++widthExpandingColumnCount;
-      } else {
-        widthTotalFixed += width;
+    CGFloat widthColumn = 0.0f;
+    for (NSUInteger column = 0; column < _columnCount; ++column) {
+      if (column < columnWidthsCount) {
+        NSNumber *widthColumnNumber = _columnWidths[column];
+        widthColumn = (CGFloat)[widthColumnNumber doubleValue];
       }
-    }
-    if (_columnCount > columnWidthsCount) {
-      if (width < HLTableLayoutManagerEpsilon) {
-        widthExpandingColumnCount += (_columnCount - columnWidthsCount);
+      if (widthColumn > HLTableLayoutManagerEpsilon) {
+        widthTotalFixed += widthColumn;
+        columnWidthsPartiallyCalculated[column] = widthColumn;
+      } else if (widthColumn < -HLTableLayoutManagerEpsilon) {
+        widthExpandingColumnRatioSum += widthColumn;
+        columnWidthsPartiallyCalculated[column] = widthColumn;
       } else {
-        widthTotalFixed += width * (_columnCount - columnWidthsCount);
+        CGFloat widthCellMax = 0.0f;
+        for (NSUInteger row = 0; row < _rowCount; ++row) {
+          id node = nodes[row * _columnCount + column];
+          if ([node respondsToSelector:@selector(size)]) {
+            CGSize nodeSize = [node size];
+            if (nodeSize.width > widthCellMax) {
+              widthCellMax = nodeSize.width;
+            }
+          } else if ([node isKindOfClass:[SKLabelNode class]]) {
+            CGSize nodeSize = [node frame].size;
+            if (nodeSize.width > widthCellMax) {
+              widthCellMax = nodeSize.width;
+            }
+          }
+          // note: Else node will not affect column size.  Would it be
+          // a good general-purpose algorithm to use frame.size for all
+          // kindOfClass SKNode?
+        }
+        widthTotalFixed += widthCellMax;
+        columnWidthsPartiallyCalculated[column] = widthCellMax;
       }
     }
   }
   CGFloat widthTotalConstant = _columnSeparator * (_columnCount - 1) + _tableBorder * 2.0f;
   CGFloat widthTotalExpanding = _constrainedSize.width - widthTotalFixed - widthTotalConstant;
-  CGFloat widthColumnExpanding;
   if (widthTotalExpanding <= 0.0f) {
     widthTotalExpanding = 0.0f;
-    widthColumnExpanding = 0.0f;
-  } else {
-    widthColumnExpanding = widthTotalExpanding / widthExpandingColumnCount;
   }
 
+  CGFloat *rowHeightsPartiallyCalculated = (CGFloat *)malloc(_rowCount * sizeof(CGFloat));
   CGFloat heightTotalFixed = 0.0f;
-  NSUInteger heightExpandingRowCount = 0;
+  CGFloat heightExpandingRowRatioSum = 0.0f;
   {
-    CGFloat height = 0.0f;
-    for (NSNumber *heightNumber in _rowHeights) {
-      height = (CGFloat)[heightNumber doubleValue];
-      if (height < HLTableLayoutManagerEpsilon) {
-        ++heightExpandingRowCount;
-      } else {
-        heightTotalFixed += height;
+    CGFloat heightRow = 0.0f;
+    for (NSUInteger row = 0; row < _rowCount; ++row) {
+      if (row < rowHeightsCount) {
+        NSNumber *heightRowNumber = _rowHeights[row];
+        heightRow = (CGFloat)[heightRowNumber doubleValue];
       }
-    }
-    if (_rowCount > rowHeightsCount) {
-      if (height < HLTableLayoutManagerEpsilon) {
-        heightExpandingRowCount += (_rowCount - rowHeightsCount);
+      if (heightRow > HLTableLayoutManagerEpsilon) {
+        heightTotalFixed += heightRow;
+        rowHeightsPartiallyCalculated[row] = heightRow;
+      } else if (heightRow < -HLTableLayoutManagerEpsilon) {
+        heightExpandingRowRatioSum += heightRow;
+        rowHeightsPartiallyCalculated[row] = heightRow;
       } else {
-        heightTotalFixed += height * (_rowCount - rowHeightsCount);
+        CGFloat heightCellMax = 0.0f;
+        for (NSUInteger column = 0; column < _columnCount; ++column) {
+          id node = nodes[row * _columnCount + column];
+          if ([node respondsToSelector:@selector(size)]) {
+            CGSize nodeSize = [node size];
+            if (nodeSize.height > heightCellMax) {
+              heightCellMax = nodeSize.height;
+            }
+          } else if ([node isKindOfClass:[SKLabelNode class]]) {
+            CGSize nodeSize = [node frame].size;
+            if (nodeSize.height > heightCellMax) {
+              heightCellMax = nodeSize.height;
+            }
+          }
+          // note: Else node will not affect row size.  Would it be
+          // a good general-purpose algorithm to use frame.size for all
+          // kindOfClass SKNode?
+        }
+        heightTotalFixed += heightCellMax;
+        rowHeightsPartiallyCalculated[row] = heightCellMax;
       }
     }
   }
   CGFloat heightTotalConstant = _rowSeparator * (_rowCount - 1) + _tableBorder * 2.0f;
   CGFloat heightTotalExpanding = _constrainedSize.height - heightTotalFixed - heightTotalConstant;
-  CGFloat heightRowExpanding;
   if (heightTotalExpanding <= 0.0f) {
     heightTotalExpanding = 0.0f;
-    heightRowExpanding = 0.0f;
-  } else {
-    heightRowExpanding = heightTotalExpanding / heightExpandingRowCount;
   }
-
+  
   _size = CGSizeMake(widthTotalFixed + widthTotalExpanding + widthTotalConstant,
                      heightTotalFixed + heightTotalExpanding + heightTotalConstant);
 
   // note: x and y track the upper left corner of each cell.
   NSEnumerator *nodesEnumerator = [nodes objectEnumerator];
   CGFloat yCell = _size.height * (1.0f - _anchorPoint.y) - _tableBorder;
-  CGFloat heightCell = 0.0f;
+  id node = nil;
   for (NSUInteger row = 0; row < _rowCount; ++row) {
 
-    if (row < rowHeightsCount) {
-      NSNumber *heightNumber = _rowHeights[row];
-      heightCell = (CGFloat)[heightNumber doubleValue];
-      if (heightCell < HLTableLayoutManagerEpsilon) {
-        heightCell = heightRowExpanding;
-      }
+    CGFloat heightCell = rowHeightsPartiallyCalculated[row];
+    if (heightCell < -HLTableLayoutManagerEpsilon) {
+      heightCell = heightTotalExpanding / heightExpandingRowRatioSum * heightCell;
     }
     
     CGFloat xCell = _size.width * -1.0f * _anchorPoint.x + _tableBorder;
-    CGFloat widthCell = 0.0f;
     CGPoint anchorPointCell = CGPointZero;
     for (NSUInteger column = 0; column < _columnCount; ++column) {
 
-      id node = [nodesEnumerator nextObject];
+      node = [nodesEnumerator nextObject];
       if (!node) {
-        return;
+        break;
       }
 
-      if (column < columnWidthsCount) {
-        NSNumber *widthNumber = _columnWidths[column];
-        widthCell = (CGFloat)[widthNumber doubleValue];
-        if (widthCell < HLTableLayoutManagerEpsilon) {
-          widthCell = widthColumnExpanding;
-        }
+      CGFloat widthCell = columnWidthsPartiallyCalculated[column];
+      if (widthCell < -HLTableLayoutManagerEpsilon) {
+        widthCell = widthTotalExpanding / widthExpandingColumnRatioSum * widthCell;
       }
 
       if (column < columnAnchorPointsCount) {
@@ -216,8 +241,14 @@ const CGFloat HLTableLayoutManagerEpsilon = 0.1f;
       xCell = xCell + widthCell + _columnSeparator;
     }
     
+    if (!node) {
+      break;
+    }
     yCell = yCell - heightCell - _rowSeparator;
   }
+
+  free(columnWidthsPartiallyCalculated);
+  free(rowHeightsPartiallyCalculated);
 }
 
 @end

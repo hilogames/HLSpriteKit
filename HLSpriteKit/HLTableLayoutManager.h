@@ -55,27 +55,44 @@ FOUNDATION_EXPORT const CGFloat HLTableLayoutManagerEpsilon;
  * columns and rows; see notes on columnWidths and rowHeights properties.  If
  * there are no expanding columns or rows, this size will be ignored.  If the
  * constrained size (in a particular dimension) is not large enough to hold all
- * the non-expanding rows or columns, the width or height of the expanding rows
- * will be set to zero, and the total size of the table (see size property) will
- * be larger than the constrained size.
+ * the non-expanding rows or columns, plus the tableBorder and cell separators,
+ * the width or height of the expanding rows will be set to zero, and the total
+ * size of the table (see size property) will be larger than the constrained size.
  */
 @property (nonatomic, assign) CGSize constrainedSize;
 
 /**
  * An array of CGFloats specifying the widths of table columns.  Columns in the table
  * without corresponding widths in the array will be sized according to the last
- * column width in the array.  If a width is provided as 0.0f (actually tested as
- * less than HLTableLayoutNodeEpsilon), then that column will expand to share the
- * available constrained size.
+ * column width in the array.
+ *
+ * Special sizes may be specified as followed:
+ *
+ *  . A size of 0.0f (that is, a value that has a difference from 0.0f less than
+ *    HLTableLayoutNodeEpsilon) means the layout manager should attempt to size
+ *    the column to fit the largest node in the column.  This is a little messy:
+ *    If a node responds to @selector(size), then that size will be used;
+ *    otherwise if the node is a kind of SKLabelNode, then frame.size will be
+ *    used; otherwise, the node is considered to have zero size.
+ *
+ *  . A size less than zero (actually, less than -HLTableLayoutEpsilon) will
+ *    expand the column to share the available constrained width of the table.
+ *    Furthermore, the extra space can be shared unequally: it will be allocated
+ *    according to the ratio of the expanding columns' sizes.  For example, say
+ *    the constrained width of the table is 100 for three columns.  If the tableBorder
+ *    is 1 and the columnSeparator is 2, that leaves 95 for the columns.  The
+ *    first column is specified with a fixed size of 35, leaving 60 for the two
+ *    remaining columns, which have sizes specified as -1.0 and -2.0, resulting in
+ *    actual column sizes of 20 and 40, respectively.
  */
 @property (nonatomic, strong) NSArray *columnWidths;
 
 /**
  * An array of CGFloats specifying the heights of table rows.  Rows in the table
  * without corresponding heights in the array will be sized according to the last
- * row height in the array.  If a height is provided as 0.0f (actually tested as
- * less than HLTableLayoutNodeEpsilon), then that row will expand to share the
- * available constrained size.
+ * row height in the array.
+ *
+ * Special sizes may be specified the same way as columnWidths; see notes there.
  */
 @property (nonatomic, strong) NSArray *rowHeights;
 
