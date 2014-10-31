@@ -184,17 +184,25 @@ enum {
 
 - (void)setContentOffset:(CGPoint)contentOffset animatedDuration:(NSTimeInterval)duration completion:(void (^)(void))completion
 {
-  if (!_contentNode) {
+  SKAction *action = [self actionForSetContentOffset:contentOffset animatedDuration:duration];
+  if (!action) {
     _contentOffsetOffline = contentOffset;
     return;
+  }
+  action.timingMode = SKActionTimingEaseInEaseOut;
+  [_contentNode runAction:action completion:completion];
+}
+
+- (SKAction *)actionForSetContentOffset:(CGPoint)contentOffset animatedDuration:(NSTimeInterval)duration
+{
+  if (!_contentNode) {
+    return nil;
   }
   // note: Assume it is acceptable to constrain position once rather than continually during animation.
   // One example how that might not be acceptable: If the caller expects the movement to take less
   // than the full animation duration if constrained.
   CGPoint constrainedPosition = [self HL_contentConstrainedPositionX:contentOffset.x positionY:contentOffset.y scale:_contentNode.xScale];
-  SKAction *moveTo = [SKAction moveTo:constrainedPosition duration:duration];
-  moveTo.timingMode = SKActionTimingEaseInEaseOut;
-  [_contentNode runAction:moveTo completion:completion];
+  return [SKAction moveTo:constrainedPosition duration:duration];
 }
 
 - (void)setContentInset:(UIEdgeInsets)contentInset
@@ -231,9 +239,19 @@ enum {
 
 - (void)setContentScale:(CGFloat)contentScale animatedDuration:(NSTimeInterval)duration completion:(void (^)(void))completion
 {
-  if (!_contentNode) {
+  SKAction *action = [self actionForSetContentScale:contentScale animatedDuration:duration];
+  if (!action) {
     _contentScaleOffline = contentScale;
     return;
+  }
+  action.timingMode = SKActionTimingEaseInEaseOut;
+  [_contentNode runAction:action completion:completion];
+}
+
+- (SKAction *)actionForSetContentScale:(CGFloat)contentScale animatedDuration:(NSTimeInterval)duration
+{
+  if (!_contentNode) {
+    return nil;
   }
   // note: Assume it is acceptable to constrain scale once rather than continually during animation.
   // Position, however, must be continually constrained based on interpolated scale values.
@@ -243,14 +261,12 @@ enum {
   // An alternate implementation could calculate the constrained final position based on the
   // constrained final scale, and then head there smoothly throughout the animation.
   CGPoint constrainedPosition = _contentNode.position;
-  SKAction *scaleTo = [SKAction customActionWithDuration:duration actionBlock:^(SKNode *node, CGFloat elapsedTime){
+  return [SKAction customActionWithDuration:duration actionBlock:^(SKNode *node, CGFloat elapsedTime){
     CGFloat interpolatedScale = startConstrainedScale + (endConstrainedScale - startConstrainedScale) * (CGFloat)(elapsedTime / duration);
     self->_contentNode.xScale = interpolatedScale;
     self->_contentNode.yScale = interpolatedScale;
     self->_contentNode.position = [self HL_contentConstrainedPositionX:constrainedPosition.x positionY:constrainedPosition.y scale:interpolatedScale];
   }];
-  scaleTo.timingMode = SKActionTimingEaseInEaseOut;
-  [_contentNode runAction:scaleTo completion:completion];
 }
 
 - (void)setContentScaleMinimum:(CGFloat)contentScaleMinimum
@@ -308,9 +324,21 @@ enum {
         animatedDuration:(NSTimeInterval)duration
               completion:(void (^)(void))completion
 {
-  if (!_contentNode) {
+  SKAction *action = [self actionForSetContentOffset:contentOffset contentScale:contentScale animatedDuration:duration];
+  if (!action) {
     _contentScaleOffline = contentScale;
     return;
+  }
+  action.timingMode = SKActionTimingEaseInEaseOut;
+  [_contentNode runAction:action completion:completion];
+}
+
+- (SKAction *)actionForSetContentOffset:(CGPoint)contentOffset
+                           contentScale:(CGFloat)contentScale
+                       animatedDuration:(NSTimeInterval)duration
+{
+  if (!_contentNode) {
+    return nil;
   }
   // note: Assume it is acceptable to constrain scale once rather than continually during animation.
   // Handle position as in setContentOffset:animatedDuration:completion:, although it's worth noting
@@ -319,7 +347,7 @@ enum {
   CGFloat endConstrainedScale = [self HL_contentConstrainedScale:contentScale];
   CGPoint startConstrainedPosition = _contentNode.position;
   CGPoint endConstrainedPosition = [self HL_contentConstrainedPositionX:contentOffset.x positionY:contentOffset.y scale:endConstrainedScale];
-  SKAction *scaleAndMoveTo = [SKAction customActionWithDuration:duration actionBlock:^(SKNode *node, CGFloat elapsedTime){
+  return [SKAction customActionWithDuration:duration actionBlock:^(SKNode *node, CGFloat elapsedTime){
     CGFloat elapsedProportion = (CGFloat)(elapsedTime / duration);
     CGFloat interpolatedScale = startConstrainedScale + (endConstrainedScale - startConstrainedScale) * elapsedProportion;
     self->_contentNode.xScale = interpolatedScale;
@@ -331,8 +359,6 @@ enum {
     //self->_contentNode.position = [self HL_contentConstrainedPositionX:interpolatedPosition.x positionY:interpolatedPosition.y scale:interpolatedScale];
     self->_contentNode.position = interpolatedPosition;
   }];
-  scaleAndMoveTo.timingMode = SKActionTimingEaseInEaseOut;
-  [_contentNode runAction:scaleAndMoveTo completion:completion];
 }
 
 - (void)scrollContentLocation:(CGPoint)contentLocation toNodeLocation:(CGPoint)nodeLocation
@@ -352,17 +378,27 @@ enum {
              animatedDuration:(NSTimeInterval)duration
                    completion:(void (^)(void))completion
 {
-  if (!_contentNode) {
+  SKAction *action = [self actionForScrollContentLocation:contentLocation toNodeLocation:nodeLocation animatedDuration:duration];
+  if (!action) {
     return;
+  }
+  action.timingMode = SKActionTimingEaseInEaseOut;
+  [_contentNode runAction:action completion:completion];
+}
+
+- (SKAction *)actionForScrollContentLocation:(CGPoint)contentLocation
+                              toNodeLocation:(CGPoint)nodeLocation
+                            animatedDuration:(NSTimeInterval)duration
+{
+  if (!_contentNode) {
+    return nil;
   }
   // note: Use similar mechanics as setContentOffset:animatedDuration:completion:.
   CGFloat constrainedScale = _contentNode.xScale;
   CGPoint contentOffset = CGPointMake(nodeLocation.x - contentLocation.x * constrainedScale,
                                       nodeLocation.y - contentLocation.y * constrainedScale);
   CGPoint constrainedPosition = [self HL_contentConstrainedPositionX:contentOffset.x positionY:contentOffset.y scale:constrainedScale];
-  SKAction *moveTo = [SKAction moveTo:constrainedPosition duration:duration];
-  moveTo.timingMode = SKActionTimingEaseInEaseOut;
-  [_contentNode runAction:moveTo completion:completion];
+  return [SKAction moveTo:constrainedPosition duration:duration];
 }
 
 - (void)scrollContentLocation:(CGPoint)contentLocation toNodeLocation:(CGPoint)nodeLocation andSetContentScale:(CGFloat)contentScale
@@ -386,9 +422,22 @@ enum {
              animatedDuration:(NSTimeInterval)duration
                    completion:(void (^)(void))completion
 {
-  if (!_contentNode) {
+  SKAction *action = [self actionForScrollContentLocation:contentLocation toNodeLocation:nodeLocation andSetContentScale:contentScale animatedDuration:duration];
+  if (!action) {
     _contentScaleOffline = contentScale;
     return;
+  }
+  action.timingMode = SKActionTimingEaseInEaseOut;
+  [_contentNode runAction:action completion:completion];
+}
+
+- (SKAction *)actionForScrollContentLocation:(CGPoint)contentLocation
+                              toNodeLocation:(CGPoint)nodeLocation
+                          andSetContentScale:(CGFloat)contentScale
+                            animatedDuration:(NSTimeInterval)duration
+{
+  if (!_contentNode) {
+    return nil;
   }
   // note: Use similar mechanics as setContentOffset:contentScale:animatedDuration:completion:.
   CGFloat startConstrainedScale = _contentNode.xScale;
@@ -397,7 +446,7 @@ enum {
   CGPoint endConstrainedPosition = [self HL_contentConstrainedPositionX:(nodeLocation.x - contentLocation.x * endConstrainedScale)
                                                               positionY:(nodeLocation.y - contentLocation.y * endConstrainedScale)
                                                                   scale:endConstrainedScale];
-  SKAction *scaleAndMoveTo = [SKAction customActionWithDuration:duration actionBlock:^(SKNode *node, CGFloat elapsedTime){
+  return [SKAction customActionWithDuration:duration actionBlock:^(SKNode *node, CGFloat elapsedTime){
     CGFloat elapsedProportion = (CGFloat)(elapsedTime / duration);
     CGFloat interpolatedScale = startConstrainedScale + (endConstrainedScale - startConstrainedScale) * elapsedProportion;
     self->_contentNode.xScale = interpolatedScale;
@@ -410,8 +459,6 @@ enum {
     //self->_contentNode.position = [self HL_contentConstrainedPositionX:interpolatedPosition.x positionY:interpolatedPosition.y scale:interpolatedScale];
     self->_contentNode.position = interpolatedPosition;
   }];
-  scaleAndMoveTo.timingMode = SKActionTimingEaseInEaseOut;
-  [_contentNode runAction:scaleAndMoveTo completion:completion];
 }
 
 - (void)pinContentLocation:(CGPoint)contentLocation andSetContentScale:(CGFloat)contentScale
@@ -438,9 +485,21 @@ enum {
           animatedDuration:(NSTimeInterval)duration
                 completion:(void (^)(void))completion
 {
-  if (!_contentNode) {
+  SKAction *action = [self actionForPinContentLocation:contentLocation andSetContentScale:contentScale animatedDuration:duration];
+  if (!action) {
     _contentScaleOffline = contentScale;
     return;
+  }
+  action.timingMode = SKActionTimingEaseInEaseOut;
+  [_contentNode runAction:action completion:completion];
+}
+
+- (SKAction *)actionForPinContentLocation:(CGPoint)contentLocation
+                       andSetContentScale:(CGFloat)contentScale
+                         animatedDuration:(NSTimeInterval)duration
+{
+  if (!_contentNode) {
+    return nil;
   }
   // note: Use similar mechanics as setContentOffset:contentScale:animatedDuration:completion:.
   CGFloat startConstrainedScale = _contentNode.xScale;
@@ -451,7 +510,7 @@ enum {
   CGPoint endConstrainedPosition = [self HL_contentConstrainedPositionX:(nodeLocation.x - contentLocation.x * endConstrainedScale)
                                                               positionY:(nodeLocation.y - contentLocation.y * endConstrainedScale)
                                                                   scale:endConstrainedScale];
-  SKAction *scaleAndMoveTo = [SKAction customActionWithDuration:duration actionBlock:^(SKNode *node, CGFloat elapsedTime){
+  return [SKAction customActionWithDuration:duration actionBlock:^(SKNode *node, CGFloat elapsedTime){
     CGFloat elapsedProportion = (CGFloat)(elapsedTime / duration);
     CGFloat interpolatedScale = startConstrainedScale + (endConstrainedScale - startConstrainedScale) * elapsedProportion;
     self->_contentNode.xScale = interpolatedScale;
@@ -471,8 +530,6 @@ enum {
                                                startConstrainedPosition.y + (endConstrainedPosition.y - startConstrainedPosition.y) * elapsedProportion);
     self->_contentNode.position = interpolatedPosition;
   }];
-  scaleAndMoveTo.timingMode = SKActionTimingEaseInEaseOut;
-  [_contentNode runAction:scaleAndMoveTo completion:completion];
 }
 
 #pragma mark -

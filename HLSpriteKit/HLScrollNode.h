@@ -91,8 +91,6 @@ typedef NS_ENUM(NSInteger, HLScrollNodeContentScaleMinimumMode)
  */
 @property (nonatomic, assign) CGPoint contentOffset;
 
-- (void)setContentOffset:(CGPoint)contentOffset animatedDuration:(NSTimeInterval)duration completion:(void (^)(void))completion;
-
 /**
  * The distance that the content is inset from the enclosing HLScrollNode.
  * Default value UIEdgeInsetsZero.
@@ -105,8 +103,6 @@ typedef NS_ENUM(NSInteger, HLScrollNodeContentScaleMinimumMode)
  * value 1.0.  See methods for other ways of setting contentScale.
  */
 @property (nonatomic, assign) CGFloat contentScale;
-
-- (void)setContentScale:(CGFloat)scale animatedDuration:(NSTimeInterval)duration completion:(void (^)(void))completion;
 
 /**
  * The configured minimum value for content scale (when zooming out).  See
@@ -168,12 +164,49 @@ typedef NS_ENUM(NSInteger, HLScrollNodeContentScaleMinimumMode)
          contentScaleMaximum:(CGFloat)contentScaleMaximum NS_DESIGNATED_INITIALIZER;
 
 /**
+ * Returns an action that will animate a change to the content offset.  Returns nil
+ * if the content node is not set.
+ */
+- (SKAction *)actionForSetContentOffset:(CGPoint)contentOffset animatedDuration:(NSTimeInterval)duration;
+
+/**
+ * Convenience method that gets and then runs the action returned by
+ * actionForSetContentOffset:animatedDuration:.  The timing mode used is
+ * SKActionTimingEaseInEaseOut.
+ */
+- (void)setContentOffset:(CGPoint)contentOffset animatedDuration:(NSTimeInterval)duration completion:(void (^)(void))completion;
+
+/**
+ * Returns an action that will animate a change to the content scale.  Returns nil
+ * if the content node is not set.
+ */
+- (SKAction *)actionForSetContentScale:(CGFloat)contentScale animatedDuration:(NSTimeInterval)duration;
+
+/**
+ * Convenience method that gets and then runs the action returned by
+ * actionForSetContentScale:animatedDuration:.  The timing mode used is
+ * SKActionTimingEaseInEaseOut.
+ */
+- (void)setContentScale:(CGFloat)scale animatedDuration:(NSTimeInterval)duration completion:(void (^)(void))completion;
+
+/**
  * Set contentOffset and contentScale at the same time.  Since the offset is sometimes
  * constrained by the current scale, it makes sense to set them together if both are
  * going to change.
  */
 - (void)setContentOffset:(CGPoint)contentOffset contentScale:(CGFloat)contentScale;
 
+/**
+ * Returns an action that will animate a change of content offset and scale.  Returns nil
+ * if the content node is not set.
+ */
+- (SKAction *)actionForSetContentOffset:(CGPoint)contentOffset contentScale:(CGFloat)contentScale animatedDuration:(NSTimeInterval)duration;
+
+/**
+ * Convenience method that gets and then runs the action returned by
+ * actionForSetContentOffset:contentScale:animatedDuration:.  The timing mode used is
+ * SKActionTimingEaseInEaseOut.
+ */
 - (void)setContentOffset:(CGPoint)contentOffset contentScale:(CGFloat)contentScale animatedDuration:(NSTimeInterval)duration completion:(void (^)(void))completion;
 
 /**
@@ -188,13 +221,19 @@ typedef NS_ENUM(NSInteger, HLScrollNodeContentScaleMinimumMode)
 
 - (void)scrollContentLocation:(CGPoint)contentLocation toNodeLocation:(CGPoint)nodeLocation;
 
+- (SKAction *)actionForScrollContentLocation:(CGPoint)contentLocation toNodeLocation:(CGPoint)nodeLocation animatedDuration:(NSTimeInterval)duration;
+
 - (void)scrollContentLocation:(CGPoint)contentLocation toNodeLocation:(CGPoint)nodeLocation animatedDuration:(NSTimeInterval)duration completion:(void (^)(void))completion;
 
 - (void)scrollContentLocation:(CGPoint)contentLocation toNodeLocation:(CGPoint)nodeLocation andSetContentScale:(CGFloat)contentScale;
 
+- (SKAction *)actionForScrollContentLocation:(CGPoint)contentLocation toNodeLocation:(CGPoint)nodeLocation andSetContentScale:(CGFloat)contentScale animatedDuration:(NSTimeInterval)duration;
+
 - (void)scrollContentLocation:(CGPoint)contentLocation toNodeLocation:(CGPoint)nodeLocation andSetContentScale:(CGFloat)contentScale animatedDuration:(NSTimeInterval)duration completion:(void (^)(void))completion;
 
 - (void)pinContentLocation:(CGPoint)contentLocation andSetContentScale:(CGFloat)contentScale;
+
+- (SKAction *)actionForPinContentLocation:(CGPoint)contentLocation andSetContentScale:(CGFloat)contentScale animatedDuration:(NSTimeInterval)duration;
 
 - (void)pinContentLocation:(CGPoint)contentLocation andSetContentScale:(CGFloat)contentScale animatedDuration:(NSTimeInterval)duration completion:(void (^)(void))completion;
 
