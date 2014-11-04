@@ -228,3 +228,97 @@ BOOL HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIG
 - (instancetype)initWithCoder:(NSCoder *)aDecoder;
 - (void)encodeWithCoder:(NSCoder *)aCoder;
 @end
+
+/**
+ * So in an HLScene I was working on, I had a method for creating a modal presentation consisting
+ * of a number of nodes which I created on-demand in the scene without using any custom node
+ * subclassing.  An out-of-the-box gesture target with HLGestureTargetTapDelegate works well as
+ * a dismiss/okay/cancel button for something like that, because you can configure it with a code
+ * block that dimisses the modal presentation and does any other cleanup: No need to create some
+ * callback dismiss method in the scene, which is already cluttered with too many methods.
+ *
+ * But...it's pretty messy, because the cleanup needs to be exremely careful about retain cycles.
+ * Furthermore, it gets more complicated when there are multiple gesture targets on the modal
+ * presentation: For example, each of them needs to unregister themselves and *all* the others
+ * from the HLScene.  Nasty.
+ *
+ * Here were my thoughts (before I eventually went ahead and subclassed):
+ *
+ *  1) The buttons need to be aware of each other.  Perhaps like the "Okay" and "Cancel" buttons
+ *     of an alert, all actions should pass through the same callback.  In that case, the owner
+ *     has an FL_goalsDismissWithButtonIndex method, with stored goalsOverlay state from this
+ *     method, and set each of their handleGestureBlocks to call it.  But that seems to be getting
+ *     closer and closer to subclassing: The buttons are acting together, with shared state, and
+ *     so should be entirely encapsulated together.
+ *
+ *  2) But really, the only reason the buttons need to be aware of each other is (currently)
+ *     because of unregistering: they both need to unregister both (when dismissing the overlay).
+ *     Which reminds me that unregistering HLGestureTargets is a pain in the ass in general, and
+ *     according to current implementation not even essential.  BUT.  Unregistering still makes
+ *     sense for other possible future HLScene implementations, and no matter what, unregistering
+ *     is a nice option to have (even just to clear userData) and so it philosophically makes sense
+ *     to always do it.
+ *
+ *  3) Unregistering is especially a pain in the ass when an HLGestureTarget*Node wants to
+ *     unregister itself: The node contains a reference to the handleGesture block, but then
+ *     we try to make the block contain a reference to the node.  To break the retain cycle,
+ *     we can make the node reference weak, but that's just one more line of code in something
+ *     that already feels unnecessary.  Can there be a property in HLGestureTarget*Node for
+ *     (__weak HLScene *)autoUnregisterScene, which automatically unregisters itself when the node
+ *     is deallocated?
+ *
+ *  4) And in fact the real problem is HLGestureTarget*Nodes that don't just want to unregister
+ *     but in fact want to delete themselves.  Very common: Create some kind of dialog box, and
+ *     add a single button which dismisses it.  So then the button removes the dialog box from the
+ *     node hierarchy, no other references exist, the parent is deleted which deletes the children,
+ *     the button is deleted, so the callback block (being run) is deleted.  So (see notes in
+ *     notes/objective-c.txt) we have add TWO lines of code, making a strong reference (at block execution
+ *     time) of a weak reference (at block copy time) of the dialog box.  What a pain.  HLGestureTarget*Node
+ *     should make this easier for us somehow.  Could it retain a strong reference for us right before
+ *     invoking the block?
+ *
+ * For now: Consider it normal that, when building a node with multiple out-of-the-box HLGestureTargets,
+ * you have to set their handleGesture callbacks all at the same time at the bottom of the setup code,\
+ * with full awareness of each other.
+ *
+ * The code evolved as far as this before I subclassed:
+ 
+     __weak HLLabelButtonNode *victoryButtonWeak = victoryButton;
+     __weak HLGestureTargetSpriteNode *dismissNodeWeak = dismissNode;
+     __weak HLScrollNode *goalsOverlayWeak = goalsOverlay;
+ 
+     if (victoryButton) {
+       [victoryButton setGestureTargetDelegateStrong:[[HLGestureTargetTapDelegate alloc] initWithHandleGestureBlock:^(UIGestureRecognizer *gestureRecognizer){
+         if (self->_tutorialState.tutorialActive) {
+           [self FL_tutorialRecognizedAction:FLTutorialActionGoalsDismissed withArguments:nil];
+         }
+         [self unregisterDescendant:victoryButtonWeak];
+         [self unregisterDescendant:dismissNodeWeak];
+         [self unregisterDescendant:goalsOverlayWeak];
+         self->_goalsState.clear();
+         // noob: Retain a strong reference to block owner when dismissing the modal node; nobody else
+         // is retaining the victoryButton, but we'd like to finish running this block before getting
+         // deallocated.  The weak reference is copied with the block at copy time; now this strong
+         // reference (though theoretically possibly nil) will exist until we're done the block.  It's
+         // not actually clear how necessary this is, because I don't usually see problems unless this
+         // block starts deleting a whole bunch of stuff (like if the didTapNext delegate method deletes
+         // the scene right away, as it is prone to do if it is not careful).
+         __unused HLLabelButtonNode *victoryButtonStrongAgain = victoryButtonWeak;
+         [self dismissModalNodeAnimation:HLScenePresentationAnimationNone];
+         id<FLTrackSceneDelegate> delegate = self.delegate;
+         if (delegate) {
+           // noob: So this is dangerous.  The delegate is probably going to delete this scene.
+           // We've got strong references to the scene copied with the block, so let's make sure
+           // the block is gone before we try to deallocate the scene.  Okay so wait that's a problem
+           // with all existing blocks that reference self, right?  Like, they should all have __weak
+           // references?  Unless SKNode explicitly releases children during its deallocation.
+           // Sooooo . . . that's something to test.  For now, there aren't crashes, and if there's
+           // a retain cycle I haven't noticed it yet.
+           [delegate performSelector:@selector(trackSceneDidTapNextLevelButton:) withObject:self];
+         }
+       }]];
+       [self registerDescendant:victoryButton withOptions:[NSSet setWithObject:HLSceneChildGestureTarget]];
+     }
+
+  ...etc...
+ */
