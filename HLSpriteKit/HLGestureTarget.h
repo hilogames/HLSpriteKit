@@ -6,6 +6,8 @@
 //  Copyright (c) 2014 Hilo. All rights reserved.
 //
 
+#import <UIKit/UIKit.h>
+
 /**
  * A generic target for UIGestureRecognizers.
  *
@@ -17,10 +19,28 @@
  * the first touch of a particular gesture, the SKScene finds likely HLGestureTarget
  * components and offers them the chance to become targets of that gesture.  See HLScene
  * for a simple implementation.
+ *
+ * Note that HLGestureTarget is a protocol.  This allows a number of implementation patterns:
+ *
+ *  1) A small scene might be the gesture target for all its components.  (This is pretty
+ *     much the same as having the gesture delegate, that is, the scene, do all the
+ *     gesture handling also; the small advantage would be a natural way to split handling
+ *     methods by topic, e.g. handleWorldTap: vs handleToolbarTap:.)
+ *
+ *  2) A scene's functionality might be split out into custom SKNode subclasses; in that
+ *     case, each custom node might be its own gesture target and do its own gesture
+ *     handling.
+ *
+ *  3) A scene (or custom SKNode subclass) might create a default SKNode instance, without
+ *     subclassing, and can configure it for simple gesture interaction by attaching an
+ *     out-of-the-box HLGestureTarget via the SKNode+HLGestureTarget category.  For
+ *     example:
+ *
+ *       SKSpriteNode *myButton = [SKSpriteNode spriteNodeWith...];
+ *       myButton.hlGestureTarget = [[HLTapGestureTarget alloc] initWithHandleGestureBlock:^{
+ *           NSLog(@"tapped button");
+ *       }];
  */
-
-#import <Foundation/Foundation.h>
-#import <SpriteKit/SpriteKit.h>
 
 /**
  * Returns true if the passed gesture recognizers are of the same type and are configured
@@ -38,84 +58,7 @@
  */
 BOOL HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIGestureRecognizer *b);
 
-@protocol HLGestureTargetDelegate;
-
-// TODO: Consider doing HLGestureTarget like HLLayoutManager: a category providing access to
-// a data member in userData, which is the HLGestureTargetDelegate (but instead called the
-// gestureManager or back to gestureTarget or something).  No more need for weak pointer to
-// self if the SKNode is its own gestureTargetDelegate: Instead, the accessor method to get
-// the delegate would just store a special flag meaning "return self" for delegate.
-
-/**
- * A gesture target implements a property that can get or set the gesture target
- * delegate, which does all the work.  This allows for easy reuse of common delegate
- * implementations; see HLGestureTargetDelegate documentation.
- *
- * Important notes for implementers:
- *
- *   . A particular gesture target might want either a retained or a non-retained delegate,
- *     and the difference is important.  Therefore this "property" needs to be implemented
- *     as a single getter with two setters and two ivars, to make the interface explicit
- *     and harder to misuse.  Sorry, it's annoying.  Here is the recommended implementation:
-
-         @implementation MyClass {
-           __weak id <HLGestureTargetDelegate> _gestureTargetDelegateWeak;
-           id <HLGestureTargetDelegate> _gestureTargetDelegateStrong;
-         }
-
-         - (void)setGestureTargetDelegateWeak:(id<HLGestureTargetDelegate>)delegate
-         {
-           _gestureTargetDelegateWeak = delegate;
-           _gestureTargetDelegateStrong = nil;
-         }
-
-         - (void)setGestureTargetDelegateStrong:(id<HLGestureTargetDelegate>)delegate
-         {
-           _gestureTargetDelegateStrong = delegate;
-           _gestureTargetDelegateWeak = nil;
-         }
-
-         - (id<HLGestureTargetDelegate>)gestureTargetDelegate
-         {
-           if (_gestureTargetDelegateWeak) {
-             return _gestureTargetDelegateWeak;
-           } else {
-             return _gestureTargetDelegateStrong;
-           }
-         }
-
- *     Motivating examples: If a delegate is a pluggable standalone object
- *     (e.g. HLGestureTargetConfigurableDelegate) then it's convenient to have the
- *     gestureTargetDelegate property retained.  But if the delegate is set to the gesture
- *     target owner or the gesture target itself, then retaining the delegate would easily
- *     lead to retain cycles.
- *
- *   . Since gesture targets are often encoded as part of an SKScene's node hierarchy,
- *     it's important that the HLGestureTarget implements encoding methods to encode
- *     and decode its delegate along with the target.  Example implementation:
-
-         [aCoder encodeObject:_gestureTargetDelegateWeak forKey:@"gestureTargetDelegateWeak"];
-         [aCoder encodeObject:_gestureTargetDelegateStrong forKey:@"gestureTargetDelegateStrong"];
-
-         _gestureTargetDelegateWeak = [aDecoder decodeObjectForKey:@"gestureTargetDelegateWeak"];
-         _gestureTargetDelegateStrong = [aDecoder decodeObjectForKey:@"gestureTargetDelegateStrong"];
- *
- *   . NSCopying is not necessarily implemented by gesture targets, but if it is, some
- *     thought should be given as to whether copied targets should share delegates or not.
-
-         copy->_gestureTargetDelegateWeak = _gestureTargetDelegateWeak;
-         copy->_gestureTargetDelegateStrong = _gestureTargetDelegateStrong;
-
- */
-@protocol HLGestureTarget <NSCoding>
-- (void)setGestureTargetDelegateWeak:(id<HLGestureTargetDelegate>)delegate;
-- (void)setGestureTargetDelegateStrong:(id<HLGestureTargetDelegate>)delegate;
-- (id<HLGestureTargetDelegate>)gestureTargetDelegate;
-- (instancetype)initWithCoder:(NSCoder *)aDecoder;
-- (void)encodeWithCoder:(NSCoder *)aCoder;
-@end
-
-@protocol HLGestureTargetDelegate <NSObject>
+@protocol HLGestureTarget <NSObject>
 
 /**
  * Adds itself (as target of an action) to the passed gesture recognizer if it is
@@ -137,7 +80,7 @@ BOOL HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIG
  * inside the button: The button does not care about pans, and so does not add itself as a
  * target to the gesture, but it returns isInside YES, so the caller knows that the pan
  * should probably not fall through to other targets.  (This could be separated out as a
- * separate method in HLGestureTargetDelegate, but the logic is often computationally redundant
+ * separate method in HLGestureTarget, but the logic is often computationally redundant
  * with the decision to add self as target.)  (Also, as an motivating example: If all
  * targets were SKNodes and the caller could use containsPoint to determine whether a
  * gesture first touch was "inside" a particular target, then the target wouldn't have to
@@ -170,125 +113,111 @@ BOOL HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIG
 //- (BOOL)addToGesture:(UIGestureRecognizer *)gestureRecognizer firstTouchSceneLocation:(CGPoint)sceneLocation isInside:(BOOL *)isInside;
 
 /**
- * Returns a boolean indicating interest in particular kinds of gesture recognizers.
- * These are used by the caller to initialize and configure itself.
+ * Returns an array of configured gesture recognizers that the target wants to handle.
+ * These are used by the caller to initialize and configure itself (usually by attaching
+ * the gesture recognizers, or equivalent ones, to its view).
  *
  * note: Some callers might also be able to use these to avoid unnecessary calls to
- * addToGesture (which is assumed to be more costly), but typically a target still must
- * evaluate "is inside" even if it isn't interested in a certain kind of gesture.
+ * addToGesture (which is assumed to be more costly), but typically not: A target still
+ * must evaluate "is inside" for all gestures, even if it doesn't handle some of those
+ * gestures.
  */
 - (NSArray *)addsToGestureRecognizers;
 
 @end
 
 /**
- * An externally-configurable gesture target delegate which only adds to the tap gesture
+ * An externally-configurable gesture target which only adds to the (single) tap gesture
  * recognizer.  When a tap is recognized, it is forwarded to an owner-provided handling
  * block.
  *
- * note: The handling block is not encodable, so the caller will have to reset it on decode.
+ * note: The handling block is not encodable, so the caller will have to reset it on
+ * decode.
  *
  * note: Consider making a version of this (or extension of this) which itself uses
- * delegation for the call to handle the gesture, rather than a block; the delegate, then,
- * would be encodable.
+ * delegation for the call to handle the gesture, rather than a block; the delegate
+ * pointer, then, would be encodable.
  */
-@interface HLGestureTargetTapDelegate : NSObject <HLGestureTargetDelegate, NSCoding>
+@interface HLTapGestureTarget : NSObject <HLGestureTarget, NSCoding, NSCopying>
+
 - (instancetype)initWithHandleGestureBlock:(void(^)(UIGestureRecognizer *))handleGestureBlock;
+
 @property (nonatomic, copy) void (^handleGestureBlock)(UIGestureRecognizer *);
-// Whether or not unhandled gestures are considered "isInside" the gesture target.  If NO,
-// then typically the gesture recognizer delegate will not allow any gesture inside the
-// target to "fall through" to gesture targets below this one.  Default value is NO.
-@property (nonatomic, assign, getter=isGestureTransparent) BOOL gestureTransparent;
-@end
 
 /**
- * A set of common node classes subclassed to be gesture targets.
- *
- * This is useful for a caller who is composing a display of nodes with minimal functionality,
- * e.g. an information label on a background which is dismissed on tap.  Rather than subclass an
- * SKNode and conform to <HLGestureTarget> for the purpose, the caller can declare an ad-hoc set
- * of nodes: a background SKSpriteNode; a centered, superimposed SKLabelNode; and then an
- * HKGestureTargetSpriteNode to cover the whole thing and respond to taps.  (An out-of-the-box
- * gesture target delgate can be provided which detects only taps handles them with an owner-
- * provided block.)
+ * Whether or not unhandled gestures are considered "isInside" the gesture target.  If NO,
+ * then typically the gesture recognizer delegate will not allow any gesture inside the
+ * target to "fall through" to gesture targets below this one.  Default value is NO.
  */
+@property (nonatomic, assign, getter=isGestureTransparent) BOOL gestureTransparent;
 
-@interface HLGestureTargetNode : SKNode <HLGestureTarget, NSCoding>
-- (void)setGestureTargetDelegateWeak:(id<HLGestureTargetDelegate>)delegate;
-- (void)setGestureTargetDelegateStrong:(id<HLGestureTargetDelegate>)delegate;
-- (id<HLGestureTargetDelegate>)gestureTargetDelegate;
-- (instancetype)initWithCoder:(NSCoder *)aDecoder;
-- (void)encodeWithCoder:(NSCoder *)aCoder;
-@end
-
-@interface HLGestureTargetSpriteNode : SKSpriteNode <HLGestureTarget, NSCoding>
-- (void)setGestureTargetDelegateWeak:(id<HLGestureTargetDelegate>)delegate;
-- (void)setGestureTargetDelegateStrong:(id<HLGestureTargetDelegate>)delegate;
-- (id<HLGestureTargetDelegate>)gestureTargetDelegate;
-- (instancetype)initWithCoder:(NSCoder *)aDecoder;
-- (void)encodeWithCoder:(NSCoder *)aCoder;
 @end
 
 /**
- * So in an HLScene I was working on, I had a method for creating a modal presentation consisting
- * of a number of nodes which I created on-demand in the scene without using any custom node
- * subclassing.  An out-of-the-box gesture target with HLGestureTargetTapDelegate works well as
- * a dismiss/okay/cancel button for something like that, because you can configure it with a code
- * block that dimisses the modal presentation and does any other cleanup: No need to create some
- * callback dismiss method in the scene, which is already cluttered with too many methods.
+ * noob: So in an HLScene I was working on, I had a method for creating a modal
+ * presentation consisting of a number of nodes which I created on-demand in the scene
+ * without using any custom node subclassing.  I used a bit SKSpriteNode in the background
+ * with an HLTapGestureTarget to handle taps, which would dismiss the modal presentation;
+ * also, another SKSpriteNode button (again with an HLTapGestureTarget) did the same
+ * thing, but with a special function (go to the next level of the game).  I did it
+ * without creating a dismissal callback in the scene, so then all nodes and behavior was
+ * configured once at setup, and then displayed, with no other state necessary in the
+ * scene.
  *
- * But...it's pretty messy, because the cleanup needs to be exremely careful about retain cycles.
- * Furthermore, it gets more complicated when there are multiple gesture targets on the modal
- * presentation: For example, each of them needs to unregister themselves and *all* the others
- * from the HLScene.  Nasty.
+ * So...it's pretty messy, because the cleanup needs to be exremely careful about retain
+ * cycles.  Furthermore, it gets more complicated when there are multiple gesture targets
+ * on the modal presentation: For example, each of them needs to unregister themselves and
+ * *all* the others from the HLScene.  Nasty.
  *
  * Here were my thoughts (before I eventually went ahead and subclassed):
  *
- *  1) The buttons need to be aware of each other.  Perhaps like the "Okay" and "Cancel" buttons
- *     of an alert, all actions should pass through the same callback.  In that case, the owner
- *     has an FL_goalsDismissWithButtonIndex method, with stored goalsOverlay state from this
- *     method, and set each of their handleGestureBlocks to call it.  But that seems to be getting
- *     closer and closer to subclassing: The buttons are acting together, with shared state, and
- *     so should be entirely encapsulated together.
+ *  1) The buttons need to be aware of each other.  Perhaps like the "Okay" and "Cancel"
+ *     buttons of an alert, all actions should pass through the same callback.  In that
+ *     case, the owner has an FL_goalsDismissWithButtonIndex method, with stored
+ *     goalsOverlay state from this method, and set each of their handleGestureBlocks to
+ *     call it.  But that seems to be getting closer and closer to subclassing: The
+ *     buttons are acting together, with shared state, and so should be entirely
+ *     encapsulated together.
  *
- *  2) But really, the only reason the buttons need to be aware of each other is (currently)
- *     because of unregistering: they both need to unregister both (when dismissing the overlay).
- *     Which reminds me that unregistering HLGestureTargets is a pain in the ass in general, and
- *     according to current implementation not even essential.  BUT.  Unregistering still makes
- *     sense for other possible future HLScene implementations, and no matter what, unregistering
- *     is a nice option to have (even just to clear userData) and so it philosophically makes sense
- *     to always do it.
+ *  2) But really, the only reason the buttons need to be aware of each other is
+ *     (currently) because of unregistering: they both need to unregister both (when
+ *     dismissing the overlay).  Which reminds me that unregistering HLGestureTargets is a
+ *     pain in the ass in general, and according to current implementation not even
+ *     essential.  BUT.  Unregistering still makes sense for other possible future HLScene
+ *     implementations, and no matter what, unregistering is a nice option to have (even
+ *     just to clear userData) and so it philosophically makes sense to always do it.
  *
- *  3) Unregistering is especially a pain in the ass when an HLGestureTarget*Node wants to
- *     unregister itself: The node contains a reference to the handleGesture block, but then
- *     we try to make the block contain a reference to the node.  To break the retain cycle,
- *     we can make the node reference weak, but that's just one more line of code in something
- *     that already feels unnecessary.  Can there be a property in HLGestureTarget*Node for
- *     (__weak HLScene *)autoUnregisterScene, which automatically unregisters itself when the node
- *     is deallocated?
+ *  3) Unregistering is especially a pain in the ass when the HLTapGestureTarget wants to
+ *     unregister its owner node: The node contains a reference to the handleGesture
+ *     block, but then we try to make the block contain a reference to the node.  To break
+ *     the retain cycle, we can make the node reference weak, but that's just one more
+ *     line of code in something that already feels unnecessary.  Can there be
+ *     functionality somewhere which automatically unregisters a node when the node is
+ *     deallocated?
  *
- *  4) And in fact the real problem is HLGestureTarget*Nodes that don't just want to unregister
- *     but in fact want to delete themselves.  Very common: Create some kind of dialog box, and
- *     add a single button which dismisses it.  So then the button removes the dialog box from the
- *     node hierarchy, no other references exist, the parent is deleted which deletes the children,
- *     the button is deleted, so the callback block (being run) is deleted.  So (see notes in
- *     notes/objective-c.txt) we have add TWO lines of code, making a strong reference (at block execution
- *     time) of a weak reference (at block copy time) of the dialog box.  What a pain.  HLGestureTarget*Node
- *     should make this easier for us somehow.  Could it retain a strong reference for us right before
- *     invoking the block?
+ *  4) And in fact the real problem is HLGestureTarget nodes that don't just want to
+ *     unregister but in fact want to delete themselves.  Very common: Create some kind of
+ *     dialog box, and add a single button which dismisses it.  So then the button removes
+ *     the dialog box from the node hierarchy, no other references exist, the parent is
+ *     deleted which deletes the children, the button is deleted, so the callback block
+ *     (being run) is deleted.  So (see notes in notes/objective-c.txt) we have add TWO
+ *     lines of code, making a strong reference (at block execution time) of a weak
+ *     reference (at block copy time) of the dialog box.  What a pain.  HLGestureTarget
+ *     should make this easier for us somehow.  Could it retain a strong reference for us
+ *     right before invoking the block?
  *
- * For now: Consider it normal that, when building a node with multiple out-of-the-box HLGestureTargets,
- * you have to set their handleGesture callbacks all at the same time at the bottom of the setup code,\
- * with full awareness of each other.
+ * For now: Consider it normal that, when building a node with multiple out-of-the-box
+ * HLGestureTargets, you have to set their handleGesture callbacks all at the same time at
+ * the bottom of the setup code, with full awareness of each other.
  *
  * The code evolved as far as this before I subclassed:
- 
+
      __weak HLLabelButtonNode *victoryButtonWeak = victoryButton;
-     __weak HLGestureTargetSpriteNode *dismissNodeWeak = dismissNode;
+     __weak SKSpriteNode *dismissNodeWeak = dismissNode;
      __weak HLScrollNode *goalsOverlayWeak = goalsOverlay;
- 
+
      if (victoryButton) {
-       [victoryButton setGestureTargetDelegateStrong:[[HLGestureTargetTapDelegate alloc] initWithHandleGestureBlock:^(UIGestureRecognizer *gestureRecognizer){
+       [victoryButton hlSetGestureTarget:[[HLTapGestureTarget alloc] initWithHandleGestureBlock:^(UIGestureRecognizer *gestureRecognizer){
          if (self->_tutorialState.tutorialActive) {
            [self FL_tutorialRecognizedAction:FLTutorialActionGoalsDismissed withArguments:nil];
          }

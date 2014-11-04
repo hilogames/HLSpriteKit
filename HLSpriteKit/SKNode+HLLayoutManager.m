@@ -24,7 +24,7 @@ static NSString * const HLLayoutManagerUserDataKey = @"HLLayoutManager";
   }
 }
 
-- (void)setHLLayoutManager:(id <HLLayoutManager>)layoutManager
+- (void)hlSetLayoutManager:(id <HLLayoutManager>)layoutManager
 {
   if (!self.userData) {
     self.userData = [NSMutableDictionary dictionary];

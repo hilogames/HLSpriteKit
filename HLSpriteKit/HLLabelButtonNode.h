@@ -12,28 +12,27 @@
 #import "HLGestureTarget.h"
 #import "SKLabelNode+HLLabelNodeAdditions.h"
 
-@interface HLLabelButtonNode : HLComponentNode <NSCopying, NSCoding, HLGestureTarget>
+@interface HLLabelButtonNode : HLComponentNode <NSCopying, NSCoding>
 
 /**
  * Common gesture handling configurations:
  *
- *   - Leave the gesture target delegate unset for no gesture handling.
+ *   - Leave the gesture target unset for no gesture handling.
  *
- *   - Allocate a HLGestureTargetTapDelegate, initialize it with a block for execution
- *     on tap, and set it as gesture target delegate here.  (Set strong if the object
- *     is not retained elsewhere.)
+ *   - Allocate a HLTapGestureTarget, initialize it with a block for execution on tap, and
+ *     set it as gesture target (via SKNode+HLGestureTarget's hlSetGestureTarget).
  *
- *   - For double-tap, long press, or other button-ish gestures, use an
- *     HLGestureTargetConfigurableDelegate instead.
+ *   - For double-tap, long press, or other gestures, set a custom HLGestureTarget
+ *     instead.
  *
- * note: There is no current self-delegation option for HLLabelButtonNode (as there
- * is in, for example, HLGridNode and HLMenuNode).  It would be pretty easy to make
- * one: A callback block for taps, probably.  But of course that functionality is
- * pretty easily specified by instantiating a tap delegate.  Other components have
- * more-complex interactions (e.g. for HLGridNode, not just that a tap occurred,
- * but *which* square it occurred on) (and e.g. for HLMenuNode, both shouldTap and
- * didTap delegate methods).  The button is too generic and simple to have a
- * natural self-delegation built-in behavior.
+ * note: There is no current self-as-target option for HLLabelButtonNode (as there is in,
+ * for example, HLGridNode and HLMenuNode).  It would be pretty easy to make one: A
+ * callback block for taps, probably.  But of course that functionality is pretty easily
+ * specified by instantiating a tap delegate.  Other components have more-complex
+ * interactions (e.g. for HLGridNode, not just that a tap occurred, but *which* square it
+ * occurred on) (and e.g. for HLMenuNode, both shouldTap and didTap delegate methods).
+ * The button might be too generic and simple to have a natural self-as-target built-in
+ * behavior.
  */
 
 /**

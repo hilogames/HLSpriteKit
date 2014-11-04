@@ -9,6 +9,7 @@
 #import <SpriteKit/SpriteKit.h>
 
 #import "HLComponentNode.h"
+#import "HLGestureTarget.h"
 
 /**
  * Specifies a mode for enforcing a scaling minimum (zooming out) for content.  Current
@@ -45,14 +46,14 @@ typedef NS_ENUM(NSInteger, HLScrollNodeContentScaleMinimumMode)
  * the similarity is deliberate.  One notable difference: The HLScrollNode does
  * not currently clip the contents to its own size.
  */
-@interface HLScrollNode : HLComponentNode <HLGestureTarget, HLGestureTargetDelegate>
+@interface HLScrollNode : HLComponentNode <HLGestureTarget>
 
 /**
  * Common gesture handling configurations:
  *
- *   - Set the gesture target delegate to the gesture target (this HLScrollNode)
- *     to get one-finger scrolling and two-finger pinch scaling behavior.  (Set
- *     the delegate weakly to avoid retain cycles.)
+ *   - Set this node as its own gesture target (via SKNode+HLGestureTarget's
+ *     hlSetGestureTarget) to get one-finger scrolling and two-finger pinch scaling
+ *     behavior.
  */
 
 @property (nonatomic, assign) CGSize size;

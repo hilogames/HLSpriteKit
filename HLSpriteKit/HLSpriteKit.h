@@ -11,6 +11,7 @@
 #import <HLSpriteKit/HLGestureTarget.h>
 #import <HLSpriteKit/HLGridNode.h>
 #import <HLSpriteKit/HLLabelButtonNode.h>
+#import <HLSpriteKit/HLLayoutManager.h>
 #import <HLSpriteKit/HLMath.h>
 #import <HLSpriteKit/HLMenuNode.h>
 #import <HLSpriteKit/HLMessageNode.h>
@@ -22,4 +23,5 @@
 #import <HLSpriteKit/HLToolbarNode.h>
 #import <HLSpriteKit/SKLabelNode+HLLabelNodeAdditions.h>
 #import <HLSpriteKit/SKNode+HLLayoutManager.h>
+#import <HLSpriteKit/SKNode+HLGestureTarget.h>
 #import <HLSpriteKit/UIImage+HLImageAdditions.h>

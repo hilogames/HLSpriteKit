@@ -27,7 +27,7 @@ HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIGestur
     }
     return YES;
   }
-  
+
   if (classA == [UISwipeGestureRecognizer class]) {
     UISwipeGestureRecognizer *swipeA = (UISwipeGestureRecognizer *)a;
     UISwipeGestureRecognizer *swipeB = (UISwipeGestureRecognizer *)b;
@@ -60,7 +60,7 @@ HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIGestur
     }
     return YES;
   }
-  
+
   if (classA == [UILongPressGestureRecognizer class]) {
     UILongPressGestureRecognizer *longPressA = (UILongPressGestureRecognizer *)a;
     UILongPressGestureRecognizer *longPressB = (UILongPressGestureRecognizer *)b;
@@ -83,7 +83,7 @@ HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIGestur
   return YES;
 }
 
-@implementation HLGestureTargetTapDelegate
+@implementation HLTapGestureTarget
 
 - (instancetype)initWithHandleGestureBlock:(void (^)(UIGestureRecognizer *))handleGestureBlock
 {
@@ -111,6 +111,16 @@ HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIGestur
   [aCoder encodeBool:_gestureTransparent forKey:@"gestureTransparent"];
 }
 
+- (instancetype)copyWithZone:(NSZone *)zone
+{
+  HLTapGestureTarget *copy = [[[self class] allocWithZone:zone] init];
+  if (copy) {
+    copy->_handleGestureBlock = _handleGestureBlock;
+    copy->_gestureTransparent = _gestureTransparent;
+  }
+  return self;
+}
+
 - (BOOL)addToGesture:(UIGestureRecognizer *)gestureRecognizer firstTouch:(UITouch *)touch isInside:(BOOL *)isInside
 {
   BOOL handleGesture = NO;
@@ -125,7 +135,7 @@ HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIGestur
 
   *isInside = !_gestureTransparent;
   if (handleGesture) {
-    [gestureRecognizer addTarget:self action:@selector(HLGestureTargetTapDelegate_handleGesture:)];
+    [gestureRecognizer addTarget:self action:@selector(HLTapGestureTarget_handleGesture:)];
   }
   return handleGesture;
 }
@@ -135,100 +145,10 @@ HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIGestur
   return @[ [[UITapGestureRecognizer alloc] init] ];
 }
 
-- (void)HLGestureTargetTapDelegate_handleGesture:(UIGestureRecognizer *)gestureRecognizer
+- (void)HLTapGestureTarget_handleGesture:(UIGestureRecognizer *)gestureRecognizer
 {
   if (_handleGestureBlock) {
     _handleGestureBlock(gestureRecognizer);
-  }
-}
-
-@end
-
-@implementation HLGestureTargetNode {
-  __weak id <HLGestureTargetDelegate> _gestureTargetDelegateWeak;
-  id <HLGestureTargetDelegate> _gestureTargetDelegateStrong;
-}
-
-- (instancetype)initWithCoder:(NSCoder *)aDecoder
-{
-  self = [super initWithCoder:aDecoder];
-  if (self) {
-    _gestureTargetDelegateWeak = [aDecoder decodeObjectForKey:@"gestureTargetDelegateWeak"];
-    _gestureTargetDelegateStrong = [aDecoder decodeObjectForKey:@"gestureTargetDelegateStrong"];
-  }
-  return self;
-}
-
-- (void)encodeWithCoder:(NSCoder *)aCoder
-{
-  [super encodeWithCoder:aCoder];
-  [aCoder encodeObject:_gestureTargetDelegateWeak forKey:@"gestureTargetDelegateWeak"];
-  [aCoder encodeObject:_gestureTargetDelegateStrong forKey:@"gestureTargetDelegateStrong"];
-}
-
-- (void)setGestureTargetDelegateWeak:(id<HLGestureTargetDelegate>)delegate
-{
-  _gestureTargetDelegateWeak = delegate;
-  _gestureTargetDelegateStrong = nil;
-}
-
-- (void)setGestureTargetDelegateStrong:(id<HLGestureTargetDelegate>)delegate
-{
-  _gestureTargetDelegateStrong = delegate;
-  _gestureTargetDelegateWeak = nil;
-}
-
-- (id<HLGestureTargetDelegate>)gestureTargetDelegate
-{
-  if (_gestureTargetDelegateWeak) {
-    return _gestureTargetDelegateWeak;
-  } else {
-    return _gestureTargetDelegateStrong;
-  }
-}
-
-@end
-
-@implementation HLGestureTargetSpriteNode {
-  __weak id <HLGestureTargetDelegate> _gestureTargetDelegateWeak;
-  id <HLGestureTargetDelegate> _gestureTargetDelegateStrong;
-}
-
-- (instancetype)initWithCoder:(NSCoder *)aDecoder
-{
-  self = [super initWithCoder:aDecoder];
-  if (self) {
-    _gestureTargetDelegateWeak = [aDecoder decodeObjectForKey:@"gestureTargetDelegateWeak"];
-    _gestureTargetDelegateStrong = [aDecoder decodeObjectForKey:@"gestureTargetDelegateStrong"];
-  }
-  return self;
-}
-
-- (void)encodeWithCoder:(NSCoder *)aCoder
-{
-  [super encodeWithCoder:aCoder];
-  [aCoder encodeObject:_gestureTargetDelegateWeak forKey:@"gestureTargetDelegateWeak"];
-  [aCoder encodeObject:_gestureTargetDelegateStrong forKey:@"gestureTargetDelegateStrong"];
-}
-
-- (void)setGestureTargetDelegateWeak:(id<HLGestureTargetDelegate>)delegate
-{
-  _gestureTargetDelegateWeak = delegate;
-  _gestureTargetDelegateStrong = nil;
-}
-
-- (void)setGestureTargetDelegateStrong:(id<HLGestureTargetDelegate>)delegate
-{
-  _gestureTargetDelegateStrong = delegate;
-  _gestureTargetDelegateWeak = nil;
-}
-
-- (id<HLGestureTargetDelegate>)gestureTargetDelegate
-{
-  if (_gestureTargetDelegateWeak) {
-    return _gestureTargetDelegateWeak;
-  } else {
-    return _gestureTargetDelegateStrong;
   }
 }
 

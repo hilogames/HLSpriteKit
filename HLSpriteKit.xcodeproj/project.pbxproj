@@ -7,11 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CB0732311A09333700DC2F1F /* HLGestureTarget.h in Headers */ = {isa = PBXBuildFile; fileRef = CB07322F1A09333700DC2F1F /* HLGestureTarget.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CB0732321A09333700DC2F1F /* HLGestureTarget.m in Sources */ = {isa = PBXBuildFile; fileRef = CB0732301A09333700DC2F1F /* HLGestureTarget.m */; };
+		CB0732341A093BC900DC2F1F /* HLLayoutManager.h in Headers */ = {isa = PBXBuildFile; fileRef = CB0732331A093BC800DC2F1F /* HLLayoutManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CB0DCDA319C9CBCD008DF70A /* UIImage+HLImageAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = CB0DCDA119C9CBCD008DF70A /* UIImage+HLImageAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CB0DCDA419C9CBCD008DF70A /* UIImage+HLImageAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = CB0DCDA219C9CBCD008DF70A /* UIImage+HLImageAdditions.m */; };
 		CB1E5ADB19FF25D900F0E868 /* SKNode+HLLayoutManager.h in Headers */ = {isa = PBXBuildFile; fileRef = CB1E5AD919FF25D900F0E868 /* SKNode+HLLayoutManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CB1E5ADC19FF25D900F0E868 /* SKNode+HLLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = CB1E5ADA19FF25D900F0E868 /* SKNode+HLLayoutManager.m */; };
-		CB26105D1934E4E40095856E /* HLGestureTarget.h in Headers */ = {isa = PBXBuildFile; fileRef = CB26105C1934E4E40095856E /* HLGestureTarget.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CB26105D1934E4E40095856E /* SKNode+HLGestureTarget.h in Headers */ = {isa = PBXBuildFile; fileRef = CB26105C1934E4E40095856E /* SKNode+HLGestureTarget.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CB2EB30F193E603C00CD3924 /* SKLabelNode+HLLabelNodeAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = CB2EB30D193E603C00CD3924 /* SKLabelNode+HLLabelNodeAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CB2EB310193E603C00CD3924 /* SKLabelNode+HLLabelNodeAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = CB2EB30E193E603C00CD3924 /* SKLabelNode+HLLabelNodeAdditions.m */; };
 		CB3E99E919FE7CA700F9D8AB /* HLTableLayoutManager.h in Headers */ = {isa = PBXBuildFile; fileRef = CB3E99E719FE7CA700F9D8AB /* HLTableLayoutManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -19,7 +22,7 @@
 		CB4BE95519421254001C9E79 /* HLError.h in Headers */ = {isa = PBXBuildFile; fileRef = CB4BE95319421254001C9E79 /* HLError.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CB5DBDA919E5CF0F008861A3 /* HLTiledNode.h in Headers */ = {isa = PBXBuildFile; fileRef = CB5DBDA719E5CF0F008861A3 /* HLTiledNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CB5DBDAA19E5CF0F008861A3 /* HLTiledNode.m in Sources */ = {isa = PBXBuildFile; fileRef = CB5DBDA819E5CF0F008861A3 /* HLTiledNode.m */; };
-		CB61C289196F6EC2002ED23F /* HLGestureTarget.m in Sources */ = {isa = PBXBuildFile; fileRef = CB61C287196F6EC2002ED23F /* HLGestureTarget.m */; };
+		CB61C289196F6EC2002ED23F /* SKNode+HLGestureTarget.m in Sources */ = {isa = PBXBuildFile; fileRef = CB61C287196F6EC2002ED23F /* SKNode+HLGestureTarget.m */; };
 		CB63B0B11926AB6300091907 /* HLToolbarNode.h in Headers */ = {isa = PBXBuildFile; fileRef = CB63B0AF1926AB6300091907 /* HLToolbarNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CB63B0B21926AB6300091907 /* HLToolbarNode.m in Sources */ = {isa = PBXBuildFile; fileRef = CB63B0B01926AB6300091907 /* HLToolbarNode.m */; };
 		CB6872E619258F37008415E1 /* HLMenuNode.m in Sources */ = {isa = PBXBuildFile; fileRef = CB6872E419258F37008415E1 /* HLMenuNode.m */; };
@@ -76,11 +79,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		CB07322F1A09333700DC2F1F /* HLGestureTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLGestureTarget.h; sourceTree = "<group>"; };
+		CB0732301A09333700DC2F1F /* HLGestureTarget.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLGestureTarget.m; sourceTree = "<group>"; };
+		CB0732331A093BC800DC2F1F /* HLLayoutManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLLayoutManager.h; sourceTree = "<group>"; };
 		CB0DCDA119C9CBCD008DF70A /* UIImage+HLImageAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+HLImageAdditions.h"; sourceTree = "<group>"; };
 		CB0DCDA219C9CBCD008DF70A /* UIImage+HLImageAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+HLImageAdditions.m"; sourceTree = "<group>"; };
 		CB1E5AD919FF25D900F0E868 /* SKNode+HLLayoutManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SKNode+HLLayoutManager.h"; sourceTree = "<group>"; };
 		CB1E5ADA19FF25D900F0E868 /* SKNode+HLLayoutManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SKNode+HLLayoutManager.m"; sourceTree = "<group>"; };
-		CB26105C1934E4E40095856E /* HLGestureTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLGestureTarget.h; sourceTree = "<group>"; };
+		CB26105C1934E4E40095856E /* SKNode+HLGestureTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SKNode+HLGestureTarget.h"; sourceTree = "<group>"; };
 		CB2EB30D193E603C00CD3924 /* SKLabelNode+HLLabelNodeAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SKLabelNode+HLLabelNodeAdditions.h"; sourceTree = "<group>"; };
 		CB2EB30E193E603C00CD3924 /* SKLabelNode+HLLabelNodeAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SKLabelNode+HLLabelNodeAdditions.m"; sourceTree = "<group>"; };
 		CB3E99E719FE7CA700F9D8AB /* HLTableLayoutManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLTableLayoutManager.h; sourceTree = "<group>"; };
@@ -88,7 +94,7 @@
 		CB4BE95319421254001C9E79 /* HLError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLError.h; sourceTree = "<group>"; };
 		CB5DBDA719E5CF0F008861A3 /* HLTiledNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLTiledNode.h; sourceTree = "<group>"; };
 		CB5DBDA819E5CF0F008861A3 /* HLTiledNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLTiledNode.m; sourceTree = "<group>"; };
-		CB61C287196F6EC2002ED23F /* HLGestureTarget.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLGestureTarget.m; sourceTree = "<group>"; };
+		CB61C287196F6EC2002ED23F /* SKNode+HLGestureTarget.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SKNode+HLGestureTarget.m"; sourceTree = "<group>"; };
 		CB63B0AF1926AB6300091907 /* HLToolbarNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLToolbarNode.h; sourceTree = "<group>"; };
 		CB63B0B01926AB6300091907 /* HLToolbarNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLToolbarNode.m; sourceTree = "<group>"; };
 		CB6872E319258F37008415E1 /* HLMenuNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLMenuNode.h; sourceTree = "<group>"; };
@@ -186,12 +192,13 @@
 				CB79D704192C2A900014E267 /* HLEmitterStore.h */,
 				CB79D705192C2A900014E267 /* HLEmitterStore.m */,
 				CB4BE95319421254001C9E79 /* HLError.h */,
-				CB26105C1934E4E40095856E /* HLGestureTarget.h */,
-				CB61C287196F6EC2002ED23F /* HLGestureTarget.m */,
+				CB07322F1A09333700DC2F1F /* HLGestureTarget.h */,
+				CB0732301A09333700DC2F1F /* HLGestureTarget.m */,
 				CBB84B911991222200A96C7A /* HLGridNode.h */,
 				CBB84B921991222200A96C7A /* HLGridNode.m */,
 				CBD9E929191426D0002533DF /* HLLabelButtonNode.h */,
 				CBD9E92A191426D0002533DF /* HLLabelButtonNode.m */,
+				CB0732331A093BC800DC2F1F /* HLLayoutManager.h */,
 				CB6B816A197DFA4600EF68BA /* HLMath.h */,
 				CB6B816B197DFA4600EF68BA /* HLMath.m */,
 				CB6872E319258F37008415E1 /* HLMenuNode.h */,
@@ -213,6 +220,8 @@
 				CB63B0B01926AB6300091907 /* HLToolbarNode.m */,
 				CB2EB30D193E603C00CD3924 /* SKLabelNode+HLLabelNodeAdditions.h */,
 				CB2EB30E193E603C00CD3924 /* SKLabelNode+HLLabelNodeAdditions.m */,
+				CB26105C1934E4E40095856E /* SKNode+HLGestureTarget.h */,
+				CB61C287196F6EC2002ED23F /* SKNode+HLGestureTarget.m */,
 				CB1E5AD919FF25D900F0E868 /* SKNode+HLLayoutManager.h */,
 				CB1E5ADA19FF25D900F0E868 /* SKNode+HLLayoutManager.m */,
 				CB923F961914230E00419AD1 /* Supporting Files */,
@@ -258,9 +267,10 @@
 				CB99D82819E318F40034A262 /* HLComponentNode.h in Headers */,
 				CB79D706192C2A900014E267 /* HLEmitterStore.h in Headers */,
 				CB4BE95519421254001C9E79 /* HLError.h in Headers */,
-				CB26105D1934E4E40095856E /* HLGestureTarget.h in Headers */,
+				CB0732311A09333700DC2F1F /* HLGestureTarget.h in Headers */,
 				CBB84B931991222200A96C7A /* HLGridNode.h in Headers */,
 				CBD9E9441914353A002533DF /* HLLabelButtonNode.h in Headers */,
+				CB0732341A093BC900DC2F1F /* HLLayoutManager.h in Headers */,
 				CB6B816C197DFA4600EF68BA /* HLMath.h in Headers */,
 				CB6872EE192591C9008415E1 /* HLMenuNode.h in Headers */,
 				CB8D5D92193CB481003CC055 /* HLMessageNode.h in Headers */,
@@ -271,8 +281,9 @@
 				CBA8988A1926BFE500849215 /* HLTextureStore.h in Headers */,
 				CB5DBDA919E5CF0F008861A3 /* HLTiledNode.h in Headers */,
 				CB63B0B11926AB6300091907 /* HLToolbarNode.h in Headers */,
-				CB1E5ADB19FF25D900F0E868 /* SKNode+HLLayoutManager.h in Headers */,
 				CB2EB30F193E603C00CD3924 /* SKLabelNode+HLLabelNodeAdditions.h in Headers */,
+				CB26105D1934E4E40095856E /* SKNode+HLGestureTarget.h in Headers */,
+				CB1E5ADB19FF25D900F0E868 /* SKNode+HLLayoutManager.h in Headers */,
 				CB0DCDA319C9CBCD008DF70A /* UIImage+HLImageAdditions.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -369,11 +380,12 @@
 				CB6B816D197DFA4600EF68BA /* HLMath.m in Sources */,
 				CB0DCDA419C9CBCD008DF70A /* UIImage+HLImageAdditions.m in Sources */,
 				CBB84B941991222200A96C7A /* HLGridNode.m in Sources */,
+				CB0732321A09333700DC2F1F /* HLGestureTarget.m in Sources */,
 				CB79D707192C2A900014E267 /* HLEmitterStore.m in Sources */,
 				CB99D82919E318F40034A262 /* HLComponentNode.m in Sources */,
 				CB2EB310193E603C00CD3924 /* SKLabelNode+HLLabelNodeAdditions.m in Sources */,
 				CB5DBDAA19E5CF0F008861A3 /* HLTiledNode.m in Sources */,
-				CB61C289196F6EC2002ED23F /* HLGestureTarget.m in Sources */,
+				CB61C289196F6EC2002ED23F /* SKNode+HLGestureTarget.m in Sources */,
 				CB3E99EA19FE7CA700F9D8AB /* HLTableLayoutManager.m in Sources */,
 				CBABD3D619F5E99100220634 /* HLScrollNode.m in Sources */,
 			);

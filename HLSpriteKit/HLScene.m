@@ -10,6 +10,7 @@
 
 #import "HLError.h"
 #import "HLGestureTarget.h"
+#import "SKNode+HLGestureTarget.h"
 
 NSString * const HLSceneChildNoCoding = @"HLSceneChildNoCoding";
 NSString * const HLSceneChildResizeWithScene = @"HLSceneChildResizeWithScene";
@@ -73,13 +74,12 @@ static BOOL _sceneAssetsLoaded = NO;
           }
         }
         if ((optionBits & HLSceneChildBitGestureTarget) != 0) {
-          SKNode <HLGestureTarget> *target = (SKNode <HLGestureTarget> *)node;
-          id <HLGestureTargetDelegate> targetDelegate = target.gestureTargetDelegate;
-          if (!targetDelegate) {
-            [NSException raise:@"HLSceneBadRegistration" format:@"Gesture target node decoded without a gesture target delegate (perhaps missing override of initWithCoder): %@", target];
+          id <HLGestureTarget> target = [node hlGestureTarget];
+          if (!target) {
+            [NSException raise:@"HLSceneBadRegistration" format:@"Node registered for 'HLSceneChildGestureTarget' decoded without a gesture target: %@", target];
           }
           _childGestureTargetsExisted = YES;
-          [self needSharedGestureRecognizers:[targetDelegate addsToGestureRecognizers]];
+          [self needSharedGestureRecognizers:[target addsToGestureRecognizers]];
         }
       }
     }
@@ -257,11 +257,10 @@ static BOOL _sceneAssetsLoaded = NO;
 
     NSNumber *optionBits = (node.userData)[HLSceneChildUserDataKey];
     if (optionBits && ([optionBits unsignedIntegerValue] & HLSceneChildBitGestureTarget) != 0) {
-      SKNode <HLGestureTarget> *target = (SKNode <HLGestureTarget> *)node;
-      id <HLGestureTargetDelegate> targetDelegate = target.gestureTargetDelegate;
-      if (targetDelegate) {
+      id <HLGestureTarget> target = [node hlGestureTarget];
+      if (target) {
         BOOL isInside = NO;
-        if ([targetDelegate addToGesture:gestureRecognizer firstTouch:touch isInside:&isInside]) {
+        if ([target addToGesture:gestureRecognizer firstTouch:touch isInside:&isInside]) {
           return YES;
         } else if (isInside) {
           return NO;
@@ -323,17 +322,13 @@ static BOOL _sceneAssetsLoaded = NO;
   }
 
   if ([options containsObject:HLSceneChildGestureTarget]) {
-    if (![node conformsToProtocol:@protocol(HLGestureTarget)]) {
-      [NSException raise:@"HLSceneBadRegistration" format:@"Node registered for 'HLSceneChildGestureTarget' does not conform to HLGestureTarget protocol."];
-    }
-    SKNode <HLGestureTarget> *target = (SKNode <HLGestureTarget> *)node;
-    id <HLGestureTargetDelegate> targetDelegate = target.gestureTargetDelegate;
-    if (!targetDelegate) {
-      [NSException raise:@"HLSceneBadRegistration" format:@"Node registered for 'HLSceneChildGestureTarget' must have a non-nil gesture target delegate (@property gestureTargetDelegate)."];
+    id <HLGestureTarget> target = [node hlGestureTarget];
+    if (!target) {
+      [NSException raise:@"HLSceneBadRegistration" format:@"Node registered for 'HLSceneChildGestureTarget' must have a gesture target set by SKNode+HLGestureTarget's hlSetGestureTarget."];
     }
     optionBits |= HLSceneChildBitGestureTarget;
     _childGestureTargetsExisted = YES;
-    [self needSharedGestureRecognizers:[targetDelegate addsToGestureRecognizers]];
+    [self needSharedGestureRecognizers:[target addsToGestureRecognizers]];
   }
 
   if (!node.userData) {

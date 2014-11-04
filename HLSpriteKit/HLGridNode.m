@@ -356,7 +356,7 @@ enum {
 }
 
 #pragma mark -
-#pragma mark HLGestureTargetDelegate
+#pragma mark HLGestureTarget
 
 - (NSArray *)addsToGestureRecognizers
 {

@@ -31,13 +31,12 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 /**
  * Common gesture handling configurations:
  *
- *   - Leave the gesture target delegate unset for no gesture handling.  This is the
- *     historical option: the owner handles all interaction with the toolbar node,
- *     using toolAtLocation: to discover what tool is being tapped or panned or
- *     whatever.
+ *   - Leave the gesture target unset for no gesture handling.  This is the historical
+ *     option: the owner handles all interaction with the toolbar node, using
+ *     toolAtLocation: to discover what tool is being tapped or panned or whatever.
  *
- *   . TODO: Implement a nice simple HLGestureTargetDelegate interface with callback(s)
- *     like HLGridNode for button-ish gestures.
+ *   . TODO: Implement a nice simple HLGestureTarget interface with callback(s) like
+ *     HLGridNode for button-ish gestures.
  */
 
 /**

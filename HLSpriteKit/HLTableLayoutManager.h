@@ -8,7 +8,7 @@
 
 #import <SpriteKit/SpriteKit.h>
 
-#import "SKNode+HLLayoutManager.h"
+#import "HLLayoutManager.h"
 
 FOUNDATION_EXPORT const CGFloat HLTableLayoutManagerEpsilon;
 

@@ -6,7 +6,6 @@
 //  Copyright (c) 2014 Hilo. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import <SpriteKit/SpriteKit.h>
 
 /**
@@ -34,12 +33,14 @@
  *   HLSceneChildResizeWithScene: Set this node's size property with the size of the scene
  *                                when the scene size changes.
  *
- *   HLSceneChildGestureTarget: Considers this <HLGestureTarget> child node when
- *                              processing gestures with the default HLScene gesture
- *                              recognition system; see HLGestureTarget.
+ *   HLSceneChildGestureTarget: Considers this child node's gesture target (via
+ *                              SKNode+HLGestureTarget's hlGestureTarget) when processing
+ *                              gestures with the default HLScene gesture recognition
+ *                              system; see HLGestureTarget.
  *
- * Intended for extension by subclasses.  Constant identifiers should be prefixed with
- * class name to namespace them; values should strings containing the identifier name.
+ * Intended for extension by subclasses.  Identifiers for new options should be prefixed
+ * with class name to namespace them; values should be strings containing the identifier
+ * name.
  */
 FOUNDATION_EXPORT NSString * const HLSceneChildNoCoding;
 FOUNDATION_EXPORT NSString * const HLSceneChildResizeWithScene;
@@ -101,16 +102,16 @@ FOUNDATION_EXPORT NSString * const HLSceneChildGestureTarget;
  * subclass.  With explicit registration, the subclasser can be relatively confident that
  * nothing is going on that wasn't requested.  Also with explicit registration, the caller
  * is able to override node information, for example not registering a child for gesture
- * recognition even though it conforms to HLGestureTarget.
+ * recognition even though it has an HLGestureTarget.
  *
- * note: Okay, one more note: I waffle a bit on gesture targets.  They are easily discovered
- * implicitly (by their conformance to HLGestureTarget); the use case for adding an
- * HLGestureTarget to a scene but not wanting it to receive gestures is small (and could
- * be addressed by registering a node to *not* be a target if needed); and it's somewhat
- * surprising when you add some kind of interactive node to a scene and it doesn't
- * interact.  But, on the other hand: It's really nice having the HLScene manage the
- * shared gesture recognizer objects during registration (by asking the target what
- * recognizers it needs).  So, waffle.
+ * note: Okay, one more note: I waffle a bit on gesture targets.  They are easily
+ * discovered implicitly (by SKNode+HLGestureTarget's hlGestureTarget method); the use
+ * case for adding a gesture target to a scene but not wanting it to receive gestures is
+ * small (and could be addressed by registering a node to *not* be a target if needed);
+ * and it's somewhat surprising when you add some kind of interactive node to a scene and
+ * it doesn't interact.  But, on the other hand: It's really nice having the HLScene
+ * manage the shared gesture recognizer objects during registration (by asking the target
+ * what recognizers it needs).  So, waffle.
  */
 - (void)registerDescendant:(SKNode *)node withOptions:(NSSet *)options;
 
@@ -235,7 +236,7 @@ typedef NS_ENUM(NSInteger, HLScenePresentationAnimation) {
  *
  * @param The node to present modally.  The scene will not automatically dismiss the
  *        presented node.  (As with all HLScene nodes, if the node or any of its children
- *        are HLGestureTargets registered with the scene as HLSceneChildGestureTarget then
+ *        have HLGestureTargets registered with the scene as HLSceneChildGestureTarget then
  *        it will have gestures forwarded to it by the HLScene's gesture handling code.)
  *
  * @param Optional animation for the presentation.  See HLScenePresentationAnimation.

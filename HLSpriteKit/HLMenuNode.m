@@ -11,6 +11,7 @@
 
 #import "HLError.h"
 #import "HLLabelButtonNode.h"
+#import "SKNode+HLGestureTarget.h"
 
 enum {
   HLMenuNodeZPositionLayerButtons = 0,
@@ -107,39 +108,39 @@ enum {
 
 - (void)setItemButtonPrototype:(HLLabelButtonNode *)itemButtonPrototype
 {
-  // noob: Because I'm just starting to think through this, a note: The buttons are currently
-  // rendered in the same layer as the main HLCompomentNode, because they aren't expected to
-  // be gesture targets themselves, so it doesn't matter which one of them is hit-test
-  // first on a recognized gesture.  To back up this assumption, we check here that, in fact,
-  // the prototype doesn't have a gestureTargetDelegate.  So sure, this is an edge case: It
-  // only will make a difference in case the hit-test for gesture targets is using zPosition
-  // and not the hierarchy, and it would be easily be permitted by putting these buttons in
-  // their own layer above the component base node.  BUT.  It makes sense to me that these
-  // HLLabelButtons should *not* be gesture targets, anyway, and it makes sense to me that
-  // a component like HLMenuNode (which incorporates other components like HLLabelButtons)
-  // should be totally in control.  So.  Do these checks for consistency with those thoughts.
+  // noob: Because I'm just starting to think through this, a note: The buttons are
+  // currently rendered in the same layer as the main HLCompomentNode, because they aren't
+  // expected have gesture targets themselves, so it doesn't matter which one of them is
+  // hit-test first on a recognized gesture.  To back up this assumption, check it here.
+  // So sure, this is an edge case: It only will make a difference in case the hit-test
+  // for gesture targets is using zPosition and not the hierarchy, and it would be easily
+  // be permitted by putting these buttons in their own layer above the component base
+  // node.  BUT.  It makes sense to me that these HLLabelButtons should *not* have gesture
+  // targets, anyway, and it makes sense to me that a component like HLMenuNode (which
+  // incorporates other components like HLLabelButtons) should be totally in control.  So.
+  // Do these checks for consistency with those thoughts.
   _itemButtonPrototype = itemButtonPrototype;
-  if (_itemButtonPrototype.gestureTargetDelegate) {
-    HLError(HLLevelError, @"HLMenuNode: itemButtonPrototype is not expected to be a gesture target; removing delegate.");
-    _itemButtonPrototype.gestureTargetDelegateWeak = nil;
+  if ([_itemButtonPrototype hlGestureTarget]) {
+    HLError(HLLevelError, @"HLMenuNode: itemButtonPrototype is not expected to have a gesture target; removing it.");
+    [_itemButtonPrototype hlSetGestureTarget:nil];
   }
 }
 
 - (void)setMenuItemButtonPrototype:(HLLabelButtonNode *)menuItemButtonPrototype
 {
   _menuItemButtonPrototype = menuItemButtonPrototype;
-  if (_menuItemButtonPrototype.gestureTargetDelegate) {
-    HLError(HLLevelError, @"HLMenuNode: menuItemButtonPrototype is not expected to be a gesture target; removing delegate.");
-    _menuItemButtonPrototype.gestureTargetDelegateWeak = nil;
+  if ([_menuItemButtonPrototype hlGestureTarget]) {
+    HLError(HLLevelError, @"HLMenuNode: menuItemButtonPrototype is not expected to have a gesture target; removing it.");
+    [_menuItemButtonPrototype hlSetGestureTarget:nil];
   }
 }
 
 - (void)setBackItemButtonPrototype:(HLLabelButtonNode *)backItemButtonPrototype
 {
   _backItemButtonPrototype = backItemButtonPrototype;
-  if (_backItemButtonPrototype.gestureTargetDelegate) {
-    HLError(HLLevelError, @"HLMenuNode: backItemButtonPrototype is not expected to be a gesture target; removing delegate.");
-    _backItemButtonPrototype.gestureTargetDelegateWeak = nil;
+  if ([_backItemButtonPrototype hlGestureTarget]) {
+    HLError(HLLevelError, @"HLMenuNode: backItemButtonPrototype is not expected to have a gesture target; removing it.");
+    [_backItemButtonPrototype hlSetGestureTarget:nil];
   }
 }
 
@@ -161,7 +162,7 @@ enum {
 }
 
 #pragma mark -
-#pragma mark HLGestureTargetDelegate
+#pragma mark HLGestureTarget
 
 - (NSArray *)addsToGestureRecognizers
 {
@@ -329,7 +330,7 @@ enum {
     [self.scene runAction:[SKAction playSoundFileNamed:soundFile waitForCompletion:NO]];
   }
 
-  id<HLMenuNodeDelegate> delegate = self.delegate;
+  id <HLMenuNodeDelegate> delegate = self.delegate;
   if (delegate) {
     if ([delegate respondsToSelector:@selector(menuNode:shouldTapMenuItem:itemIndex:)]
         && ![delegate menuNode:self shouldTapMenuItem:item itemIndex:itemIndex]) {
@@ -410,9 +411,9 @@ enum {
 - (void)setButtonPrototype:(HLLabelButtonNode *)buttonPrototype
 {
   _buttonPrototype = buttonPrototype;
-  if (_buttonPrototype.gestureTargetDelegate) {
-    HLError(HLLevelError, @"HLMenuItem: buttonPrototype is not expected to be a gesture target; removing delegate.");
-    _buttonPrototype.gestureTargetDelegateWeak = nil;
+  if ([_buttonPrototype hlGestureTarget]) {
+    HLError(HLLevelError, @"HLMenuItem: buttonPrototype is not expected to have a gesture target; removing it.");
+    [_buttonPrototype hlSetGestureTarget:nil];
   }
 }
 

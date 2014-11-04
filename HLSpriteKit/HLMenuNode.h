@@ -29,14 +29,13 @@ typedef enum HLMenuNodeAnimation {
   HLMenuNodeAnimationSlideRight
 } HLMenuNodeAnimation;
 
-@interface HLMenuNode : HLComponentNode <NSCoding, HLGestureTarget, HLGestureTargetDelegate>
+@interface HLMenuNode : HLComponentNode <NSCoding, HLGestureTarget>
 
 /**
  * Common gesture handling configurations:
  *
- *   - Set the gesture target delegate to the gesture target (this HLMenuNode)
- *     to get a callbacks via the HLMenuNodeDelegate interface.
- *     (Set the delegate weakly to avoid retain cycles.)
+ *   - Set this node as its own gesture target (via SKNode+HLGestureTarget's
+ *     hlSetGestureTarget) to get a callbacks via the HLMenuNodeDelegate interface.
  */
 
 @property (nonatomic, weak) id <HLMenuNodeDelegate> delegate;

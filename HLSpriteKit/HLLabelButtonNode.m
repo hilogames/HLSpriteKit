@@ -16,14 +16,12 @@ enum {
 
 @implementation HLLabelButtonNode
 {
-  __weak id <HLGestureTargetDelegate> _gestureTargetDelegateWeak;
-  id <HLGestureTargetDelegate> _gestureTargetDelegateStrong;
-  // note: In the first draft, the HLLabelButtonNode *was* the background node.
-  // However, I split it out due to a limitation in the current iOS 7.1 SDK:
-  // namely, that centerRect is not supported with changes to the size property
-  // (but only the scale properties).  If that's ever changed in the future,
-  // it would probably be easier to merge the background node and the HLLabelButtonNode
-  // again (so that fewer properties need to be wrapped in accessors/mutators).
+  // note: In the first draft, the HLLabelButtonNode *was* the background node.  However,
+  // I split it out due to a limitation in the current iOS 7.1 SDK: namely, that
+  // centerRect is not supported with changes to the size property (but only the scale
+  // properties).  If that's ever changed in the future, it would probably be easier to
+  // merge the background node and the HLLabelButtonNode again (so that fewer properties
+  // need to be wrapped in accessors/mutators).
   SKSpriteNode *_backgroundNode;
   SKLabelNode *_labelNode;
 }
