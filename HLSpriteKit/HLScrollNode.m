@@ -651,35 +651,36 @@ enum {
 
 - (CGFloat)HL_contentConstrainedScale:(CGFloat)scale
 {
+  switch (_contentScaleMinimumMode) {
+    case HLScrollNodeContentScaleMinimumFitTight: {
+      CGFloat naturalScaleMin = MAX((_size.width - _contentInset.left - _contentInset.right) / _contentSize.width,
+                                    (_size.height - _contentInset.top - _contentInset.bottom) / _contentSize.height);
+      CGFloat combinedScaleMin = MAX(_contentScaleMinimum, naturalScaleMin);
+      if (scale < combinedScaleMin) {
+        scale = combinedScaleMin;
+      }
+      break;
+    }
+    case HLScrollNodeContentScaleMinimumFitLoose: {
+      CGFloat naturalScaleMin = MIN((_size.width - _contentInset.left - _contentInset.right) / _contentSize.width,
+                                    (_size.height - _contentInset.top - _contentInset.bottom) / _contentSize.height);
+      CGFloat combinedScaleMin = MAX(_contentScaleMinimum, naturalScaleMin);
+      if (scale < combinedScaleMin) {
+        scale = combinedScaleMin;
+      }
+      break;
+    }
+    case HLScrollNodeContentScaleMinimumAsConfigured:
+      if (scale < _contentScaleMinimum) {
+        scale = _contentScaleMinimum;
+      }
+      break;
+  }
+
   if (scale > _contentScaleMaximum) {
     scale = _contentScaleMaximum;
-  } else {
-    switch (_contentScaleMinimumMode) {
-      case HLScrollNodeContentScaleMinimumFitTight: {
-        CGFloat naturalScaleMin = MAX((_size.width - _contentInset.left - _contentInset.right) / _contentSize.width,
-                                      (_size.height - _contentInset.top - _contentInset.bottom) / _contentSize.height);
-        CGFloat combinedScaleMin = MAX(_contentScaleMinimum, naturalScaleMin);
-        if (scale < combinedScaleMin) {
-          scale = combinedScaleMin;
-        }
-        break;
-      }
-      case HLScrollNodeContentScaleMinimumFitLoose: {
-        CGFloat naturalScaleMin = MIN((_size.width - _contentInset.left - _contentInset.right) / _contentSize.width,
-                                      (_size.height - _contentInset.top - _contentInset.bottom) / _contentSize.height);
-        CGFloat combinedScaleMin = MAX(_contentScaleMinimum, naturalScaleMin);
-        if (scale < combinedScaleMin) {
-          scale = combinedScaleMin;
-        }
-        break;
-      }
-      case HLScrollNodeContentScaleMinimumAsConfigured:
-        if (scale < _contentScaleMinimum) {
-          scale = _contentScaleMinimum;
-        }
-        break;
-    }
   }
+  
   return scale;
 }
 
