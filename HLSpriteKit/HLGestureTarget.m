@@ -85,6 +85,11 @@ HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIGestur
 
 @implementation HLTapGestureTarget
 
++ (instancetype)tapGestureTargetWithHandleGestureBlock:(void (^)(UIGestureRecognizer *))handleGestureBlock
+{
+  return [[HLTapGestureTarget alloc] initWithHandleGestureBlock:handleGestureBlock];
+}
+
 - (instancetype)initWithHandleGestureBlock:(void (^)(UIGestureRecognizer *))handleGestureBlock
 {
   self = [super init];

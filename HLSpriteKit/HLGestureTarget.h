@@ -140,6 +140,8 @@ BOOL HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIG
  */
 @interface HLTapGestureTarget : NSObject <HLGestureTarget, NSCoding, NSCopying>
 
++ (instancetype)tapGestureTargetWithHandleGestureBlock:(void(^)(UIGestureRecognizer *))handleGestureBlock;
+
 - (instancetype)initWithHandleGestureBlock:(void(^)(UIGestureRecognizer *))handleGestureBlock;
 
 @property (nonatomic, copy) void (^handleGestureBlock)(UIGestureRecognizer *);
