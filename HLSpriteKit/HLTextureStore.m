@@ -3,7 +3,7 @@
 //  HLSpriteKit
 //
 //  Created by Karl Voskuil on 12/12/13.
-//  Copyright (c) 2013 Hilo. All rights reserved.
+//  Copyright (c) 2013 Hilo Games. All rights reserved.
 //
 
 #import "HLTextureStore.h"
