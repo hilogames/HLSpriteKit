@@ -12,10 +12,9 @@
 #import "HLGestureTarget.h"
 
 /**
- * HLMenuNode has an HLMenu, and it creates and displays label buttons for
- * each item in the HLMenu, stacked vertically.  Menus are hierarchical in
- * nature, and the scene provides functionality for navigating between menus
- * and submenus.
+ * HLMenuNode has an HLMenu, and it creates and displays label buttons for each item in
+ * the HLMenu, stacked vertically.  Menus are hierarchical in nature, and the node
+ * provides functionality for navigating between menus and submenus.
  */
 
 @class HLLabelButtonNode;
@@ -162,8 +161,8 @@ typedef enum HLMenuNodeAnimation {
 @end
 
 /**
- * An HLMenuBackItem is a kind of menu item which, when tapped,
- * navigates the menu scene to the parent of its parent menu.
+ * An HLMenuBackItem is a kind of menu item which, when tapped, navigates the menu node to
+ * its parent menu.
  */
 
 @interface HLMenuBackItem : HLMenuItem <NSCoding>

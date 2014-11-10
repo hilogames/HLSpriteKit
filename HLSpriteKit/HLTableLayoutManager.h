@@ -15,7 +15,7 @@ FOUNDATION_EXPORT const CGFloat HLTableLayoutManagerEpsilon;
 /**
  * Provides functionality to layout (i.e. set positions of) nodes in a table.
  * This manager may be attached to an SKNode via the SKNode+HLLayoutManager
- * category, using setLayoutManager.
+ * category, using hlSetLayoutManager.
  *
  * note: The number of layout parameters could be greatly reduced if, for example,
  * the owner was required to specify the positions of columns and rows rather than

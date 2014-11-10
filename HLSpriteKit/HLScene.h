@@ -13,7 +13,8 @@
  *
  *   - loading scene assets in a background thread
  *
- *   - a shared gesture recognition system
+ *   - a shared gesture recognition system and an `HLGestureTarget`-aware gesture delegate
+ *     implementation
  *
  *   - modal presentation of a node above the scene
  *

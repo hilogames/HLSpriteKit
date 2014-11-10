@@ -11,6 +11,11 @@
 #import "HLComponentNode.h"
 #import "SKLabelNode+HLLabelNodeAdditions.h"
 
+/**
+ * HLMessageNode shows a text message over a solid or textured background, with some
+ * animation options.
+ */
+
 @interface HLMessageNode : HLComponentNode <NSCopying>
 
 @property (nonatomic, assign) CGSize size;

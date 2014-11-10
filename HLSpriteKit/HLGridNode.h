@@ -11,6 +11,14 @@
 #import "HLComponentNode.h"
 #import "HLGestureTarget.h"
 
+/**
+ * HLGridNode lays out its content nodes in a grid of same-size squares.  It includes
+ * various visual format options like background color and square color, as well as the
+ * ability to specify pads and spacers.  The grid node tracks certain states for the
+ * squares (like "highlight", "enabled", and "selection"), and also provides some simple
+ * animations for state changes.
+ */
+
 @interface HLGridNode : HLComponentNode <HLGestureTarget>
 
 /**

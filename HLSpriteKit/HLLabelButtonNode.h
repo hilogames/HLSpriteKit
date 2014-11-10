@@ -12,6 +12,11 @@
 #import "HLGestureTarget.h"
 #import "SKLabelNode+HLLabelNodeAdditions.h"
 
+/**
+ * HLLabelButtonNode is simply an SKLabelNode displayed over an SKSpriteNode, but with
+ * extra sizing and alignment options.
+ */
+
 @interface HLLabelButtonNode : HLComponentNode <NSCopying, NSCoding>
 
 /**
@@ -36,10 +41,10 @@
  */
 
 /**
- * The text of the label in the HLLabelButtonNode.  Layout of the components
- * of the label button will not be performed if the text is unset; during initialization,
- * then, the caller may set the text after setting all other layout-affecting properties,
- * and layout will only be performed once.
+ * The text of the label in the HLLabelButtonNode.  Layout of the components of the label
+ * button will not be performed if the text is unset; during initialization, then, the
+ * caller may set the text after setting all other layout-affecting properties, and layout
+ * will only be performed once.
  */
 @property (nonatomic, copy) NSString *text;
 
@@ -53,16 +58,15 @@
 @property (nonatomic, assign) BOOL automaticHeight;
 
 /**
- * Specifies how to align the label within the button frame.  See
- * documentation for HLLabelNodeVerticalAlignmentMode.  This
- * alignment mode also determines the calculated height used for
- * the button when automaticHeight is true.
+ * Specifies how to align the label within the button frame.  See documentation for
+ * HLLabelNodeVerticalAlignmentMode.  This alignment mode also determines the calculated
+ * height used for the button when automaticHeight is true.
  */
 @property (nonatomic, assign) HLLabelNodeVerticalAlignmentMode verticalAlignmentMode;
 
 /**
- * The amount of space, when using automatic height or automatic width,
- * to leave between the label and the edge of the button.
+ * The amount of space, when using automatic height or automatic width, to leave between
+ * the label and the edge of the button.
  */
 @property (nonatomic, assign) CGFloat labelPadX;
 @property (nonatomic, assign) CGFloat labelPadY;

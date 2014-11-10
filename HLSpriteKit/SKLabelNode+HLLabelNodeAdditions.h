@@ -57,6 +57,11 @@ typedef NS_ENUM(NSInteger, HLLabelNodeVerticalAlignmentMode) {
 
 @interface SKLabelNode (HLLabelNodeAdditions)
 
+/**
+ * Gets alignment parameters for an SKLabelNode aligned by
+ * HLLabelNodeVerticalAlignmentMode within a parent; see HLLabelNodeVerticalAlignmentMode
+ * for details.
+ */
 - (void)getAlignmentInNode:(SKNode *)node
 forHLVerticalAlignmentMode:(HLLabelNodeVerticalAlignmentMode)hlVerticalAlignmentMode
    skVerticalAlignmentMode:(SKLabelVerticalAlignmentMode *)skVerticalAlignmentMode

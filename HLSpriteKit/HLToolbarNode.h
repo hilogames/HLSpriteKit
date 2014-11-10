@@ -26,6 +26,14 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
   HLToolbarNodeAnimationSlideRight
 };
 
+/**
+ * HLToolbarNode lays out its content ("tools") in a horizontal row of squares, like a
+ * toolbar.  It provides various visual formatting options, and also various geometry
+ * options (e.g. to scale tools to a certain height or width.  It maintains some state
+ * information about tools (e.g. enabled and highlight), and provides some simple
+ * animation for paging or setting tools in the toolbar.
+ */
+
 @interface HLToolbarNode : HLComponentNode <NSCoding>
 
 /**

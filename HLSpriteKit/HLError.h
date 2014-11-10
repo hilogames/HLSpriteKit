@@ -16,7 +16,8 @@ typedef NS_ENUM(NSInteger, HLErrorLevel) {
 static void
 HLError(HLErrorLevel level, NSString *message)
 {
-  // TODO: Use CocoaLumberjack for non-critical error logging.
+  // TODO: This is a placeholder for a better mechanism for non-critical error logging,
+  // e.g. CocoaLumberjack.
   NSString *levelLabel;
   if (level == HLLevelWarning) {
     levelLabel = @"WARNING";

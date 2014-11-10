@@ -10,6 +10,10 @@
 
 #import "HLComponentNode.h"
 
+/**
+ * HLTiledNode behaves like an SKSpriteNode that tiles its texture to a specified size.
+ */
+
 @interface HLTiledNode : HLComponentNode <NSCoding, NSCopying>
 
 + (instancetype)tiledNodeWithImageNamed:(NSString *)name size:(CGSize)size;
