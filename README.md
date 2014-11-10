@@ -22,19 +22,19 @@ Putting layout code in a third-party object (rather than in the `SKScene` or `SK
 
 ### Custom SKNode Subclasses
 
-* HLGridNode. Organizes content into a grid of same-size squares, with visual formatting and interaction options.
+* `HLGridNode`. Organizes content into a grid of same-size squares, with visual formatting and interaction options.
 
-* HLLabelButtonNode.  A simple `SKLabelNode` displayed over an `SKSpriteNode`, but with extra sizing and alignment options.  In particular, it can size the sprite node to the text, and it can do baseline alignment so that the full font size (including descender) is vertically centered in the background; the math for the calculation is provided for all `SKLabelNode`s in a category `SKLabelNode+HLLabelNodeAdditions`.
+* `HLLabelButtonNode`.  A simple `SKLabelNode` displayed over an `SKSpriteNode`, but with extra sizing and alignment options.  In particular, it can size the sprite node to the text, and it can do baseline alignment so that the full font size (including descender) is vertically centered in the background; the math for the calculation is provided for all `SKLabelNode`s in a category `SKLabelNode+HLLabelNodeAdditions`.
 
-* HLMenuNode. An interface and model of a hierarchical menu of buttons. The interface is a simple vertical stack of buttons, for now, but it provides a few layout and animation features.
+* `HLMenuNode`. An interface and model of a hierarchical menu of buttons. The interface is a simple vertical stack of buttons, for now, but it provides a few layout and animation features.
 
-* HLMessageNode. Shows a text message over a solid or textured background, with some animation options.
+* `HLMessageNode`. Shows a text message over a solid or textured background, with some animation options.
 
-* HLScrollNode. Provides support for scrolling and scaling its content with pan and pinch gestures. The interface is deliberately analagous to `UIScrollView`.
+* `HLScrollNode`. Provides support for scrolling and scaling its content with pan and pinch gestures. The interface is deliberately analagous to `UIScrollView`.
 
-* HLToolbarNode. A horizontal toolbar of squares, with various visual formatting, sizing, and animation options.
+* `HLToolbarNode`. A horizontal toolbar of squares, with various visual formatting, sizing, and animation options.
 
-* HLTiledNode. Behaves like an `SKSpriteNode` that tiles its texture to fit a specified size.
+* `HLTiledNode`. Behaves like an `SKSpriteNode` that tiles its texture to fit a specified size.
 
 ### HLScene
 
