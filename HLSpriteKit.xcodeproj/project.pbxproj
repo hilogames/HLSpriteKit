@@ -36,12 +36,6 @@
 		CB8DD9D1192CEBC600C0704D /* HLScene.h in Headers */ = {isa = PBXBuildFile; fileRef = CB8DD9CF192CEBC600C0704D /* HLScene.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CB8DD9D2192CEBC600C0704D /* HLScene.m in Sources */ = {isa = PBXBuildFile; fileRef = CB8DD9D0192CEBC600C0704D /* HLScene.m */; };
 		CB923F941914230E00419AD1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB923F931914230E00419AD1 /* Foundation.framework */; };
-		CB923FA21914230E00419AD1 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB923FA11914230E00419AD1 /* XCTest.framework */; };
-		CB923FA31914230E00419AD1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB923F931914230E00419AD1 /* Foundation.framework */; };
-		CB923FA51914230E00419AD1 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB923FA41914230E00419AD1 /* UIKit.framework */; };
-		CB923FA81914230E00419AD1 /* libHLSpriteKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CB923F901914230E00419AD1 /* libHLSpriteKit.a */; };
-		CB923FAE1914230E00419AD1 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = CB923FAC1914230E00419AD1 /* InfoPlist.strings */; };
-		CB923FB01914230E00419AD1 /* HLSpriteKitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CB923FAF1914230E00419AD1 /* HLSpriteKitTests.m */; };
 		CB99D82819E318F40034A262 /* HLComponentNode.h in Headers */ = {isa = PBXBuildFile; fileRef = CB99D82619E318F40034A262 /* HLComponentNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CB99D82919E318F40034A262 /* HLComponentNode.m in Sources */ = {isa = PBXBuildFile; fileRef = CB99D82719E318F40034A262 /* HLComponentNode.m */; };
 		CBA8988A1926BFE500849215 /* HLTextureStore.h in Headers */ = {isa = PBXBuildFile; fileRef = CBA898881926BFE500849215 /* HLTextureStore.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -55,16 +49,6 @@
 		CBD9E9441914353A002533DF /* HLLabelButtonNode.h in Headers */ = {isa = PBXBuildFile; fileRef = CBD9E929191426D0002533DF /* HLLabelButtonNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CBD9E9451914353A002533DF /* HLSpriteKit.h in Headers */ = {isa = PBXBuildFile; fileRef = CBD9E93F1914334C002533DF /* HLSpriteKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		CB923FA61914230E00419AD1 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = CB923F881914230E00419AD1 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = CB923F8F1914230E00419AD1;
-			remoteInfo = HLSpriteKit;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		CB923F8E1914230E00419AD1 /* CopyFiles */ = {
@@ -110,12 +94,6 @@
 		CB923F901914230E00419AD1 /* libHLSpriteKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libHLSpriteKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB923F931914230E00419AD1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		CB923F971914230E00419AD1 /* HLSpriteKit-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HLSpriteKit-Prefix.pch"; sourceTree = "<group>"; };
-		CB923FA01914230E00419AD1 /* HLSpriteKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HLSpriteKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		CB923FA11914230E00419AD1 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
-		CB923FA41914230E00419AD1 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
-		CB923FAB1914230E00419AD1 /* HLSpriteKitTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "HLSpriteKitTests-Info.plist"; sourceTree = "<group>"; };
-		CB923FAD1914230E00419AD1 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		CB923FAF1914230E00419AD1 /* HLSpriteKitTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HLSpriteKitTests.m; sourceTree = "<group>"; };
 		CB99D82619E318F40034A262 /* HLComponentNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLComponentNode.h; sourceTree = "<group>"; };
 		CB99D82719E318F40034A262 /* HLComponentNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLComponentNode.m; sourceTree = "<group>"; };
 		CBA898881926BFE500849215 /* HLTextureStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLTextureStore.h; sourceTree = "<group>"; };
@@ -140,17 +118,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CB923F9D1914230E00419AD1 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				CB923FA21914230E00419AD1 /* XCTest.framework in Frameworks */,
-				CB923FA81914230E00419AD1 /* libHLSpriteKit.a in Frameworks */,
-				CB923FA51914230E00419AD1 /* UIKit.framework in Frameworks */,
-				CB923FA31914230E00419AD1 /* Foundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -158,7 +125,6 @@
 			isa = PBXGroup;
 			children = (
 				CB923F951914230E00419AD1 /* HLSpriteKit */,
-				CB923FA91914230E00419AD1 /* HLSpriteKitTests */,
 				CB923F921914230E00419AD1 /* Frameworks */,
 				CB923F911914230E00419AD1 /* Products */,
 			);
@@ -168,7 +134,6 @@
 			isa = PBXGroup;
 			children = (
 				CB923F901914230E00419AD1 /* libHLSpriteKit.a */,
-				CB923FA01914230E00419AD1 /* HLSpriteKitTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -178,8 +143,6 @@
 			children = (
 				CBD9E92C19142738002533DF /* SpriteKit.framework */,
 				CB923F931914230E00419AD1 /* Foundation.framework */,
-				CB923FA11914230E00419AD1 /* XCTest.framework */,
-				CB923FA41914230E00419AD1 /* UIKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -239,24 +202,6 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		CB923FA91914230E00419AD1 /* HLSpriteKitTests */ = {
-			isa = PBXGroup;
-			children = (
-				CB923FAF1914230E00419AD1 /* HLSpriteKitTests.m */,
-				CB923FAA1914230E00419AD1 /* Supporting Files */,
-			);
-			path = HLSpriteKitTests;
-			sourceTree = "<group>";
-		};
-		CB923FAA1914230E00419AD1 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				CB923FAB1914230E00419AD1 /* HLSpriteKitTests-Info.plist */,
-				CB923FAC1914230E00419AD1 /* InfoPlist.strings */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -309,24 +254,6 @@
 			productReference = CB923F901914230E00419AD1 /* libHLSpriteKit.a */;
 			productType = "com.apple.product-type.library.static";
 		};
-		CB923F9F1914230E00419AD1 /* HLSpriteKitTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = CB923FB61914230E00419AD1 /* Build configuration list for PBXNativeTarget "HLSpriteKitTests" */;
-			buildPhases = (
-				CB923F9C1914230E00419AD1 /* Sources */,
-				CB923F9D1914230E00419AD1 /* Frameworks */,
-				CB923F9E1914230E00419AD1 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				CB923FA71914230E00419AD1 /* PBXTargetDependency */,
-			);
-			name = HLSpriteKitTests;
-			productName = HLSpriteKitTests;
-			productReference = CB923FA01914230E00419AD1 /* HLSpriteKitTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -349,21 +276,9 @@
 			projectRoot = "";
 			targets = (
 				CB923F8F1914230E00419AD1 /* HLSpriteKit */,
-				CB923F9F1914230E00419AD1 /* HLSpriteKitTests */,
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXResourcesBuildPhase section */
-		CB923F9E1914230E00419AD1 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				CB923FAE1914230E00419AD1 /* InfoPlist.strings in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		CB923F8C1914230E00419AD1 /* Sources */ = {
@@ -391,34 +306,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CB923F9C1914230E00419AD1 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				CB923FB01914230E00419AD1 /* HLSpriteKitTests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		CB923FA71914230E00419AD1 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = CB923F8F1914230E00419AD1 /* HLSpriteKit */;
-			targetProxy = CB923FA61914230E00419AD1 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
-
-/* Begin PBXVariantGroup section */
-		CB923FAC1914230E00419AD1 /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CB923FAD1914230E00419AD1 /* en */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		CB923FB11914230E00419AD1 /* Debug */ = {
@@ -557,42 +445,6 @@
 			};
 			name = Release;
 		};
-		CB923FB71914230E00419AD1 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "HLSpriteKit/HLSpriteKit-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = "HLSpriteKitTests/HLSpriteKitTests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				WRAPPER_EXTENSION = xctest;
-			};
-			name = Debug;
-		};
-		CB923FB81914230E00419AD1 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "HLSpriteKit/HLSpriteKit-Prefix.pch";
-				INFOPLIST_FILE = "HLSpriteKitTests/HLSpriteKitTests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				WRAPPER_EXTENSION = xctest;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -610,15 +462,6 @@
 			buildConfigurations = (
 				CB923FB41914230E00419AD1 /* Debug */,
 				CB923FB51914230E00419AD1 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		CB923FB61914230E00419AD1 /* Build configuration list for PBXNativeTarget "HLSpriteKitTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				CB923FB71914230E00419AD1 /* Debug */,
-				CB923FB81914230E00419AD1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
