@@ -1,5 +1,9 @@
 # HLSpriteKit
 
+![License MIT](https://go-shields.herokuapp.com/license-MIT-blue.png)
+[![Badge w/ Version](https://cocoapod-badges.herokuapp.com/v/HLSpriteKit/badge.png)](http://cocoadocs.org/docsets/HLSpriteKit)
+[![Badge w/ Platform](https://cocoapod-badges.herokuapp.com/p/HLSpriteKit/badge.svg)](http://cocoadocs.org/docsets/HLSpriteKit)
+
 SpriteKit scene and node subclasses, plus various utilities.
 
 ## Included
@@ -51,6 +55,6 @@ HLScene contains functionality useful to many scenes, including but not limited 
 
 ## Installation
 
-`HLSpriteKit` is available via CocoaPods [CocoaPods](http://cocoapods.org):
+`HLSpriteKit` is available via [CocoaPods](http://cocoapods.org):
 
     pod 'HLSpriteKit'
