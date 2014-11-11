@@ -14,7 +14,7 @@ A gesture target handles gestures from `UIGestureRecognizers`.  It can be attach
 
 The use pattern is this: The `SKScene` knows about its view, and so it is the `UIGestureHandlerDelegate`. It manages a collection of shared gesture recognizers, which it attaches to and detaches from its view as appropriate. When a certain gesture is recognized by a gesture recognizer, the scene figures out which node or nodes are the target of the gesture, and it forwards the gestures to those nodes using the `HLGestureTarget` interface.
 
-Here's the point: The scene can effectively use `UIGestureRecognizer`s rather than `touchesBegan`, and the gesture handling code can be encapsulated within node subclassses (rather than dumped into the bloated scene).
+Here's the point: The scene can effectively use `UIGestureRecognizer`s rather than `touchesBegan`, and the gesture handling code can be encapsulated within node subclasses (rather than dumped into the bloated scene).
 
 ### HLLayoutManager
 
