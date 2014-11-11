@@ -6,6 +6,9 @@ UserInterfaceState.xcuserstate
 WorkspaceSettings.xcsettings
 xcdebugger
 
+# cocoapods
+*.podspec
+
 # other editors and tools
 TAGS
 *.rej
