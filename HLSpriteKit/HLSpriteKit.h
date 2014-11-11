@@ -6,22 +6,22 @@
 //  Copyright (c) 2014 Hilo Games. All rights reserved.
 //
 
-#import <HLSpriteKit/HLComponentNode.h>
-#import <HLSpriteKit/HLEmitterStore.h>
-#import <HLSpriteKit/HLGestureTarget.h>
-#import <HLSpriteKit/HLGridNode.h>
-#import <HLSpriteKit/HLLabelButtonNode.h>
-#import <HLSpriteKit/HLLayoutManager.h>
-#import <HLSpriteKit/HLMath.h>
-#import <HLSpriteKit/HLMenuNode.h>
-#import <HLSpriteKit/HLMessageNode.h>
-#import <HLSpriteKit/HLScene.h>
-#import <HLSpriteKit/HLScrollNode.h>
-#import <HLSpriteKit/HLTableLayoutManager.h>
-#import <HLSpriteKit/HLTextureStore.h>
-#import <HLSpriteKit/HLTiledNode.h>
-#import <HLSpriteKit/HLToolbarNode.h>
-#import <HLSpriteKit/SKLabelNode+HLLabelNodeAdditions.h>
-#import <HLSpriteKit/SKNode+HLLayoutManager.h>
-#import <HLSpriteKit/SKNode+HLGestureTarget.h>
-#import <HLSpriteKit/UIImage+HLImageAdditions.h>
+#import "HLComponentNode.h"
+#import "HLEmitterStore.h"
+#import "HLGestureTarget.h"
+#import "HLGridNode.h"
+#import "HLLabelButtonNode.h"
+#import "HLLayoutManager.h"
+#import "HLMath.h"
+#import "HLMenuNode.h"
+#import "HLMessageNode.h"
+#import "HLScene.h"
+#import "HLScrollNode.h"
+#import "HLTableLayoutManager.h"
+#import "HLTextureStore.h"
+#import "HLTiledNode.h"
+#import "HLToolbarNode.h"
+#import "SKLabelNode+HLLabelNodeAdditions.h"
+#import "SKNode+HLLayoutManager.h"
+#import "SKNode+HLGestureTarget.h"
+#import "UIImage+HLImageAdditions.h"

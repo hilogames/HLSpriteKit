@@ -22,6 +22,6 @@ Pod::Spec.new do |s|
   s.platform     = :ios, "7.0"
   s.source       = { :git => "https://github.com/hilogames/HLSpriteKit.git", :tag => "0.9.0" }
   s.source_files = "HLSpriteKit/*"
-  s.frameworks   = "Foundation", "SKSpriteKit"
+  s.frameworks   = "Foundation", "UIKit", "SpriteKit"
   s.requires_arc = true
 end
