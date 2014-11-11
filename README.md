@@ -18,7 +18,7 @@ Here's the point: The scene can effectively use `UIGestureRecognizer`s rather th
 
 ### HLLayoutManager
 
-A layout manager provides a single method (`layout`) to lay out a nodes.  It can be attached to any `SKNode` using the class category `SKNode+HLLayoutManager`.
+A layout manager provides a single method (`layout`) to lay out nodes.  It can be attached to any `SKNode` using the class category `SKNode+HLLayoutManager`.
 
 The only layout manager currently provided in `HLSpriteKit` is `HLTableLayoutManager`, for table-like layouts, but more are planned.
 
