@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name         = "HLSpriteKit"
-  s.version      = "0.9.0"
+  s.version      = "0.9.1"
   s.summary      = "SpriteKit scene and node subclasses, plus various utilities."
   s.description  = <<-DESC
                    `HLSpriteKit` is yet another companion library to Apple's `SpriteKit` with the goal of abstracting re usable code.
