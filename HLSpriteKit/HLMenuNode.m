@@ -1,4 +1,3 @@
-
 //
 //  HLMenuNode.m
 //  HLSpriteKit
@@ -29,8 +28,8 @@ enum {
   self = [super init];
   if (self) {
     // note: Provide a default item appearance and behavior.  Almost all callers will be
-    // providing their own, but this makes it so that the class doesn't throw exceptions or
-    // seem to do nothing when used without configuration.
+    // providing their own, but this makes it so that the class doesn't throw exceptions
+    // or seem to do nothing when used without configuration.
     _itemSpacing = 60.0f;
     _itemButtonPrototype = [[HLLabelButtonNode alloc] initWithColor:[UIColor blackColor] size:CGSizeMake(240.0f, 40.0f)];
     _itemButtonPrototype.centerRect = CGRectMake(0.3333333f, 0.3333333f, 0.3333333f, 0.3333333f);
@@ -150,9 +149,9 @@ enum {
   [self HL_showCurrentMenuAnimation:animation];
 }
 
-- (void)navigateToSubmenuWithPathComponents:(NSArray *)pathComponents animation:(HLMenuNodeAnimation)animation
+- (void)navigateToSubmenuWithPath:(NSArray *)path animation:(HLMenuNodeAnimation)animation
 {
-  HLMenuItem *item = [_menu itemForPathComponents:pathComponents];
+  HLMenuItem *item = [_menu itemForPath:path];
   if (![item isKindOfClass:[HLMenu class]]) {
     return;
   }
@@ -178,8 +177,8 @@ enum {
     if ([buttonNode containsPoint:location]) {
       *isInside = YES;
       if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
-        // note: Require only one tap and one touch, same as our gesture recognizer returned
-        // from addsToGestureRecognizers?  I think it's okay to be non-strict.
+        // note: Require only one tap and one touch, same as our gesture recognizer
+        // returned from addsToGestureRecognizers?  I think it's okay to be non-strict.
         [gestureRecognizer addTarget:self action:@selector(handleTap:)];
         return YES;
       }
@@ -191,8 +190,8 @@ enum {
 
 - (void)handleTap:(UIGestureRecognizer *)gestureRecognizer
 {
-  // note: Clearly, could retain state from addToGesture if it improved
-  // performance significantly.
+  // note: Clearly, could retain state from addToGesture if it improved performance
+  // significantly.
   CGPoint viewLocation = [gestureRecognizer locationInView:self.scene.view];
   CGPoint sceneLocation = [self.scene convertPointFromView:viewLocation];
   CGPoint menuLocation = [self convertPoint:sceneLocation fromNode:self.scene];
@@ -314,19 +313,18 @@ enum {
   HLMenuItem *item = [_currentMenu itemAtIndex:itemIndex];
 
   // note: Current use prefers playing the sound effect regardless of what
-  // shouldTapMenuItem returns: This is an interface acknowledgement of the
-  // gesture, no matter what happens.  In particular, there's a use case for
-  // a menu button which decides to skip a submenu and navigate to a different
-  // location than normal in the hierarchy, so it returns NO for shouldTapMenuItem
-  // and instead calls navigateToSubmenuWithPathComponents.  Many alternate
-  // solutions and implementations come to mind; wait for a compelling competing
-  // use case.
+  // shouldTapMenuItem returns: This is an interface acknowledgement of the gesture, no
+  // matter what happens.  In particular, there's a use case for a menu button which
+  // decides to skip a submenu and navigate to a different location than normal in the
+  // hierarchy, so it returns NO for shouldTapMenuItem and instead calls
+  // navigateToSubmenuWithPath.  Many alternate solutions and implementations come to
+  // mind; wait for a compelling competing use case.
   NSString *soundFile = (item.soundFile ? item.soundFile : _itemSoundFile);
   if (soundFile) {
     // noob: Have the scene run it in case we are pressing some kind of "dismiss" button
-    // and the menu node is about to be removed from its parent.  Is there a standard
-    // way of thinking about this?  After all, this isn't extreme enough: The scene
-    // might be about to be dismissed, too.
+    // and the menu node is about to be removed from its parent.  Is there a standard way
+    // of thinking about this?  After all, this isn't extreme enough: The scene might be
+    // about to be dismissed, too.
     [self.scene runAction:[SKAction playSoundFileNamed:soundFile waitForCompletion:NO]];
   }
 
@@ -417,22 +415,22 @@ enum {
   }
 }
 
-- (NSArray *)pathComponents
+- (NSArray *)path
 {
-  return [self HL_pathComponentsMutable];
+  return [self HL_pathMutable];
 }
 
-- (NSMutableArray *)HL_pathComponentsMutable
+- (NSMutableArray *)HL_pathMutable
 {
   HLMenu *parent = _parent;
-  // note: The top-level menu, by convention, has no text, and so is not
-  // included in the path.
+  // note: The top-level menu, by convention, has no text, and so is not included in the
+  // path.
   if (!parent || !parent.parent) {
     return [NSMutableArray arrayWithObject:self.text];
   }
-  NSMutableArray *pathComponents = [parent HL_pathComponentsMutable];
-  [pathComponents addObject:self.text];
-  return pathComponents;
+  NSMutableArray *path = [parent HL_pathMutable];
+  [path addObject:self.text];
+  return path;
 }
 
 @end
@@ -501,12 +499,12 @@ enum {
   return (HLMenuItem *)_items[index];
 }
 
-- (HLMenuItem *)itemForPathComponents:(NSArray *)pathComponents
+- (HLMenuItem *)itemForPath:(NSArray *)path
 {
   HLMenuItem *matchingItem = self;
-  NSUInteger pathComponentCount = [pathComponents count];
+  NSUInteger pathComponentCount = [path count];
   for (NSUInteger pc = 0; pc < pathComponentCount; ++pc) {
-    NSString *pathComponent = pathComponents[pc];
+    NSString *pathComponent = path[pc];
     BOOL foundMatchingItem = NO;
     for (HLMenuItem *item in ((HLMenu *)matchingItem)->_items) {
       if ([item.text isEqualToString:pathComponent]) {

@@ -1,6 +1,7 @@
 # HLSpriteKit
 
 ![License MIT](https://go-shields.herokuapp.com/license-MIT-blue.png)
+
 [![Badge w/ Version](https://cocoapod-badges.herokuapp.com/v/HLSpriteKit/badge.png)](http://cocoadocs.org/docsets/HLSpriteKit)
 [![Badge w/ Platform](https://cocoapod-badges.herokuapp.com/p/HLSpriteKit/badge.svg)](http://cocoadocs.org/docsets/HLSpriteKit)
 
@@ -12,9 +13,9 @@ SpriteKit scene and node subclasses, plus various utilities.
 
 A gesture target handles gestures from `UIGestureRecognizers`.  It can be attached to any `SKNode` using the class category `SKNode+HLGestureTarget`.
 
-The use pattern is this: The `SKScene` knows about its view, and so it is the `UIGestureHandlerDelegate`. It manages a collection of shared gesture recognizers, which it attaches to and detaches from its view as appropriate. When a certain gesture is recognized by a gesture recognizer, the scene figures out which node or nodes are the target of the gesture, and it forwards the gestures to those nodes using the `HLGestureTarget` interface.
+The use pattern is this: The `SKScene` knows about its view, and so the scene is the `UIGestureHandlerDelegate`. It manages a collection of shared gesture recognizers, which it attaches to and detaches from its view as appropriate. When a certain gesture is recognized by a gesture recognizer, the scene figures out which node or nodes are the target of the gesture, and it forwards the gestures to those nodes using the `HLGestureTarget` interface.
 
-Here's the point: The scene can effectively use `UIGestureRecognizer`s rather than `touchesBegan`, and the gesture handling code can be encapsulated within node subclasses (rather than dumped into the bloated scene).
+Here's the point: The scene can effectively use `UIGestureRecognizer`s rather than `touchesBegan`, and the gesture handling code can be encapsulated within node subclasses (rather than dumped into a bloated scene).
 
 ### HLLayoutManager
 
@@ -25,6 +26,8 @@ The only layout manager currently provided in `HLSpriteKit` is `HLTableLayoutMan
 Putting layout code in a third-party object (rather than in the `SKScene` or `SKNode` subclass) allows for easier re-use of common layout math.
 
 ### Custom SKNode Subclasses
+
+HLSpriteKit includes a number of custom `SKNode` subclasses.
 
 * `HLGridNode`. Organizes content into a grid of same-size squares, with visual formatting and interaction options.
 

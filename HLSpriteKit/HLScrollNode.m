@@ -401,7 +401,9 @@ enum {
   return [SKAction moveTo:constrainedPosition duration:duration];
 }
 
-- (void)scrollContentLocation:(CGPoint)contentLocation toNodeLocation:(CGPoint)nodeLocation andSetContentScale:(CGFloat)contentScale
+- (void)scrollContentLocation:(CGPoint)contentLocation
+               toNodeLocation:(CGPoint)nodeLocation
+           andSetContentScale:(CGFloat)contentScale
 {
   if (!_contentNode) {
     _contentScaleOffline = contentScale;
@@ -680,7 +682,7 @@ enum {
   if (scale > _contentScaleMaximum) {
     scale = _contentScaleMaximum;
   }
-  
+
   return scale;
 }
 

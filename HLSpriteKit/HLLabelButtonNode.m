@@ -74,10 +74,11 @@ enum {
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder
 {
-  // note: '"Error loading image resource: "MissingResource.png"' during this call to super;
-  // it happens when decoding a SKLabelNode on 7.1 devices/simulator.  (If you set Deployment
-  // Target to 7.0 and run on a 7.0 simulator, then there is no error.)  Ignore for now, since
-  // everything seems to work okay; issue is recorded on StackOverflow here:
+  // note: '"Error loading image resource: "MissingResource.png"' during this call to
+  // super; it happens when decoding a SKLabelNode on 7.1 devices/simulator.  (If you set
+  // Deployment Target to 7.0 and run on a 7.0 simulator, then there is no error.)  Ignore
+  // for now, since everything seems to work okay; issue is recorded on StackOverflow
+  // here:
   // http://stackoverflow.com/questions/22701029/ios-keyed-archive-sprite-kit-decode-error-sktexture-error-loading-image-resour
   self = [super initWithCoder:aDecoder];
   if (self) {
@@ -110,9 +111,8 @@ enum {
 - (instancetype)copyWithZone:(NSZone *)zone
 {
   HLLabelButtonNode *copy = [super copyWithZone:zone];
-  // noob: SKNode copy deep-copies all children; need to hook up our
-  // pointers, though.  (I guess this is why finding nodes by name is
-  // recommended.)
+  // noob: SKNode copy deep-copies all children; need to hook up our pointers, though.  (I
+  // guess this is why finding nodes by name is recommended.)
   for (SKNode *child in copy.children) {
     if ([child isKindOfClass:[SKSpriteNode class]]) {
       copy->_backgroundNode = (SKSpriteNode *)child;
@@ -142,10 +142,10 @@ enum {
 - (void)setSize:(CGSize)size
 {
   if (_backgroundNode.texture) {
-    // note: Background node is the important node in terms of overall size.
-    // Translate size into scaling because this button supports non-uniform
-    // scaling with centerRect and size, but (currently) SKSpriteNode doesn't
-    // do non-uniform scaling with the size property.
+    // note: Background node is the important node in terms of overall size.  Translate
+    // size into scaling because this button supports non-uniform scaling with centerRect
+    // and size, but (currently) SKSpriteNode doesn't do non-uniform scaling with the size
+    // property.
     if (_backgroundNode.texture.size.width > 0.0f) {
       _backgroundNode.xScale = size.width / _backgroundNode.texture.size.width;
     }
@@ -258,9 +258,9 @@ enum {
   }
 
   CGSize newSize;
-  // note: Support non-uniform scaling of texture according to the size property
-  // (of this object) by setting the scale property of _backgroundNode rather
-  // than the size property.
+  // note: Support non-uniform scaling of texture according to the size property (of this
+  // object) by setting the scale property of _backgroundNode rather than the size
+  // property.
   if (_backgroundNode.texture) {
     newSize.width = _backgroundNode.texture.size.width * _backgroundNode.xScale;
     newSize.height = _backgroundNode.texture.size.height * _backgroundNode.yScale;

@@ -73,6 +73,8 @@ enum {
 
     _squareColor = [SKColor colorWithWhite:1.0f alpha:0.3f];
     _highlightColor = [SKColor colorWithWhite:1.0f alpha:0.6f];
+    _enabledAlpha = 1.0f;
+    _disabledAlpha = 0.4f;
 
     [self HL_layoutGrid];
   }
@@ -336,10 +338,10 @@ enum {
   _selectionSquareIndex = squareIndex;
 }
 
-- (void)animateSelectionBlinkCount:(int)blinkCount
-                 halfCycleDuration:(NSTimeInterval)halfCycleDuration
-                         forSquare:(int)squareIndex
-                        completion:(void (^)(void))completion
+- (void)setSelectionForSquare:(int)squareIndex
+                   blinkCount:(int)blinkCount
+            halfCycleDuration:(NSTimeInterval)halfCycleDuration
+                   completion:(void (^)(void))completion
 {
   if (_selectionSquareIndex >= 0) {
     [self setHighlight:NO forSquare:_selectionSquareIndex];

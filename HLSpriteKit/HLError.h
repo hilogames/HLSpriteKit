@@ -8,11 +8,23 @@
 
 #import <Foundation/Foundation.h>
 
+/**
+ The error level for logging non-critical errors using `HLError()`.
+*/
 typedef NS_ENUM(NSInteger, HLErrorLevel) {
+  /**
+   Errors.
+  */
   HLLevelError,
+  /**
+   Warnings.
+  */
   HLLevelWarning,
 };
 
+/**
+ Logs a non-critical error.
+*/
 static void
 HLError(HLErrorLevel level, NSString *message)
 {

@@ -177,7 +177,7 @@
       cropUnitHeight = (_size.height - bottomY) / textureSize.height;
       tileTexture = [SKTexture textureWithRect:CGRectMake(0.0f, 0.0f, 1.0f, cropUnitHeight) inTexture:texture];
     }
-    
+
     while (YES) {
 
       if (leftX + textureSize.width > _size.width) {
@@ -189,14 +189,14 @@
       tileNode.anchorPoint = CGPointMake(0.0f, 0.0f);
       tileNode.position = CGPointMake(leftX + origin.x, bottomY + origin.y);
       [self addChild:tileNode];
-    
+
       leftX += textureSize.width;
       if (leftX > _size.width - 0.5f) {
         leftX = 0.0f;
         break;
       }
     }
-    
+
     bottomY += textureSize.height;
     if (bottomY > _size.height - 0.5f) {
       break;

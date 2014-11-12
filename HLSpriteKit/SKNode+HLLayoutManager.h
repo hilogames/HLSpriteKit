@@ -12,26 +12,33 @@
 
 @interface SKNode (HLLayoutManager)
 
+/// @name Getting and Setting the Layout Manager
+
 /**
- * Returns the layout manager set by hlSetLayoutManager, if any.
- */
+ Returns the layout manager set by `hlSetLayoutManager:`, if any.
+*/
 - (id <HLLayoutManager>)hlLayoutManager;
 
 /**
- * Attaches a layout manager to this node; presumably it will be used to layout (some of)
- * the node's children, either by using the layout manager directly or by calling
- * hlLayoutChildren.
- *
- * If the layout manager is the same object as the node, then the pointer to self is not
- * explicitly retained (but will be returned by hlLayoutManager).
- */
+ Attaches a layout manager to this node.
+
+ Presumably it will be used to lay out (some of) the node's children, either by using the
+ layout manager directly or by calling `hlLayoutChildren`.
+
+ If the layout manager is the same object as the node, then the pointer to `self` is not
+ explicitly retained (but will be returned by `hlLayoutManager`).
+*/
 - (void)hlSetLayoutManager:(id <HLLayoutManager>)layoutManager;
 
+/// @name Laying Out Children Nodes
+
 /**
- * Lays out the nodes children.  Convenience method for getting the hlLayoutManager and,
- * if it exists, invoking its layout method on the node's children.  It is not considered
- * an error if the layout manager or children don't exist.
- */
+ Lays out the node's children.
+
+ Convenience method for getting the `hlLayoutManager` and, if it exists, invoking its
+ `layout` method on the node's children.  It is not considered an error if the layout
+ manager or children don't exist.
+*/
 - (void)hlLayoutChildren;
 
 @end
