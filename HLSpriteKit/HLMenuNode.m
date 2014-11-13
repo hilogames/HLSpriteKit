@@ -264,7 +264,7 @@ enum {
         delta = CGPointMake((self.scene.size.width + buttonWidthMax) / 2.0f, 0.0f);
         break;
       default:
-        [NSException raise:@"HLMenuNodeUnhandledAnimation" format:@"Unhandled animation %d.", animation];
+        [NSException raise:@"HLMenuNodeUnhandledAnimation" format:@"Unhandled animation %ld.", (long)animation];
     }
 
     _buttonsNode.position = CGPointMake(-delta.x, -delta.y);
@@ -364,7 +364,7 @@ enum {
     case HLMenuNodeAnimationSlideRight:
       return HLMenuNodeAnimationSlideLeft;
     default:
-      [NSException raise:@"HLMenuNodeUnhandledAnimation" format:@"Unhandled animation %d.", animation];
+      [NSException raise:@"HLMenuNodeUnhandledAnimation" format:@"Unhandled animation %ld.", (long)animation];
   }
 }
 
