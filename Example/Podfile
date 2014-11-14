@@ -1,0 +1,9 @@
+source 'https://github.com/CocoaPods/Specs.git'
+
+target 'HLSpriteKit', :exclusive => true do
+  pod "HLSpriteKit", :path => "../"
+end
+
+target 'Tests', :exclusive => true do
+  pod "HLSpriteKit", :path => "../"
+end

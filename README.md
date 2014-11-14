@@ -1,9 +1,9 @@
 # HLSpriteKit
 
-![License MIT](https://go-shields.herokuapp.com/license-MIT-blue.png)
-
-[![Badge w/ Version](https://cocoapod-badges.herokuapp.com/v/HLSpriteKit/badge.png)](http://cocoadocs.org/docsets/HLSpriteKit)
-[![Badge w/ Platform](https://cocoapod-badges.herokuapp.com/p/HLSpriteKit/badge.svg)](http://cocoadocs.org/docsets/HLSpriteKit)
+[![CI Status](http://img.shields.io/travis/hilogames/HLSpriteKit.svg?style=flat)](https://travis-ci.org/hilogames/HLSpriteKit)
+[![Version](https://img.shields.io/cocoapods/v/HLSpriteKit.svg?style=flat)](http://cocoadocs.org/docsets/HLSpriteKit)
+[![License](https://img.shields.io/cocoapods/l/HLSpriteKit.svg?style=flat)](http://cocoadocs.org/docsets/HLSpriteKit)
+[![Platform](https://img.shields.io/cocoapods/p/HLSpriteKit.svg?style=flat)](http://cocoadocs.org/docsets/HLSpriteKit)
 
 SpriteKit scene and node subclasses, plus various utilities.
 
@@ -58,6 +58,14 @@ HLScene contains functionality useful to many scenes, including but not limited 
 
 ## Installation
 
-`HLSpriteKit` is available via [CocoaPods](http://cocoapods.org):
+`HLSpriteKit` is available through [CocoaPods](http://cocoapods.org). To install it, simply add the following line to your Podfile:
 
     pod 'HLSpriteKit'
+
+## Author
+
+Karl Voskuil <karl@hilogames.com>
+
+## License
+
+`HLSpriteKit` is available under the MIT License.  See the LICENSE file for more info.
