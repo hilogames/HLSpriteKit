@@ -8,22 +8,41 @@
 
 #import "HLViewController.h"
 
-@interface HLViewController ()
+#import <SpriteKit/SpriteKit.h>
 
-@end
+#import "HLCatalogScene.h"
 
 @implementation HLViewController
 
-- (void)viewDidLoad
+- (void)loadView
 {
-    [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
+  SKView *skView = [[SKView alloc] init];
+  skView.showsFPS = YES;
+  skView.showsNodeCount = YES;
+  skView.showsDrawCount = YES;
+  self.view = skView;
 }
 
-- (void)didReceiveMemoryWarning
+- (void)viewWillAppear:(BOOL)animated
 {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+  HLCatalogScene *catalogScene = [[HLCatalogScene alloc] initWithSize:self.view.bounds.size];
+  catalogScene.scaleMode = SKSceneScaleModeResizeFill;
+  catalogScene.anchorPoint = CGPointMake(0.5f, 0.5f);
+  [(SKView *)self.view presentScene:catalogScene];
+}
+
+- (BOOL)shouldAutorotate
+{
+  return YES;
+}
+
+- (NSUInteger)supportedInterfaceOrientations
+{
+  if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+    return UIInterfaceOrientationMaskAllButUpsideDown;
+  } else {
+    return UIInterfaceOrientationMaskAll;
+  }
 }
 
 @end
