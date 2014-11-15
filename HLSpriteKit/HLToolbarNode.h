@@ -165,12 +165,16 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 /**
  Whether the toolbar should automatically size its width according to its tools.
 
+ Default value is `NO`.
+
  See `setTools:tags:animation:` for details.
 */
 @property (nonatomic, assign) BOOL automaticWidth;
 
 /**
  Whether the toolbar should automatically size its height according to its tools.
+
+ Default value is `NO`.
 
  See `setTools:tags:animation:` for details.
 */
@@ -200,12 +204,16 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
  The amount of toolbar background that shows as a border around the outside tool
  squares.
 
+ Default value is `4.0`.
+
  Changes will not take effect until the next call to `setTools:tags:animation:`.
 */
 @property (nonatomic, assign) CGFloat backgroundBorderSize;
 
 /**
  The amount of toolbar background that shows between each tool square on the toolbar.
+
+ Default value is `4.0`.
 
  Changes will not take effect until the next call to `setTools:tags:animation:`.
 */

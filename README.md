@@ -7,7 +7,7 @@
 
 SpriteKit scene and node subclasses, plus various utilities.
 
-## Included
+## Classes
 
 ### HLGestureTarget
 
