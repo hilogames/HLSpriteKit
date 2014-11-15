@@ -5,6 +5,7 @@
 UserInterfaceState.xcuserstate
 WorkspaceSettings.xcsettings
 xcdebugger
+xcuserdata
 
 # cocoapods
 *.podspec
