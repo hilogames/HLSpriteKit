@@ -27,7 +27,7 @@ Putting layout code in a third-party object (rather than in the `SKScene` or `SK
 
 ### Custom SKNode Subclasses
 
-HLSpriteKit includes a number of custom `SKNode` subclasses.
+`HLSpriteKit` includes a number of custom `SKNode` subclasses.
 
 * `HLGridNode`. Organizes content into a grid of same-size squares, with visual formatting and interaction options.
 
