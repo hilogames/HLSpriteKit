@@ -127,7 +127,11 @@ const CGFloat HLTableLayoutManagerEpsilon = 0.001f;
       } else {
         CGFloat widthCellMax = 0.0f;
         for (NSUInteger row = 0; row < _rowCount; ++row) {
-          id node = nodes[row * _columnCount + column];
+          NSUInteger nodeIndex = row * _columnCount + column;
+          if (nodeIndex >= nodesCount) {
+            break;
+          }
+          id node = nodes[nodeIndex];
           if ([node respondsToSelector:@selector(size)]) {
             CGSize nodeSize = [node size];
             if (nodeSize.width > widthCellMax) {
@@ -173,7 +177,11 @@ const CGFloat HLTableLayoutManagerEpsilon = 0.001f;
       } else {
         CGFloat heightCellMax = 0.0f;
         for (NSUInteger column = 0; column < _columnCount; ++column) {
-          id node = nodes[row * _columnCount + column];
+          NSUInteger nodeIndex = row * _columnCount + column;
+          if (nodeIndex >= nodesCount) {
+            break;
+          }
+          id node = nodes[nodeIndex];
           if ([node respondsToSelector:@selector(size)]) {
             CGSize nodeSize = [node size];
             if (nodeSize.height > heightCellMax) {
