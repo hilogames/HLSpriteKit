@@ -1,0 +1,4 @@
+language: objective-c
+xcode_workspace: Example/HLSpriteKit.xcworkspace
+xcode_scheme: HLSpriteKit
+podfile: Example/Podfile
