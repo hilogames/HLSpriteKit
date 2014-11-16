@@ -45,7 +45,7 @@ Putting layout code in a third-party object (rather than in the `SKScene` or `SK
 
 ### HLScene
 
-HLScene contains functionality useful to many scenes, including but not limited to:
+`HLScene` contains functionality useful to many scenes, including but not limited to:
 
 * loading scene assets in a background thread
 * a shared gesture recognition system and an `HLGestureTarget`-aware gesture delegate implementation
