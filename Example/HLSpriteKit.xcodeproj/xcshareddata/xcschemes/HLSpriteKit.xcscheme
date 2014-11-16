@@ -14,6 +14,20 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "C62C67773D209DD1E32AA68A"
+               BuildableName = "libPods-HLSpriteKit-HLSpriteKit.a"
+               BlueprintName = "Pods-HLSpriteKit-HLSpriteKit"
+               ReferencedContainer = "container:Pods/Pods.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "6003F589195388D20070C39A"
                BuildableName = "HLSpriteKit.app"
                BlueprintName = "HLSpriteKit"
