@@ -9,6 +9,7 @@
 #import <SpriteKit/SpriteKit.h>
 
 #import "HLComponentNode.h"
+#import "HLGestureTarget.h"
 
 @class HLTextureStore;
 
@@ -41,14 +42,16 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 
  ## Common Gesture Handling Configurations
 
- - Leave the gesture target unset for no gesture handling.  This is the historical option:
-   the owner handles all interaction with the toolbar node, using `toolAtLocation:` to
-   discover what tool is being tapped or panned or whatever.
-
- @bug Implement a nice simple `HLGestureTarget` interface with callback(s) like
-      `HLGridNode` for button-ish gestures.
+ - Set this node as its own gesture target (using `[SKNode+HLGestureTarget
+   hlSetGestureTarget]`) to get a simple callback for taps via the `toolTappedBlock`
+   property.
+ 
+ - Set a custom gesture target to recognize and respond to other gestures.  (Convert touch
+   locations to this node's coordinate system and call `toolAtLocation` as desired.)
+ 
+ - Leave the gesture target unset for no gesture handling.
 */
-@interface HLToolbarNode : HLComponentNode <NSCoding>
+@interface HLToolbarNode : HLComponentNode <NSCoding, HLGestureTarget>
 
 /// @name Creating a Toolbar Node
 
@@ -56,6 +59,17 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
  Initializes a toolbar node.
 */
 - (instancetype)init NS_DESIGNATED_INITIALIZER;
+
+/// @name Managing Interaction
+
+/**
+ A callback invoked when a tool is tapped.
+ 
+ The callback parameter is passed as the tag of the tapped tool.
+ 
+ note: For now, use callbacks rather than delegation.
+ */
+@property (nonatomic, copy) void (^toolTappedBlock)(NSString *toolTag);
 
 /// @name Getting and Setting Tools
 

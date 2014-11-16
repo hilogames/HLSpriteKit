@@ -59,22 +59,15 @@
     [self HL_showMessage:@"Tapped HLTiledNode."];
   }]];
   [self registerDescendant:tiledNode withOptions:[NSSet setWithObject:HLSceneChildGestureTarget]];
-  
+
   HLToolbarNode *toolbarNode = [self HL_createContentToolbarNode];
   [catalogNode addChild:[SKNode node]];
   [catalogNode addChild:toolbarNode];
   [catalogNode addChild:[SKNode node]];
-  [toolbarNode hlSetGestureTarget:[HLTapGestureTarget tapGestureTargetWithHandleGestureBlock:^(UIGestureRecognizer *gestureRecognizer){
-    CGPoint viewLocation = [gestureRecognizer locationInView:self.scene.view];
-    CGPoint sceneLocation = [self.scene convertPointFromView:viewLocation];
-    CGPoint toolbarLocation = [toolbarNode convertPoint:sceneLocation fromNode:self.scene];
-    NSString *toolTag = [toolbarNode toolAtLocation:toolbarLocation];
-    if (toolTag) {
-      [self HL_showMessage:[NSString stringWithFormat:@"Tapped tool '%@' on HLToolbarNode.", toolTag]];
-    } else {
-      [self HL_showMessage:@"Tapped HLToolbarNode (but not a tool)."];
-    }
-  }]];
+  [toolbarNode hlSetGestureTarget:toolbarNode];
+  toolbarNode.toolTappedBlock = ^(NSString *toolTag){
+    [self HL_showMessage:[NSString stringWithFormat:@"Tapped tool '%@' on HLToolbarNode.", toolTag]];
+  };
   [self registerDescendant:toolbarNode withOptions:[NSSet setWithObject:HLSceneChildGestureTarget]];
 
   [catalogNode hlLayoutChildren];

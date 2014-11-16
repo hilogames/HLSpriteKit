@@ -466,6 +466,42 @@ enum {
 }
 
 #pragma mark -
+#pragma mark HLGestureTarget
+
+- (NSArray *)addsToGestureRecognizers
+{
+  return @[ [[UITapGestureRecognizer alloc] init] ];
+}
+
+- (BOOL)addToGesture:(UIGestureRecognizer *)gestureRecognizer firstTouch:(UITouch *)touch isInside:(BOOL *)isInside
+{
+  *isInside = YES;
+  if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
+    // note: Require only one tap and one touch, same as our gesture recognizer returned
+    // from addsToGestureRecognizers?  I think it's okay to be non-strict.
+    [gestureRecognizer addTarget:self action:@selector(handleTap:)];
+    return YES;
+  }
+  return NO;
+}
+
+- (void)handleTap:(UIGestureRecognizer *)gestureRecognizer
+{
+  if (!self.toolTappedBlock) {
+    return;
+  }
+  
+  CGPoint viewLocation = [gestureRecognizer locationInView:self.scene.view];
+  CGPoint sceneLocation = [self.scene convertPointFromView:viewLocation];
+  CGPoint location = [self convertPoint:sceneLocation fromNode:self.scene];
+  
+  NSString *toolTag = [self toolAtLocation:location];
+  if (toolTag) {
+    self.toolTappedBlock(toolTag);
+  }
+}
+
+#pragma mark -
 #pragma mark Private
 
 - (void)HL_allocateSquareState
