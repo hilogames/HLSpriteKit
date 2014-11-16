@@ -1,4 +1,8 @@
 language: objective-c
 xcode_workspace: Example/HLSpriteKit.xcworkspace
 xcode_scheme: HLSpriteKit
+xcode_sdk: iphonesimulator
 podfile: Example/Podfile
+branches:
+  only:
+    - master
