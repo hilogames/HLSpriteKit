@@ -275,6 +275,7 @@ enum {
   }
   // note: Allocate square state; note that it will be initalized as enabled and unhighlighted,
   // as in code above.
+  [self HL_freeSquareState];
   [self HL_allocateSquareState];
 
   SKNode *oldSquaresNode = _squaresNode;
