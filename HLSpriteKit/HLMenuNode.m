@@ -165,7 +165,8 @@ enum {
 
 - (NSArray *)addsToGestureRecognizers
 {
-  return @[ [[UITapGestureRecognizer alloc] init] ];
+  return @[ [[UITapGestureRecognizer alloc] init],
+            [[UILongPressGestureRecognizer alloc] init] ];
 }
 
 - (BOOL)addToGesture:(UIGestureRecognizer *)gestureRecognizer firstTouch:(UITouch *)touch isInside:(BOOL *)isInside
@@ -180,6 +181,10 @@ enum {
         // note: Require only one tap and one touch, same as our gesture recognizer
         // returned from addsToGestureRecognizers?  I think it's okay to be non-strict.
         [gestureRecognizer addTarget:self action:@selector(handleTap:)];
+        return YES;
+      }
+      if ([gestureRecognizer isKindOfClass:[UILongPressGestureRecognizer class]]) {
+        [gestureRecognizer addTarget:self action:@selector(handleLongPress:)];
         return YES;
       }
       break;
@@ -200,6 +205,34 @@ enum {
   for (HLLabelButtonNode *buttonNode in _buttonsNode.children) {
     if ([buttonNode containsPoint:menuLocation]) {
       [self HL_tappedItem:i];
+      return;
+    }
+    ++i;
+  }
+}
+
+- (void)handleLongPress:(UIGestureRecognizer *)gestureRecognizer
+{
+  if (gestureRecognizer.state != UIGestureRecognizerStateBegan) {
+    return;
+  }
+
+  id <HLMenuNodeDelegate> delegate = _delegate;
+  if (!delegate || ![delegate respondsToSelector:@selector(menuNode:didLongPressMenuItem:itemIndex:)]) {
+    return;
+  }
+
+  // note: Clearly, could retain state from addToGesture if it improved performance
+  // significantly.
+  CGPoint viewLocation = [gestureRecognizer locationInView:self.scene.view];
+  CGPoint sceneLocation = [self.scene convertPointFromView:viewLocation];
+  CGPoint menuLocation = [self convertPoint:sceneLocation fromNode:self.scene];
+  
+  NSUInteger i = 0;
+  for (HLLabelButtonNode *buttonNode in _buttonsNode.children) {
+    if ([buttonNode containsPoint:menuLocation]) {
+      HLMenuItem *menuItem = [_currentMenu itemAtIndex:i];
+      [delegate menuNode:self didLongPressMenuItem:menuItem itemIndex:i];
       return;
     }
     ++i;

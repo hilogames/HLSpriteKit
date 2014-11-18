@@ -210,6 +210,12 @@ typedef NS_ENUM(NSInteger, HLMenuNodeAnimation) {
 @required
 - (void)menuNode:(HLMenuNode *)menuNode didTapMenuItem:(HLMenuItem *)menuItem itemIndex:(NSUInteger)itemIndex;
 
+/**
+ Called when the user has long-pressed on a menu item.
+ */
+@optional
+- (void)menuNode:(HLMenuNode *)menuNode didLongPressMenuItem:(HLMenuItem *)menuItem itemIndex:(NSUInteger)itemIndex;
+
 @end
 
 /**
