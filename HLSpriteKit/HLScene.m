@@ -477,9 +477,12 @@ static BOOL _sceneAssetsLoaded = NO;
   }
 }
 
-- (BOOL)modalNodePresented
+- (SKNode *)modalNodePresented
 {
-  return (_modalPresentationNode != nil);
+  if (_modalPresentationNode) {
+    return [_modalPresentationNode.children firstObject];
+  }
+  return nil;
 }
 
 @end

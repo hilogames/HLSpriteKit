@@ -298,8 +298,8 @@ FOUNDATION_EXPORT NSString * const HLSceneChildGestureTarget;
 - (void)dismissModalNodeAnimation:(HLScenePresentationAnimation)animation;
 
 /**
- Returns `YES` if a modal node is currently presented.
+ Returns the node currently presented, or `nil` for none.
 */
-- (BOOL)modalNodePresented;
+- (SKNode *)modalNodePresented;
 
 @end
