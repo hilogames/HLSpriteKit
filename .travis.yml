@@ -6,8 +6,3 @@ podfile: Example/Podfile
 branches:
   only:
     - master
-# workaround for https://github.com/travis-ci/travis-ci/issues/2841
-before_install:
-- brew update
-- brew unlink xctool
-- brew install xctool
