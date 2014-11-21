@@ -14,10 +14,14 @@ static NSString * const HLLayoutManagerUserDataKey = @"HLLayoutManager";
 
 - (id <HLLayoutManager>)hlLayoutManager
 {
-  id value = self.userData[HLLayoutManagerUserDataKey];
+  NSDictionary *userData = self.userData;
+  if (!userData) {
+    return nil;
+  }
+  id value = userData[HLLayoutManagerUserDataKey];
   if (!value) {
     return nil;
-  } else if (value == HLLayoutManagerUserDataKey) {
+  } else if (value == [NSNull null]) {
     return (id <HLLayoutManager>)self;
   } else {
     return (id <HLLayoutManager>)value;
@@ -26,13 +30,20 @@ static NSString * const HLLayoutManagerUserDataKey = @"HLLayoutManager";
 
 - (void)hlSetLayoutManager:(id <HLLayoutManager>)layoutManager
 {
-  if (!self.userData) {
-    self.userData = [NSMutableDictionary dictionary];
-  }
-  if (layoutManager == self) {
-    self.userData[HLLayoutManagerUserDataKey] = HLLayoutManagerUserDataKey;
+  if (!layoutManager) {
+    NSMutableDictionary *userData = self.userData;
+    if (userData) {
+      [userData removeObjectForKey:HLLayoutManagerUserDataKey];
+    }
   } else {
-    self.userData[HLLayoutManagerUserDataKey] = layoutManager;
+    if (!self.userData) {
+      self.userData = [NSMutableDictionary dictionary];
+    }
+    if ((id)layoutManager == self) {
+      self.userData[HLLayoutManagerUserDataKey] = [NSNull null];
+    } else {
+      self.userData[HLLayoutManagerUserDataKey] = layoutManager;
+    }
   }
 }
 

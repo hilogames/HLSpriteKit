@@ -20,13 +20,15 @@
 - (id <HLLayoutManager>)hlLayoutManager;
 
 /**
- Attaches a layout manager to this node.
+ Attaches a layout manager to (or detaches one from) this node.
 
  Presumably it will be used to lay out (some of) the node's children, either by using the
  layout manager directly or by calling `hlLayoutChildren`.
 
  If the layout manager is the same object as the node, then the pointer to `self` is not
  explicitly retained (but will be returned by `hlLayoutManager`).
+ 
+ Pass `nil` to unset the layout manager (if any).
 */
 - (void)hlSetLayoutManager:(id <HLLayoutManager>)layoutManager;
 

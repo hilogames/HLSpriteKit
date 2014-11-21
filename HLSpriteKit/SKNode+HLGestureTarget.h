@@ -20,13 +20,15 @@
 - (id <HLGestureTarget>)hlGestureTarget;
 
 /**
- Attaches a gesture target to this node.
+ Attaches a gesture target to (or detaches one from) this node.
 
  Presumably the gesture delegate (in the main scene or view) will detect when gestures
  intersect this node, and forward them to this attached gesture target.
 
  If the gesture target is the same object as the node, then the pointer to `self` is not
  explicitly retained (but will be returned by `hlGestureTarget`).
+ 
+ Pass `nil` to unset the gesture target (if any).
 */
 - (void)hlSetGestureTarget:(id <HLGestureTarget>)gestureTarget;
 

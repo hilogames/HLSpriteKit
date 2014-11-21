@@ -54,7 +54,10 @@ static BOOL _sceneAssetsLoaded = NO;
         if ([node.children count] > 0) {
           [childrenArrayQueue addObject:node.children];
         }
-        NSNumber *optionBitsNumber = (node.userData)[HLSceneChildUserDataKey];
+        if (!node.userData) {
+          continue;
+        }
+        NSNumber *optionBitsNumber = node.userData[HLSceneChildUserDataKey];
         if (!optionBitsNumber) {
           continue;
         }
