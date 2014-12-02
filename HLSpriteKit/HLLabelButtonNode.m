@@ -168,6 +168,17 @@ enum {
   }
 }
 
+- (void)setAnchorPoint:(CGPoint)anchorPoint
+{
+  _backgroundNode.anchorPoint = anchorPoint;
+  [self HL_layout];
+}
+
+- (CGPoint)anchorPoint
+{
+  return _backgroundNode.anchorPoint;
+}
+
 - (void)setAutomaticWidth:(BOOL)automaticWidth
 {
   _automaticWidth = automaticWidth;
@@ -290,7 +301,8 @@ enum {
                          yPosition:&alignedYPosition];
   }
   _labelNode.verticalAlignmentMode = skVerticalAlignmentMode;
-  _labelNode.position = CGPointMake(0.0f, alignedYPosition);
+  _labelNode.position = CGPointMake((0.5f - _backgroundNode.anchorPoint.x) * newSize.width,
+                                    (0.5f - _backgroundNode.anchorPoint.y) * newSize.height + alignedYPosition);
 
   if (_automaticWidth || _automaticHeight) {
     if (_backgroundNode.texture) {

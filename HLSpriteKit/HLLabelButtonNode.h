@@ -81,6 +81,13 @@
 @property (nonatomic, assign) CGSize size;
 
 /**
+ Specifies the anchor point of the button.
+ 
+ Default value `(0.5,0.5)`.
+ */
+@property (nonatomic, assign) CGPoint anchorPoint;
+
+/**
  Specifies if the button should automatically set its width based on the label width.
 
  Label width is determined by various properties including its text, font, and padding.
@@ -106,12 +113,16 @@
 /**
  The amount of space, when using `automaticWidth`, to leave between the label and the edge
  of the button.
+ 
+ Default value is `0.0`.
  */
 @property (nonatomic, assign) CGFloat labelPadX;
 
 /**
  The amount of space, when using `automaticHeight`, to leave between the label and the
  edge of the button.
+
+ Default value is `0.0`.
  */
 @property (nonatomic, assign) CGFloat labelPadY;
 
@@ -122,6 +133,8 @@
 
 /**
  The font size used by the label.
+ 
+ The default value is determined by `[SKLabelNode fontSize]` (currently `32` points).
  */
 @property (nonatomic, assign) CGFloat fontSize;
 
@@ -129,6 +142,8 @@
 
 /**
  The font color used by the label.
+ 
+ The defualt value is determined by `[SKLabelNode fontColor]` (currently white).
  */
 @property (nonatomic, strong) SKColor *fontColor;
 

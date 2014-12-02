@@ -57,9 +57,16 @@ typedef NS_ENUM(NSInteger, HLGridNodeLayoutMode) {
  individually, which helps avoid the problem where layout is redone multiple times as
  each parameter is adjusted individually.
 
+ TODO: Allow modification of layout-affecting parameters via properties, with a similar
+ contract as other components: If the content is not set, then layout will not be
+ performed.
+
  @param gridWidth The maximum number of squares to layout in a row.
 
  @param squareCount The total number of squares to create in the grid.
+
+ @param anchorPoint The anchorPoint used to layout the grid around the `HLGridNode`'s
+                    position.
 
  @param layoutMode The layout mode for the grid (pertaining chiefly to handling the layout
                    of squares that don't fit exactly into rows); see
@@ -78,6 +85,7 @@ typedef NS_ENUM(NSInteger, HLGridNodeLayoutMode) {
 */
 - (instancetype)initWithGridWidth:(int)gridWidth
                       squareCount:(int)squareCount
+                      anchorPoint:(CGPoint)anchorPoint
                        layoutMode:(HLGridNodeLayoutMode)layoutMode
                        squareSize:(CGSize)squareSize
              backgroundBorderSize:(CGFloat)backgroundBorderSize

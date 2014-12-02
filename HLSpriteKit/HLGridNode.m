@@ -42,6 +42,7 @@ enum {
 {
   return [self initWithGridWidth:3
                      squareCount:9
+                     anchorPoint:CGPointMake(0.5f, 0.5f)
                       layoutMode:HLGridNodeLayoutModeAlignLeft
                       squareSize:CGSizeMake(10.0f, 10.0f)
             backgroundBorderSize:3.0f
@@ -50,6 +51,7 @@ enum {
 
 - (instancetype)initWithGridWidth:(int)gridWidth
                       squareCount:(int)squareCount
+                      anchorPoint:(CGPoint)anchorPoint
                        layoutMode:(HLGridNodeLayoutMode)layoutMode
                        squareSize:(CGSize)squareSize
              backgroundBorderSize:(CGFloat)backgroundBorderSize
@@ -66,6 +68,7 @@ enum {
     _squareSeparatorSize = squareSeparatorSize;
 
     _gridNode = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithWhite:0.0f alpha:0.5f] size:CGSizeZero];
+    _gridNode.anchorPoint = anchorPoint;
     [self addChild:_gridNode];
 
     [self HL_allocateSquareState];
@@ -422,8 +425,8 @@ enum {
                                    squaresArea.height + 2.0f * _backgroundBorderSize);
   _gridNode.size = gridNodeSize;
   CGPoint upperLeftPoint = CGPointMake(-_gridNode.anchorPoint.x * gridNodeSize.width + _backgroundBorderSize,
-                                       _gridNode.anchorPoint.y * gridNodeSize.height - _backgroundBorderSize);
-
+                                       (1.0f - _gridNode.anchorPoint.y) * gridNodeSize.height - _backgroundBorderSize);
+  
   // Arrange square nodes in grid.
   CGFloat zPositionLayerIncrement = self.zPositionScale / HLGridNodeZPositionLayerCount;
   for (int y = 0; y < gridHeight; ++y) {

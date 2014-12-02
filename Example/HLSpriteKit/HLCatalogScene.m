@@ -90,6 +90,7 @@
 {
   HLGridNode *gridNode = [[HLGridNode alloc] initWithGridWidth:3
                                                    squareCount:10
+                                                   anchorPoint:CGPointMake(0.5f, 0.5f)
                                                     layoutMode:HLGridNodeLayoutModeFill
                                                     squareSize:CGSizeMake(24.0f, 24.0f)
                                           backgroundBorderSize:3.0f
