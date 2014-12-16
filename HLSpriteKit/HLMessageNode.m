@@ -107,6 +107,7 @@ enum {
   copy->_verticalAlignmentMode = _verticalAlignmentMode;
   copy->_messageAnimationDuration = _messageAnimationDuration;
   copy->_messageLingerDuration = _messageLingerDuration;
+  copy->_messageSoundFile = _messageSoundFile;
   return copy;
 }
 
