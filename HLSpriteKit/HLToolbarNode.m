@@ -458,7 +458,11 @@ enum {
     SKAction *move = [SKAction moveTo:_lastOrigin duration:HLToolbarNodeHideDuration];
     SKAction *hideGroup = [SKAction group:@[ shrink, move]];
     hideGroup.timingMode = SKActionTimingEaseIn;
-    SKAction *remove = [SKAction removeFromParent];
+    // note: Avoiding [SKAction removeFromParent]; see
+    //   http://stackoverflow.com/questions/26131591/exc-bad-access-sprite-kit/26188747
+    SKAction *remove = [SKAction runBlock:^{
+      [self removeFromParent];
+    }];
     SKAction *hideSequence = [SKAction sequence:@[ hideGroup, remove ]];
     [self runAction:hideSequence withKey:@"hide"];
   } else {
