@@ -321,24 +321,18 @@ enum {
 
 - (void)HL_loadCurrentMenuSounds
 {
-  NSDate *startDate = [NSDate date];
-
   // noob: Okay to keep preloading the main sound over and over again?
   // Or is that dumb?
   if (self.itemSoundFile) {
-    NSLog(@"loading sound %@", self.itemSoundFile);
     [SKAction playSoundFileNamed:self.itemSoundFile waitForCompletion:NO];
   }
 
   for (NSUInteger i = 0; i < [_currentMenu itemCount]; ++i) {
     HLMenuItem *item = [_currentMenu itemAtIndex:i];
     if (item.soundFile) {
-      NSLog(@"loading sound %@", item.soundFile);
       [SKAction playSoundFileNamed:item.soundFile waitForCompletion:NO];
     }
   }
-
-  NSLog(@"loaded sounds for current menu in %.2f seconds", [[NSDate date] timeIntervalSinceDate:startDate]);
 }
 
 - (void)HL_tappedItem:(NSUInteger)itemIndex
