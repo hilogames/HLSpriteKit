@@ -138,6 +138,7 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
  Main toolbar color, showing as background behind tool squares.
 
  Changes will not take effect until the next call to `setTools:tags:animation:`.
+ Default is `[SKColor colorWithWhite:0.0 alpha:0.5]`.
 */
 @property (nonatomic, strong) SKColor *backgroundColor;
 
@@ -145,6 +146,7 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
  Tool square color, showing behind each tool node set.
 
  Changes will not take effect until the next call to `setTools:tags:animation:`.
+ Default is `[SKColor colorWithWhite:0.7 alpha:0.5]`.
 */
 @property (nonatomic, strong) SKColor *squareColor;
 
@@ -152,7 +154,7 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
  Tool square color when highlighted.
 
  Changes will not take effect for already-highlighted tools until the next call to
- `setTools:tags:animation:`.
+ `setTools:tags:animation:`.  Default is `[SKColor colorWithWhite:1.0 alpha:0.8]`.
 */
 @property (nonatomic, strong) SKColor *highlightColor;
 
@@ -256,6 +258,17 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 
 - (void)showWithOrigin:(CGPoint)origin finalPosition:(CGPoint)finalPosition fullScale:(CGFloat)fullScale animated:(BOOL)animated;
 
+- (void)showUpdateOrigin:(CGPoint)origin;
+
+/**
+ Hides the toolbar by removing it from parent.
+ 
+ When hiding is animated, the toolbar will scale down and move to its last origin
+ (passed during `[showWithOrigin:finalPosition:fullScale:animated:]`).  For consistency,
+ the position of the toolbar is set likewise even when not animating.  This means that
+ any explicit changes to toolbar position will be discarded during the call to `[hideAnimated:]`.
+ the caller might consider calling `[showUpdateOrigin:]`, to change the stored origin.
+*/
 - (void)hideAnimated:(BOOL)animated;
 
 @end

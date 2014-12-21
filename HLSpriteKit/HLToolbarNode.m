@@ -450,6 +450,11 @@ enum {
   _lastOrigin = origin;
 }
 
+- (void)showUpdateOrigin:(CGPoint)origin
+{
+  _lastOrigin = origin;
+}
+
 - (void)hideAnimated:(BOOL)animated
 {
   if (animated) {
@@ -466,6 +471,13 @@ enum {
     SKAction *hideSequence = [SKAction sequence:@[ hideGroup, remove ]];
     [self runAction:hideSequence withKey:@"hide"];
   } else {
+    // note: It's a little perverse to set position back to _lastOrigin, but we do it for
+    // consistency between animated and non-animated.  The caller might be confused to find
+    // that any changes to position while the toolbar is showing will be discarded once the
+    // toolbar is hidden again; on the other hand, showUpdateOrigin is provided for the
+    // purpose, and the caller will be forced to explicitly pass position again when calling
+    // showWithOrigin.
+    self.position = _lastOrigin;
     [self removeFromParent];
   }
 }
