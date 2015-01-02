@@ -248,6 +248,8 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 
 - (void)setHighlight:(BOOL)highlight forTool:(NSString *)toolTag;
 
+- (void)toggleHighlightForTool:(NSString *)toolTag;
+
 - (void)setHighlight:(BOOL)finalHighlight forTool:(NSString *)toolTag blinkCount:(int)blinkCount halfCycleDuration:(NSTimeInterval)halfCycleDuration;
 
 - (void)setEnabled:(BOOL)enabled forTool:(NSString *)toolTag;

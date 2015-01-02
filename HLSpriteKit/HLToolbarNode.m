@@ -348,6 +348,26 @@ enum {
   int s = 0;
   for (SKSpriteNode *squareNode in _squaresNode.children) {
     if ([squareNode.name isEqualToString:toolTag]) {
+      [squareNode removeActionForKey:@"setHighlight"];
+      _squareState[s].highlight = highlight;
+      if (highlight) {
+        squareNode.color = _highlightColor;
+      } else {
+        squareNode.color = _squareColor;
+      }
+      break;
+    }
+    ++s;
+  }
+}
+
+- (void)toggleHighlightForTool:(NSString *)toolTag
+{
+  int s = 0;
+  for (SKSpriteNode *squareNode in _squaresNode.children) {
+    if ([squareNode.name isEqualToString:toolTag]) {
+      [squareNode removeActionForKey:@"setHighlight"];
+      BOOL highlight = !_squareState[s].highlight;
       _squareState[s].highlight = highlight;
       if (highlight) {
         squareNode.color = _highlightColor;
@@ -376,8 +396,12 @@ enum {
   if (!squareNode) {
     return;
   }
+
+  [squareNode removeActionForKey:@"setHighlight"];
   
   BOOL startingHighlight = _squareState[s].highlight;
+  _squareState[s].highlight = finalHighlight;
+
   SKAction *blinkIn = [SKAction colorizeWithColor:(startingHighlight ? _squareColor : _highlightColor) colorBlendFactor:1.0f duration:halfCycleDuration];
   blinkIn.timingMode = SKActionTimingEaseIn;
   SKAction *blinkOut = [SKAction colorizeWithColor:(startingHighlight ? _highlightColor : _squareColor) colorBlendFactor:1.0f duration:halfCycleDuration];
@@ -391,7 +415,7 @@ enum {
     [blinkActions addObject:blinkIn];
   }
 
-  [squareNode runAction:[SKAction sequence:blinkActions]];
+  [squareNode runAction:[SKAction sequence:blinkActions] withKey:@"setHighlight"];
 }
 
 - (void)setEnabled:(BOOL)enabled forTool:(NSString *)toolTag
