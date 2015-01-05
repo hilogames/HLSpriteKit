@@ -11,8 +11,6 @@
 #import "HLComponentNode.h"
 #import "HLGestureTarget.h"
 
-@class HLTextureStore;
-
 /**
  Justification for toolbar tools.
 */

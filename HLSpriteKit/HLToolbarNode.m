@@ -13,7 +13,6 @@
 #import "HLToolbarNode.h"
 
 #import "HLMath.h"
-#import "HLTextureStore.h"
 
 typedef struct {
   BOOL enabled;
