@@ -7,9 +7,6 @@ WorkspaceSettings.xcsettings
 xcdebugger
 xcuserdata
 
-# cocoapods
-*.podspec
-
 # other editors and tools
 TAGS
 *.rej
