@@ -272,14 +272,15 @@ enum {
 
     x += finalToolSize.width + _toolPad * 2 + _squareSeparatorSize;
   }
+
+  SKNode *oldSquaresNode = _squaresNode;
+  _squaresNode = squaresNode;
   // note: Allocate square state; note that it will be initalized as enabled and unhighlighted,
   // as in code above.
   [self HL_freeSquareState];
   [self HL_allocateSquareState];
-
-  SKNode *oldSquaresNode = _squaresNode;
-  _squaresNode = squaresNode;
   [_cropNode addChild:squaresNode];
+
   if (animation == HLToolbarNodeAnimationNone) {
     if (oldSquaresNode) {
       [oldSquaresNode removeFromParent];
@@ -546,7 +547,7 @@ enum {
 
 - (void)HL_allocateSquareState
 {
-  int squareCount = (int)[_toolbarNode.children count];
+  int squareCount = (int)[_squaresNode.children count];
   _squareState = (HLToolbarNodeSquareState *)malloc(sizeof(HLToolbarNodeSquareState) * (size_t)squareCount);
   for (int s = 0; s < squareCount; ++s) {
     _squareState[s].enabled = NO;
