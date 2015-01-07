@@ -96,6 +96,11 @@ enum {
   return nil;
 }
 
+- (HLMenu *)displayedMenu
+{
+  return _currentMenu;
+}
+
 - (void)setMenu:(HLMenu *)menu animation:(HLMenuNodeAnimation)animation
 {
   _menu = menu;

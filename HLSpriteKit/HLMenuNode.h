@@ -70,23 +70,39 @@ typedef NS_ENUM(NSInteger, HLMenuNodeAnimation) {
 /// @name Getting and Setting Menu Content
 
 /**
- The hierarchical menu displayed by the menu node (readonly).
+ The hierarchical menu navigated by the menu node (readonly).
 
  For the sake of simplicity, menu node does not worry about updating its display when
  the caller makes changes to the individual menu items.  Instead, it will only refresh
- the display after a call to `setMenu:animation:`.  The readonly attribute helps to
- suggest this pattern.  More stringent would be to copy the menu into the menu node, but
- that is deemed unnecessary.
+ the display after a call to `setMenu:animation:` (or from manual or programmatic
+ navigation of the menu).  The readonly attribute helps to suggest this pattern.  More
+ stringent would be to copy the menu into the menu node, but that is deemed unnecessary.
 
  @bug It is considered convenient for the menu node to keep a strong reference to its
       menu, assuming that the caller typically wants a single fairly-static menu
       hierarchy.  An alternate design, perhaps where only "current" menu is tracked,
       should be considered if useful.
  */
-@property (nonatomic, readonly, strong) HLMenu *menu;
+@property (nonatomic, readonly) HLMenu *menu;
+
+/**
+ The submenu (of the `menu`) currently displayed by the menu node (readonly).
+
+ See notes at `menu`: changes to the currently displayed menu will not result in changes
+ to the display; the readonly attribute helps to suggest this.
+ */
+@property (nonatomic, readonly) HLMenu *displayedMenu;
 
 /**
  Sets the hierarchical menu that the menu node will navigate.
+
+ A note on layout and geometry: The `HLMenuNode` lays out the buttons of its menu by setting
+ the positions of its buttons, starting at `(0,0)` and incrementing subsequent `y` position
+ by `itemSpacing`.  The menu doesn't consider itself to have any other extent: it's just a
+ collection of buttons.  As such, it doesn't have geometric properties like `size`
+ or `anchorPoint`.  Instead, the caller may call `calculateAccumulatedFrame` on the menu node
+ to get bounds, or may use the `displayedMenu` property to infer information about the
+ buttons currently displayed.
  */
 - (void)setMenu:(HLMenu *)menu animation:(HLMenuNodeAnimation)animation;
 
@@ -97,6 +113,8 @@ typedef NS_ENUM(NSInteger, HLMenuNodeAnimation) {
 
  This is the distance between the *positions* of the buttons, and not the distance between
  button bounds (which would be affected by button sizes).
+ 
+ See `setMenu` for notes about button layout and extent.
  */
 @property (nonatomic, assign) CGFloat itemSpacing;
 
