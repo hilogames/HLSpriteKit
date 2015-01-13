@@ -64,7 +64,7 @@ Putting layout code in a third-party object (rather than in the `SKScene` or `SK
 
 ## Author
 
-Karl Voskuil <karl * hilogames dot com>
+Karl Voskuil (karl * hilogames dot com)
 
 ## License
 
