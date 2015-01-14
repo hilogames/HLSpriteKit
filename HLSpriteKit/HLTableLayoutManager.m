@@ -107,6 +107,11 @@ const CGFloat HLTableLayoutManagerEpsilon = 0.001f;
   }
 
   _rowCount = (nodesCount - 1) / _columnCount + 1;
+  // note: Analytically this is always true.  But the check is here for the sake of the
+  // static analyzer, which otherwise complains about the malloc below.
+  if (_rowCount == 0) {
+    return;
+  }
 
   CGFloat *columnWidthsPartiallyCalculated = (CGFloat *)malloc(_columnCount * sizeof(CGFloat));
   CGFloat widthTotalFixed = 0.0f;
