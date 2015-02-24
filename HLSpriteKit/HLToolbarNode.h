@@ -11,6 +11,8 @@
 #import "HLComponentNode.h"
 #import "HLGestureTarget.h"
 
+@protocol HLToolbarNodeDelegate;
+
 /**
  Justification for toolbar tools.
 */
@@ -41,12 +43,13 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
  ## Common Gesture Handling Configurations
 
  - Set this node as its own gesture target (using `[SKNode+HLGestureTarget
-   hlSetGestureTarget]`) to get a simple callback for taps via the `toolTappedBlock`
-   property.
- 
+   hlSetGestureTarget]`) to get a simple delegation and/or callback for taps.  See
+   `HLToolbarNodeDelegate` for delegation and the `toolTappedBlock` property for setting a
+   callback block.
+
  - Set a custom gesture target to recognize and respond to other gestures.  (Convert touch
    locations to this node's coordinate system and call `toolAtLocation` as desired.)
- 
+
  - Leave the gesture target unset for no gesture handling.
 */
 @interface HLToolbarNode : HLComponentNode <NSCoding, HLGestureTarget>
@@ -61,11 +64,23 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 /// @name Managing Interaction
 
 /**
- A callback invoked when a tool is tapped.
- 
- The callback parameter is passed as the tag of the tapped tool.
- 
- note: For now, use callbacks rather than delegation.
+ The delegate invoked on interaction (when this node is its own gesture handler).
+
+ Unless this toolbar node is its own gesture handler, this delegate will not be called.
+ See "Common Gesture Handling Configurations".
+*/
+@property (nonatomic, weak) id <HLToolbarNodeDelegate> delegate;
+
+/**
+ A callback invoked when a tool is tapped (when this node is its own gesture handler).
+
+ The tag of the tapped tool is passed as an argument to the callback.
+
+ Unless this toolbar node is its own gesture handler, this callback will not be invoked.
+ See "Common Gesture Handling Configurations".
+
+ Beware retain cycles when using the callback to invoke a method in the owner.  As a safer
+ alternative, use the toolbar node's delegation interface; see `setDelegate:`.
  */
 @property (nonatomic, copy) void (^toolTappedBlock)(NSString *toolTag);
 
@@ -244,15 +259,17 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 
 /// @name Managing Tool State
 
+- (BOOL)highlightForTool:(NSString *)toolTag;
+
 - (void)setHighlight:(BOOL)highlight forTool:(NSString *)toolTag;
 
 - (void)toggleHighlightForTool:(NSString *)toolTag;
 
 - (void)setHighlight:(BOOL)finalHighlight forTool:(NSString *)toolTag blinkCount:(int)blinkCount halfCycleDuration:(NSTimeInterval)halfCycleDuration;
 
-- (void)setEnabled:(BOOL)enabled forTool:(NSString *)toolTag;
-
 - (BOOL)enabledForTool:(NSString *)toolTag;
+
+- (void)setEnabled:(BOOL)enabled forTool:(NSString *)toolTag;
 
 /// @name Showing or Hiding Toolbar in Parent
 
@@ -262,7 +279,7 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 
 /**
  Hides the toolbar by removing it from parent.
- 
+
  When hiding is animated, the toolbar will scale down and move to its last origin
  (passed during `[showWithOrigin:finalPosition:fullScale:animated:]`).  For consistency,
  the position of the toolbar is set likewise even when not animating.  This means that
@@ -270,5 +287,23 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
  the caller might consider calling `[showUpdateOrigin:]`, to change the stored origin.
 */
 - (void)hideAnimated:(BOOL)animated;
+
+@end
+
+/**
+ A delegate for `HLToolbarNode`.
+
+ The delegate is (currently) concerned mostly with handling user interaction.  It's worth
+ noting that the `HLToolbarNode` only receives gestures if it is configured as its own
+ gesture target (using `[SKNode+HLGestureTarget hlSetGestureTarget]`).
+ */
+@protocol HLToolbarNodeDelegate <NSObject>
+
+/// @name Handling User Interaction
+
+/**
+ Called when the user taps a tool.
+*/
+- (void)toolbarNode:(HLToolbarNode *)toolbarNode didTapTool:(NSString *)toolTag;
 
 @end

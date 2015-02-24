@@ -11,6 +11,8 @@
 #import "HLComponentNode.h"
 #import "HLGestureTarget.h"
 
+@protocol HLGridNodeDelegate;
+
 /**
  The layout mode for the grid.  Primarily affects how squares are laid out when they
  don't fit exactly into rows.
@@ -37,8 +39,9 @@ typedef NS_ENUM(NSInteger, HLGridNodeLayoutMode) {
  ## Common Gesture Handling Configurations
 
  - Set this node as its own gesture target (using `[SKNode+HLGestureTarget
-   hlSetGestureTarget]`) to get a simple callback for taps via the `squareTappedBlock`
-   property.
+   hlSetGestureTarget]`) to get a simple delegation and/or callbacks for taps.  See
+   `HLGridNodeDelegate` for delegation and the `squareTappedBlock` property for setting a
+   callback block.
 
  - Set a custom gesture target to recognize and respond to other gestures.  (Convert touch
    locations to this node's coordinate system and call `squareAtLocation` as desired.)
@@ -94,13 +97,26 @@ typedef NS_ENUM(NSInteger, HLGridNodeLayoutMode) {
 /// @name Managing Interaction
 
 /**
- A callback invoked when a square in the grid is tapped.
+ The delegate invoked on interaction (when this node is its own gesture handler).
 
- The callback parameter is passed as the index of the tapped square.  (Square indexes
+ Unless this grid node is its own gesture handler, this delegate will not be called.  See
+ "Common Gesture Handling Configurations".
+*/
+@property (nonatomic, weak) id <HLGridNodeDelegate> delegate;
+
+/**
+ A callback invoked when a square in the grid is tapped (when this node is its own gesture
+ handler).
+
+ The index of the tapped square is passed as an argument to the callback.  (Square indexes
  start at zero for the top-left square in the grid, and then increase to the right row by
  row.)
 
- note: For now, use callbacks rather than delegation.
+ Unless this grid node is its own gesture handler, this callback will not be invoked.  See
+ "Common Gesture Handling Configurations".
+
+ Beware retain cycles when using the callback to invoke a method in the owner.  As a safer
+ alternative, use the grid node's delegation interface; see `setDelegate:`.
 */
 @property (nonatomic, copy) void (^squareTappedBlock)(int squareIndex);
 
@@ -232,6 +248,13 @@ typedef NS_ENUM(NSInteger, HLGridNodeLayoutMode) {
 /// @name Managing Grid Square State
 
 /**
+ Returns a boolean indicating whether a square is enabled.
+
+ Throws an exception if the square index is out of bounds.
+*/
+- (BOOL)enabledForSquare:(int)squareIndex;
+
+/**
  Sets the enabled state of a square.
 
  The alpha value of the square will be set either to `enabledAlpha` or `disabledAlpha`
@@ -239,6 +262,13 @@ typedef NS_ENUM(NSInteger, HLGridNodeLayoutMode) {
  of bounds.
 */
 - (void)setEnabled:(BOOL)enabled forSquare:(int)squareIndex;
+
+/**
+ Returns a boolean indicating the current highlight state of a square.
+
+ Throws an exception if the square index is out of bounds.
+*/
+- (BOOL)highlightForSquare:(int)squareIndex;
 
 /**
  Sets the highlight state of a square.
@@ -276,6 +306,14 @@ typedef NS_ENUM(NSInteger, HLGridNodeLayoutMode) {
           completion:(void(^)(void))completion;
 
 /**
+ Convenience method for returning the index of the square last selected; see
+ `setSelectionForSquare:`.
+
+ Returns -1 if no square is currently selected.
+*/
+- (int)selectionSquare;
+
+/**
  Convenience method for setting the highlight state of a single square.
 
  Sets highlight `YES` for the passed square, and sets highlight `NO` for the previously
@@ -300,5 +338,23 @@ typedef NS_ENUM(NSInteger, HLGridNodeLayoutMode) {
  Clears the highlight of the last-selected square, if any.
 */
 - (void)clearSelection;
+
+@end
+
+/**
+ A delegate for `HLGridNode`.
+
+ The delegate is (currently) concerned mostly with handling user interaction.  It's worth
+ noting that the `HLGridNode` only receives gestures if it is configured as its own
+ gesture target (using `[SKNode+HLGestureTarget hlSetGestureTarget]`).
+ */
+@protocol HLGridNodeDelegate <NSObject>
+
+/// @name Handling User Interaction
+
+/**
+ Called when the user taps on a square in the grid.
+*/
+- (void)gridNode:(HLGridNode *)gridNode didTapSquare:(int)squareIndex;
 
 @end

@@ -343,6 +343,18 @@ enum {
   return nil;
 }
 
+- (BOOL)highlightForTool:(NSString *)toolTag
+{
+  int s = 0;
+  for (SKSpriteNode *squareNode in _squaresNode.children) {
+    if ([squareNode.name isEqualToString:toolTag]) {
+      return _squareState[s].highlight;
+    }
+    ++s;
+  }
+  return YES;
+}
+
 - (void)setHighlight:(BOOL)highlight forTool:(NSString *)toolTag
 {
   int s = 0;
@@ -398,7 +410,7 @@ enum {
   }
 
   [squareNode removeActionForKey:@"setHighlight"];
-  
+
   BOOL startingHighlight = _squareState[s].highlight;
   _squareState[s].highlight = finalHighlight;
 
@@ -418,6 +430,18 @@ enum {
   [squareNode runAction:[SKAction sequence:blinkActions] withKey:@"setHighlight"];
 }
 
+- (BOOL)enabledForTool:(NSString *)toolTag
+{
+  int s = 0;
+  for (SKSpriteNode *squareNode in _squaresNode.children) {
+    if ([squareNode.name isEqualToString:toolTag]) {
+      return _squareState[s].enabled;
+    }
+    ++s;
+  }
+  return YES;
+}
+
 - (void)setEnabled:(BOOL)enabled forTool:(NSString *)toolTag
 {
   int s = 0;
@@ -433,18 +457,6 @@ enum {
     }
     ++s;
   }
-}
-
-- (BOOL)enabledForTool:(NSString *)toolTag
-{
-  int s = 0;
-  for (SKSpriteNode *squareNode in _squaresNode.children) {
-    if ([squareNode.name isEqualToString:toolTag]) {
-      return _squareState[s].enabled;
-    }
-    ++s;
-  }
-  return YES;
 }
 
 - (void)showWithOrigin:(CGPoint)origin finalPosition:(CGPoint)finalPosition fullScale:(CGFloat)fullScale animated:(BOOL)animated
@@ -528,17 +540,22 @@ enum {
 
 - (void)handleTap:(UIGestureRecognizer *)gestureRecognizer
 {
-  if (!self.toolTappedBlock) {
-    return;
-  }
-  
   CGPoint viewLocation = [gestureRecognizer locationInView:self.scene.view];
   CGPoint sceneLocation = [self.scene convertPointFromView:viewLocation];
   CGPoint location = [self convertPoint:sceneLocation fromNode:self.scene];
-  
+
   NSString *toolTag = [self toolAtLocation:location];
-  if (toolTag) {
+  if (!toolTag) {
+    return;
+  }
+
+  if (self.toolTappedBlock) {
     self.toolTappedBlock(toolTag);
+  }
+
+  id <HLToolbarNodeDelegate> delegate = _delegate;
+  if (delegate) {
+    [delegate toolbarNode:self didTapTool:toolTag];
   }
 }
 

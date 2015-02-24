@@ -270,6 +270,14 @@ enum {
   }
 }
 
+- (BOOL)enabledForSquare:(int)squareIndex
+{
+  if (squareIndex < 0 || squareIndex >= _squareCount) {
+    [NSException raise:@"HLGridNodeInvalidIndex" format:@"Square index %d out of range.", squareIndex];
+  }
+  return _squareState[squareIndex].enabled;
+}
+
 - (void)setEnabled:(BOOL)enabled forSquare:(int)squareIndex
 {
   if (squareIndex < 0 || squareIndex >= _squareCount) {
@@ -284,6 +292,14 @@ enum {
   } else {
     squareNode.alpha = _disabledAlpha;
   }
+}
+
+- (BOOL)highlightForSquare:(int)squareIndex
+{
+  if (squareIndex < 0 || squareIndex >= _squareCount) {
+    [NSException raise:@"HLGridNodeInvalidIndex" format:@"Square index %d out of range.", squareIndex];
+  }
+  return _squareState[squareIndex].highlight;
 }
 
 - (void)setHighlight:(BOOL)highlight forSquare:(int)squareIndex
@@ -332,6 +348,11 @@ enum {
   [squareNode runAction:[SKAction sequence:blinkActions] completion:completion];
 }
 
+- (int)selectionSquare
+{
+  return _selectionSquareIndex;
+}
+
 - (void)setSelectionForSquare:(int)squareIndex
 {
   if (_selectionSquareIndex >= 0) {
@@ -357,6 +378,7 @@ enum {
 {
   if (_selectionSquareIndex >= 0) {
     [self setHighlight:NO forSquare:_selectionSquareIndex];
+    _selectionSquareIndex = -1;
   }
 }
 
@@ -382,17 +404,22 @@ enum {
 
 - (void)handleTap:(UIGestureRecognizer *)gestureRecognizer
 {
-  if (!self.squareTappedBlock) {
-    return;
-  }
-
   CGPoint viewLocation = [gestureRecognizer locationInView:self.scene.view];
   CGPoint sceneLocation = [self.scene convertPointFromView:viewLocation];
   CGPoint location = [self convertPoint:sceneLocation fromNode:self.scene];
 
   int squareIndex = [self squareAtLocation:location];
-  if (squareIndex >= 0) {
+  if (squareIndex < 0) {
+    return;
+  }
+
+  if (self.squareTappedBlock) {
     self.squareTappedBlock(squareIndex);
+  }
+
+  id <HLGridNodeDelegate> delegate = _delegate;
+  if (delegate) {
+    [delegate gridNode:self didTapSquare:squareIndex];
   }
 }
 
@@ -426,7 +453,7 @@ enum {
   _gridNode.size = gridNodeSize;
   CGPoint upperLeftPoint = CGPointMake(-_gridNode.anchorPoint.x * gridNodeSize.width + _backgroundBorderSize,
                                        (1.0f - _gridNode.anchorPoint.y) * gridNodeSize.height - _backgroundBorderSize);
-  
+
   // Arrange square nodes in grid.
   CGFloat zPositionLayerIncrement = self.zPositionScale / HLGridNodeZPositionLayerCount;
   for (int y = 0; y < gridHeight; ++y) {
