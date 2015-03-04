@@ -10,11 +10,10 @@
 
 @implementation SKLabelNode (HLLabelNodeAdditions)
 
-- (void)getAlignmentInNode:(SKNode *)node
-forHLVerticalAlignmentMode:(HLLabelNodeVerticalAlignmentMode)hlVerticalAlignmentMode
-   skVerticalAlignmentMode:(SKLabelVerticalAlignmentMode *)skVerticalAlignmentMode
-               labelHeight:(CGFloat *)labelHeight
-                 yPosition:(CGFloat *)yPosition
+- (void)getAlignmentForHLVerticalAlignmentMode:(HLLabelNodeVerticalAlignmentMode)hlVerticalAlignmentMode
+                       skVerticalAlignmentMode:(SKLabelVerticalAlignmentMode *)skVerticalAlignmentMode
+                                   labelHeight:(CGFloat *)labelHeight
+                                     yPosition:(CGFloat *)yPosition
 {
   // note: For the record: I have no idea about the performance of this, especially
   // if dealing with lots of labels that may or may not share the same font name

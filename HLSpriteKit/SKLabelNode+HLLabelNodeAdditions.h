@@ -54,15 +54,14 @@ typedef NS_ENUM(NSInteger, HLLabelNodeVerticalAlignmentMode) {
 /// @name Calculating Vertical Alignment
 
 /**
- Gets alignment parameters for an `SKLabelNode` aligned by
- `HLLabelNodeVerticalAlignmentMode` within a parent.
+ Gets alignment parameters for an `SKLabelNode` to be used by a label node aligned by
+ `HLLabelNodeVerticalAlignmentMode`.
 
  See `HLLabelNodeVerticalAlignmentMode` for details.
 */
-- (void)getAlignmentInNode:(SKNode *)node
-forHLVerticalAlignmentMode:(HLLabelNodeVerticalAlignmentMode)hlVerticalAlignmentMode
-   skVerticalAlignmentMode:(SKLabelVerticalAlignmentMode *)skVerticalAlignmentMode
-               labelHeight:(CGFloat *)labelHeight
-                 yPosition:(CGFloat *)yPosition;
+- (void)getAlignmentForHLVerticalAlignmentMode:(HLLabelNodeVerticalAlignmentMode)hlVerticalAlignmentMode
+                       skVerticalAlignmentMode:(SKLabelVerticalAlignmentMode *)skVerticalAlignmentMode
+                                   labelHeight:(CGFloat *)labelHeight
+                                     yPosition:(CGFloat *)yPosition;
 
 @end

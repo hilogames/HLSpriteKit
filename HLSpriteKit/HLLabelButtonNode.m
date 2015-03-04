@@ -287,18 +287,16 @@ enum {
   CGFloat alignedYPosition;
   if (_automaticHeight) {
     CGFloat effectiveLabelHeight;
-    [_labelNode getAlignmentInNode:self
-        forHLVerticalAlignmentMode:_verticalAlignmentMode
-           skVerticalAlignmentMode:&skVerticalAlignmentMode
-                       labelHeight:&effectiveLabelHeight
-                         yPosition:&alignedYPosition];
+    [_labelNode getAlignmentForHLVerticalAlignmentMode:_verticalAlignmentMode
+                               skVerticalAlignmentMode:&skVerticalAlignmentMode
+                                           labelHeight:&effectiveLabelHeight
+                                             yPosition:&alignedYPosition];
     newSize.height = effectiveLabelHeight + _labelPadY * 2.0f;
   } else {
-    [_labelNode getAlignmentInNode:self
-        forHLVerticalAlignmentMode:_verticalAlignmentMode
-           skVerticalAlignmentMode:&skVerticalAlignmentMode
-                       labelHeight:nil
-                         yPosition:&alignedYPosition];
+    [_labelNode getAlignmentForHLVerticalAlignmentMode:_verticalAlignmentMode
+                               skVerticalAlignmentMode:&skVerticalAlignmentMode
+                                           labelHeight:nil
+                                             yPosition:&alignedYPosition];
   }
   _labelNode.verticalAlignmentMode = skVerticalAlignmentMode;
   _labelNode.position = CGPointMake((0.5f - _backgroundNode.anchorPoint.x) * newSize.width,
