@@ -22,7 +22,7 @@ enum {
 
 - (instancetype)init
 {
-  return [self initWithColor:[SKColor whiteColor] size:CGSizeMake(320.0f, 40.0f)];
+  return [self initWithColor:[SKColor blackColor] size:CGSizeMake(320.0f, 40.0f)];
 }
 
 - (instancetype)initWithColor:(SKColor *)color size:(CGSize)size
@@ -119,6 +119,18 @@ enum {
 - (void)setSize:(CGSize)size
 {
   _backgroundNode.size = size;
+  [self HL_layoutLabelNode];
+}
+
+- (CGPoint)anchorPoint
+{
+  return _backgroundNode.anchorPoint;
+}
+
+- (void)setAnchorPoint:(CGPoint)anchorPoint
+{
+  _backgroundNode.anchorPoint = anchorPoint;
+  [self HL_layoutLabelNode];
 }
 
 - (void)setVerticalAlignmentMode:(HLLabelNodeVerticalAlignmentMode)verticalAlignmentMode
@@ -203,14 +215,14 @@ enum {
 {
   SKLabelVerticalAlignmentMode skVerticalAlignmentMode;
   CGFloat alignedYPosition;
-  [_labelNode getAlignmentInNode:_backgroundNode
-      forHLVerticalAlignmentMode:_verticalAlignmentMode
-         skVerticalAlignmentMode:&skVerticalAlignmentMode
-                     labelHeight:nil
-                       yPosition:&alignedYPosition];
+  [_labelNode getAlignmentForHLVerticalAlignmentMode:_verticalAlignmentMode
+                             skVerticalAlignmentMode:&skVerticalAlignmentMode
+                                         labelHeight:nil
+                                           yPosition:&alignedYPosition];
 
   _labelNode.verticalAlignmentMode = skVerticalAlignmentMode;
-  _labelNode.position = CGPointMake(0.0f, alignedYPosition);
+  _labelNode.position = CGPointMake((0.5f - _backgroundNode.anchorPoint.x) * _backgroundNode.size.width,
+                                    (0.5f - _backgroundNode.anchorPoint.y) * _backgroundNode.size.height + alignedYPosition);
 }
 
 @end

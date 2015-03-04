@@ -37,6 +37,8 @@
 
 @property (nonatomic, assign) CGSize size;
 
+@property (nonatomic, assign) CGPoint anchorPoint;
+
 @property (nonatomic, assign) HLLabelNodeVerticalAlignmentMode verticalAlignmentMode;
 
 /// @name Configuring Appearance
