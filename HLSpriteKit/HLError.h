@@ -20,6 +20,10 @@ typedef NS_ENUM(NSInteger, HLErrorLevel) {
    Warnings.
   */
   HLLevelWarning,
+  /**
+   Information.
+  */
+  HLLevelInfo,
 };
 
 /**
@@ -31,10 +35,16 @@ HLError(HLErrorLevel level, NSString *message)
   // TODO: This is a placeholder for a better mechanism for non-critical error logging,
   // e.g. CocoaLumberjack.
   NSString *levelLabel;
-  if (level == HLLevelWarning) {
-    levelLabel = @"WARNING";
-  } else {
-    levelLabel = @"ERROR";
+  switch (level) {
+    case HLLevelInfo:
+      levelLabel = @"INFO";
+      break;
+    case HLLevelWarning:
+      levelLabel = @"WARNING";
+      break;
+    case HLLevelError:
+      levelLabel = @"ERROR";
+      break;
   }
   NSLog(@"%@: %@", levelLabel, message);
 }
