@@ -382,6 +382,16 @@ enum {
   }
 }
 
+- (void)clearSelectionBlinkCount:(int)blinkCount
+               halfCycleDuration:(NSTimeInterval)halfCycleDuration
+                      completion:(void (^)(void))completion
+{
+  if (_selectionSquareIndex >= 0) {
+    [self setHighlight:NO forSquare:_selectionSquareIndex blinkCount:blinkCount halfCycleDuration:halfCycleDuration completion:completion];
+    _selectionSquareIndex = -1;
+  }
+}
+
 #pragma mark -
 #pragma mark HLGestureTarget
 

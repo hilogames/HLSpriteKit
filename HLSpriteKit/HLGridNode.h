@@ -339,6 +339,15 @@ typedef NS_ENUM(NSInteger, HLGridNodeLayoutMode) {
 */
 - (void)clearSelection;
 
+/**
+ Convenience method for setting the highlight state of a single square with animation.
+ 
+ Clears the highlight of the last-selected square, if any, with animation.
+*/
+- (void)clearSelectionBlinkCount:(int)blinkCount
+               halfCycleDuration:(NSTimeInterval)halfCycleDuration
+                      completion:(void(^)(void))completion;
+
 @end
 
 /**
