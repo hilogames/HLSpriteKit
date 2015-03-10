@@ -227,7 +227,7 @@ static BOOL _sceneAssetsLoaded = NO;
   [gestureRecognizer removeTarget:nil action:NULL];
   CGPoint sceneLocation = [touch locationInNode:self];
 
-  SKNode *node = nil;
+  SKNode *node = self;
   if (_gestureTargetHitTestMode == HLSceneGestureTargetHitTestModeDeepestThenParent) {
     node = [self nodeAtPoint:sceneLocation];
   } else if (_gestureTargetHitTestMode == HLSceneGestureTargetHitTestModeZPositionThenParent) {
