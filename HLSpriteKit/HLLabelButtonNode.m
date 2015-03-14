@@ -31,6 +31,7 @@ enum {
   self = [super init];
   if (self) {
     _backgroundNode = [SKSpriteNode spriteNodeWithColor:color size:size];
+    _backgroundNode.zPosition = HLLabelButtonNodeZPositionLayerBackground * self.zPositionScale / HLLabelButtonNodeZPositionLayerCount;
     [self addChild:_backgroundNode];
     [self HL_labelButtonNodeInitCommon];
   }
@@ -42,6 +43,7 @@ enum {
   self = [super init];
   if (self) {
     _backgroundNode = [SKSpriteNode spriteNodeWithTexture:texture];
+    _backgroundNode.zPosition = HLLabelButtonNodeZPositionLayerBackground * self.zPositionScale / HLLabelButtonNodeZPositionLayerCount;
     [self addChild:_backgroundNode];
     [self HL_labelButtonNodeInitCommon];
   }
@@ -53,6 +55,7 @@ enum {
   self = [super init];
   if (self) {
     _backgroundNode = [SKSpriteNode spriteNodeWithImageNamed:name];
+    _backgroundNode.zPosition = HLLabelButtonNodeZPositionLayerBackground * self.zPositionScale / HLLabelButtonNodeZPositionLayerCount;
     [self addChild:_backgroundNode];
     [self HL_labelButtonNodeInitCommon];
   }
@@ -67,7 +70,7 @@ enum {
   _labelPadX = 0.0f;
   _labelPadY = 0.0f;
   _labelNode = [SKLabelNode labelNodeWithFontNamed:@"Helvetica"];
-  _labelNode.zPosition = self.zPositionScale / HLLabelButtonNodeZPositionLayerCount * HLLabelButtonNodeZPositionLayerLabel;
+  _labelNode.zPosition = HLLabelButtonNodeZPositionLayerLabel * self.zPositionScale / HLLabelButtonNodeZPositionLayerCount;
   [self addChild:_labelNode];
   [self HL_layout];
 }
@@ -177,6 +180,14 @@ enum {
 - (CGPoint)anchorPoint
 {
   return _backgroundNode.anchorPoint;
+}
+
+- (void)setZPositionScale:(CGFloat)zPositionScale
+{
+  [super setZPositionScale:zPositionScale];
+  CGFloat zPositionLayerIncrement = zPositionScale / HLLabelButtonNodeZPositionLayerCount;
+  _backgroundNode.zPosition = HLLabelButtonNodeZPositionLayerBackground * zPositionLayerIncrement;
+  _labelNode.zPosition = HLLabelButtonNodeZPositionLayerLabel * zPositionLayerIncrement;
 }
 
 - (void)setAutomaticWidth:(BOOL)automaticWidth

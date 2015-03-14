@@ -122,6 +122,22 @@ enum {
   return (_squareCount - 1) / _gridWidth + 1;
 }
 
+- (void)setZPositionScale:(CGFloat)zPositionScale
+{
+  [super setZPositionScale:zPositionScale];
+  CGFloat zPositionLayerIncrement = zPositionScale / HLGridNodeZPositionLayerCount;
+  CGFloat squareNodeZPosition = HLGridNodeZPositionLayerSquares * zPositionLayerIncrement;
+  CGFloat contentNodeZPosition = (HLGridNodeZPositionLayerContent - HLGridNodeZPositionLayerSquares) * zPositionLayerIncrement;
+  NSArray *squareNodes = _gridNode.children;
+  for (SKSpriteNode *squareNode in squareNodes) {
+    squareNode.zPosition = squareNodeZPosition;
+    NSArray *squareNodeChildren = squareNode.children;
+    if ([squareNodeChildren count] > 0) {
+      ((SKNode *)(squareNodeChildren.firstObject)).zPosition = contentNodeZPosition;
+    }
+  }
+}
+
 - (void)setContent:(NSArray *)contentNodes
 {
   NSArray *squareNodes = _gridNode.children;
@@ -132,11 +148,12 @@ enum {
   NSUInteger contentCount = [contentNodes count];
   NSUInteger i = 0;
   CGFloat zPositionLayerIncrement = self.zPositionScale / HLGridNodeZPositionLayerCount;
+  CGFloat contentNodeZPosition = (HLGridNodeZPositionLayerSquares - HLGridNodeZPositionLayerContent) * zPositionLayerIncrement;
   while (i < contentCount && i < (NSUInteger)_squareCount) {
     if (contentNodes[i] != [NSNull null]) {
       SKNode *contentNode = (SKNode *)contentNodes[i];
       SKSpriteNode *squareNode = (SKSpriteNode *)squareNodes[i];
-      contentNode.zPosition = zPositionLayerIncrement;
+      contentNode.zPosition = contentNodeZPosition;
       [squareNode addChild:contentNode];
       ++i;
     }
@@ -152,7 +169,7 @@ enum {
   SKSpriteNode *squareNode = squareNodes[(NSUInteger)squareIndex];
   [squareNode removeAllChildren];
   if (contentNode) {
-    contentNode.zPosition = self.zPositionScale / HLGridNodeZPositionLayerCount;
+    contentNode.zPosition = (HLGridNodeZPositionLayerSquares - HLGridNodeZPositionLayerContent) * self.zPositionScale / HLGridNodeZPositionLayerCount;
     [squareNode addChild:contentNode];
   }
 }
@@ -466,6 +483,7 @@ enum {
 
   // Arrange square nodes in grid.
   CGFloat zPositionLayerIncrement = self.zPositionScale / HLGridNodeZPositionLayerCount;
+  CGFloat squareNodeZPosition = HLGridNodeZPositionLayerSquares * zPositionLayerIncrement;
   for (int y = 0; y < gridHeight; ++y) {
 
     int squaresInRow;
@@ -483,7 +501,7 @@ enum {
 
     for (int x = 0; x < squaresInRow; ++x) {
       SKSpriteNode *squareNode = [SKSpriteNode spriteNodeWithColor:_squareColor size:squareSizeInRow];
-      squareNode.zPosition = zPositionLayerIncrement;
+      squareNode.zPosition = squareNodeZPosition;
       squareNode.position = CGPointMake(upperLeftPoint.x + squareSizeInRow.width / 2.0f + x * (squareSizeInRow.width + _squareSeparatorSize),
                                         upperLeftPoint.y - squareSizeInRow.height / 2.0f - y * (squareSizeInRow.height + _squareSeparatorSize));
       [_gridNode addChild:squareNode];

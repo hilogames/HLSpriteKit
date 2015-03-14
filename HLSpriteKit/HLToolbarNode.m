@@ -130,6 +130,20 @@ enum {
   return _toolbarNode.anchorPoint;
 }
 
+- (void)setZPositionScale:(CGFloat)zPositionScale
+{
+  [super setZPositionScale:zPositionScale];
+  CGFloat zPositionLayerIncrement = zPositionScale / HLToolbarNodeZPositionLayerCount;
+  for (SKSpriteNode *squareNode in _squaresNode.children) {
+    squareNode.zPosition = zPositionLayerIncrement;
+    NSArray *squareNodeChildren = squareNode.children;
+    if ([squareNodeChildren count] > 0) {
+      ((SKNode *)(squareNodeChildren.firstObject)).zPosition = zPositionLayerIncrement;
+    }
+  }
+  
+}
+
 - (void)setTools:(NSArray *)toolNodes tags:(NSArray *)toolTags animation:(HLToolbarNodeAnimation)animation
 {
   const NSTimeInterval HLToolbarResizeDuration = 0.15f;

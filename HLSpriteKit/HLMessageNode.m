@@ -67,7 +67,10 @@ enum {
 
 - (void)HL_messageNodeInitCommon:(SKSpriteNode *)backgroundNode
 {
+  CGFloat zPositionLayerIncrement = self.zPositionScale / HLMessageNodeZPositionLayerCount;
+
   _backgroundNode = backgroundNode;
+  _backgroundNode.zPosition = HLMessageNodeZPositionLayerBackground * zPositionLayerIncrement;
   [self addChild:_backgroundNode];
 
   _verticalAlignmentMode = HLLabelNodeVerticalAlignFont;
@@ -76,7 +79,7 @@ enum {
   _messageLingerDuration = 2.0;
 
   _labelNode = [SKLabelNode labelNodeWithFontNamed:@"Courier"];
-  _labelNode.zPosition = self.zPositionScale / HLMessageNodeZPositionLayerCount;
+  _labelNode.zPosition = (HLMessageNodeZPositionLayerLabel - HLMessageNodeZPositionLayerBackground) * zPositionLayerIncrement;
   _labelNode.fontSize = 14.0f;
   _labelNode.fontColor = [UIColor whiteColor];
   [_backgroundNode addChild:_labelNode];
@@ -131,6 +134,14 @@ enum {
 {
   _backgroundNode.anchorPoint = anchorPoint;
   [self HL_layoutLabelNode];
+}
+
+- (void)setZPositionScale:(CGFloat)zPositionScale
+{
+  [super setZPositionScale:zPositionScale];
+  CGFloat zPositionLayerIncrement = zPositionScale / HLMessageNodeZPositionLayerCount;
+  _backgroundNode.zPosition = HLMessageNodeZPositionLayerBackground * zPositionLayerIncrement;
+  _labelNode.zPosition = HLMessageNodeZPositionLayerLabel * zPositionLayerIncrement;
 }
 
 - (void)setVerticalAlignmentMode:(HLLabelNodeVerticalAlignmentMode)verticalAlignmentMode

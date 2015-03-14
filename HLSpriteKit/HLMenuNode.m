@@ -96,6 +96,19 @@ enum {
   return nil;
 }
 
+- (void)setZPositionScale:(CGFloat)zPositionScale
+{
+  [super setZPositionScale:zPositionScale];
+  if (_buttonsNode) {
+    CGFloat zPositionLayerIncrement = zPositionScale / HLMenuNodeZPositionLayerCount;
+    CGFloat buttonNodeZPosition = HLMenuNodeZPositionLayerButtons * zPositionLayerIncrement;
+    for (HLLabelButtonNode *buttonNode in _buttonsNode.children) {
+      buttonNode.zPosition = buttonNodeZPosition;
+      buttonNode.zPositionScale = zPositionLayerIncrement;
+    }
+  }
+}
+
 - (HLMenu *)displayedMenu
 {
   return _currentMenu;
@@ -273,7 +286,7 @@ enum {
 
     HLLabelButtonNode *buttonNode = [buttonPrototype copy];
     buttonNode.text = item.text;
-    buttonNode.zPositionScale = self.zPositionScale / HLMenuNodeZPositionLayerCount;
+    buttonNode.zPositionScale = HLMenuNodeZPositionLayerButtons * self.zPositionScale / HLMenuNodeZPositionLayerCount;
     buttonNode.position = CGPointMake(0.0f, -self.itemSpacing * i);
     [_buttonsNode addChild:buttonNode];
   }

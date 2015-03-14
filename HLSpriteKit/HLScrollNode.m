@@ -117,6 +117,19 @@ enum {
   _contentNode.position = [self HL_contentConstrainedPositionX:_contentNode.position.x positionY:_contentNode.position.y scale:_contentNode.xScale];
 }
 
+- (void)setZPositionScale:(CGFloat)zPositionScale
+{
+  [super setZPositionScale:zPositionScale];
+  if (!_contentNode) {
+    return;
+  }
+  CGFloat zPositionLayerSize = zPositionScale / HLScrollNodeZPositionLayerCount;
+  _contentNode.zPosition = HLScrollNodeZPositionLayerContent * zPositionLayerSize;
+  if ([_contentNode isKindOfClass:[HLComponentNode class]]) {
+    [(HLComponentNode *)_contentNode setZPositionScale:zPositionLayerSize];
+  }
+}
+
 - (void)setContentNode:(SKNode *)contentNode
 {
   if (_contentNode) {
@@ -131,10 +144,10 @@ enum {
 
     [self addChild:_contentNode];
 
-    CGFloat zPositionLayerSize = self.zPositionScale / HLScrollNodeZPositionLayerCount;
-    _contentNode.zPosition = HLScrollNodeZPositionLayerContent * zPositionLayerSize;
+    CGFloat zPositionLayerIncrement = self.zPositionScale / HLScrollNodeZPositionLayerCount;
+    _contentNode.zPosition = HLScrollNodeZPositionLayerContent * zPositionLayerIncrement;
     if ([_contentNode isKindOfClass:[HLComponentNode class]]) {
-      [(HLComponentNode *)_contentNode setZPositionScale:zPositionLayerSize];
+      [(HLComponentNode *)_contentNode setZPositionScale:zPositionLayerIncrement];
     }
 
     CGFloat constrainedScale = [self HL_contentConstrainedScale:_contentScaleOffline];
@@ -291,19 +304,6 @@ enum {
   _contentNode.xScale = constrainedScale;
   _contentNode.yScale = constrainedScale;
   _contentNode.position = [self HL_contentConstrainedPositionX:_contentNode.position.x positionY:_contentNode.position.y scale:constrainedScale];
-}
-
-- (void)setZPositionScale:(CGFloat)zPositionScale
-{
-  [super setZPositionScale:zPositionScale];
-  if (!_contentNode) {
-    return;
-  }
-  CGFloat zPositionLayerSize = zPositionScale / HLScrollNodeZPositionLayerCount;
-  _contentNode.zPosition = HLScrollNodeZPositionLayerContent * zPositionLayerSize;
-  if ([_contentNode isKindOfClass:[HLComponentNode class]]) {
-    [(HLComponentNode *)_contentNode setZPositionScale:zPositionLayerSize];
-  }
 }
 
 - (void)setContentOffset:(CGPoint)contentOffset contentScale:(CGFloat)contentScale

@@ -8,12 +8,10 @@
 
 #import <SpriteKit/SpriteKit.h>
 
-#import "HLComponentNode.h"
-
 /**
  `HLTiledNode` behaves like an `SKSpriteNode` that tiles its texture to a specified size.
 */
-@interface HLTiledNode : HLComponentNode <NSCoding, NSCopying>
+@interface HLTiledNode : SKNode <NSCoding, NSCopying>
 
 /// @name Creating a Tiled Node
 
