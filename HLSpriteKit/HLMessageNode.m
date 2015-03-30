@@ -224,16 +224,9 @@ enum {
 
 - (void)HL_layoutLabelNode
 {
-  SKLabelVerticalAlignmentMode skVerticalAlignmentMode;
-  CGFloat alignedYPosition;
-  [_labelNode getAlignmentForHLVerticalAlignmentMode:_verticalAlignmentMode
-                             skVerticalAlignmentMode:&skVerticalAlignmentMode
-                                         labelHeight:nil
-                                           yPosition:&alignedYPosition];
-
-  _labelNode.verticalAlignmentMode = skVerticalAlignmentMode;
   _labelNode.position = CGPointMake((0.5f - _backgroundNode.anchorPoint.x) * _backgroundNode.size.width,
-                                    (0.5f - _backgroundNode.anchorPoint.y) * _backgroundNode.size.height + alignedYPosition);
+                                    (0.5f - _backgroundNode.anchorPoint.y) * _backgroundNode.size.height);
+  [_labelNode alignForHLVerticalAlignmentMode:_verticalAlignmentMode];
 }
 
 @end

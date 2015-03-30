@@ -54,14 +54,41 @@ typedef NS_ENUM(NSInteger, HLLabelNodeVerticalAlignmentMode) {
 /// @name Calculating Vertical Alignment
 
 /**
- Gets alignment parameters for an `SKLabelNode` to be used by a label node aligned by
+ Gets alignment parameters for this `SKLabelNode` to be used when aligning vertically by
  `HLLabelNodeVerticalAlignmentMode`.
 
  See `HLLabelNodeVerticalAlignmentMode` for details.
+
+ ### Example
+ 
+ Say you have two label nodes.  The first has no descenders: its text is "bdfhklt".
+ The second has no ascenders: "gpqy".  You wisely choose a vertical alignment of
+ `SKLabelVerticalAlignmentModeBaseline`.
+ 
+ Now the baseline of the label nodes can be set, and they will line up.  You want
+ the labels to appear centered within a red background message bar.  Where should
+ you position the baseline?  You try putting it in the (vertical) center of the
+ bar.  It seems way too high, because for your font the ascenders are much taller
+ than the descenders.  So you lower it.  But...by how much?
+ 
+ This method can help.  Choose your alignment mode from `HLLableNodeVerticalAlignmentMode`,
+ then set the position of your label according to the (vertical) center of where you
+ want it.  Then add the returned `yOffset` to the y-position, and use the returned
+ `skVerticalAlignmentMode` as the label's `verticalAlignmentMode`.
 */
 - (void)getAlignmentForHLVerticalAlignmentMode:(HLLabelNodeVerticalAlignmentMode)hlVerticalAlignmentMode
                        skVerticalAlignmentMode:(SKLabelVerticalAlignmentMode *)skVerticalAlignmentMode
                                    labelHeight:(CGFloat *)labelHeight
-                                     yPosition:(CGFloat *)yPosition;
+                                       yOffset:(CGFloat *)yOffset;
+
+/**
+ Sets alignment parameters for an `SKLabelNode`.
+ 
+ Sets the label's `verticalAlignmentMode` and adds an offset to the label's y-position,
+ depending on the value of the passed `HLLabelNodeVerticalAlignmentNode`.
+ 
+ See `HLLabelNodeVerticalAlignmentMode` for details.
+*/
+- (void)alignForHLVerticalAlignmentMode:(HLLabelNodeVerticalAlignmentMode)hlVerticalAlignmentMode;
 
 @end

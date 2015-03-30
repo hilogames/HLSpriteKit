@@ -295,23 +295,23 @@ enum {
   }
 
   SKLabelVerticalAlignmentMode skVerticalAlignmentMode;
-  CGFloat alignedYPosition;
+  CGFloat alignedYOffset;
   if (_automaticHeight) {
     CGFloat effectiveLabelHeight;
     [_labelNode getAlignmentForHLVerticalAlignmentMode:_verticalAlignmentMode
                                skVerticalAlignmentMode:&skVerticalAlignmentMode
                                            labelHeight:&effectiveLabelHeight
-                                             yPosition:&alignedYPosition];
+                                             yOffset:&alignedYOffset];
     newSize.height = effectiveLabelHeight + _labelPadY * 2.0f;
   } else {
     [_labelNode getAlignmentForHLVerticalAlignmentMode:_verticalAlignmentMode
                                skVerticalAlignmentMode:&skVerticalAlignmentMode
                                            labelHeight:nil
-                                             yPosition:&alignedYPosition];
+                                             yOffset:&alignedYOffset];
   }
   _labelNode.verticalAlignmentMode = skVerticalAlignmentMode;
   _labelNode.position = CGPointMake((0.5f - _backgroundNode.anchorPoint.x) * newSize.width,
-                                    (0.5f - _backgroundNode.anchorPoint.y) * newSize.height + alignedYPosition);
+                                    (0.5f - _backgroundNode.anchorPoint.y) * newSize.height + alignedYOffset);
 
   if (_automaticWidth || _automaticHeight) {
     if (_backgroundNode.texture) {
