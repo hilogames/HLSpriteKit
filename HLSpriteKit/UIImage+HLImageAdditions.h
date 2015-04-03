@@ -10,7 +10,7 @@
 
 @interface UIImage (HLImageAdditions)
 
-/// @name Convenience Mehtods for Manipulating Images
+/// @name Convenience Methods for Manipulating Images
 
 /**
  Convenience method for creating a CoreGraphics context, drawing the image scaled to the
