@@ -6,10 +6,6 @@
 //  Copyright (c) 2013 Hilo Games. All rights reserved.
 //
 
-// noob: See notes in notes/objective-c.txt.  I spent time thinking about how this
-// SKNode subclass should detect and respond to gestures from gesture recognizers.
-// The result is a bit awkward and tightly-coupled.
-
 #import "HLToolbarNode.h"
 
 #import "HLMath.h"
@@ -46,6 +42,7 @@ enum {
     _disabledAlpha = 0.4f;
     _automaticWidth = NO;
     _automaticHeight = NO;
+    _automaticToolsScaleLimit = NO;
     _justification = HLToolbarNodeJustificationCenter;
     _backgroundBorderSize = 4.0f;
     _squareSeparatorSize = 4.0f;
@@ -207,17 +204,26 @@ enum {
     shouldSetToolbarSize = YES;
   } else if (_automaticWidth) {
     finalToolsScale = (_toolbarNode.size.height - toolbarConstantSize.height) / naturalToolsSize.height;
+    if (_automaticToolsScaleLimit && finalToolsScale > 1.0f) {
+      finalToolsScale = 1.0f;
+    }
     finalToolbarSize = CGSizeMake(naturalToolsSize.width * finalToolsScale + toolbarConstantSize.width,
                                   _toolbarNode.size.height);
     shouldSetToolbarSize = YES;
   } else if (_automaticHeight) {
     finalToolsScale = (_toolbarNode.size.width - toolbarConstantSize.width) / naturalToolsSize.width;
+    if (_automaticToolsScaleLimit && finalToolsScale > 1.0f) {
+      finalToolsScale = 1.0f;
+    }
     finalToolbarSize = CGSizeMake(_toolbarNode.size.width,
                                   naturalToolsSize.height * finalToolsScale + toolbarConstantSize.height);
     shouldSetToolbarSize = YES;
   } else {
     finalToolsScale = MIN((_toolbarNode.size.width - toolbarConstantSize.width) / naturalToolsSize.width,
                           (_toolbarNode.size.height - toolbarConstantSize.height) / naturalToolsSize.height);
+    if (_automaticToolsScaleLimit && finalToolsScale > 1.0f) {
+      finalToolsScale = 1.0f;
+    }
     finalToolbarSize = _toolbarNode.size;
   }
 

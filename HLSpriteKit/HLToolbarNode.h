@@ -24,7 +24,7 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeJustification) {
 
 /**
  Animation used for setting toolbar tools.
- */
+*/
 typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
   HLToolbarNodeAnimationNone,
   HLToolbarNodeAnimationSlideUp,
@@ -99,18 +99,24 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 
  - If `automaticWidth` and `automaticHeight` are both `YES`, the toolbar will set its
    height to the maximum tool node height (plus relevant pads and borders) and its width
-   to the sum of the tool node widths (plus relevant pads and borders).
+   to the sum of the tool node widths (plus relevant pads and borders).  (The tools won't
+   be scaled; that is, they will remain their natural size.)
 
  - If only `automaticWidth` is `YES`, and toolbar height is fixed, the toolbar will scale
    the tool nodes so that the tallest tool node will fit the toolbar height (plus relevant
-   pads and borders), and the others will be scaled proportionally.
+   pads and borders), and the others will be scaled proportionally.  If
+   `automaticToolsScaleLimit` is `YES`, then the scaling of the tools will not exceed their
+   natural size.
 
  - If only `automaticHeight` is `YES`, and toolbar width is fixed, the toolbar will scale
    the tool nodes proportionally to each other so that the sum of tool node widths will
-   fit the toolbar width (plus relevant pads and borders).
+   fit the toolbar width (plus relevant pads and borders).  If `automaticToolsScaleLimit`
+   is `YES`, then the scaling of the tools will not exceed their natural size.
 
  - Otherwise, with both toolbar width and height fixed, the toolbar will scale the tools
-   proportionally so they fit into both the fixed width and fixed height.
+   proportionally so they fit into both the fixed width and fixed height.  If
+   `automaticToolsScaleLimit` is `YES`, then the scaling of the tools will not exceed their
+   natural size.
 
  @param tools The array of `SKNode`s to be set as tools.
 
@@ -208,6 +214,16 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
  See `setTools:tags:animation:` for details.
 */
 @property (nonatomic, assign) BOOL automaticHeight;
+
+/**
+ Whether the tools should be allowed to scale larger than their natural size during
+ automatic sizing.
+ 
+ Default value is `NO`.
+ 
+ See `setTools:tags:animation:` for details.
+*/
+@property (nonatomic, assign) BOOL automaticToolsScaleLimit;
 
 /**
  Overall toolbar size.
