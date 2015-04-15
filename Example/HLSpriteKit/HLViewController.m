@@ -25,6 +25,7 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+  [super viewWillAppear:animated];
   HLCatalogScene *catalogScene = [[HLCatalogScene alloc] initWithSize:self.view.bounds.size];
   catalogScene.scaleMode = SKSceneScaleModeResizeFill;
   catalogScene.anchorPoint = CGPointMake(0.5f, 0.5f);

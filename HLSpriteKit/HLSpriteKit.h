@@ -24,4 +24,5 @@
 #import "SKLabelNode+HLLabelNodeAdditions.h"
 #import "SKNode+HLLayoutManager.h"
 #import "SKNode+HLGestureTarget.h"
+#import "SKSpriteNode+HLSpriteNodeAdditions.h"
 #import "UIImage+HLImageAdditions.h"

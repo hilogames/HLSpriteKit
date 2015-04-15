@@ -1,5 +1,5 @@
 PODS:
-  - HLSpriteKit (0.9.2)
+  - HLSpriteKit (0.9.6)
 
 DEPENDENCIES:
   - HLSpriteKit (from `../`)
@@ -9,6 +9,6 @@ EXTERNAL SOURCES:
     :path: ../
 
 SPEC CHECKSUMS:
-  HLSpriteKit: 32ef7947c64d2a35923a4289054f25c8a89b3646
+  HLSpriteKit: 877cfbe3ddabaf6d695e824d480b84353599bdca
 
 COCOAPODS: 0.34.4
