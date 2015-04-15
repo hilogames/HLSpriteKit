@@ -157,6 +157,10 @@ typedef NS_ENUM(NSInteger, HLGridNodeLayoutMode) {
 
  The square node that holds each content node has `anchorPoint` `(0.5, 0.5)`.  Typically
  the size of the square is `squareSize`; see `HLGridNodeLayoutMode` for exceptions.
+
+ Any `SKNode` descendant may be used as a tool, but any tools which conform to `HLToolNode`
+ can customize their behavior and/or appearance for certain toolbar functions (for example,
+ setting enabled or highlight); see `HLToolNode` for details.
 */
 - (void)setContent:(NSArray *)contentNodes;
 

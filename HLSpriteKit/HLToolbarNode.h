@@ -91,6 +91,10 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 
  The square node that holds each tool has `anchorPoint` `(0.5, 0.5)`.
 
+ Any `SKNode` descendant may be used as a tool, but any tools which conform to `HLToolNode`
+ can customize their behavior and/or appearance for certain toolbar functions (for example,
+ setting enabled or highlight); see `HLToolNode` for details.
+
  Each tool node is expected to have a size selector which reports its desired size.  (The
  size is expected to behave like `[SKSpriteNode size]` property, where the `SKNode`
  `xScale` and `yScale` are already reflected in the reported size, but the `SKNode`

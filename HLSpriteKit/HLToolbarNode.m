@@ -9,6 +9,7 @@
 #import "HLToolbarNode.h"
 
 #import "HLMath.h"
+#import "HLToolNode.h"
 
 typedef struct {
   BOOL enabled;
@@ -130,15 +131,7 @@ enum {
 - (void)setZPositionScale:(CGFloat)zPositionScale
 {
   [super setZPositionScale:zPositionScale];
-  CGFloat zPositionLayerIncrement = zPositionScale / HLToolbarNodeZPositionLayerCount;
-  for (SKSpriteNode *squareNode in _squaresNode.children) {
-    squareNode.zPosition = zPositionLayerIncrement;
-    NSArray *squareNodeChildren = squareNode.children;
-    if ([squareNodeChildren count] > 0) {
-      ((SKNode *)(squareNodeChildren.firstObject)).zPosition = zPositionLayerIncrement;
-    }
-  }
-  
+  [self HL_layoutZ];
 }
 
 - (void)setTools:(NSArray *)toolNodes tags:(NSArray *)toolTags animation:(HLToolbarNodeAnimation)animation
@@ -262,7 +255,6 @@ enum {
   // Set tools (scaled and positioned appropriately).
   CGFloat x = _toolbarNode.anchorPoint.x * -finalToolbarSize.width + _backgroundBorderSize + justificationOffset;
   CGFloat y = _toolbarNode.anchorPoint.y * -finalToolbarSize.height + finalToolbarSize.height / 2.0f;
-  CGFloat zPositionLayerIncrement = self.zPositionScale / HLToolbarNodeZPositionLayerCount;
   for (NSUInteger i = 0; i < toolCount; ++i) {
     SKNode *toolNode = toolNodes[i];
     NSString *toolTag = toolTags[i];
@@ -281,13 +273,11 @@ enum {
     squareNode.xScale = finalToolsScale;
     squareNode.yScale = finalToolsScale;
     squareNode.alpha = _enabledAlpha;
-    squareNode.zPosition = zPositionLayerIncrement;
     squareNode.position = CGPointMake(x + finalToolSize.width / 2.0f + _toolPad, y);
     [squaresNode addChild:squareNode];
 
     //toolNode.xScale *= finalToolsScale;
     //toolNode.yScale *= finalToolsScale;
-    toolNode.zPosition = zPositionLayerIncrement;
     [squareNode addChild:toolNode];
 
     x += finalToolSize.width + _toolPad * 2 + _squareSeparatorSize;
@@ -300,6 +290,7 @@ enum {
   [self HL_freeSquareState];
   [self HL_allocateSquareState];
   [_cropNode addChild:squaresNode];
+  [self HL_layoutZ];
 
   if (animation == HLToolbarNodeAnimationNone) {
     if (oldSquaresNode) {
@@ -382,10 +373,17 @@ enum {
     if ([squareNode.name isEqualToString:toolTag]) {
       [squareNode removeActionForKey:@"setHighlight"];
       _squareState[s].highlight = highlight;
-      if (highlight) {
-        squareNode.color = _highlightColor;
+      SKNode *toolNode = (SKNode *)squareNode.children.firstObject;
+      if (toolNode
+          && [toolNode conformsToProtocol:@protocol(HLToolNode)]
+          && [toolNode respondsToSelector:@selector(hlToolSetHighlight:)]) {
+        [(id <HLToolNode>)toolNode hlToolSetHighlight:highlight];
       } else {
-        squareNode.color = _squareColor;
+        if (highlight) {
+          squareNode.color = _highlightColor;
+        } else {
+          squareNode.color = _squareColor;
+        }
       }
       break;
     }
@@ -401,10 +399,17 @@ enum {
       [squareNode removeActionForKey:@"setHighlight"];
       BOOL highlight = !_squareState[s].highlight;
       _squareState[s].highlight = highlight;
-      if (highlight) {
-        squareNode.color = _highlightColor;
+      SKNode *toolNode = (SKNode *)squareNode.children.firstObject;
+      if (toolNode
+          && [toolNode conformsToProtocol:@protocol(HLToolNode)]
+          && [toolNode respondsToSelector:@selector(hlToolSetHighlight:)]) {
+        [(id <HLToolNode>)toolNode hlToolSetHighlight:highlight];
       } else {
-        squareNode.color = _squareColor;
+        if (highlight) {
+          squareNode.color = _highlightColor;
+        } else {
+          squareNode.color = _squareColor;
+        }
       }
       break;
     }
@@ -429,15 +434,28 @@ enum {
     return;
   }
 
-  [squareNode removeActionForKey:@"setHighlight"];
-
   BOOL startingHighlight = _squareState[s].highlight;
   _squareState[s].highlight = finalHighlight;
+  
+  [squareNode removeActionForKey:@"setHighlight"];
+  
+  SKAction *blinkIn;
+  SKAction *blinkOut;
+  SKNode *toolNode = (SKNode *)squareNode.children.firstObject;
+  if (toolNode
+      && [toolNode conformsToProtocol:@protocol(HLToolNode)]
+      && [toolNode respondsToSelector:@selector(hlToolSetHighlight:)]) {
+    blinkIn = [SKAction sequence:@[ [SKAction runBlock:^{ [(id <HLToolNode>)toolNode hlToolSetHighlight:!startingHighlight]; }],
+                                    [SKAction waitForDuration:halfCycleDuration] ]];
+    blinkOut = [SKAction sequence:@[ [SKAction runBlock:^{ [(id <HLToolNode>)toolNode hlToolSetHighlight:startingHighlight]; }],
+                                     [SKAction waitForDuration:halfCycleDuration] ]];
+  } else {
+    blinkIn = [SKAction colorizeWithColor:(startingHighlight ? _squareColor : _highlightColor) colorBlendFactor:1.0f duration:halfCycleDuration];
+    blinkIn.timingMode = (startingHighlight ? SKActionTimingEaseOut : SKActionTimingEaseIn);
+    blinkOut = [SKAction colorizeWithColor:(startingHighlight ? _highlightColor : _squareColor) colorBlendFactor:1.0f duration:halfCycleDuration];
+    blinkOut.timingMode = (startingHighlight ? SKActionTimingEaseIn : SKActionTimingEaseOut);
+  }
 
-  SKAction *blinkIn = [SKAction colorizeWithColor:(startingHighlight ? _squareColor : _highlightColor) colorBlendFactor:1.0f duration:halfCycleDuration];
-  blinkIn.timingMode = SKActionTimingEaseIn;
-  SKAction *blinkOut = [SKAction colorizeWithColor:(startingHighlight ? _highlightColor : _squareColor) colorBlendFactor:1.0f duration:halfCycleDuration];
-  blinkOut.timingMode = SKActionTimingEaseOut;
   NSMutableArray *blinkActions = [NSMutableArray array];
   for (int b = 0; b < blinkCount; ++b) {
     [blinkActions addObject:blinkIn];
@@ -468,10 +486,17 @@ enum {
   for (SKSpriteNode *squareNode in _squaresNode.children) {
     if ([squareNode.name isEqualToString:toolTag]) {
       _squareState[s].enabled = enabled;
-      if (enabled) {
-        squareNode.alpha = _enabledAlpha;
+      SKNode *toolNode = (SKNode *)squareNode.children.firstObject;
+      if (toolNode
+          && [toolNode conformsToProtocol:@protocol(HLToolNode)]
+          && [toolNode respondsToSelector:@selector(hlToolSetEnabled:)]) {
+        [(id <HLToolNode>)toolNode hlToolSetEnabled:enabled];
       } else {
-        squareNode.alpha = _disabledAlpha;
+        if (enabled) {
+          squareNode.alpha = _enabledAlpha;
+        } else {
+          squareNode.alpha = _disabledAlpha;
+        }
       }
       break;
     }
@@ -595,6 +620,22 @@ enum {
 - (void)HL_freeSquareState
 {
   free(_squareState);
+}
+
+- (void)HL_layoutZ
+{
+  CGFloat zPositionLayerIncrement = self.zPositionScale / HLToolbarNodeZPositionLayerCount;
+  for (SKSpriteNode *squareNode in _squaresNode.children) {
+    squareNode.zPosition = zPositionLayerIncrement;
+    NSArray *squareNodeChildren = squareNode.children;
+    SKNode *toolNode = (SKNode *)(squareNodeChildren.firstObject);
+    if (toolNode) {
+      toolNode.zPosition = zPositionLayerIncrement;
+      if ([toolNode isKindOfClass:[HLComponentNode class]]) {
+        ((HLComponentNode *)toolNode).zPositionScale = zPositionLayerIncrement;
+      }
+    }
+  }
 }
 
 @end

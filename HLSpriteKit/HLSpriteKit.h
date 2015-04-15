@@ -20,6 +20,7 @@
 #import "HLTableLayoutManager.h"
 #import "HLTextureStore.h"
 #import "HLTiledNode.h"
+#import "HLToolNode.h"
 #import "HLToolbarNode.h"
 #import "SKLabelNode+HLLabelNodeAdditions.h"
 #import "SKNode+HLLayoutManager.h"
