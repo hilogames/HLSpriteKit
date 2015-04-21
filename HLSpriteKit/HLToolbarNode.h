@@ -160,7 +160,6 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 /**
  Main toolbar color, showing as background behind tool squares.
 
- Changes will not take effect until the next call to `setTools:tags:animation:`.
  Default is `[SKColor colorWithWhite:0.0 alpha:0.5]`.
 */
 @property (nonatomic, strong) SKColor *backgroundColor;
@@ -168,7 +167,6 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 /**
  Tool square color, showing behind each tool node set.
 
- Changes will not take effect until the next call to `setTools:tags:animation:`.
  Default is `[SKColor colorWithWhite:0.7 alpha:0.5]`.
 */
 @property (nonatomic, strong) SKColor *squareColor;
@@ -176,16 +174,14 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 /**
  Tool square color when highlighted.
 
- Changes will not take effect for already-highlighted tools until the next call to
- `setTools:tags:animation:`.  Default is `[SKColor colorWithWhite:1.0 alpha:0.8]`.
+ Default is `[SKColor colorWithWhite:1.0 alpha:0.8]`.
 */
 @property (nonatomic, strong) SKColor *highlightColor;
 
 /**
  Alpha value for tool square (and inherited by tool node in square) when tool is enabled.
 
- Changes will not take effect for already-enabled tools until the next call to
- `setTools:tags:animation:`.
+ Default is `1.0`.
 */
 @property (nonatomic, assign) CGFloat enabledAlpha;
 
@@ -193,13 +189,22 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
  Alpha value for tool square (and inherited by tool node in square) when tool is
  disabled.
 
- Changes won't take effect until after the next call to `setTools:tags:animation:`; since
- all tools are enabled in `setTools:tags:animation:`, already-disabled tools will not be
- affected.
+ Default is `0.4`.
 */
 @property (nonatomic, assign) CGFloat disabledAlpha;
 
 /// @name Configuring Toolbar Geometry
+
+/**
+ Effects layout according to all object properties.
+ 
+ See `setTools:tags:animation:` for details.
+ 
+ In general, this method (or `setTools:tags:animation:`) must be called after modifying
+ any geometry-related (layout-affecting) object property.  Requiring an explicit call
+ allows the caller to set multiple properties at the same time efficiently.
+ */
+- (void)layoutToolsAnimation:(HLToolbarNodeAnimation)animation;
 
 /**
  Whether the toolbar should automatically size its width according to its tools.
@@ -207,6 +212,9 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
  Default value is `NO`.
 
  See `setTools:tags:animation:` for details.
+ 
+ Changes will not take effect until the next call to `layoutTools:animation:` or
+ `setTools:tags:animation:`.
 */
 @property (nonatomic, assign) BOOL automaticWidth;
 
@@ -216,6 +224,9 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
  Default value is `NO`.
 
  See `setTools:tags:animation:` for details.
+
+ Changes will not take effect until the next call to `layoutTools:animation:` or
+ `setTools:tags:animation:`.
 */
 @property (nonatomic, assign) BOOL automaticHeight;
 
@@ -226,19 +237,29 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
  Default value is `NO`.
  
  See `setTools:tags:animation:` for details.
+
+ Changes will not take effect until the next call to `layoutTools:animation:` or
+ `setTools:tags:animation:`.
 */
 @property (nonatomic, assign) BOOL automaticToolsScaleLimit;
 
 /**
  Overall toolbar size.
 
- If `automaticWidth` or `automaticHeight` are `YES`, the relevant dimension may be changed
- during calls to `setTools:tags:animation:`.
+ Changes will not take effect until the next call to `layoutTools:animation:` or
+ `setTools:tags:animation:`.
+
+ After layout, this property will be set to the actual size of the toolbar.  In
+ particular, a caller-provided width or height will probably be changed during
+ layout if `automaticWidth` or `automaticHeight` (respectively) is set to YES.
 */
 @property (nonatomic, assign) CGSize size;
 
 /**
  The anchor point used by the toolbar.
+ 
+ Changes will not take effect until the next call to `layoutTools:animation:` or
+ `setTools:tags:animation:`.
 */
 @property (nonatomic, assign) CGPoint anchorPoint;
 
@@ -246,6 +267,9 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
  The justification of tools within the toolbar.
 
  See `HLToolbarNodeJustification`.
+ 
+ Changes will not take effect until the next call to `layoutTools:animation:` or
+ `setTools:tags:animation:`.
 */
 @property (nonatomic, assign) HLToolbarNodeJustification justification;
 
@@ -255,7 +279,8 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 
  Default value is `4.0`.
 
- Changes will not take effect until the next call to `setTools:tags:animation:`.
+ Changes will not take effect until the next call to `layoutTools:animation:` or
+ `setTools:tags:animation:`.
 */
 @property (nonatomic, assign) CGFloat backgroundBorderSize;
 
@@ -264,7 +289,8 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 
  Default value is `4.0`.
 
- Changes will not take effect until the next call to `setTools:tags:animation:`.
+ Changes will not take effect until the next call to `layoutTools:animation:` or
+ `setTools:tags:animation:`.
 */
 @property (nonatomic, assign) CGFloat squareSeparatorSize;
 
@@ -272,8 +298,10 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
  The extra space added between the edge of the tool square (made for each tool) and the
  user-supplied tool node itself.
 
- Negative values mean the tool square will be drawn smaller than the tool node.  Changes
- will not take effect until the next call to `setTools:tags:animation:`.
+ Negative values mean the tool square will be drawn smaller than the tool node.
+ 
+ Changes will not take effect until the next call to `layoutTools:animation:` or
+ `setTools:tags:animation:`.
 */
 @property (nonatomic, assign) CGFloat toolPad;
 
