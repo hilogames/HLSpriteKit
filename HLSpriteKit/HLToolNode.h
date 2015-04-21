@@ -8,7 +8,7 @@
 
 #import <SpriteKit/SpriteKit.h>
 
-#import "HLSpriteKit/HLComponentNode.h"
+#import "HLComponentNode.h"
 
 /**
  Defines tool-like interaction, where a "tool" is understood to be a button
