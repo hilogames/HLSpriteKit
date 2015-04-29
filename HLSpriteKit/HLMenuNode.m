@@ -323,7 +323,7 @@ enum {
     [_buttonsNode runAction:animationAction];
 
     if (oldButtonsNode) {
-      // note: As of iOS8, doing the remove using an SKAction causes EXC_BAD_ACCESS.
+      // note: As of iOS8, doing the remove using an [SKAction removeFromParent] causes EXC_BAD_ACCESS.
       [oldButtonsNode runAction:animationAction completion:^{
         [oldButtonsNode removeFromParent];
       }];

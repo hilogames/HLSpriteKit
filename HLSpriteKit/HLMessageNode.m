@@ -75,6 +75,7 @@ enum {
 
   _verticalAlignmentMode = HLLabelNodeVerticalAlignFont;
 
+  _messageAnimation = HLMessageNodeAnimationSlideLeft;
   _messageAnimationDuration = 0.1;
   _messageLingerDuration = 2.0;
 
@@ -184,31 +185,65 @@ enum {
 
 - (void)showMessage:(NSString *)message parent:(SKNode *)parent
 {
-  _labelNode.text = message;
-
-  if (!self.parent || self.parent != parent) {
+  BOOL newlyAdded;
+  if (!self.parent) {
     [parent addChild:self];
-    _backgroundNode.position = CGPointMake(_backgroundNode.size.width, 0.0f);
-    SKAction *slideIn = [SKAction moveToX:0.0f duration:_messageAnimationDuration];
-    SKAction *wait = [SKAction waitForDuration:_messageLingerDuration];
-    SKAction *slideOut = [SKAction moveToX:-_backgroundNode.size.width duration:_messageAnimationDuration];
-    SKAction *remove = [SKAction runBlock:^{
-      [self removeFromParent];
-    }];
-    SKAction *show = [SKAction sequence:@[slideIn, wait, slideOut, remove ]];
-    [_backgroundNode runAction:show withKey:@"show"];
+    newlyAdded = YES;
+  } else if (self.parent != parent) {
+    [self removeFromParent];
+    [parent addChild:self];
+    newlyAdded = YES;
   } else {
-    // note: Remove animation and reset position to home (in case the animation was in the middle of running).
+    newlyAdded = NO;
+  }
+
+  _labelNode.text = message;
+  
+  // note: Reset state for ALL possible animation types; the _messageAnimation
+  // type could have changed since it was last animated.  If this gets too crazy,
+  // though, then another solution can be found.
+  if (!newlyAdded) {
     [_backgroundNode removeActionForKey:@"show"];
     _backgroundNode.position = CGPointZero;
-    SKAction *wait = [SKAction waitForDuration:_messageLingerDuration];
-    SKAction *slideOut = [SKAction moveToX:-_backgroundNode.size.width duration:_messageAnimationDuration];
-    SKAction *remove = [SKAction runBlock:^{
-      [self removeFromParent];
-    }];
-    SKAction *show = [SKAction sequence:@[ wait, slideOut, remove ]];
-    [_backgroundNode runAction:show withKey:@"show"];
+    _backgroundNode.alpha = 1.0f;
   }
+
+  NSMutableArray *showActions = [NSMutableArray array];
+  switch (_messageAnimation) {
+    case HLMessageNodeAnimationSlideLeft: {
+      if (newlyAdded) {
+        _backgroundNode.position = CGPointMake(_backgroundNode.size.width, 0.0f);
+        [showActions addObject:[SKAction moveToX:0.0f duration:_messageAnimationDuration]];
+      }
+      [showActions addObject:[SKAction waitForDuration:_messageLingerDuration]];
+      [showActions addObject:[SKAction moveToX:-_backgroundNode.size.width duration:_messageAnimationDuration]];
+      break;
+    }
+    case HLMessageNodeAnimationSlideRight: {
+      if (newlyAdded) {
+        _backgroundNode.position = CGPointMake(-_backgroundNode.size.width, 0.0f);
+        [showActions addObject:[SKAction moveToX:0.0f duration:_messageAnimationDuration]];
+      }
+      [showActions addObject:[SKAction waitForDuration:_messageLingerDuration]];
+      [showActions addObject:[SKAction moveToX:_backgroundNode.size.width duration:_messageAnimationDuration]];
+      break;
+    }
+    case HLMessageNodeAnimationFade: {
+      if (newlyAdded) {
+        _backgroundNode.alpha = 0.0f;
+        [showActions addObject:[SKAction fadeInWithDuration:_messageAnimationDuration]];
+      }
+      [showActions addObject:[SKAction waitForDuration:_messageLingerDuration]];
+      [showActions addObject:[SKAction fadeOutWithDuration:_messageAnimationDuration]];
+      break;
+    }
+  }
+  // note: As of iOS8, doing the remove using an [SKAction removeFromParent] causes EXC_BAD_ACCESS.
+  [showActions addObject:[SKAction runBlock:^{
+    [self removeFromParent];
+  }]];
+  [_backgroundNode runAction:[SKAction sequence:showActions] withKey:@"show"];
+
   if (_messageSoundFile) {
     [_backgroundNode runAction:[SKAction playSoundFileNamed:_messageSoundFile waitForCompletion:NO]];
   }

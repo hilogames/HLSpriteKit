@@ -11,6 +11,12 @@
 #import "HLComponentNode.h"
 #import "SKLabelNode+HLLabelNodeAdditions.h"
 
+typedef NS_ENUM(NSUInteger, HLMessageNodeAnimation) {
+  HLMessageNodeAnimationSlideLeft,
+  HLMessageNodeAnimationSlideRight,
+  HLMessageNodeAnimationFade,
+};
+
 /**
  HLMessageNode shows a text message over a solid or textured background, with some
  animation options.
@@ -50,6 +56,8 @@
 @property (nonatomic, strong) SKColor *fontColor;
 
 /// @name Managing Animation
+
+@property (nonatomic, assign) HLMessageNodeAnimation messageAnimation;
 
 @property (nonatomic, assign) NSTimeInterval messageAnimationDuration;
 
