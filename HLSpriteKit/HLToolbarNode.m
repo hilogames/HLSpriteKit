@@ -538,7 +538,7 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
   int squareCount = (int)[_squaresNode.children count];
   _squareState = (HLToolbarNodeSquareState *)malloc(sizeof(HLToolbarNodeSquareState) * (size_t)squareCount);
   for (int s = 0; s < squareCount; ++s) {
-    _squareState[s].enabled = NO;
+    _squareState[s].enabled = YES;
     _squareState[s].highlight = NO;
   }
 }

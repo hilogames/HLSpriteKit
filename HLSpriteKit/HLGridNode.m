@@ -482,7 +482,7 @@ enum {
 {
   _squareState = (HLGridNodeSquareState *)malloc(sizeof(HLGridNodeSquareState) * (size_t)_squareCount);
   for (int s = 0; s < _squareCount; ++s) {
-    _squareState[s].enabled = NO;
+    _squareState[s].enabled = YES;
     _squareState[s].highlight = NO;
   }
 }
