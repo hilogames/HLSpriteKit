@@ -204,7 +204,7 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
   SKNode *oldSquaresNode = _squaresNode;
   _squaresNode = squaresNode;
   // note: Allocate square state; note that it will be initialized as enabled and unhighlighted,
-  // as in code above.
+  // as in code above.  Assume any HLToolNodes passed are passed enabled and unhighlighted.
   [self HL_freeSquareState];
   [self HL_allocateSquareState];
   [_cropNode addChild:squaresNode];
@@ -248,6 +248,35 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
       }];
       // note: See containsPoint; after this animation the accumulated from of the crop node is unreliable.
     }
+  }
+}
+
+- (void)setTool:(SKNode *)toolNode forTag:(NSString *)toolTag
+{
+  int s = 0;
+  for (SKSpriteNode *squareNode in _squaresNode.children) {
+    if ([squareNode.name isEqualToString:toolTag]) {
+
+      [squareNode removeAllChildren];
+      [squareNode addChild:toolNode];
+
+      // note: Assume any HLToolNode passed is enabled and unhighlighted.
+      if (!_squareState[s].enabled
+          && toolNode
+          && [toolNode conformsToProtocol:@protocol(HLToolNode)]
+          && [toolNode respondsToSelector:@selector(hlToolSetEnabled:)]) {
+        [(id <HLToolNode>)toolNode hlToolSetEnabled:NO];
+      }
+      if (_squareState[s].highlight
+          && toolNode
+          && [toolNode conformsToProtocol:@protocol(HLToolNode)]
+          && [toolNode respondsToSelector:@selector(hlToolSetHighlight:)]) {
+        [(id <HLToolNode>)toolNode hlToolSetHighlight:YES];
+      }
+      
+      break;
+    }
+    ++s;
   }
 }
 

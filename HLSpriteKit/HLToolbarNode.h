@@ -93,7 +93,8 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 
  Any `SKNode` descendant may be used as a tool, but any tools which conform to `HLToolNode`
  can customize their behavior and/or appearance for certain toolbar functions (for example,
- setting enabled or highlight); see `HLToolNode` for details.
+ setting enabled or highlight); see `HLToolNode` for details.  Any `HLToolNode`s passed
+ are assumed to be in a default state (enabled and unhighlighted).
 
  Each tool node is expected to have a size selector which reports its desired size.  (The
  size is expected to behave like `[SKSpriteNode size]` property, where the `SKNode`
@@ -122,7 +123,7 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
    `automaticToolsScaleLimit` is `YES`, then the scaling of the tools will not exceed their
    natural size.
 
- @param tools The array of `SKNode`s to be set as tools.
+ @param toolNodes The array of `SKNode`s to be set as tools.
 
  @param toolTags An array of same length as tools containing strings to be used as
                  identifiers for the tools.  These tags (rather than, for example, indexes
@@ -131,7 +132,20 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 
  @param animation Animation, if any.  See `HLToolbarNodeAnimation`.
 */
-- (void)setTools:(NSArray *)tools tags:(NSArray *)toolTags animation:(HLToolbarNodeAnimation)animation;
+- (void)setTools:(NSArray *)toolNodes tags:(NSArray *)toolTags animation:(HLToolbarNodeAnimation)animation;
+
+/**
+ Replaces an already-set tool node in the toolbar with a new tool node.
+ 
+ Preserves the old tool's tag and state (enabled and highlight).
+ 
+ If an `HLToolNode` is passed, it is assumed to be in a default state (enabled and unhighlighted).
+ 
+ Does not automatically recalculate layout; if the layout is changed (for instance, if the
+ new tool node is a different size than the old one in a way that matters), then the owner
+ should call `layoutToolsAnimation:`.
+*/
+- (void)setTool:(SKNode *)toolNode forTag:(NSString *)toolTag;
 
 /**
  Returns the tag of the tool at the passed location, or `nil` for none.
