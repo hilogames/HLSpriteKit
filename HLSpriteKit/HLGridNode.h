@@ -261,9 +261,11 @@ typedef NS_ENUM(NSInteger, HLGridNodeLayoutMode) {
 /**
  Sets the enabled state of a square.
 
- The alpha value of the square will be set either to `enabledAlpha` or `disabledAlpha`
- regardless of the square's current color.  Throws an exception if the square index is out
- of bounds.
+ If the content node conforms to `HLToolNode` implementing `hlToolSetEnabled`, then that
+ method will be called.  Otherwise, the alpha value of the square will be set either
+ to `enabledAlpha` or `disabledAlpha`.
+
+ Throws an exception if the square index is out of bounds.
 */
 - (void)setEnabled:(BOOL)enabled forSquare:(int)squareIndex;
 
@@ -277,16 +279,22 @@ typedef NS_ENUM(NSInteger, HLGridNodeLayoutMode) {
 /**
  Sets the highlight state of a square.
 
- The color of the square will be set either to `highlightColor` or `squareColor`.  Throws
- an exception if the square index is out of bounds.
+ If the content node conforms to `HLToolNode` implementing `hlToolSetHighlight`, then that
+ method will be called.  Otherwise, the color of the square will be set either
+ to `highlightColor` or `squareColor`.
+
+ Throws an exception if the square index is out of bounds.
 */
 - (void)setHighlight:(BOOL)highlight forSquare:(int)squareIndex;
 
 /**
  Sets the highlight state of a square with animation.
 
- The color of the square will be set either to `highlightColor` or `squareColor`.  Throws
- an exception if the square index is out of bounds.
+ If the content node conforms to `HLToolNode` implementing `hlToolSetHighlight`, then that
+ method will be called.  Otherwise, the color of the square will be set either
+ to `highlightColor` or `squareColor`.
+
+ Throws an exception if the square index is out of bounds.
 
  @param finalHighlight The intended highlight value for the square when the animation is
                        complete.
@@ -298,7 +306,7 @@ typedef NS_ENUM(NSInteger, HLGridNodeLayoutMode) {
  @param blinkCount The number of times the highlight value will cycle from its current
                    value to the final value.
 
- @param halfCycleDuration The amount of time it takes to fade in or fade out during a
+ @param halfCycleDuration The amount of time it takes to cycle the highlight during a
                           blink; a full blink will be completed in twice this duration.
 
  @param completion A block that will be run when the animation is complete.
@@ -345,7 +353,7 @@ typedef NS_ENUM(NSInteger, HLGridNodeLayoutMode) {
 
 /**
  Convenience method for setting the highlight state of a single square with animation.
- 
+
  Clears the highlight of the last-selected square, if any, with animation.
 */
 - (void)clearSelectionBlinkCount:(int)blinkCount

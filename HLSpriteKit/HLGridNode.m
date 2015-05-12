@@ -357,7 +357,7 @@ enum {
   _squareState[squareIndex].highlight = finalHighlight;
 
   [squareNode removeActionForKey:@"setHighlight"];
-  
+
   SKAction *blinkIn;
   SKAction *blinkOut;
   SKNode *contentNode = (SKNode *)(squareNode.children.firstObject);
@@ -374,7 +374,7 @@ enum {
     blinkOut = [SKAction colorizeWithColor:(startingHighlight ? _highlightColor : _squareColor) colorBlendFactor:1.0f duration:halfCycleDuration];
     blinkOut.timingMode = (startingHighlight ? SKActionTimingEaseIn : SKActionTimingEaseOut);
   }
-  
+
   NSMutableArray *blinkActions = [NSMutableArray array];
   for (int b = 0; b < blinkCount; ++b) {
     [blinkActions addObject:blinkIn];
