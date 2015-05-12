@@ -47,6 +47,7 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
     _automaticWidth = NO;
     _automaticHeight = NO;
     _automaticToolsScaleLimit = NO;
+    _anchorPoint = CGPointMake(0.5f, 0.5f);
     _justification = HLToolbarNodeJustificationCenter;
     _backgroundBorderSize = 4.0f;
     _squareSeparatorSize = 4.0f;

@@ -257,6 +257,8 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 
 /**
  The anchor point used by the toolbar.
+
+ Default value is `(0.5, 0.5)`.
  
  Changes will not take effect until the next call to `layoutTools:animation:` or
  `setTools:tags:animation:`.
@@ -266,7 +268,7 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 /**
  The justification of tools within the toolbar.
 
- See `HLToolbarNodeJustification`.
+ Default value is `HLToolbarNodeJustificationCenter`.  See `HLToolbarNodeJustification`.
  
  Changes will not take effect until the next call to `layoutTools:animation:` or
  `setTools:tags:animation:`.
@@ -297,6 +299,8 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 /**
  The extra space added between the edge of the tool square (made for each tool) and the
  user-supplied tool node itself.
+
+ Default value is `0.0`.
 
  Negative values mean the tool square will be drawn smaller than the tool node.
  
