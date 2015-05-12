@@ -197,6 +197,9 @@ enum {
     newlyAdded = NO;
   }
 
+  const NSTimeInterval GLTimingEpsilon = 0.001;
+  BOOL lingerForever = (_messageLingerDuration < GLTimingEpsilon);
+
   _labelNode.text = message;
   
   // note: Reset state for ALL possible animation types; the _messageAnimation
@@ -215,8 +218,10 @@ enum {
         _backgroundNode.position = CGPointMake(_backgroundNode.size.width, 0.0f);
         [showActions addObject:[SKAction moveToX:0.0f duration:_messageAnimationDuration]];
       }
-      [showActions addObject:[SKAction waitForDuration:_messageLingerDuration]];
-      [showActions addObject:[SKAction moveToX:-_backgroundNode.size.width duration:_messageAnimationDuration]];
+      if (!lingerForever) {
+        [showActions addObject:[SKAction waitForDuration:_messageLingerDuration]];
+        [showActions addObject:[SKAction moveToX:-_backgroundNode.size.width duration:_messageAnimationDuration]];
+      }
       break;
     }
     case HLMessageNodeAnimationSlideRight: {
@@ -224,8 +229,10 @@ enum {
         _backgroundNode.position = CGPointMake(-_backgroundNode.size.width, 0.0f);
         [showActions addObject:[SKAction moveToX:0.0f duration:_messageAnimationDuration]];
       }
-      [showActions addObject:[SKAction waitForDuration:_messageLingerDuration]];
-      [showActions addObject:[SKAction moveToX:_backgroundNode.size.width duration:_messageAnimationDuration]];
+      if (!lingerForever) {
+        [showActions addObject:[SKAction waitForDuration:_messageLingerDuration]];
+        [showActions addObject:[SKAction moveToX:_backgroundNode.size.width duration:_messageAnimationDuration]];
+      }
       break;
     }
     case HLMessageNodeAnimationFade: {
@@ -233,16 +240,22 @@ enum {
         _backgroundNode.alpha = 0.0f;
         [showActions addObject:[SKAction fadeInWithDuration:_messageAnimationDuration]];
       }
-      [showActions addObject:[SKAction waitForDuration:_messageLingerDuration]];
-      [showActions addObject:[SKAction fadeOutWithDuration:_messageAnimationDuration]];
+      if (!lingerForever) {
+        [showActions addObject:[SKAction waitForDuration:_messageLingerDuration]];
+        [showActions addObject:[SKAction fadeOutWithDuration:_messageAnimationDuration]];
+      }
       break;
     }
   }
-  // note: As of iOS8, doing the remove using an [SKAction removeFromParent] causes EXC_BAD_ACCESS.
-  [showActions addObject:[SKAction runBlock:^{
-    [self removeFromParent];
-  }]];
-  [_backgroundNode runAction:[SKAction sequence:showActions] withKey:@"show"];
+  if (!lingerForever) {
+    // note: As of iOS8, doing the remove using an [SKAction removeFromParent] causes EXC_BAD_ACCESS.
+    [showActions addObject:[SKAction runBlock:^{
+      [self removeFromParent];
+    }]];
+  }
+  if ([showActions count] > 0) {
+    [_backgroundNode runAction:[SKAction sequence:showActions] withKey:@"show"];
+  }
 
   if (_messageSoundFile) {
     [_backgroundNode runAction:[SKAction playSoundFileNamed:_messageSoundFile waitForCompletion:NO]];

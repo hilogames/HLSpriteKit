@@ -59,8 +59,20 @@ typedef NS_ENUM(NSUInteger, HLMessageNodeAnimation) {
 
 @property (nonatomic, assign) HLMessageNodeAnimation messageAnimation;
 
+/**
+ Duration for the message animation during show and hide.
+ 
+ Default value is `0.1`.
+*/
 @property (nonatomic, assign) NSTimeInterval messageAnimationDuration;
 
+/**
+ Duration a message lingers after a call to `showMessage:parent:` before being
+ (automatically) hidden.
+ 
+ Default value is `2.0`.  A value of `0.0` means that the message will not be
+ automatically hidden.
+*/
 @property (nonatomic, assign) NSTimeInterval messageLingerDuration;
 
 @property (nonatomic, copy) NSString *messageSoundFile;
