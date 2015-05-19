@@ -625,24 +625,24 @@ enum {
 - (CGPoint)HL_contentConstrainedPositionX:(CGFloat)positionX positionY:(CGFloat)positionY scale:(CGFloat)scale
 {
   CGFloat contentWidthScaled = _contentSize.width * scale;
-  CGFloat positionXMax = _size.width * -1.0f * _anchorPoint.x - contentWidthScaled * -1.0f * self.contentAnchorPoint.x + _contentInset.left;
-  CGFloat positionXMin = _size.width * (1.0f - _anchorPoint.x) - contentWidthScaled * (1.0f - self.contentAnchorPoint.x) - _contentInset.right;
+  CGFloat positionXMax = _size.width * -1.0f * _anchorPoint.x - contentWidthScaled * -1.0f * _contentAnchorPoint.x + _contentInset.left;
+  CGFloat positionXMin = _size.width * (1.0f - _anchorPoint.x) - contentWidthScaled * (1.0f - _contentAnchorPoint.x) - _contentInset.right;
   if (positionXMax < positionXMin) {
     // note: Only happens in the tighter dimension if HLScrollNodeContentMinimumModeFitLoose,
     // or if contentSize too small to fill scroll node at maximum scale.
-    positionX = positionXMin + (positionXMax - positionXMin) / 2.0f;
+    positionX = positionXMin + (positionXMax - positionXMin) * (1.0f - _contentAnchorPoint.x);
   } else if (positionX < positionXMin) {
     positionX = positionXMin;
   } else if (positionX > positionXMax) {
     positionX = positionXMax;
   }
   CGFloat contentHeightScaled = _contentSize.height * scale;
-  CGFloat positionYMax = _size.height * -1.0f * _anchorPoint.y - contentHeightScaled * -1.0f * self.contentAnchorPoint.y + _contentInset.bottom;
-  CGFloat positionYMin = _size.height * (1.0f - _anchorPoint.y) - contentHeightScaled * (1.0f - self.contentAnchorPoint.y) - _contentInset.top;
+  CGFloat positionYMax = _size.height * -1.0f * _anchorPoint.y - contentHeightScaled * -1.0f * _contentAnchorPoint.y + _contentInset.bottom;
+  CGFloat positionYMin = _size.height * (1.0f - _anchorPoint.y) - contentHeightScaled * (1.0f - _contentAnchorPoint.y) - _contentInset.top;
   if (positionYMax < positionYMin) {
     // note: Only happens in the tighter dimension if HLScrollNodeContentMinimumModeFitLoose,
     // or if contentSize too small to fill scroll node at maximum scale.
-    positionY = positionYMin + (positionYMax - positionYMin) / 2.0f;
+    positionY = positionYMin + (positionYMax - positionYMin) * (1.0f - _contentAnchorPoint.y);
   } else if (positionY < positionYMin) {
     positionY = positionYMin;
   } else if (positionY > positionYMax) {
