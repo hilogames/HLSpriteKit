@@ -50,6 +50,13 @@ typedef NS_ENUM(NSInteger, HLScrollNodeContentScaleMinimumMode)
  - Set this node as its own gesture target (via `[SKNode+HLGestureTarget
    hlSetGestureTarget]`) to get one-finger scrolling and two-finger pinch scaling
    behavior.
+
+ Often the content node will want to handle taps (and the like) while letting pan and
+ pinch gestures fall through to the scroll node.  It depends a little on the scene
+ implementation, but for `HLScene`, the important part is returning `NO` for `isInside`
+ for pan and pinch gesture recognizers in the content node's gesture target implementation
+ of `addToGestureRecognizer:firstTouch:isInside:`.  See, for instance, the implementation
+ of that method in `HLTapGestureTarget`.
 */
 @interface HLScrollNode : HLComponentNode <HLGestureTarget>
 
