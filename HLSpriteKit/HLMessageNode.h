@@ -11,7 +11,7 @@
 #import "HLComponentNode.h"
 #import "SKLabelNode+HLLabelNodeAdditions.h"
 
-typedef NS_ENUM(NSUInteger, HLMessageNodeAnimation) {
+typedef NS_ENUM(NSInteger, HLMessageNodeAnimation) {
   HLMessageNodeAnimationSlideLeft,
   HLMessageNodeAnimationSlideRight,
   HLMessageNodeAnimationFade,
