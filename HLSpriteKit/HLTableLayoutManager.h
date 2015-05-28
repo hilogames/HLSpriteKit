@@ -64,10 +64,18 @@ FOUNDATION_EXPORT const CGFloat HLTableLayoutManagerEpsilon;
 /**
  The anchor point used for the table during layout.
 
-For example, if the `anchorPoint` is `(0.5, 0.5)`, the table will be centered on position
- `CGPointZero`.  Default value is `(0.5, 0.5)`.
+ For example, if the `anchorPoint` is `(0.5, 0.5)`, the table will be centered on position
+ `CGPointZero` plus the `tableOffset`.  Default value is `(0.5, 0.5)`.
 */
 @property (nonatomic, assign) CGPoint anchorPoint;
+
+/**
+ A constant offset used for the table during layout.
+
+ For example, if the `tableOffset` is `(10.0, 0.0)`, all nodes laid out will have
+ ten points added to their `position.x`.  Default value is `(0.0, 0.0)`.
+*/
+@property (nonatomic, assign) CGPoint tableOffset;
 
 /**
  The number of columns in the table.
