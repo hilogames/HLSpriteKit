@@ -465,8 +465,8 @@ enum {
     return;
   }
 
-  if (self.squareTappedBlock) {
-    self.squareTappedBlock(squareIndex);
+  if (_squareTappedBlock) {
+    _squareTappedBlock(squareIndex);
   }
 
   id <HLGridNodeDelegate> delegate = _delegate;

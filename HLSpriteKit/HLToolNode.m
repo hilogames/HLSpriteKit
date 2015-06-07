@@ -20,7 +20,7 @@ enum {
   SKNode *_backHighlightNode;
 }
 
-- (id)initWithContentNode:(SKNode *)contentNode backHighlightNode:(SKNode *)backHighlightNode
+- (instancetype)initWithContentNode:(SKNode *)contentNode backHighlightNode:(SKNode *)backHighlightNode
 {
   self = [super init];
   if (self) {

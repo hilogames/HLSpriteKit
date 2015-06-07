@@ -43,7 +43,7 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
  ## Common Gesture Handling Configurations
 
  - Set this node as its own gesture target (using `[SKNode+HLGestureTarget
-   hlSetGestureTarget]`) to get a simple delegation and/or callback for taps.  See
+   hlSetGestureTarget]`) to get simple delegation and/or a callback for taps.  See
    `HLToolbarNodeDelegate` for delegation and the `toolTappedBlock` property for setting a
    callback block.
 

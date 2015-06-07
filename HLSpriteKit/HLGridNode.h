@@ -39,7 +39,7 @@ typedef NS_ENUM(NSInteger, HLGridNodeLayoutMode) {
  ## Common Gesture Handling Configurations
 
  - Set this node as its own gesture target (using `[SKNode+HLGestureTarget
-   hlSetGestureTarget]`) to get a simple delegation and/or callbacks for taps.  See
+   hlSetGestureTarget]`) to get simple delegation and/or a callbacks for taps.  See
    `HLGridNodeDelegate` for delegation and the `squareTappedBlock` property for setting a
    callback block.
 
@@ -59,10 +59,6 @@ typedef NS_ENUM(NSInteger, HLGridNodeLayoutMode) {
  note: Currently the layout-affecting parameters are not properties, and so can't be set
  individually, which helps avoid the problem where layout is redone multiple times as
  each parameter is adjusted individually.
-
- TODO: Allow modification of layout-affecting parameters via properties, with a similar
- contract as other components: If the content is not set, then layout will not be
- performed.
 
  @param gridWidth The maximum number of squares to layout in a row.
 

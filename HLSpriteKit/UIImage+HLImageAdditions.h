@@ -33,7 +33,10 @@
  If cutout is passed `YES`, the original image will be cut out of the resulting image
  before it is returned.
 */
-- (UIImage *)shadowWithColor:(UIColor *)color offset:(CGSize)offset blur:(CGFloat)blur cutout:(BOOL)cutout;
+- (UIImage *)shadowWithColor:(UIColor *)color
+                      offset:(CGSize)offset
+                        blur:(CGFloat)blur
+                      cutout:(BOOL)cutout;
 
 /**
  Convenience method for creating a CoreGraphics context, redrawing multiple shadowed
@@ -62,6 +65,10 @@
  @warning Performance not measured.  Assume this is slow, especially with increasing
           `shadowCount`.
 */
-- (UIImage *)multiShadowWithOffsetDistance:(CGFloat)offsetDistance shadowCount:(int)shadowCount blur:(CGFloat)blur color:(UIColor *)color cutout:(BOOL)cutout;
+- (UIImage *)multiShadowWithOffsetDistance:(CGFloat)offsetDistance
+                               shadowCount:(int)shadowCount
+                                      blur:(CGFloat)blur
+                                     color:(UIColor *)color
+                                    cutout:(BOOL)cutout;
 
 @end

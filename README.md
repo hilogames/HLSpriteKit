@@ -21,7 +21,7 @@ Here's the point: The scene can effectively use `UIGestureRecognizer`s rather th
 
 A layout manager provides a single method (`layout`) to lay out nodes.  It can be attached to any `SKNode` using the class category `SKNode+HLLayoutManager`.
 
-The only layout manager currently provided in `HLSpriteKit` is `HLTableLayoutManager`, for table-like layouts, but more are planned.
+The only layout managers currently provided in `HLSpriteKit` are `HLTableLayoutManager`, for table-like layouts, and `HLRingLayoutManager`, for ring-like polar-coordinate layouts, but more are planned.
 
 Putting layout code in a third-party object (rather than in the `SKScene` or `SKNode` subclass) allows for easier re-use of common layout math.
 
@@ -40,6 +40,8 @@ Putting layout code in a third-party object (rather than in the `SKScene` or `SK
 * `HLScrollNode`. Provides support for scrolling and scaling its content with pan and pinch gestures. The interface is deliberately analagous to `UIScrollView`.
 
 * `HLToolbarNode`. A horizontal toolbar of squares, with various visual formatting, sizing, and animation options.
+
+* `HLRingNode`. A collection of items (usually buttons) arranged in a circle around a center point.
 
 * `HLTiledNode`. Behaves like an `SKSpriteNode` that tiles its texture to fit a specified size.
 

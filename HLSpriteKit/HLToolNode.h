@@ -56,7 +56,7 @@
 
 @interface HLToolBackHighlightNode : HLComponentNode <HLToolNode>
 
-- (id)initWithContentNode:(SKNode *)contentNode backHighlightNode:(SKNode *)backHighlightNode;
+- (instancetype)initWithContentNode:(SKNode *)contentNode backHighlightNode:(SKNode *)backHighlightNode;
 
 - (void)hlToolSetHighlight:(BOOL)highlight;
 
