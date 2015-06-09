@@ -49,7 +49,7 @@
  */
 @property (nonatomic, readonly) NSArray *itemNodes;
 
-/// @name Interacting with Items as a Group
+/// @name Setting Item Content
 
 /**
  Convenience method for calling `[HLItemNode setContent:]` on the item nodes, in order,
@@ -63,6 +63,8 @@
  notes on `HLItemNode` configuration (for example, what `anchorPoint` to expect).
  */
 - (void)setContent:(NSArray *)contentNodes;
+
+/// @name Managing Item Geometry
 
 /**
  Convenience method for calling `[SKNode containsPoint]` on the item nodes, in order, and
@@ -97,5 +99,50 @@
 - (int)itemClosestToPoint:(CGPoint)location
           maximumDistance:(CGFloat)maximumDistance
           closestDistance:(CGFloat *)closestDistance;
+
+/// @name Configuring Item State
+
+/**
+ Convenience method for returning the index of the item last selected; see
+ `setSelectionForItem:`.
+
+ Returns -1 if no item is currently selected.
+*/
+- (int)selectionItem;
+
+/**
+ Convenience method for setting the highlight state of a single item.
+
+ Sets highlight `YES` for the passed item, and sets highlight `NO` for the previously
+ selected item, if any, and if the index is valid.
+*/
+- (void)setSelectionForItem:(int)itemIndex;
+
+/**
+ Convenience method for setting the highlight state of a single item with animation.
+
+ Animates highlight `YES` for the passed item, and sets highlight `NO` (with no animation)
+ for the previously-selected item, if any.
+*/
+- (void)setSelectionForItem:(int)itemIndex
+                 blinkCount:(int)blinkCount
+          halfCycleDuration:(NSTimeInterval)halfCycleDuration
+                 completion:(void(^)(void))completion;
+
+/**
+ Convenience method for clearing the last selection.
+ 
+ Sets highlight `NO` for the previously-selected item, if any.
+ */
+- (void)clearSelection;
+
+/**
+ Convenience method for clearing the last selection with animation.
+ 
+ Sets highlight `NO` for the previously-selected item, if any, with animation.
+ */
+- (void)clearSelectionBlinkCount:(int)blinkCount
+               halfCycleDuration:(NSTimeInterval)halfCycleDuration
+                      completion:(void(^)(void))completion;
 
 @end

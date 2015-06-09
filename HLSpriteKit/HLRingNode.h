@@ -152,8 +152,6 @@
  `itemAtPointDistanceMax`.
 
  The location is expected to be in the coordinate system of this node.
-
- An alternative is `[HLItemsNode itemContainingPoint]`.
  */
 - (int)itemAtPoint:(CGPoint)location;
 

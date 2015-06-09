@@ -29,6 +29,7 @@ enum {
   self = [super init];
   if (self) {
     _itemsNode = [[HLItemsNode alloc] initWithItemCount:itemCount itemPrototype:nil];
+    _itemsNode.name = @"items";
     [self addChild:_itemsNode];
     _itemAtPointDistanceMax = 42.0f;
     [self HL_layoutZ];
@@ -38,15 +39,38 @@ enum {
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder
 {
-  [NSException raise:@"HLCodingNotImplemented" format:@"Coding not implemented for this descendant of an NSCoding parent."];
-  // note: Call [init] for the sake of the compiler trying to detect problems with designated initializers.
-  return [self init];
+  self = [super initWithCoder:aDecoder];
+  if (self) {
+    // note: Nodes already decoded by super; decode the references.
+    _itemsNode = [aDecoder decodeObjectForKey:@"itemsNode"];
+    _itemAtPointDistanceMax = (CGFloat)[aDecoder decodeDoubleForKey:@"itemAtPointDistanceMax"];
+    // note: Assume _delegate will be reset.
+    // note: Cannot encode _itemTappedBlock; assume it will be reset.
+    _backgroundNode = [aDecoder decodeObjectForKey:@"backgroundNode"];
+    _frameNode = [aDecoder decodeObjectForKey:@"frameNode"];
+  }
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+  [super encodeWithCoder:aCoder];
+  // note: Nodes already encoded by super; encode the references.
+  [aCoder encodeObject:_itemsNode forKey:@"itemsNode"];
+  [aCoder encodeDouble:_itemAtPointDistanceMax forKey:@"itemAtPointDistanceMax"];
+  [aCoder encodeObject:_backgroundNode forKey:@"backgroundNode"];
+  [aCoder encodeObject:_frameNode forKey:@"frameNode"];
 }
 
 - (instancetype)copyWithZone:(NSZone *)zone
 {
-  [NSException raise:@"HLCopyingNotImplemented" format:@"Copying not implemented for this descendant of an NSCopying parent."];
-  return nil;
+  HLRingNode *copy = [super copyWithZone:zone];
+  if (copy) {
+    copy->_itemsNode = (HLItemsNode *)[copy childNodeWithName:@"items"];
+    copy->_backgroundNode = [copy childNodeWithName:@"background"];
+    copy->_frameNode = [copy childNodeWithName:@"frame"];
+  }
+  return copy;
 }
 
 - (void)setBackgroundNode:(SKNode *)backgroundNode
@@ -56,6 +80,7 @@ enum {
   }
   _backgroundNode = backgroundNode;
   if (_backgroundNode) {
+    _backgroundNode.name = @"background";
     [self addChild:_backgroundNode];
     [self HL_layoutZForBackgroundNode];
   }
@@ -68,6 +93,7 @@ enum {
   }
   _frameNode = frameNode;
   if (_frameNode) {
+    _frameNode.name = @"frame";
     [self addChild:_frameNode];
     [self HL_layoutZForFrameNode];
   }

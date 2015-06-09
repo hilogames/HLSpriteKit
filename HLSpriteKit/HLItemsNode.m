@@ -16,11 +16,16 @@ enum {
 };
 
 @implementation HLItemsNode
+{
+  int _selectionItemIndex;
+}
 
 - (instancetype)initWithItemCount:(int)itemCount itemPrototype:(HLItemNode *)itemPrototypeNode
 {
   self = [super init];
   if (self) {
+
+    _selectionItemIndex = -1;
 
     for (int i = 0; i < itemCount; ++i) {
       HLItemNode *itemNode;
@@ -37,17 +42,29 @@ enum {
   return self;
 }
 
-// commented out: Base class implementation currently is sufficient.
-//- (instancetype)initWithCoder:(NSCoder *)aDecoder
-//{
-//  return [super initWithCoder:aDecoder];
-//}
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+  self = [super initWithCoder:aDecoder];
+  if (self) {
+    _selectionItemIndex = [aDecoder decodeIntForKey:@"selectionItemIndex"];
+  }
+  return self;
+}
 
-// commented out: Base class implementation currently is sufficient.
-//- (instancetype)copyWithZone:(NSZone *)zone
-//{
-//  return [super copyWithZone:zone];
-//}
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+  [super encodeWithCoder:aCoder];
+  [aCoder encodeInt:_selectionItemIndex forKey:@"selectionItemIndex"];
+}
+
+- (instancetype)copyWithZone:(NSZone *)zone
+{
+  HLItemsNode *copy = [super copyWithZone:zone];
+  if (copy) {
+    copy->_selectionItemIndex = _selectionItemIndex;
+  }
+  return copy;
+}
 
 - (void)setZPositionScale:(CGFloat)zPositionScale
 {
@@ -64,7 +81,7 @@ enum {
 }
 
 #pragma mark -
-#pragma mark Getting and Setting Content
+#pragma mark Setting Item Content
 
 - (void)setContent:(NSArray *)contentNodes
 {
@@ -82,6 +99,9 @@ enum {
     ++i;
   }
 }
+
+#pragma mark -
+#pragma mark Managing Item Geometry
 
 - (int)itemContainingPoint:(CGPoint)location
 {
@@ -121,6 +141,69 @@ enum {
     }
   }
   return -1;
+}
+
+#pragma mark -
+#pragma mark Configuring Item State
+
+- (int)selectionItem
+{
+  return _selectionItemIndex;
+}
+
+- (void)setSelectionForItem:(int)itemIndex
+{
+  if (_selectionItemIndex >= 0) {
+    HLItemNode *itemNode = self.children[_selectionItemIndex];
+    itemNode.highlight = NO;
+  }
+  NSUInteger itemsCount = [self.children count];
+  if (itemIndex >= 0 && itemIndex < itemsCount) {
+    HLItemNode *itemNode = (HLItemNode *)self.children[itemIndex];
+    itemNode.highlight = YES;
+    _selectionItemIndex = itemIndex;
+  } else {
+    _selectionItemIndex = -1;
+  }
+}
+
+- (void)setSelectionForItem:(int)itemIndex
+                 blinkCount:(int)blinkCount
+          halfCycleDuration:(NSTimeInterval)halfCycleDuration
+                 completion:(void (^)(void))completion
+{
+  if (_selectionItemIndex >= 0) {
+    HLItemNode *itemNode = self.children[_selectionItemIndex];
+    itemNode.highlight = NO;
+  }
+  NSUInteger itemsCount = [self.children count];
+  if (itemIndex >= 0 && itemIndex < itemsCount) {
+    HLItemNode *itemNode = (HLItemNode *)self.children[itemIndex];
+    [itemNode setHighlight:YES blinkCount:blinkCount halfCycleDuration:halfCycleDuration completion:completion];
+    _selectionItemIndex = itemIndex;
+  } else {
+    _selectionItemIndex = -1;
+  }
+}
+
+- (void)clearSelection
+{
+  if (_selectionItemIndex >= 0) {
+    HLItemNode *itemNode = (HLItemNode *)self.children[_selectionItemIndex];
+    itemNode.highlight = NO;
+    _selectionItemIndex = -1;
+  }
+}
+
+- (void)clearSelectionBlinkCount:(int)blinkCount
+               halfCycleDuration:(NSTimeInterval)halfCycleDuration
+                      completion:(void (^)(void))completion
+{
+  if (_selectionItemIndex >= 0) {
+    HLItemNode *itemNode = (HLItemNode *)self.children[_selectionItemIndex];
+    [itemNode setHighlight:NO blinkCount:blinkCount halfCycleDuration:halfCycleDuration completion:completion];
+    _selectionItemIndex = -1;
+  }
 }
 
 #pragma mark -

@@ -154,9 +154,10 @@ typedef NS_ENUM(NSInteger, HLGridNodeLayoutMode) {
  The square node that holds each content node has `anchorPoint` `(0.5, 0.5)`.  Typically
  the size of the square is `squareSize`; see `HLGridNodeLayoutMode` for exceptions.
 
- Any `SKNode` descendant may be used as a tool, but any tools which conform to `HLToolNode`
- can customize their behavior and/or appearance for certain toolbar functions (for example,
- setting enabled or highlight); see `HLToolNode` for details.
+ Any `SKNode` descendant may be used as content, but any content nodes which conform to
+ `HLItemContentNode` can customize their behavior and/or appearance for certain square
+ functions (for example, setting enabled or highlight); see `HLItemContentNode` for
+ details.
 */
 - (void)setContent:(NSArray *)contentNodes;
 
@@ -185,14 +186,16 @@ typedef NS_ENUM(NSInteger, HLGridNodeLayoutMode) {
  @warning The returned node should be treated as read-only.  Modification of the square
           node is neither expected nor recommended.
 */
-- (SKSpriteNode *)squareNodeForSquare:(int)squareIndex;
+- (SKNode *)squareNodeForSquare:(int)squareIndex;
 
 /**
  Returns the index of the square at the passed location, or `-1` for none.
 
+ A location is considered to be on a square only if it is within its bounds.
+
  The location is expected to be in the coordinate system of this node.
 */
-- (int)squareAtLocation:(CGPoint)location;
+- (int)squareAtPoint:(CGPoint)location;
 
 /// @name Configuring Appearance
 
@@ -257,9 +260,9 @@ typedef NS_ENUM(NSInteger, HLGridNodeLayoutMode) {
 /**
  Sets the enabled state of a square.
 
- If the content node conforms to `HLToolNode` implementing `hlToolSetEnabled`, then that
- method will be called.  Otherwise, the alpha value of the square will be set either
- to `enabledAlpha` or `disabledAlpha`.
+ If the content node conforms to `HLItemContentNode` implementing
+ `hlItemContentSetEnabled`, then that method will be called.  Otherwise, the alpha value
+ of the square will be set either to `enabledAlpha` or `disabledAlpha`.
 
  Throws an exception if the square index is out of bounds.
 */
@@ -275,9 +278,9 @@ typedef NS_ENUM(NSInteger, HLGridNodeLayoutMode) {
 /**
  Sets the highlight state of a square.
 
- If the content node conforms to `HLToolNode` implementing `hlToolSetHighlight`, then that
- method will be called.  Otherwise, the color of the square will be set either
- to `highlightColor` or `squareColor`.
+ If the content node conforms to `HLItemContentNode` implementing
+ `hlItemContentSetHighlight`, then that method will be called.  Otherwise, the color of
+ the square will be set either to `highlightColor` or `squareColor`.
 
  Throws an exception if the square index is out of bounds.
 */
@@ -286,9 +289,9 @@ typedef NS_ENUM(NSInteger, HLGridNodeLayoutMode) {
 /**
  Sets the highlight state of a square with animation.
 
- If the content node conforms to `HLToolNode` implementing `hlToolSetHighlight`, then that
- method will be called.  Otherwise, the color of the square will be set either
- to `highlightColor` or `squareColor`.
+ If the content node conforms to `HLItemContentNode` implementing
+ `hlItemContentSetHighlight`, then that method will be called.  Otherwise, the color of
+ the square will be set either to `highlightColor` or `squareColor`.
 
  Throws an exception if the square index is out of bounds.
 
@@ -341,14 +344,14 @@ typedef NS_ENUM(NSInteger, HLGridNodeLayoutMode) {
                    completion:(void(^)(void))completion;
 
 /**
- Convenience method for setting highlight state of a single square.
+ Convenience method for clearing the highlight state of the last selected square.
 
  Clears the highlight of the last-selected square, if any.
 */
 - (void)clearSelection;
 
 /**
- Convenience method for setting the highlight state of a single square with animation.
+ Convenience method for clearing the highlight state of the last selected square with animation.
 
  Clears the highlight of the last-selected square, if any, with animation.
 */

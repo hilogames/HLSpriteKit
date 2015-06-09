@@ -8,25 +8,19 @@
 
 #import "HLGridNode.h"
 
-#import "HLToolNode.h"
-
-typedef struct {
-  BOOL enabled;
-  BOOL highlight;
-} HLGridNodeSquareState;
+#import "HLItemNode.h"
+#import "HLItemsNode.h"
 
 enum {
   HLGridNodeZPositionLayerBackground = 0,
   HLGridNodeZPositionLayerSquares,
-  HLGridNodeZPositionLayerContent,
   HLGridNodeZPositionLayerCount
 };
 
 @implementation HLGridNode
 {
-  SKSpriteNode *_gridNode;
-  HLGridNodeSquareState *_squareState;
-  int _selectionSquareIndex;
+  SKSpriteNode *_backgroundNode;
+  HLItemsNode *_itemsNode;
 
   // Primary layout-affecting parameters.
   //
@@ -69,19 +63,25 @@ enum {
     _backgroundBorderSize = backgroundBorderSize;
     _squareSeparatorSize = squareSeparatorSize;
 
-    _gridNode = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithWhite:0.0f alpha:0.5f] size:CGSizeZero];
-    _gridNode.anchorPoint = anchorPoint;
-    [self addChild:_gridNode];
-
-    [self HL_allocateSquareState];
-    _selectionSquareIndex = -1;
+    _backgroundNode = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithWhite:0.0f alpha:0.5f] size:CGSizeZero];
+    _backgroundNode.anchorPoint = anchorPoint;
+    [self addChild:_backgroundNode];
 
     _squareColor = [SKColor colorWithWhite:1.0f alpha:0.3f];
     _highlightColor = [SKColor colorWithWhite:1.0f alpha:0.6f];
     _enabledAlpha = 1.0f;
     _disabledAlpha = 0.4f;
+    
+    HLBackdropItemNode *itemPrototypeNode = [[HLBackdropItemNode alloc] initWithSize:_squareSize];
+    itemPrototypeNode.normalColor = _squareColor;
+    itemPrototypeNode.highlightColor = _highlightColor;
+    itemPrototypeNode.enabledAlpha = _enabledAlpha;
+    itemPrototypeNode.disabledAlpha = _disabledAlpha;
+    _itemsNode = [[HLItemsNode alloc] initWithItemCount:squareCount itemPrototype:itemPrototypeNode];
+    [self addChild:_itemsNode];
 
-    [self HL_layoutGrid];
+    [self HL_layoutXY];
+    [self HL_layoutZ];
   }
   return self;
 }
@@ -104,14 +104,9 @@ enum {
   return nil;
 }
 
-- (void)dealloc
-{
-  [self HL_freeSquareState];
-}
-
 - (CGSize)size
 {
-  return _gridNode.size;
+  return _backgroundNode.size;
 }
 
 - (int)gridWidth
@@ -132,22 +127,7 @@ enum {
 
 - (void)setContent:(NSArray *)contentNodes
 {
-  NSArray *squareNodes = _gridNode.children;
-  for (SKSpriteNode *squareNode in squareNodes) {
-    [squareNode removeAllChildren];
-  }
-
-  NSUInteger contentCount = [contentNodes count];
-  NSUInteger i = 0;
-  while (i < contentCount && i < (NSUInteger)_squareCount) {
-    if (contentNodes[i] != [NSNull null]) {
-      SKNode *contentNode = (SKNode *)contentNodes[i];
-      SKSpriteNode *squareNode = (SKSpriteNode *)squareNodes[i];
-      [squareNode addChild:contentNode];
-      ++i;
-    }
-  }
-  [self HL_layoutZForAllContentNodes];
+  [_itemsNode setContent:contentNodes];
 }
 
 - (void)setContent:(SKNode *)contentNode forSquare:(int)squareIndex
@@ -155,13 +135,9 @@ enum {
   if (squareIndex < 0 || squareIndex >= _squareCount) {
     [NSException raise:@"HLGridNodeInvalidIndex" format:@"Square index %d out of range.", squareIndex];
   }
-  NSArray *squareNodes = _gridNode.children;
-  SKSpriteNode *squareNode = squareNodes[(NSUInteger)squareIndex];
-  [squareNode removeAllChildren];
-  if (contentNode) {
-    [squareNode addChild:contentNode];
-    [self HL_layoutZForContentNode:contentNode];
-  }
+  NSArray *squareNodes = _itemsNode.itemNodes;
+  HLBackdropItemNode *squareNode = squareNodes[(NSUInteger)squareIndex];
+  squareNode.content = contentNode;
 }
 
 - (SKNode *)contentForSquare:(int)squareIndex
@@ -169,111 +145,114 @@ enum {
   if (squareIndex < 0 || squareIndex >= _squareCount) {
     [NSException raise:@"HLGridNodeInvalidIndex" format:@"Square index %d out of range.", squareIndex];
   }
-  NSArray *squareNodes = _gridNode.children;
-  SKSpriteNode *squareNode = squareNodes[(NSUInteger)squareIndex];
-  NSArray *squareNodeChildren = squareNode.children;
-  if ([squareNodeChildren count] == 0) {
-    return nil;
-  }
-  return (SKNode *)(squareNodeChildren.firstObject);
+  NSArray *squareNodes = _itemsNode.itemNodes;
+  HLBackdropItemNode *squareNode = squareNodes[(NSUInteger)squareIndex];
+  return squareNode.content;
 }
 
-- (SKSpriteNode *)squareNodeForSquare:(int)squareIndex
+- (SKNode *)squareNodeForSquare:(int)squareIndex
 {
   if (squareIndex < 0 || squareIndex >= _squareCount) {
     [NSException raise:@"HLGridNodeInvalidIndex" format:@"Square index %d out of range.", squareIndex];
   }
-  NSArray *squareNodes = _gridNode.children;
-  return squareNodes[(NSUInteger)squareIndex];
+  NSArray *squareNodes = _itemsNode.itemNodes;
+  HLBackdropItemNode *squareNode = squareNodes[(NSUInteger)squareIndex];
+  return squareNode;
 }
 
-- (int)squareAtLocation:(CGPoint)location
+- (int)squareAtPoint:(CGPoint)location
 {
-  CGPoint lowerLeftPoint = CGPointMake(-_gridNode.anchorPoint.x * _gridNode.size.width,
-                                       -_gridNode.anchorPoint.y * _gridNode.size.height);
+  CGPoint anchorPoint = _backgroundNode.anchorPoint;
+  CGSize size = _backgroundNode.size;
+  
+  CGFloat firstSquareBottom = -anchorPoint.y * size.height + _backgroundBorderSize;
+  if (location.y < firstSquareBottom) {
+    return -1;
+  }
+  CGFloat gridY = location.y - firstSquareBottom;
+  CGFloat squareY = (CGFloat)fmod(gridY, _squareSize.height + _squareSeparatorSize);
+  if (squareY > _squareSize.height) {
+    return -1;
+  }
   int gridHeight = (_squareCount - 1) / _gridWidth + 1;
-  int y = gridHeight - 1 - (int)((location.y - lowerLeftPoint.y + _squareSeparatorSize) / (_squareSize.height + _squareSeparatorSize));
-  int x;
-
-  if (y + 1 < gridHeight) {
-    x = (int)((location.x - lowerLeftPoint.x + _squareSeparatorSize) / (_squareSize.width + _squareSeparatorSize));
-  } else {
-    int squaresInRow = (_squareCount - 1) % _gridWidth + 1;
-    CGFloat squareWidthInRow;
-    if (_layoutMode == HLGridNodeLayoutModeFill) {
-      squareWidthInRow = (_gridNode.size.width - 2.0f * _backgroundBorderSize - (squaresInRow - 1) * _squareSeparatorSize) / squaresInRow;
-    } else {
-      squareWidthInRow = _squareSize.width;
-    }
-
-    x = (int)((location.x - lowerLeftPoint.x + _squareSeparatorSize) / (squareWidthInRow + _squareSeparatorSize));
-    if (_layoutMode == HLGridNodeLayoutModeAlignLeft && x >= squaresInRow) {
-      return -1;
-    }
+  int row = gridHeight - 1 - (int)(gridY / (_squareSize.height + _squareSeparatorSize));
+  if (row >= gridHeight) {
+    return -1;
   }
 
-  return y * _gridWidth + x;
+  CGFloat firstSquareLeft = -anchorPoint.x * size.width + _backgroundBorderSize;
+  if (location.x < firstSquareLeft) {
+    return -1;
+  }
+  CGFloat gridX = location.x - firstSquareLeft;
+  int column;
+  CGFloat squareWidthInRow;
+  int squaresInRow;
+  if (row + 1 < gridHeight) {
+    squaresInRow = _gridWidth;
+    squareWidthInRow = _squareSize.width;
+  } else if (_layoutMode == HLGridNodeLayoutModeFill) {
+    squaresInRow = ((_squareCount - 1) % _gridWidth) + 1;
+    squareWidthInRow = (size.width - 2.0f * _backgroundBorderSize - (squaresInRow - 1) * _squareSeparatorSize) / squaresInRow;
+  } else {
+    squaresInRow = _gridWidth;
+    squareWidthInRow = _squareSize.width;
+  }
+  CGFloat squareX = (CGFloat)fmod(gridX, squareWidthInRow + _squareSeparatorSize);
+  if (squareX > squareWidthInRow) {
+    return -1;
+  }
+  column = (int)(gridX / (squareWidthInRow + _squareSeparatorSize));
+  if (column >= squaresInRow) {
+    return -1;
+  }
+
+  return row * _gridWidth + column;
 }
 
 - (void)setBackgroundColor:(SKColor *)backgroundColor
 {
-  _gridNode.color = backgroundColor;
+  _backgroundNode.color = backgroundColor;
 }
 
 - (SKColor *)backgroundColor
 {
-  return _gridNode.color;
+  return _backgroundNode.color;
 }
 
 - (void)setEnabledAlpha:(CGFloat)enabledAlpha
 {
   _enabledAlpha = enabledAlpha;
-  NSArray *squareNodes = _gridNode.children;
-  int s = 0;
-  for (SKSpriteNode *squareNode in squareNodes) {
-    if (_squareState[s].enabled) {
-      squareNode.alpha = enabledAlpha;
-    }
-    ++s;
+  NSArray *squareNodes = _itemsNode.itemNodes;
+  for (HLBackdropItemNode *squareNode in squareNodes) {
+    squareNode.enabledAlpha = _enabledAlpha;
   }
 }
 
 - (void)setDisabledAlpha:(CGFloat)disabledAlpha
 {
   _disabledAlpha = disabledAlpha;
-  NSArray *squareNodes = _gridNode.children;
-  int s = 0;
-  for (SKSpriteNode *squareNode in squareNodes) {
-    if (!_squareState[s].enabled) {
-      squareNode.alpha = disabledAlpha;
-    }
-    ++s;
+  NSArray *squareNodes = _itemsNode.itemNodes;
+  for (HLBackdropItemNode *squareNode in squareNodes) {
+    squareNode.disabledAlpha = _disabledAlpha;
   }
 }
 
 - (void)setSquareColor:(SKColor *)squareColor
 {
   _squareColor = squareColor;
-  NSArray *squareNodes = _gridNode.children;
-  int s = 0;
-  for (SKSpriteNode *squareNode in squareNodes) {
-    if (!_squareState[s].highlight) {
-      squareNode.color = squareColor;
-    }
-    ++s;
+  NSArray *squareNodes = _itemsNode.itemNodes;
+  for (HLBackdropItemNode *squareNode in squareNodes) {
+    squareNode.normalColor = _squareColor;
   }
 }
 
 - (void)setHighlightColor:(SKColor *)highlightColor
 {
   _highlightColor = highlightColor;
-  NSArray *squareNodes = _gridNode.children;
-  int s = 0;
-  for (SKSpriteNode *squareNode in squareNodes) {
-    if (_squareState[s].highlight) {
-      squareNode.color = highlightColor;
-    }
-    ++s;
+  NSArray *squareNodes = _itemsNode.itemNodes;
+  for (HLBackdropItemNode *squareNode in squareNodes) {
+    squareNode.highlightColor = _highlightColor;
   }
 }
 
@@ -282,7 +261,7 @@ enum {
   if (squareIndex < 0 || squareIndex >= _squareCount) {
     [NSException raise:@"HLGridNodeInvalidIndex" format:@"Square index %d out of range.", squareIndex];
   }
-  return _squareState[squareIndex].enabled;
+  return ((HLBackdropItemNode *)_itemsNode.itemNodes[squareIndex]).enabled;
 }
 
 - (void)setEnabled:(BOOL)enabled forSquare:(int)squareIndex
@@ -290,23 +269,7 @@ enum {
   if (squareIndex < 0 || squareIndex >= _squareCount) {
     [NSException raise:@"HLGridNodeInvalidIndex" format:@"Square index %d out of range.", squareIndex];
   }
-
-  _squareState[squareIndex].enabled = enabled;
-
-  NSArray *squareNodes = _gridNode.children;
-  SKSpriteNode *squareNode = squareNodes[(NSUInteger)squareIndex];
-  SKNode *contentNode = (SKNode *)(squareNode.children.firstObject);
-  if (contentNode
-      && [contentNode conformsToProtocol:@protocol(HLToolNode)]
-      && [contentNode respondsToSelector:@selector(hlToolSetEnabled:)]) {
-    [(id <HLToolNode>)contentNode hlToolSetEnabled:enabled];
-  } else {
-    if (enabled) {
-      squareNode.alpha = _enabledAlpha;
-    } else {
-      squareNode.alpha = _disabledAlpha;
-    }
-  }
+  ((HLBackdropItemNode *)_itemsNode.itemNodes[squareIndex]).enabled = enabled;
 }
 
 - (BOOL)highlightForSquare:(int)squareIndex
@@ -314,7 +277,7 @@ enum {
   if (squareIndex < 0 || squareIndex >= _squareCount) {
     [NSException raise:@"HLGridNodeInvalidIndex" format:@"Square index %d out of range.", squareIndex];
   }
-  return _squareState[squareIndex].highlight;
+  return ((HLBackdropItemNode *)_itemsNode.itemNodes[squareIndex]).highlight;
 }
 
 - (void)setHighlight:(BOOL)highlight forSquare:(int)squareIndex
@@ -322,23 +285,7 @@ enum {
   if (squareIndex < 0 || squareIndex >= _squareCount) {
     [NSException raise:@"HLGridNodeInvalidIndex" format:@"Square index %d out of range.", squareIndex];
   }
-
-  _squareState[squareIndex].highlight = highlight;
-
-  NSArray *squareNodes = _gridNode.children;
-  SKSpriteNode *squareNode = squareNodes[(NSUInteger)squareIndex];
-  SKNode *contentNode = (SKNode *)(squareNode.children.firstObject);
-  if (contentNode
-      && [contentNode conformsToProtocol:@protocol(HLToolNode)]
-      && [contentNode respondsToSelector:@selector(hlToolSetHighlight:)]) {
-    [(id <HLToolNode>)contentNode hlToolSetHighlight:highlight];
-  } else {
-    if (highlight) {
-      squareNode.color = _highlightColor;
-    } else {
-      squareNode.color = _squareColor;
-    }
-  }
+  ((HLBackdropItemNode *)_itemsNode.itemNodes[squareIndex]).highlight = highlight;
 }
 
 - (void)setHighlight:(BOOL)finalHighlight
@@ -350,58 +297,20 @@ enum {
   if (squareIndex < 0 || squareIndex >= _squareCount) {
     [NSException raise:@"HLGridNodeInvalidIndex" format:@"Square index %d out of range.", squareIndex];
   }
-  NSArray *squareNodes = _gridNode.children;
-  SKSpriteNode *squareNode = squareNodes[(NSUInteger)squareIndex];
-
-  BOOL startingHighlight = _squareState[squareIndex].highlight;
-  _squareState[squareIndex].highlight = finalHighlight;
-
-  [squareNode removeActionForKey:@"setHighlight"];
-
-  SKAction *blinkIn;
-  SKAction *blinkOut;
-  SKNode *contentNode = (SKNode *)(squareNode.children.firstObject);
-  if (contentNode
-      && [contentNode conformsToProtocol:@protocol(HLToolNode)]
-      && [contentNode respondsToSelector:@selector(hlToolSetHighlight:)]) {
-    blinkIn = [SKAction sequence:@[ [SKAction runBlock:^{ [(id <HLToolNode>)contentNode hlToolSetHighlight:!startingHighlight]; }],
-                                    [SKAction waitForDuration:halfCycleDuration] ]];
-    blinkOut = [SKAction sequence:@[ [SKAction runBlock:^{ [(id <HLToolNode>)contentNode hlToolSetHighlight:startingHighlight]; }],
-                                     [SKAction waitForDuration:halfCycleDuration] ]];
-  } else {
-    blinkIn = [SKAction colorizeWithColor:(startingHighlight ? _squareColor : _highlightColor) colorBlendFactor:1.0f duration:halfCycleDuration];
-    blinkIn.timingMode = (startingHighlight ? SKActionTimingEaseOut : SKActionTimingEaseIn);
-    blinkOut = [SKAction colorizeWithColor:(startingHighlight ? _highlightColor : _squareColor) colorBlendFactor:1.0f duration:halfCycleDuration];
-    blinkOut.timingMode = (startingHighlight ? SKActionTimingEaseIn : SKActionTimingEaseOut);
-  }
-
-  NSMutableArray *blinkActions = [NSMutableArray array];
-  for (int b = 0; b < blinkCount; ++b) {
-    [blinkActions addObject:blinkIn];
-    [blinkActions addObject:blinkOut];
-  }
-  if (startingHighlight != finalHighlight) {
-    [blinkActions addObject:blinkIn];
-  }
-  if (completion) {
-    [blinkActions addObject:[SKAction runBlock:completion]];
-  }
-
-  [squareNode runAction:[SKAction sequence:blinkActions] withKey:@"setHighlight"];
+  [(HLBackdropItemNode *)_itemsNode.itemNodes[squareIndex] setHighlight:finalHighlight
+                                                             blinkCount:blinkCount
+                                                      halfCycleDuration:halfCycleDuration
+                                                             completion:completion];
 }
 
 - (int)selectionSquare
 {
-  return _selectionSquareIndex;
+  return _itemsNode.selectionItem;
 }
 
 - (void)setSelectionForSquare:(int)squareIndex
 {
-  if (_selectionSquareIndex >= 0) {
-    [self setHighlight:NO forSquare:_selectionSquareIndex];
-  }
-  [self setHighlight:YES forSquare:squareIndex];
-  _selectionSquareIndex = squareIndex;
+  [_itemsNode setSelectionForItem:squareIndex];
 }
 
 - (void)setSelectionForSquare:(int)squareIndex
@@ -409,29 +318,24 @@ enum {
             halfCycleDuration:(NSTimeInterval)halfCycleDuration
                    completion:(void (^)(void))completion
 {
-  if (_selectionSquareIndex >= 0) {
-    [self setHighlight:NO forSquare:_selectionSquareIndex];
-  }
-  [self setHighlight:YES forSquare:squareIndex blinkCount:blinkCount halfCycleDuration:halfCycleDuration completion:completion];
-  _selectionSquareIndex = squareIndex;
+  [_itemsNode setSelectionForItem:squareIndex
+                       blinkCount:blinkCount
+                halfCycleDuration:halfCycleDuration
+                       completion:completion];
 }
 
 - (void)clearSelection
 {
-  if (_selectionSquareIndex >= 0) {
-    [self setHighlight:NO forSquare:_selectionSquareIndex];
-    _selectionSquareIndex = -1;
-  }
+  [_itemsNode clearSelection];
 }
 
 - (void)clearSelectionBlinkCount:(int)blinkCount
                halfCycleDuration:(NSTimeInterval)halfCycleDuration
                       completion:(void (^)(void))completion
 {
-  if (_selectionSquareIndex >= 0) {
-    [self setHighlight:NO forSquare:_selectionSquareIndex blinkCount:blinkCount halfCycleDuration:halfCycleDuration completion:completion];
-    _selectionSquareIndex = -1;
-  }
+  [_itemsNode clearSelectionBlinkCount:blinkCount
+                     halfCycleDuration:halfCycleDuration
+                            completion:completion];
 }
 
 #pragma mark -
@@ -460,7 +364,7 @@ enum {
   CGPoint sceneLocation = [self.scene convertPointFromView:viewLocation];
   CGPoint location = [self convertPoint:sceneLocation fromNode:self.scene];
 
-  int squareIndex = [self squareAtLocation:location];
+  int squareIndex = [self squareAtPoint:location];
   if (squareIndex < 0) {
     return;
   }
@@ -478,35 +382,20 @@ enum {
 #pragma mark -
 #pragma mark Private
 
-- (void)HL_allocateSquareState
+- (void)HL_layoutXY
 {
-  _squareState = (HLGridNodeSquareState *)malloc(sizeof(HLGridNodeSquareState) * (size_t)_squareCount);
-  for (int s = 0; s < _squareCount; ++s) {
-    _squareState[s].enabled = YES;
-    _squareState[s].highlight = NO;
-  }
-}
-
-- (void)HL_freeSquareState
-{
-  free(_squareState);
-}
-
-- (void)HL_layoutGrid
-{
-  [_gridNode removeAllChildren];
-
-  // Calculate grid geometry.
+  CGPoint anchorPoint = _backgroundNode.anchorPoint;
+  
   int gridHeight = (_squareCount - 1) / _gridWidth + 1;
   CGSize squaresArea = CGSizeMake(_gridWidth * _squareSize.width + (_gridWidth - 1) * _squareSeparatorSize,
                                   gridHeight * _squareSize.height + (gridHeight - 1) * _squareSeparatorSize);
-  CGSize gridNodeSize = CGSizeMake(squaresArea.width + 2.0f * _backgroundBorderSize,
-                                   squaresArea.height + 2.0f * _backgroundBorderSize);
-  _gridNode.size = gridNodeSize;
-  CGPoint upperLeftPoint = CGPointMake(-_gridNode.anchorPoint.x * gridNodeSize.width + _backgroundBorderSize,
-                                       (1.0f - _gridNode.anchorPoint.y) * gridNodeSize.height - _backgroundBorderSize);
+  CGSize size = CGSizeMake(squaresArea.width + 2.0f * _backgroundBorderSize,
+                           squaresArea.height + 2.0f * _backgroundBorderSize);
+  CGPoint upperLeftPoint = CGPointMake(-anchorPoint.x * size.width + _backgroundBorderSize,
+                                       (1.0f - anchorPoint.y) * size.height - _backgroundBorderSize);
 
   // Arrange square nodes in grid.
+  NSArray *squareNodes = _itemsNode.itemNodes;
   for (int y = 0; y < gridHeight; ++y) {
 
     int squaresInRow;
@@ -523,66 +412,22 @@ enum {
     }
 
     for (int x = 0; x < squaresInRow; ++x) {
-      SKSpriteNode *squareNode = [SKSpriteNode spriteNodeWithColor:_squareColor size:squareSizeInRow];
+      HLBackdropItemNode *squareNode = squareNodes[y * _gridWidth + x];
       squareNode.position = CGPointMake(upperLeftPoint.x + squareSizeInRow.width / 2.0f + x * (squareSizeInRow.width + _squareSeparatorSize),
                                         upperLeftPoint.y - squareSizeInRow.height / 2.0f - y * (squareSizeInRow.height + _squareSeparatorSize));
-      [_gridNode addChild:squareNode];
+      squareNode.size = squareSizeInRow;
     }
   }
-  [self HL_layoutZForAllSquareNodes];
+
+  _backgroundNode.size = size;
 }
 
 - (void)HL_layoutZ
 {
   CGFloat zPositionLayerIncrement = self.zPositionScale / HLGridNodeZPositionLayerCount;
-  CGFloat squareNodeZPosition = HLGridNodeZPositionLayerSquares * zPositionLayerIncrement;
-  CGFloat contentNodeZPosition = (HLGridNodeZPositionLayerContent - HLGridNodeZPositionLayerSquares) * zPositionLayerIncrement;
-  NSArray *squareNodes = _gridNode.children;
-  for (SKSpriteNode *squareNode in squareNodes) {
-    squareNode.zPosition = squareNodeZPosition;
-    SKNode *contentNode = (SKNode *)(squareNode.children.firstObject);
-    if (contentNode) {
-      contentNode.zPosition = contentNodeZPosition;
-      if ([contentNode isKindOfClass:[HLComponentNode class]]) {
-        ((HLComponentNode *)contentNode).zPositionScale = zPositionLayerIncrement;
-      }
-    }
-  }
-}
-
-- (void)HL_layoutZForAllSquareNodes
-{
-  CGFloat zPositionLayerIncrement = self.zPositionScale / HLGridNodeZPositionLayerCount;
-  CGFloat squareNodeZPosition = HLGridNodeZPositionLayerSquares * zPositionLayerIncrement;
-  NSArray *squareNodes = _gridNode.children;
-  for (SKSpriteNode *squareNode in squareNodes) {
-    squareNode.zPosition = squareNodeZPosition;
-  }
-}
-
-- (void)HL_layoutZForAllContentNodes
-{
-  CGFloat zPositionLayerIncrement = self.zPositionScale / HLGridNodeZPositionLayerCount;
-  CGFloat contentNodeZPosition = (HLGridNodeZPositionLayerContent - HLGridNodeZPositionLayerSquares) * zPositionLayerIncrement;
-  NSArray *squareNodes = _gridNode.children;
-  for (SKSpriteNode *squareNode in squareNodes) {
-    SKNode *contentNode = (SKNode *)(squareNode.children.firstObject);
-    if (contentNode) {
-      contentNode.zPosition = contentNodeZPosition;
-      if ([contentNode isKindOfClass:[HLComponentNode class]]) {
-        ((HLComponentNode *)contentNode).zPositionScale = zPositionLayerIncrement;
-      }
-    }
-  }
-}
-
-- (void)HL_layoutZForContentNode:(SKNode *)contentNode
-{
-  CGFloat zPositionLayerIncrement = self.zPositionScale / HLGridNodeZPositionLayerCount;
-  contentNode.zPosition = (HLGridNodeZPositionLayerSquares - HLGridNodeZPositionLayerContent) * zPositionLayerIncrement;
-  if ([contentNode isKindOfClass:[HLComponentNode class]]) {
-    ((HLComponentNode *)contentNode).zPositionScale = zPositionLayerIncrement;
-  }
+  _backgroundNode.zPosition = HLGridNodeZPositionLayerBackground * zPositionLayerIncrement;
+  _itemsNode.zPosition = HLGridNodeZPositionLayerSquares * zPositionLayerIncrement;
+  _itemsNode.zPositionScale = zPositionLayerIncrement;
 }
 
 @end
