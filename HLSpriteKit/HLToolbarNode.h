@@ -91,10 +91,10 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 
  The square node that holds each tool has `anchorPoint` `(0.5, 0.5)`.
 
- Any `SKNode` descendant may be used as a tool, but any tools which conform to `HLToolNode`
- can customize their behavior and/or appearance for certain toolbar functions (for example,
- setting enabled or highlight); see `HLToolNode` for details.  Any `HLToolNode`s passed
- are assumed to be in a default state (enabled and unhighlighted).
+ Any `SKNode` descendant may be used as a tool, but any tools which conform to
+ `HLItemContentNode` can customize their behavior and/or appearance for certain toolbar
+ functions (for example, setting enabled or highlight); see `HLItemContentNode` for
+ details.
 
  Each tool node is expected to have a size selector which reports its desired size.  (The
  size is expected to behave like `[SKSpriteNode size]` property, where the `SKNode`
@@ -110,8 +110,8 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
  - If only `automaticWidth` is `YES`, and toolbar height is fixed, the toolbar will scale
    the tool nodes so that the tallest tool node will fit the toolbar height (plus relevant
    pads and borders), and the others will be scaled proportionally.  If
-   `automaticToolsScaleLimit` is `YES`, then the scaling of the tools will not exceed their
-   natural size.
+   `automaticToolsScaleLimit` is `YES`, then the scaling of the tools will not exceed
+   their natural size.
 
  - If only `automaticHeight` is `YES`, and toolbar width is fixed, the toolbar will scale
    the tool nodes proportionally to each other so that the sum of tool node widths will
@@ -120,8 +120,8 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 
  - Otherwise, with both toolbar width and height fixed, the toolbar will scale the tools
    proportionally so they fit into both the fixed width and fixed height.  If
-   `automaticToolsScaleLimit` is `YES`, then the scaling of the tools will not exceed their
-   natural size.
+   `automaticToolsScaleLimit` is `YES`, then the scaling of the tools will not exceed
+   their natural size.
 
  @param toolNodes The array of `SKNode`s to be set as tools.
 
@@ -136,11 +136,9 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 
 /**
  Replaces an already-set tool node in the toolbar with a new tool node.
- 
+
  Preserves the old tool's tag and state (enabled and highlight).
- 
- If an `HLToolNode` is passed, it is assumed to be in a default state (enabled and unhighlighted).
- 
+
  Does not automatically recalculate layout; if the layout is changed (for instance, if the
  new tool node is a different size than the old one in a way that matters), then the owner
  should call `layoutToolsAnimation:`.
@@ -160,7 +158,7 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 
  Modification of the square node is neither expected nor recommended.
 */
-- (SKSpriteNode *)squareNodeForTool:(NSString *)toolTag;
+- (SKNode *)squareNodeForTool:(NSString *)toolTag;
 
 /**
  The number of tools last set by `setTools:tags:animation:`.
@@ -333,9 +331,9 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 /**
  Sets the highlight state of a tool.
 
- If the tool node conforms to `HLToolNode` implementing `hlToolSetHighlight`, then that
- method will be called.  Otherwise, the color of the square will be set either
- to `highlightColor` or `squareColor`.
+ If the tool node conforms to `HLItemContentNode` implementing
+ `hlItemContentSetHighlight`, then that method will be called.  Otherwise, the color of
+ the square will be set either to `highlightColor` or `squareColor`.
 */
 - (void)setHighlight:(BOOL)highlight forTool:(NSString *)toolTag;
 
@@ -347,13 +345,11 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 /**
  Sets the highlight state of a tool with animation.
 
- If the tool node conforms to `HLToolNode` implementing `hlToolSetHighlight`, then that
- method will be called.  Otherwise, the color of the square will be set either
- to `highlightColor` or `squareColor`.
+ If the tool node conforms to `HLItemContentNode` implementing
+ `hlItemContentSetHighlight`, then that method will be called.  Otherwise, the color of
+ the tool will be set either to `highlightColor` or `squareColor`.
 
- Throws an exception if the square index is out of bounds.
-
- @param finalHighlight The intended highlight value for the square when the animation is
+ @param finalHighlight The intended highlight value for the tool when the animation is
                        complete.
 
  @param toolTag The tag of the tool being animated.
@@ -363,8 +359,13 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 
  @param halfCycleDuration The amount of time it takes to cycle the highlight during a
                           blink; a full blink will be completed in twice this duration.
+
+ @param completion A block that will be run when the animation is complete.
 */
-- (void)setHighlight:(BOOL)finalHighlight forTool:(NSString *)toolTag blinkCount:(int)blinkCount halfCycleDuration:(NSTimeInterval)halfCycleDuration;
+- (void)setHighlight:(BOOL)finalHighlight forTool:(NSString *)toolTag
+          blinkCount:(int)blinkCount
+   halfCycleDuration:(NSTimeInterval)halfCycleDuration
+          completion:(void(^)(void))completion;
 
 /**
  Returns a boolean indicating the current enabled state of a tool.
@@ -374,9 +375,9 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 /**
  Sets the enabled state of a tool.
 
- If the tool node conforms to `HLToolNode` implementing `hlToolSetEnabled`, then that
- method will be called.  Otherwise, the alpha value of the square will be set either
- to `enabledAlpha` or `disabledAlpha`.
+ If the tool node conforms to `HLItemContentNode` implementing `hlItemContentSetEnabled`,
+ then that method will be called.  Otherwise, the alpha value of the square will be set
+ either to `enabledAlpha` or `disabledAlpha`.
 */
 - (void)setEnabled:(BOOL)enabled forTool:(NSString *)toolTag;
 
@@ -386,36 +387,38 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
  Shows the toolbar at a given position and scale.
 
  When showing is animated, the toolbar will grow from a point to the passed `fullScale`,
- moving from `origin` to `finalPosition`.  (When not animated, the toolbar merely sets
- its position and scale.)
+ moving from `origin` to `finalPosition`.  (When not animated, the toolbar merely sets its
+ position and scale.)
 
- The origin is remembered and is used by the next animated `hideAnimated:`.  To update
- the remembered last origin (for example, after changing the scene's layout), call
+ The origin is remembered and is used by the next animated `hideAnimated:`.  To update the
+ remembered last origin (for example, after changing the scene's layout), call
  `showUpdateOrigin:`.
 */
 - (void)showWithOrigin:(CGPoint)origin finalPosition:(CGPoint)finalPosition fullScale:(CGFloat)fullScale animated:(BOOL)animated;
 
 /**
- Updates the remembered origin from the last call to `showWithOrigin:finalPosition:fullScale:animated:`.
- The origin will be used by the next `hideAnimated:`.
+ Updates the remembered origin from the last call to
+ `showWithOrigin:finalPosition:fullScale:animated:`.  The origin will be used by the next
+ `hideAnimated:`.
 
- Showing a toolbar animated grows it from a point origin to a final position; hiding
- it animated shrinks it back down to that original origin.  It's considered a feature
- that the origin used for showing is remembered by the toolbar, and doesn't have to
- be passed back into the hide method, but of course such a system introduces difficulty
- if the origin needs to be changed between the show call and the hide call.  If so,
- then call this method to update the origin before calling `hideAnimated:`.
+ Showing a toolbar animated grows it from a point origin to a final position; hiding it
+ animated shrinks it back down to that original origin.  It's considered a feature that
+ the origin used for showing is remembered by the toolbar, and doesn't have to be passed
+ back into the hide method, but of course such a system introduces difficulty if the
+ origin needs to be changed between the show call and the hide call.  If so, then call
+ this method to update the origin before calling `hideAnimated:`.
 */
 - (void)showUpdateOrigin:(CGPoint)origin;
 
 /**
  Hides the toolbar by removing it from parent.
 
- When hiding is animated, the toolbar will scale down and move to its last origin
- (passed during `[showWithOrigin:finalPosition:fullScale:animated:]`).  For consistency,
- the position of the toolbar is set likewise even when not animating.  This means that
- any explicit changes to toolbar position will be discarded during the call to `[hideAnimated:]`.
- The caller might consider calling `[showUpdateOrigin:]`, to change the stored origin.
+ When hiding is animated, the toolbar will scale down and move to its last origin (passed
+ during `[showWithOrigin:finalPosition:fullScale:animated:]`).  For consistency, the
+ position of the toolbar is set likewise even when not animating.  This means that any
+ explicit changes to toolbar position will be discarded during the call to
+ `[hideAnimated:]`.  The caller might consider calling `[showUpdateOrigin:]`, to change
+ the stored origin.
 */
 - (void)hideAnimated:(BOOL)animated;
 

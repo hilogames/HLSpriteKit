@@ -9,17 +9,12 @@
 #import "HLToolbarNode.h"
 
 #import "HLMath.h"
-#import "HLToolNode.h"
-
-typedef struct {
-  BOOL enabled;
-  BOOL highlight;
-} HLToolbarNodeSquareState;
+#import "HLItemNode.h"
+#import "HLItemsNode.h"
 
 enum {
   HLToolbarNodeZPositionLayerBackground = 0,
   HLToolbarNodeZPositionLayerSquares,
-  HLToolbarNodeZPositionLayerTools,
   HLToolbarNodeZPositionLayerCount
 };
 
@@ -28,11 +23,10 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
 
 @implementation HLToolbarNode
 {
-  SKSpriteNode *_toolbarNode;
+  SKSpriteNode *_backgroundNode;
   SKCropNode *_cropNode;
-  SKNode *_squaresNode;
+  HLItemsNode *_squaresNode;
   CGPoint _lastOrigin;
-  HLToolbarNodeSquareState *_squareState;
 }
 
 - (instancetype)init
@@ -53,22 +47,15 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
     _squareSeparatorSize = 4.0f;
     _toolPad = 0.0f;
 
-    _toolbarNode = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithWhite:0.0f alpha:0.5f] size:CGSizeZero];
-    [self addChild:_toolbarNode];
+    _backgroundNode = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithWhite:0.0f alpha:0.5f] size:CGSizeZero];
+    [self addChild:_backgroundNode];
 
     // note: All animations happen within a cropped area, currently.
     _cropNode = [SKCropNode node];
     _cropNode.maskNode = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithWhite:1.0f alpha:1.0f] size:CGSizeZero];
     [self addChild:_cropNode];
-
-    _squareState = NULL;
   }
   return self;
-}
-
-- (void)dealloc
-{
-  [self HL_freeSquareState];
 }
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder
@@ -86,79 +73,47 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
 
 - (void)setBackgroundColor:(SKColor *)backgroundColor
 {
-  _toolbarNode.color = backgroundColor;
+  _backgroundNode.color = backgroundColor;
 }
 
 - (SKColor *)backgroundColor
 {
-  return _toolbarNode.color;
+  return _backgroundNode.color;
 }
 
 - (void)setSquareColor:(UIColor *)squareColor
 {
   _squareColor = squareColor;
-  int s = 0;
-  for (SKSpriteNode *squareNode in _squaresNode.children) {
-    if (!_squareState[s].highlight) {
-      SKNode *toolNode = (SKNode *)squareNode.children.firstObject;
-      if (!toolNode
-          || ![toolNode conformsToProtocol:@protocol(HLToolNode)]
-          || ![toolNode respondsToSelector:@selector(hlToolSetHighlight:)]) {
-        squareNode.color = _squareColor;
-      }
-    }
-    ++s;
+  NSArray *squareNodes = _squaresNode.itemNodes;
+  for (HLBackdropItemNode *squareNode in squareNodes) {
+    squareNode.normalColor = _squareColor;
   }
 }
 
 - (void)setHighlightColor:(UIColor *)highlightColor
 {
   _highlightColor = highlightColor;
-  int s = 0;
-  for (SKSpriteNode *squareNode in _squaresNode.children) {
-    if (_squareState[s].highlight) {
-      SKNode *toolNode = (SKNode *)squareNode.children.firstObject;
-      if (!toolNode
-          || ![toolNode conformsToProtocol:@protocol(HLToolNode)]
-          || ![toolNode respondsToSelector:@selector(hlToolSetHighlight:)]) {
-        squareNode.color = _highlightColor;
-      }
-    }
-    ++s;
+  NSArray *squareNodes = _squaresNode.itemNodes;
+  for (HLBackdropItemNode *squareNode in squareNodes) {
+    squareNode.highlightColor = _highlightColor;
   }
 }
 
 - (void)setEnabledAlpha:(CGFloat)enabledAlpha
 {
   _enabledAlpha = enabledAlpha;
-  int s = 0;
-  for (SKSpriteNode *squareNode in _squaresNode.children) {
-    if (_squareState[s].enabled) {
-      SKNode *toolNode = (SKNode *)squareNode.children.firstObject;
-      if (!toolNode
-          || ![toolNode conformsToProtocol:@protocol(HLToolNode)]
-          || ![toolNode respondsToSelector:@selector(hlToolSetEnabled:)]) {
-        squareNode.alpha = _enabledAlpha;
-      }
-    }
-    ++s;
+  NSArray *squareNodes = _squaresNode.itemNodes;
+  for (HLBackdropItemNode *squareNode in squareNodes) {
+    squareNode.enabledAlpha = _enabledAlpha;
   }
 }
 
 - (void)setDisabledAlpha:(CGFloat)disabledAlpha
 {
   _disabledAlpha = disabledAlpha;
-  int s = 0;
-  for (SKSpriteNode *squareNode in _squaresNode.children) {
-    if (!_squareState[s].enabled) {
-      SKNode *toolNode = (SKNode *)squareNode.children.firstObject;
-      if (!toolNode
-          || ![toolNode conformsToProtocol:@protocol(HLToolNode)]
-          || ![toolNode respondsToSelector:@selector(hlToolSetEnabled:)]) {
-        squareNode.alpha = _disabledAlpha;
-      }
-    }
-    ++s;
+  NSArray *squareNodes = _squaresNode.itemNodes;
+  for (HLBackdropItemNode *squareNode in squareNodes) {
+    squareNode.disabledAlpha = _disabledAlpha;
   }
 }
 
@@ -175,7 +130,7 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
   // containsPoint).  But if I'm really correcting a bug here, then this is bigger than just
   // HLGestureTarget and should apply to all callers.  (Well, and all callers of calculateAccumulatedFrame,
   // too.)
-  return [_toolbarNode containsPoint:[self convertPoint:p fromNode:self.parent]];
+  return [_backgroundNode containsPoint:[self convertPoint:p fromNode:self.parent]];
 }
 
 - (void)setZPositionScale:(CGFloat)zPositionScale
@@ -186,27 +141,26 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
 
 - (void)setTools:(NSArray *)toolNodes tags:(NSArray *)toolTags animation:(HLToolbarNodeAnimation)animation
 {
-  SKNode *squaresNode = [SKNode node];
-
   NSUInteger toolCount = [toolNodes count];
-  for (NSUInteger i = 0; i < toolCount; ++i) {
-    SKNode *toolNode = toolNodes[i];
-    NSString *toolTag = toolTags[i];
-
-    SKSpriteNode *squareNode = [SKSpriteNode spriteNodeWithColor:_squareColor size:CGSizeZero];
-    squareNode.name = toolTag;
-    squareNode.alpha = _enabledAlpha;
-    [squaresNode addChild:squareNode];
-
-    [squareNode addChild:toolNode];
+  if ([toolTags count] < toolCount) {
+    [NSException raise:@"HLToolbarNodeInvalidArgument" format:@"Every tool must have a tag."];
   }
 
-  SKNode *oldSquaresNode = _squaresNode;
+  HLBackdropItemNode *itemPrototypeNode = [[HLBackdropItemNode alloc] initWithSize:CGSizeZero];
+  itemPrototypeNode.normalColor = _squareColor;
+  itemPrototypeNode.highlightColor = _highlightColor;
+  itemPrototypeNode.enabledAlpha = _enabledAlpha;
+  itemPrototypeNode.disabledAlpha = _disabledAlpha;
+  HLItemsNode *squaresNode = [[HLItemsNode alloc] initWithItemCount:(int)toolCount itemPrototype:itemPrototypeNode];
+  NSArray *squareNodes = squaresNode.itemNodes;
+  for (NSUInteger i = 0; i < toolCount; ++i) {
+    HLBackdropItemNode *squareNode = squareNodes[i];
+    squareNode.content = toolNodes[i];
+    squareNode.name = toolTags[i];
+  }
+
+  HLItemsNode *oldSquaresNode = _squaresNode;
   _squaresNode = squaresNode;
-  // note: Allocate square state; note that it will be initialized as enabled and unhighlighted,
-  // as in code above.  Assume any HLToolNodes passed are passed enabled and unhighlighted.
-  [self HL_freeSquareState];
-  [self HL_allocateSquareState];
   [_cropNode addChild:squaresNode];
 
   CGSize oldSize = _size;
@@ -254,26 +208,10 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
 - (void)setTool:(SKNode *)toolNode forTag:(NSString *)toolTag
 {
   int s = 0;
-  for (SKSpriteNode *squareNode in _squaresNode.children) {
+  NSArray *squareNodes = _squaresNode.itemNodes;
+  for (HLBackdropItemNode *squareNode in squareNodes) {
     if ([squareNode.name isEqualToString:toolTag]) {
-
-      [squareNode removeAllChildren];
-      [squareNode addChild:toolNode];
-
-      // note: Assume any HLToolNode passed is enabled and unhighlighted.
-      if (!_squareState[s].enabled
-          && toolNode
-          && [toolNode conformsToProtocol:@protocol(HLToolNode)]
-          && [toolNode respondsToSelector:@selector(hlToolSetEnabled:)]) {
-        [(id <HLToolNode>)toolNode hlToolSetEnabled:NO];
-      }
-      if (_squareState[s].highlight
-          && toolNode
-          && [toolNode conformsToProtocol:@protocol(HLToolNode)]
-          && [toolNode respondsToSelector:@selector(hlToolSetHighlight:)]) {
-        [(id <HLToolNode>)toolNode hlToolSetHighlight:YES];
-      }
-      
+      squareNode.content = toolNode;
       break;
     }
     ++s;
@@ -287,12 +225,13 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
 
 - (NSUInteger)toolCount
 {
-  return [_squaresNode.children count];
+  return [_squaresNode.itemNodes count];
 }
 
 - (NSString *)toolAtLocation:(CGPoint)location
 {
-  for (SKSpriteNode *squareNode in _squaresNode.children) {
+  NSArray *squareNodes = _squaresNode.itemNodes;
+  for (HLBackdropItemNode *squareNode in squareNodes) {
     if ([squareNode containsPoint:location]) {
       return squareNode.name;
     }
@@ -300,9 +239,10 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
   return nil;
 }
 
-- (SKSpriteNode *)squareNodeForTool:(NSString *)toolTag
+- (SKNode *)squareNodeForTool:(NSString *)toolTag
 {
-  for (SKSpriteNode *squareNode in _squaresNode.children) {
+  NSArray *squareNodes = _squaresNode.itemNodes;
+  for (HLBackdropItemNode *squareNode in squareNodes) {
     if ([squareNode.name isEqualToString:toolTag]) {
       return squareNode;
     }
@@ -312,64 +252,34 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
 
 - (BOOL)highlightForTool:(NSString *)toolTag
 {
-  int s = 0;
-  for (SKSpriteNode *squareNode in _squaresNode.children) {
+  NSArray *squareNodes = _squaresNode.itemNodes;
+  for (HLBackdropItemNode *squareNode in squareNodes) {
     if ([squareNode.name isEqualToString:toolTag]) {
-      return _squareState[s].highlight;
+      return squareNode.highlight;
     }
-    ++s;
   }
-  return YES;
+  return NO;
 }
 
 - (void)setHighlight:(BOOL)highlight forTool:(NSString *)toolTag
 {
-  int s = 0;
-  for (SKSpriteNode *squareNode in _squaresNode.children) {
+  NSArray *squareNodes = _squaresNode.itemNodes;
+  for (HLBackdropItemNode *squareNode in squareNodes) {
     if ([squareNode.name isEqualToString:toolTag]) {
-      [squareNode removeActionForKey:@"setHighlight"];
-      _squareState[s].highlight = highlight;
-      SKNode *toolNode = (SKNode *)squareNode.children.firstObject;
-      if (toolNode
-          && [toolNode conformsToProtocol:@protocol(HLToolNode)]
-          && [toolNode respondsToSelector:@selector(hlToolSetHighlight:)]) {
-        [(id <HLToolNode>)toolNode hlToolSetHighlight:highlight];
-      } else {
-        if (highlight) {
-          squareNode.color = _highlightColor;
-        } else {
-          squareNode.color = _squareColor;
-        }
-      }
+      squareNode.highlight = highlight;
       break;
     }
-    ++s;
   }
 }
 
 - (void)toggleHighlightForTool:(NSString *)toolTag
 {
-  int s = 0;
-  for (SKSpriteNode *squareNode in _squaresNode.children) {
+  NSArray *squareNodes = _squaresNode.itemNodes;
+  for (HLBackdropItemNode *squareNode in squareNodes) {
     if ([squareNode.name isEqualToString:toolTag]) {
-      [squareNode removeActionForKey:@"setHighlight"];
-      BOOL highlight = !_squareState[s].highlight;
-      _squareState[s].highlight = highlight;
-      SKNode *toolNode = (SKNode *)squareNode.children.firstObject;
-      if (toolNode
-          && [toolNode conformsToProtocol:@protocol(HLToolNode)]
-          && [toolNode respondsToSelector:@selector(hlToolSetHighlight:)]) {
-        [(id <HLToolNode>)toolNode hlToolSetHighlight:highlight];
-      } else {
-        if (highlight) {
-          squareNode.color = _highlightColor;
-        } else {
-          squareNode.color = _squareColor;
-        }
-      }
+      squareNode.highlight = !squareNode.highlight;
       break;
     }
-    ++s;
   }
 }
 
@@ -377,90 +287,45 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
              forTool:(NSString *)toolTag
           blinkCount:(int)blinkCount
    halfCycleDuration:(NSTimeInterval)halfCycleDuration
+          completion:(void (^)(void))completion
 {
-  int s = 0;
-  SKSpriteNode *squareNode = nil;
-  for (squareNode in _squaresNode.children) {
+  NSArray *squareNodes = _squaresNode.itemNodes;
+  for (HLBackdropItemNode *squareNode in squareNodes) {
     if ([squareNode.name isEqualToString:toolTag]) {
-      break;
+      [squareNode setHighlight:finalHighlight
+                    blinkCount:blinkCount
+             halfCycleDuration:halfCycleDuration
+                    completion:completion];
     }
-    ++s;
   }
-  if (!squareNode) {
-    return;
-  }
-
-  BOOL startingHighlight = _squareState[s].highlight;
-  _squareState[s].highlight = finalHighlight;
-  
-  [squareNode removeActionForKey:@"setHighlight"];
-  
-  SKAction *blinkIn;
-  SKAction *blinkOut;
-  SKNode *toolNode = (SKNode *)squareNode.children.firstObject;
-  if (toolNode
-      && [toolNode conformsToProtocol:@protocol(HLToolNode)]
-      && [toolNode respondsToSelector:@selector(hlToolSetHighlight:)]) {
-    blinkIn = [SKAction sequence:@[ [SKAction runBlock:^{ [(id <HLToolNode>)toolNode hlToolSetHighlight:!startingHighlight]; }],
-                                    [SKAction waitForDuration:halfCycleDuration] ]];
-    blinkOut = [SKAction sequence:@[ [SKAction runBlock:^{ [(id <HLToolNode>)toolNode hlToolSetHighlight:startingHighlight]; }],
-                                     [SKAction waitForDuration:halfCycleDuration] ]];
-  } else {
-    blinkIn = [SKAction colorizeWithColor:(startingHighlight ? _squareColor : _highlightColor) colorBlendFactor:1.0f duration:halfCycleDuration];
-    blinkIn.timingMode = (startingHighlight ? SKActionTimingEaseOut : SKActionTimingEaseIn);
-    blinkOut = [SKAction colorizeWithColor:(startingHighlight ? _highlightColor : _squareColor) colorBlendFactor:1.0f duration:halfCycleDuration];
-    blinkOut.timingMode = (startingHighlight ? SKActionTimingEaseIn : SKActionTimingEaseOut);
-  }
-
-  NSMutableArray *blinkActions = [NSMutableArray array];
-  for (int b = 0; b < blinkCount; ++b) {
-    [blinkActions addObject:blinkIn];
-    [blinkActions addObject:blinkOut];
-  }
-  if (startingHighlight != finalHighlight) {
-    [blinkActions addObject:blinkIn];
-  }
-
-  [squareNode runAction:[SKAction sequence:blinkActions] withKey:@"setHighlight"];
 }
 
 - (BOOL)enabledForTool:(NSString *)toolTag
 {
-  int s = 0;
-  for (SKSpriteNode *squareNode in _squaresNode.children) {
+  NSArray *squareNodes = _squaresNode.itemNodes;
+  for (HLBackdropItemNode *squareNode in squareNodes) {
     if ([squareNode.name isEqualToString:toolTag]) {
-      return _squareState[s].enabled;
+      return squareNode.enabled;
     }
-    ++s;
   }
   return YES;
 }
 
 - (void)setEnabled:(BOOL)enabled forTool:(NSString *)toolTag
 {
-  int s = 0;
-  for (SKSpriteNode *squareNode in _squaresNode.children) {
+  NSArray *squareNodes = _squaresNode.itemNodes;
+  for (HLBackdropItemNode *squareNode in squareNodes) {
     if ([squareNode.name isEqualToString:toolTag]) {
-      _squareState[s].enabled = enabled;
-      SKNode *toolNode = (SKNode *)squareNode.children.firstObject;
-      if (toolNode
-          && [toolNode conformsToProtocol:@protocol(HLToolNode)]
-          && [toolNode respondsToSelector:@selector(hlToolSetEnabled:)]) {
-        [(id <HLToolNode>)toolNode hlToolSetEnabled:enabled];
-      } else {
-        if (enabled) {
-          squareNode.alpha = _enabledAlpha;
-        } else {
-          squareNode.alpha = _disabledAlpha;
-        }
-      }
+      squareNode.enabled = enabled;
       break;
     }
-    ++s;
   }
 }
 
-- (void)showWithOrigin:(CGPoint)origin finalPosition:(CGPoint)finalPosition fullScale:(CGFloat)fullScale animated:(BOOL)animated
+- (void)showWithOrigin:(CGPoint)origin
+         finalPosition:(CGPoint)finalPosition
+             fullScale:(CGFloat)fullScale
+              animated:(BOOL)animated
 {
   // noob: I'm encapsulating this animation within the toolbar, since the toolbar knows cool ways to make itself
   // appear, and can track some useful state.  But the owner of this toolbar knows the anchor, position, size, and
@@ -550,8 +415,8 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
     return;
   }
 
-  if (self.toolTappedBlock) {
-    self.toolTappedBlock(toolTag);
+  if (_toolTappedBlock) {
+    _toolTappedBlock(toolTag);
   }
 
   id <HLToolbarNodeDelegate> delegate = _delegate;
@@ -563,30 +428,16 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
 #pragma mark -
 #pragma mark Private
 
-- (void)HL_allocateSquareState
-{
-  int squareCount = (int)[_squaresNode.children count];
-  _squareState = (HLToolbarNodeSquareState *)malloc(sizeof(HLToolbarNodeSquareState) * (size_t)squareCount);
-  for (int s = 0; s < squareCount; ++s) {
-    _squareState[s].enabled = YES;
-    _squareState[s].highlight = NO;
-  }
-}
-
-- (void)HL_freeSquareState
-{
-  free(_squareState);
-}
-
 - (void)HL_layoutXYAnimation:(HLToolbarNodeAnimation)animation
 {
   // Find natural tool sizes.
   CGSize naturalToolsSize = CGSizeZero;
-  for (SKSpriteNode *squareNode in _squaresNode.children) {
+  NSArray *squareNodes = _squaresNode.itemNodes;
+  for (HLBackdropItemNode *squareNode in squareNodes) {
     // note: The tool's frame.size only includes what is visible.  Instead, require that the
     // tool implement a size method.  Assume that the reported size, however, does not yet
     // account for rotation.
-    SKNode *toolNode = squareNode.children.firstObject;
+    SKNode *toolNode = squareNode.content;
     CGSize naturalToolSize = HLGetBoundsForTransformation([(id)toolNode size], toolNode.zRotation);
     naturalToolsSize.width += naturalToolSize.width;
     if (naturalToolSize.height > naturalToolsSize.height) {
@@ -620,7 +471,7 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
   // And testing the value of texture.filteringMode gives unexpected results.
   
   // Calculate tool scale.
-  int squareCount = (int)[_squaresNode.children count];
+  int squareCount = (int)[squareNodes count];
   CGSize toolbarConstantSize = CGSizeMake(_squareSeparatorSize * (squareCount - 1) + _toolPad * (squareCount * 2) + _backgroundBorderSize * 2,
                                           _toolPad * 2 + _backgroundBorderSize * 2);
   CGFloat finalToolsScale;
@@ -652,7 +503,7 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
     finalToolbarSize = _size;
   }
 
-  // note: Size and anchorPoint may or may not have changed, but if this is the first layout, then _toolbarNode
+  // note: Size and anchorPoint may or may not have changed, but if this is the first layout, then _backgroundNode
   // and _cropNode have not yet been initialized correctly.  (We could do it in the property mutator methods, but
   // the documented promise is that "no changes take effect until an explicit call to layout"; moreover, since in
   // those mutators the _squaresNode wouldn't be updated, the effected change might only be partial, and therefore
@@ -661,23 +512,23 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
   // Set toolbar size.
   _size = finalToolbarSize;
   if (animation == HLToolbarNodeAnimationNone) {
-    _toolbarNode.size = finalToolbarSize;
+    _backgroundNode.size = finalToolbarSize;
     [(SKSpriteNode *)_cropNode.maskNode setSize:finalToolbarSize];
-  } else if (!CGSizeEqualToSize(_toolbarNode.size, finalToolbarSize)) {
+  } else if (!CGSizeEqualToSize(_backgroundNode.size, finalToolbarSize)) {
     SKAction *resize = [SKAction resizeToWidth:finalToolbarSize.width height:finalToolbarSize.height duration:HLToolbarResizeDuration];
     resize.timingMode = SKActionTimingEaseOut;
-    [_toolbarNode runAction:resize];
+    [_backgroundNode runAction:resize];
     // noob: The cropNode mask must be resized along with the toolbar size.  Or am I missing something?
     SKAction *resizeMaskNode = [SKAction customActionWithDuration:HLToolbarResizeDuration actionBlock:^(SKNode *node, CGFloat elapsedTime){
       SKSpriteNode *maskNode = (SKSpriteNode *)node;
-      maskNode.size = self->_toolbarNode.size;
+      maskNode.size = self->_backgroundNode.size;
     }];
     resizeMaskNode.timingMode = resize.timingMode;
     [_cropNode.maskNode runAction:resizeMaskNode];
   }
 
   // Set toolbar anchorPoint.
-  _toolbarNode.anchorPoint = _anchorPoint;
+  _backgroundNode.anchorPoint = _anchorPoint;
   [(SKSpriteNode *)_cropNode.maskNode setAnchorPoint:_anchorPoint];
   
   // Calculate justification offset.
@@ -696,8 +547,8 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
   // Layout tools (scaled and positioned appropriately).
   CGFloat x = _anchorPoint.x * -finalToolbarSize.width + _backgroundBorderSize + justificationOffset;
   CGFloat y = _anchorPoint.y * -finalToolbarSize.height + finalToolbarSize.height / 2.0f;
-  for (SKSpriteNode *squareNode in _squaresNode.children) {
-    SKNode *toolNode = squareNode.children.firstObject;
+  for (HLBackdropItemNode *squareNode in squareNodes) {
+    SKNode *toolNode = squareNode.content;
     
     CGSize naturalToolSize = HLGetBoundsForTransformation([(id)toolNode size], toolNode.zRotation);
     // note: Can multiply toolNode.scale by finalToolsScale, directly.  But that's messing
@@ -720,17 +571,9 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
 - (void)HL_layoutZ
 {
   CGFloat zPositionLayerIncrement = self.zPositionScale / HLToolbarNodeZPositionLayerCount;
-  for (SKSpriteNode *squareNode in _squaresNode.children) {
-    squareNode.zPosition = zPositionLayerIncrement;
-    NSArray *squareNodeChildren = squareNode.children;
-    SKNode *toolNode = (SKNode *)(squareNodeChildren.firstObject);
-    if (toolNode) {
-      toolNode.zPosition = zPositionLayerIncrement;
-      if ([toolNode isKindOfClass:[HLComponentNode class]]) {
-        ((HLComponentNode *)toolNode).zPositionScale = zPositionLayerIncrement;
-      }
-    }
-  }
+  _backgroundNode.zPosition = HLToolbarNodeZPositionLayerBackground * zPositionLayerIncrement;
+  _squaresNode.zPosition = HLToolbarNodeZPositionLayerSquares * zPositionLayerIncrement;
+  _squaresNode.zPositionScale = zPositionLayerIncrement;
 }
 
 @end

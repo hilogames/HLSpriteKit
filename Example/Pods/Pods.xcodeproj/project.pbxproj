@@ -10,109 +10,10 @@
 	<string>46</string>
 	<key>objects</key>
 	<dict>
-		<key>013024BA07599BFC002C5593</key>
+		<key>00219CF91C31D34B05CD8F7B</key>
 		<dict>
 			<key>fileRef</key>
-			<string>782AA314FEFAEEDA923680E4</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>051C9995F10B37B2CAADB6A0</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>SKLabelNode+HLLabelNodeAdditions.h</string>
-			<key>path</key>
-			<string>HLSpriteKit/SKLabelNode+HLLabelNodeAdditions.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>06767BA3BCDAE9751B5BFD73</key>
-		<dict>
-			<key>fileRef</key>
-			<string>08B89668E3A91DC92F15D665</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>08861ADC76D86829B757DDC2</key>
-		<dict>
-			<key>baseConfigurationReference</key>
-			<string>31245AE7C6CD35DD480320EF</string>
-			<key>buildSettings</key>
-			<dict>
-				<key>ALWAYS_SEARCH_USER_PATHS</key>
-				<string>NO</string>
-				<key>COPY_PHASE_STRIP</key>
-				<string>YES</string>
-				<key>DSTROOT</key>
-				<string>/tmp/xcodeproj.dst</string>
-				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
-				<string>YES</string>
-				<key>INSTALL_PATH</key>
-				<string>$(BUILT_PRODUCTS_DIR)</string>
-				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
-				<string>7.0</string>
-				<key>OTHER_CFLAGS</key>
-				<array>
-					<string>-DNS_BLOCK_ASSERTIONS=1</string>
-					<string>$(inherited)</string>
-				</array>
-				<key>OTHER_CPLUSPLUSFLAGS</key>
-				<array>
-					<string>-DNS_BLOCK_ASSERTIONS=1</string>
-					<string>$(inherited)</string>
-				</array>
-				<key>OTHER_LDFLAGS</key>
-				<string></string>
-				<key>OTHER_LIBTOOLFLAGS</key>
-				<string></string>
-				<key>PRODUCT_NAME</key>
-				<string>$(TARGET_NAME)</string>
-				<key>PUBLIC_HEADERS_FOLDER_PATH</key>
-				<string>$(TARGET_NAME)</string>
-				<key>SDKROOT</key>
-				<string>iphoneos</string>
-				<key>SKIP_INSTALL</key>
-				<string>YES</string>
-				<key>VALIDATE_PRODUCT</key>
-				<string>YES</string>
-			</dict>
-			<key>isa</key>
-			<string>XCBuildConfiguration</string>
-			<key>name</key>
-			<string>Release</string>
-		</dict>
-		<key>08B89668E3A91DC92F15D665</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>HLError.h</string>
-			<key>path</key>
-			<string>HLSpriteKit/HLError.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>0A5154568D41D44DB22B04F4</key>
-		<dict>
-			<key>fileRef</key>
-			<string>8CCD7FDDA8D97D2505AE2128</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>0D65C0F747B94DC117FEB865</key>
-		<dict>
-			<key>fileRef</key>
-			<string>66365E6B12366E0285F5BD53</string>
+			<string>FCCE438A8B0BAC81A23DEE05</string>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 			<key>settings</key>
@@ -121,54 +22,64 @@
 				<string>-fobjc-arc</string>
 			</dict>
 		</dict>
-		<key>0F6434AE7D852FC769583689</key>
+		<key>02E48E13096F8E18CAB78F6D</key>
 		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
 			<key>isa</key>
 			<string>PBXFileReference</string>
 			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
+			<string>wrapper.framework</string>
 			<key>name</key>
-			<string>HLLayoutManager.h</string>
+			<string>Foundation.framework</string>
 			<key>path</key>
-			<string>HLSpriteKit/HLLayoutManager.h</string>
+			<string>Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.1.sdk/System/Library/Frameworks/Foundation.framework</string>
 			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
+			<string>DEVELOPER_DIR</string>
 		</dict>
-		<key>1070E54072D3A260614A65EA</key>
+		<key>0552FB2E270CC4186FEB0C45</key>
 		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array>
+				<string>5C3853EE5267EF9FE58E634B</string>
+				<string>C871CF6357C2060DE98D734F</string>
+				<string>F0B7B8D2DA21E95DCF55CBF3</string>
+			</array>
 			<key>isa</key>
-			<string>PBXTargetDependency</string>
-			<key>target</key>
-			<string>DF829C6F5BC81591B37DF003</string>
-			<key>targetProxy</key>
-			<string>868771156BC8935F41B30EDA</string>
+			<string>PBXFrameworksBuildPhase</string>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
 		</dict>
-		<key>1281014B58C1B4ABD2BB1B3B</key>
+		<key>0594A6AA110E0A17EC53F584</key>
 		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
+			<key>buildConfigurationList</key>
+			<string>69170DAA7553F67AC7134D2F</string>
+			<key>buildPhases</key>
+			<array>
+				<string>50647223A1BA17F45E4171D5</string>
+				<string>CA304AF8BB75E763555D4D0D</string>
+			</array>
+			<key>buildRules</key>
+			<array/>
+			<key>dependencies</key>
+			<array>
+				<string>7A93D1047283B34A3B682E54</string>
+			</array>
 			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>text.xcconfig</string>
-			<key>path</key>
-			<string>Pods-HLSpriteKit-HLSpriteKit.xcconfig</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
+			<string>PBXNativeTarget</string>
+			<key>name</key>
+			<string>Pods-HLSpriteKit</string>
+			<key>productName</key>
+			<string>Pods-HLSpriteKit</string>
+			<key>productReference</key>
+			<string>DC8AC27D18BCCC8A570D4410</string>
+			<key>productType</key>
+			<string>com.apple.product-type.library.static</string>
 		</dict>
-		<key>128F1A429C375824AEBACD20</key>
+		<key>064B4C10CAA7BDE7AB975756</key>
 		<dict>
 			<key>fileRef</key>
-			<string>6E7AF1405F4354D74226C50A</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>13BB20296A780360E9F8A560</key>
-		<dict>
-			<key>fileRef</key>
-			<string>B26274DD456254B15DB97FF2</string>
+			<string>457976E58701B21B53A1655A</string>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 			<key>settings</key>
@@ -177,12 +88,91 @@
 				<string>-fobjc-arc</string>
 			</dict>
 		</dict>
-		<key>14A970B7FE140974DF47433B</key>
+		<key>06B4024288BBAA06626E131D</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>text</string>
+			<key>path</key>
+			<string>Pods-Tests-acknowledgements.markdown</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>0729E65EF0B3A1EBBB6F624E</key>
+		<dict>
+			<key>fileRef</key>
+			<string>1B3B5F9CFD33B9DE51271386</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>07379667A3869F95D7943FDA</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>424793C53FEEF32B77F0BDA3</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>name</key>
+			<string>Development Pods</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>075408D362EB1F0A7616A4D8</key>
+		<dict>
+			<key>fileRef</key>
+			<string>1FFCDA244C45E2BA2C6A83B6</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>settings</key>
+			<dict>
+				<key>COMPILER_FLAGS</key>
+				<string>-fobjc-arc</string>
+			</dict>
+		</dict>
+		<key>07E219F24C7B9E28DFF330C4</key>
+		<dict>
+			<key>fileRef</key>
+			<string>BC4794F9388328FAB9A3BA8E</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>0A26A6B33ACA73D5CADCDED8</key>
+		<dict>
+			<key>fileRef</key>
+			<string>C491CEAC741D24B7D6B8B517</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>0A8FC62412983F8384665E6D</key>
+		<dict>
+			<key>containerPortal</key>
+			<string>19D509A9B8B8C0D8F5F6D99A</string>
+			<key>isa</key>
+			<string>PBXContainerItemProxy</string>
+			<key>proxyType</key>
+			<string>1</string>
+			<key>remoteGlobalIDString</key>
+			<string>29291DF6E319FF3DC48F1249</string>
+			<key>remoteInfo</key>
+			<string>Pods-HLSpriteKit-HLSpriteKit</string>
+		</dict>
+		<key>0CADC8318E61C815197C20E2</key>
+		<dict>
+			<key>fileRef</key>
+			<string>B3AA7828AB9F25063E10542D</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>0E1E5F049DFA1E7A886D8CA3</key>
 		<dict>
 			<key>buildConfigurations</key>
 			<array>
-				<string>3B9C9A8842B73C49A6FD7441</string>
-				<string>98410857258927BB19CA7A76</string>
+				<string>468A00114977028CC6088071</string>
+				<string>E750AE0F380D9B056E8BB477</string>
 			</array>
 			<key>defaultConfigurationIsVisible</key>
 			<string>0</string>
@@ -191,34 +181,105 @@
 			<key>isa</key>
 			<string>XCConfigurationList</string>
 		</dict>
-		<key>14AA1BEFC065C1714E11AFBB</key>
+		<key>0ED4DDE9D0D358B5EB352935</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>text.xcconfig</string>
+			<key>path</key>
+			<string>Pods-HLSpriteKit-HLSpriteKit-Private.xcconfig</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>101349AB339F4CA16839CA98</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.h</string>
+			<key>name</key>
+			<string>HLItemContentNode.h</string>
+			<key>path</key>
+			<string>HLSpriteKit/HLItemContentNode.h</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>10E6ED350B3278B314AC79A4</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>3412C34F85F3DD8564466EAC</string>
+				<string>07379667A3869F95D7943FDA</string>
+				<string>14329880610F8C1F9FB0EA78</string>
+				<string>7794226818F68E1C68ECE582</string>
+				<string>F43B45705C41E173ED527A8B</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>14329880610F8C1F9FB0EA78</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>89340387E03A00E22EC94DAE</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>name</key>
+			<string>Frameworks</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>166FBCA2AE35FE3C7976857F</key>
+		<dict>
+			<key>fileRef</key>
+			<string>E1FFF3F77F077B64AF643E02</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>settings</key>
+			<dict>
+				<key>COMPILER_FLAGS</key>
+				<string>-fobjc-arc</string>
+			</dict>
+		</dict>
+		<key>16DC909BC5C2D154D90D78E0</key>
 		<dict>
 			<key>baseConfigurationReference</key>
-			<string>30BA3724581084321F82E304</string>
+			<string>0ED4DDE9D0D358B5EB352935</string>
 			<key>buildSettings</key>
 			<dict>
 				<key>ALWAYS_SEARCH_USER_PATHS</key>
 				<string>NO</string>
 				<key>COPY_PHASE_STRIP</key>
-				<string>YES</string>
+				<string>NO</string>
 				<key>DSTROOT</key>
 				<string>/tmp/xcodeproj.dst</string>
+				<key>GCC_DYNAMIC_NO_PIC</key>
+				<string>NO</string>
+				<key>GCC_OPTIMIZATION_LEVEL</key>
+				<string>0</string>
 				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
 				<string>YES</string>
+				<key>GCC_PREFIX_HEADER</key>
+				<string>Target Support Files/Pods-HLSpriteKit-HLSpriteKit/Pods-HLSpriteKit-HLSpriteKit-prefix.pch</string>
+				<key>GCC_PREPROCESSOR_DEFINITIONS</key>
+				<array>
+					<string>DEBUG=1</string>
+					<string>$(inherited)</string>
+				</array>
+				<key>GCC_SYMBOLS_PRIVATE_EXTERN</key>
+				<string>NO</string>
 				<key>INSTALL_PATH</key>
 				<string>$(BUILT_PRODUCTS_DIR)</string>
 				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
 				<string>7.0</string>
-				<key>OTHER_CFLAGS</key>
-				<array>
-					<string>-DNS_BLOCK_ASSERTIONS=1</string>
-					<string>$(inherited)</string>
-				</array>
-				<key>OTHER_CPLUSPLUSFLAGS</key>
-				<array>
-					<string>-DNS_BLOCK_ASSERTIONS=1</string>
-					<string>$(inherited)</string>
-				</array>
 				<key>OTHER_LDFLAGS</key>
 				<string></string>
 				<key>OTHER_LIBTOOLFLAGS</key>
@@ -231,18 +292,23 @@
 				<string>iphoneos</string>
 				<key>SKIP_INSTALL</key>
 				<string>YES</string>
-				<key>VALIDATE_PRODUCT</key>
-				<string>YES</string>
 			</dict>
 			<key>isa</key>
 			<string>XCBuildConfiguration</string>
 			<key>name</key>
-			<string>Release</string>
+			<string>Debug</string>
 		</dict>
-		<key>14D2D858BA26B4A64A42C101</key>
+		<key>1754F6333DF6CBB832754C9E</key>
 		<dict>
 			<key>fileRef</key>
-			<string>1C11AF65C3AC81161488A1FF</string>
+			<string>9A332BF31F2A470ED71302ED</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>1785DC3DD392FF971564211C</key>
+		<dict>
+			<key>fileRef</key>
+			<string>9535CB8BDF64B233CB23E092</string>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 			<key>settings</key>
@@ -251,10 +317,10 @@
 				<string>-fobjc-arc</string>
 			</dict>
 		</dict>
-		<key>15E37B2DCEEFA7F9AEF30AC5</key>
+		<key>187D6461465E27F6920460E0</key>
 		<dict>
 			<key>fileRef</key>
-			<string>CB40235FA1A265C702B33E16</string>
+			<string>289830477F4D0BFE031B37BE</string>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 			<key>settings</key>
@@ -263,7 +329,118 @@
 				<string>-fobjc-arc</string>
 			</dict>
 		</dict>
-		<key>1645ED7673163FEC53B44550</key>
+		<key>1890DAF3300D8B66CBF724FB</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.h</string>
+			<key>name</key>
+			<string>HLMessageNode.h</string>
+			<key>path</key>
+			<string>HLSpriteKit/HLMessageNode.h</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>1981FBC56604BED9F51E2524</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.objc</string>
+			<key>name</key>
+			<string>HLItemsNode.m</string>
+			<key>path</key>
+			<string>HLSpriteKit/HLItemsNode.m</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>19D509A9B8B8C0D8F5F6D99A</key>
+		<dict>
+			<key>attributes</key>
+			<dict>
+				<key>LastUpgradeCheck</key>
+				<string>0510</string>
+			</dict>
+			<key>buildConfigurationList</key>
+			<string>B2249303E6ED427926845173</string>
+			<key>compatibilityVersion</key>
+			<string>Xcode 3.2</string>
+			<key>developmentRegion</key>
+			<string>English</string>
+			<key>hasScannedForEncodings</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXProject</string>
+			<key>knownRegions</key>
+			<array>
+				<string>en</string>
+			</array>
+			<key>mainGroup</key>
+			<string>10E6ED350B3278B314AC79A4</string>
+			<key>productRefGroup</key>
+			<string>7794226818F68E1C68ECE582</string>
+			<key>projectDirPath</key>
+			<string></string>
+			<key>projectReferences</key>
+			<array/>
+			<key>projectRoot</key>
+			<string></string>
+			<key>targets</key>
+			<array>
+				<string>0594A6AA110E0A17EC53F584</string>
+				<string>29291DF6E319FF3DC48F1249</string>
+				<string>7E0B82B8C6225226664C502C</string>
+				<string>33E2958622F90085B68CD45D</string>
+			</array>
+		</dict>
+		<key>1B3B5F9CFD33B9DE51271386</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.objc</string>
+			<key>path</key>
+			<string>Pods-HLSpriteKit-HLSpriteKit-dummy.m</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>1BBC6BD6D889361256F302DD</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>text.xcconfig</string>
+			<key>name</key>
+			<string>Pods-Tests-HLSpriteKit-Private.xcconfig</string>
+			<key>path</key>
+			<string>../Pods-Tests-HLSpriteKit/Pods-Tests-HLSpriteKit-Private.xcconfig</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>1F8029759F0410A8EBF2845B</key>
+		<dict>
+			<key>fileRef</key>
+			<string>483B066D7549CC6B7DFB6001</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>1FA40C14A72E8D89721A40A6</key>
+		<dict>
+			<key>fileRef</key>
+			<string>02E48E13096F8E18CAB78F6D</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>1FFCDA244C45E2BA2C6A83B6</key>
 		<dict>
 			<key>includeInIndex</key>
 			<string>1</string>
@@ -278,21 +455,102 @@
 			<key>sourceTree</key>
 			<string>&lt;group&gt;</string>
 		</dict>
-		<key>16909E27566C9072AAA52066</key>
+		<key>204E7B4966B9A93C1C99136D</key>
 		<dict>
 			<key>fileRef</key>
-			<string>9B82100AE3013E6DCE92774D</string>
+			<string>E1FFF3F77F077B64AF643E02</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>settings</key>
+			<dict>
+				<key>COMPILER_FLAGS</key>
+				<string>-fobjc-arc</string>
+			</dict>
+		</dict>
+		<key>20DE8E206CF1B7433B62FA41</key>
+		<dict>
+			<key>fileRef</key>
+			<string>C491CEAC741D24B7D6B8B517</string>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 		</dict>
-		<key>180CCF5CE70C2B9D424B7D00</key>
+		<key>228B29E8AB9B766ED2BB7E11</key>
 		<dict>
 			<key>fileRef</key>
-			<string>664C91C07F8CBB73D27B0EDB</string>
+			<string>2F8F171B0725002DB026398B</string>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
+			<key>settings</key>
+			<dict>
+				<key>COMPILER_FLAGS</key>
+				<string>-fobjc-arc</string>
+			</dict>
 		</dict>
-		<key>1A8F8C19A9080BAF9752C19A</key>
+		<key>25B3AF881EA9EAB06AD9E7BE</key>
+		<dict>
+			<key>fileRef</key>
+			<string>1981FBC56604BED9F51E2524</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>settings</key>
+			<dict>
+				<key>COMPILER_FLAGS</key>
+				<string>-fobjc-arc</string>
+			</dict>
+		</dict>
+		<key>25B74E9F56A4CF681D9EC76D</key>
+		<dict>
+			<key>fileRef</key>
+			<string>47B4F5F0CBDB027C3B029516</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>settings</key>
+			<dict>
+				<key>COMPILER_FLAGS</key>
+				<string>-fobjc-arc</string>
+			</dict>
+		</dict>
+		<key>289830477F4D0BFE031B37BE</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.objc</string>
+			<key>name</key>
+			<string>UIImage+HLImageAdditions.m</string>
+			<key>path</key>
+			<string>HLSpriteKit/UIImage+HLImageAdditions.m</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>29291DF6E319FF3DC48F1249</key>
+		<dict>
+			<key>buildConfigurationList</key>
+			<string>81052587EA25C01E2F6C6365</string>
+			<key>buildPhases</key>
+			<array>
+				<string>E67981177AC4840E01FBE3ED</string>
+				<string>F6FC72D9A2B2D7BF0473284F</string>
+				<string>35543AE62D5A72D9D6BB1A9A</string>
+			</array>
+			<key>buildRules</key>
+			<array/>
+			<key>dependencies</key>
+			<array/>
+			<key>isa</key>
+			<string>PBXNativeTarget</string>
+			<key>name</key>
+			<string>Pods-HLSpriteKit-HLSpriteKit</string>
+			<key>productName</key>
+			<string>Pods-HLSpriteKit-HLSpriteKit</string>
+			<key>productReference</key>
+			<string>7B2D5F85B024C12A14792213</string>
+			<key>productType</key>
+			<string>com.apple.product-type.library.static</string>
+		</dict>
+		<key>2B2D9B576AD6C3D098898E35</key>
 		<dict>
 			<key>includeInIndex</key>
 			<string>1</string>
@@ -300,14 +558,48 @@
 			<string>PBXFileReference</string>
 			<key>lastKnownFileType</key>
 			<string>text.xcconfig</string>
-			<key>name</key>
-			<string>Pods-Tests-HLSpriteKit.xcconfig</string>
 			<key>path</key>
-			<string>../Pods-Tests-HLSpriteKit/Pods-Tests-HLSpriteKit.xcconfig</string>
+			<string>Pods-HLSpriteKit.debug.xcconfig</string>
 			<key>sourceTree</key>
 			<string>&lt;group&gt;</string>
 		</dict>
-		<key>1B5080B110CC66083D31B2D1</key>
+		<key>2D1426CE4A685B8E53ABC0F8</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>6A6D3C498AA624B22FEE2383</string>
+				<string>0ED4DDE9D0D358B5EB352935</string>
+				<string>1B3B5F9CFD33B9DE51271386</string>
+				<string>D9BD3B19E5EA97F0D603BC54</string>
+				<string>DB6477FADE89404CE1E3E0BA</string>
+				<string>1BBC6BD6D889361256F302DD</string>
+				<string>6AC365DE0D53F7E59CF19252</string>
+				<string>B1E1D21D6EE0E4336C012F09</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>name</key>
+			<string>Support Files</string>
+			<key>path</key>
+			<string>Example/Pods/Target Support Files/Pods-HLSpriteKit-HLSpriteKit</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>2EDF6D04CCC76EC74DF72605</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AED411100D0EA098722DC2DE</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>2F044F0C673559D13DD849E7</key>
+		<dict>
+			<key>fileRef</key>
+			<string>02E48E13096F8E18CAB78F6D</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>2F8F171B0725002DB026398B</key>
 		<dict>
 			<key>includeInIndex</key>
 			<string>1</string>
@@ -316,13 +608,35 @@
 			<key>lastKnownFileType</key>
 			<string>sourcecode.c.objc</string>
 			<key>name</key>
-			<string>HLComponentNode.m</string>
+			<string>HLGridNode.m</string>
 			<key>path</key>
-			<string>HLSpriteKit/HLComponentNode.m</string>
+			<string>HLSpriteKit/HLGridNode.m</string>
 			<key>sourceTree</key>
 			<string>&lt;group&gt;</string>
 		</dict>
-		<key>1C11AF65C3AC81161488A1FF</key>
+		<key>3037EE9275B59E516C96FA0C</key>
+		<dict>
+			<key>fileRef</key>
+			<string>79A375D568EE4E8AE2D4F211</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>30AB2E95E25108147D8ADCE5</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.h</string>
+			<key>name</key>
+			<string>HLMath.h</string>
+			<key>path</key>
+			<string>HLSpriteKit/HLMath.h</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>32C2A01964E798DC50CE7F10</key>
 		<dict>
 			<key>includeInIndex</key>
 			<string>1</string>
@@ -331,13 +645,94 @@
 			<key>lastKnownFileType</key>
 			<string>sourcecode.c.objc</string>
 			<key>name</key>
-			<string>HLTextureStore.m</string>
+			<string>HLToolbarNode.m</string>
 			<key>path</key>
-			<string>HLSpriteKit/HLTextureStore.m</string>
+			<string>HLSpriteKit/HLToolbarNode.m</string>
 			<key>sourceTree</key>
 			<string>&lt;group&gt;</string>
 		</dict>
-		<key>1C4FC053E50090C7A99D9ED6</key>
+		<key>33E2958622F90085B68CD45D</key>
+		<dict>
+			<key>buildConfigurationList</key>
+			<string>0E1E5F049DFA1E7A886D8CA3</string>
+			<key>buildPhases</key>
+			<array>
+				<string>971667EE92C30996FE1F0794</string>
+				<string>0552FB2E270CC4186FEB0C45</string>
+				<string>4E97B13E175AC4F7D2C83125</string>
+			</array>
+			<key>buildRules</key>
+			<array/>
+			<key>dependencies</key>
+			<array/>
+			<key>isa</key>
+			<string>PBXNativeTarget</string>
+			<key>name</key>
+			<string>Pods-Tests-HLSpriteKit</string>
+			<key>productName</key>
+			<string>Pods-Tests-HLSpriteKit</string>
+			<key>productReference</key>
+			<string>D84D61A2D4D881E816C9B88D</string>
+			<key>productType</key>
+			<string>com.apple.product-type.library.static</string>
+		</dict>
+		<key>3412C34F85F3DD8564466EAC</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>text</string>
+			<key>name</key>
+			<string>Podfile</string>
+			<key>path</key>
+			<string>../Podfile</string>
+			<key>sourceTree</key>
+			<string>SOURCE_ROOT</string>
+			<key>xcLanguageSpecificationIdentifier</key>
+			<string>xcode.lang.ruby</string>
+		</dict>
+		<key>35543AE62D5A72D9D6BB1A9A</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array>
+				<string>D84F76A65C3F6EEE127BEE25</string>
+				<string>C30C3D1EFC3488F213353BD3</string>
+				<string>9C2CD482CE71E12972ABA012</string>
+				<string>72ADB1ECE6F31252CA783E29</string>
+				<string>68414AFDE995D06D13D105F4</string>
+				<string>F0CB3E5E185F0909055DD677</string>
+				<string>99312D817FB08D6393D18053</string>
+				<string>46ED02615FF745ED20CA18CA</string>
+				<string>C90BAE36910986AEB8A1A0E6</string>
+				<string>5AD4C0F67C3923B6ECEC95EE</string>
+				<string>ACE95BEEA43057B08B762D9A</string>
+				<string>B07D45ED3B74A7525651AEA0</string>
+				<string>624BBF90041E70FF6FFE96E6</string>
+				<string>A72C10E10B8FBF3B1F3A85A0</string>
+				<string>E2A73ACB20C9146B74B2029F</string>
+				<string>1F8029759F0410A8EBF2845B</string>
+				<string>FAFB8F66163EC7DF8D2EF164</string>
+				<string>BC4D83C35959839C1B5042D9</string>
+				<string>F71B2EDCC43D5D874AC080BF</string>
+				<string>8F7B5DE105868BB58DC111D1</string>
+				<string>20DE8E206CF1B7433B62FA41</string>
+				<string>CE36829E5D04A408F3F986C4</string>
+				<string>52152F2BB3A687DFE0D209DC</string>
+				<string>7A20B95C6436B58B1BB1CF1F</string>
+				<string>B922AB7AFFB825713A3DDCCD</string>
+				<string>8CDCD3BB1D885AD49EE6810F</string>
+				<string>1754F6333DF6CBB832754C9E</string>
+			</array>
+			<key>isa</key>
+			<string>PBXHeadersBuildPhase</string>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+		</dict>
+		<key>37B25235C56B1FD82700AA36</key>
 		<dict>
 			<key>includeInIndex</key>
 			<string>1</string>
@@ -352,7 +747,7 @@
 			<key>sourceTree</key>
 			<string>&lt;group&gt;</string>
 		</dict>
-		<key>1CC901F779535849086A36BF</key>
+		<key>38B6C9FD77D56B5AF4AED8ED</key>
 		<dict>
 			<key>includeInIndex</key>
 			<string>1</string>
@@ -361,392 +756,16 @@
 			<key>lastKnownFileType</key>
 			<string>sourcecode.c.h</string>
 			<key>name</key>
-			<string>HLScrollNode.h</string>
+			<string>HLEmitterStore.h</string>
 			<key>path</key>
-			<string>HLSpriteKit/HLScrollNode.h</string>
+			<string>HLSpriteKit/HLEmitterStore.h</string>
 			<key>sourceTree</key>
 			<string>&lt;group&gt;</string>
 		</dict>
-		<key>1DBFE9CF7113B5057AB3D32B</key>
-		<dict>
-			<key>buildConfigurationList</key>
-			<string>4BAA7180296B9C95FEB890DA</string>
-			<key>buildPhases</key>
-			<array>
-				<string>35A16F2AD46DC24BB08897E1</string>
-				<string>CF951F9D319AB094543D863E</string>
-			</array>
-			<key>buildRules</key>
-			<array/>
-			<key>dependencies</key>
-			<array>
-				<string>24ED52655DD5337BEA7B05A0</string>
-			</array>
-			<key>isa</key>
-			<string>PBXNativeTarget</string>
-			<key>name</key>
-			<string>Pods-HLSpriteKit</string>
-			<key>productName</key>
-			<string>Pods-HLSpriteKit</string>
-			<key>productReference</key>
-			<string>E88365DC9B16F1E9434A1301</string>
-			<key>productType</key>
-			<string>com.apple.product-type.library.static</string>
-		</dict>
-		<key>1E1440841F80C7E35AEF3D30</key>
-		<dict>
-			<key>fileRef</key>
-			<string>B3673C5985B396590B6A36EC</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-			<key>settings</key>
-			<dict>
-				<key>COMPILER_FLAGS</key>
-				<string>-fobjc-arc</string>
-			</dict>
-		</dict>
-		<key>211C2429D5C14602CB3932A9</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>F5D2994109F209DC43A63D4E</string>
-				<string>88EA86D84B1D250F31EF6F52</string>
-				<string>BBCBE51C16FB51BF5094B397</string>
-				<string>86622622A3D2C22B4D4DF2D9</string>
-				<string>DD50515FE0AEEE48CDB1993D</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>22FF733C93EC55276CBC23DE</key>
-		<dict>
-			<key>fileRef</key>
-			<string>F274B87A4A1F4A7E9E7F77C5</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-			<key>settings</key>
-			<dict>
-				<key>COMPILER_FLAGS</key>
-				<string>-fobjc-arc</string>
-			</dict>
-		</dict>
-		<key>23D0D16FCA473C16C74460BA</key>
-		<dict>
-			<key>fileRef</key>
-			<string>9B82100AE3013E6DCE92774D</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>24657F5EB829BEDC8A9BCF9B</key>
-		<dict>
-			<key>fileRef</key>
-			<string>26B1F776816BC44B8AC9790B</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>24E319600240390123445AF4</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>name</key>
-			<string>HLScrollNode.m</string>
-			<key>path</key>
-			<string>HLSpriteKit/HLScrollNode.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>24ED52655DD5337BEA7B05A0</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXTargetDependency</string>
-			<key>target</key>
-			<string>95744CE1E314F6D6A4F40E9F</string>
-			<key>targetProxy</key>
-			<string>A9D21BD318222398D76619C4</string>
-		</dict>
-		<key>261FCB704061FCE19ED43A60</key>
-		<dict>
-			<key>fileRef</key>
-			<string>B2D246872FFAE7E8095D1EDC</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>26B1F776816BC44B8AC9790B</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>HLGestureTarget.h</string>
-			<key>path</key>
-			<string>HLSpriteKit/HLGestureTarget.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>272849282F76FA23AD6B5FB5</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>text.xcconfig</string>
-			<key>path</key>
-			<string>Pods-HLSpriteKit.debug.xcconfig</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>272B2FD9133D477AFA790F05</key>
-		<dict>
-			<key>fileRef</key>
-			<string>DE77A82833B2302DBA4CA6AA</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-			<key>settings</key>
-			<dict>
-				<key>COMPILER_FLAGS</key>
-				<string>-fobjc-arc</string>
-			</dict>
-		</dict>
-		<key>27B1E094AE30F973E9765B3E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>1CC901F779535849086A36BF</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>288858F18DDE62498A7361D0</key>
-		<dict>
-			<key>fileRef</key>
-			<string>C6BFF7D69C1722C7A4D4D55B</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>293CC42F07E1AEF88536C74E</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>name</key>
-			<string>HLEmitterStore.m</string>
-			<key>path</key>
-			<string>HLSpriteKit/HLEmitterStore.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>2AC0F49F7C151CC389E29CAB</key>
-		<dict>
-			<key>fileRef</key>
-			<string>355CB544D1B70BF1FAFC8992</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>2AFA997A7D53314B10FA4A83</key>
-		<dict>
-			<key>fileRef</key>
-			<string>4497B0A2689EDDD5C78FD8D4</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>2C1346115703376E72794CF7</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>name</key>
-			<string>SKNode+HLGestureTarget.m</string>
-			<key>path</key>
-			<string>HLSpriteKit/SKNode+HLGestureTarget.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>2C9710EBD10531705488F9F9</key>
-		<dict>
-			<key>fileRef</key>
-			<string>293CC42F07E1AEF88536C74E</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-			<key>settings</key>
-			<dict>
-				<key>COMPILER_FLAGS</key>
-				<string>-fobjc-arc</string>
-			</dict>
-		</dict>
-		<key>2E399407081B34EDBE453A59</key>
-		<dict>
-			<key>fileRef</key>
-			<string>3EC840EC0283ADEA0AA90D60</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-			<key>settings</key>
-			<dict>
-				<key>COMPILER_FLAGS</key>
-				<string>-fobjc-arc</string>
-			</dict>
-		</dict>
-		<key>2FA40D3B91F2475CC75A4DBC</key>
-		<dict>
-			<key>fileRef</key>
-			<string>4B81A7FBD4C655E9824AE72C</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-			<key>settings</key>
-			<dict>
-				<key>COMPILER_FLAGS</key>
-				<string>-fobjc-arc</string>
-			</dict>
-		</dict>
-		<key>2FD10BA1C46EED2A05495D59</key>
-		<dict>
-			<key>fileRef</key>
-			<string>CB40235FA1A265C702B33E16</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-			<key>settings</key>
-			<dict>
-				<key>COMPILER_FLAGS</key>
-				<string>-fobjc-arc</string>
-			</dict>
-		</dict>
-		<key>3084AC6EB1B8FDEA292C149D</key>
-		<dict>
-			<key>fileRef</key>
-			<string>CAB91DA512631B8D57BE6356</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-			<key>settings</key>
-			<dict>
-				<key>COMPILER_FLAGS</key>
-				<string>-fobjc-arc</string>
-			</dict>
-		</dict>
-		<key>30BA3724581084321F82E304</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>text.xcconfig</string>
-			<key>path</key>
-			<string>Pods-Tests.release.xcconfig</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>310FB653A2B70B11BD371DD7</key>
-		<dict>
-			<key>fileRef</key>
-			<string>0F6434AE7D852FC769583689</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>31245AE7C6CD35DD480320EF</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>text.xcconfig</string>
-			<key>path</key>
-			<string>Pods-HLSpriteKit.release.xcconfig</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>338AD73965FDF372BC2C626F</key>
-		<dict>
-			<key>fileRef</key>
-			<string>34694C2BA3D77FE4A11661DD</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>34694C2BA3D77FE4A11661DD</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>HLTiledNode.h</string>
-			<key>path</key>
-			<string>HLSpriteKit/HLTiledNode.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>355CB544D1B70BF1FAFC8992</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>HLGridNode.h</string>
-			<key>path</key>
-			<string>HLSpriteKit/HLGridNode.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>355EE1287782A088C7A5ECF0</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>Pods-HLSpriteKit-environment.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>35A16F2AD46DC24BB08897E1</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array>
-				<string>5B07E8B48CE392F4C9DD1E76</string>
-			</array>
-			<key>isa</key>
-			<string>PBXSourcesBuildPhase</string>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-		</dict>
-		<key>370FDD1077DD14E9A03E3817</key>
-		<dict>
-			<key>fileRef</key>
-			<string>97F97ED7A27A2B8E32C95951</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-			<key>settings</key>
-			<dict>
-				<key>COMPILER_FLAGS</key>
-				<string>-fobjc-arc</string>
-			</dict>
-		</dict>
-		<key>3758A84048002D286F1B4AC4</key>
+		<key>394BEAFBBABC02480B1652C3</key>
 		<dict>
 			<key>baseConfigurationReference</key>
-			<string>46ED7326E6035FA8EB93D1F7</string>
+			<string>57F4D651AF2A9874D81382D5</string>
 			<key>buildSettings</key>
 			<dict>
 				<key>ALWAYS_SEARCH_USER_PATHS</key>
@@ -757,8 +776,6 @@
 				<string>/tmp/xcodeproj.dst</string>
 				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
 				<string>YES</string>
-				<key>GCC_PREFIX_HEADER</key>
-				<string>Target Support Files/Pods-HLSpriteKit-HLSpriteKit/Pods-HLSpriteKit-HLSpriteKit-prefix.pch</string>
 				<key>INSTALL_PATH</key>
 				<string>$(BUILT_PRODUCTS_DIR)</string>
 				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
@@ -793,14 +810,7 @@
 			<key>name</key>
 			<string>Release</string>
 		</dict>
-		<key>38092704E2934CC643C0F244</key>
-		<dict>
-			<key>fileRef</key>
-			<string>C9381EE00DB6744120AEB0E3</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>3875A869A08F93D548CC5F26</key>
+		<key>3A8840DFDD11ADEDAB59A8FE</key>
 		<dict>
 			<key>includeInIndex</key>
 			<string>1</string>
@@ -808,17 +818,164 @@
 			<string>PBXFileReference</string>
 			<key>lastKnownFileType</key>
 			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>HLRingLayoutManager.h</string>
 			<key>path</key>
-			<string>HLSpriteKit/HLRingLayoutManager.h</string>
+			<string>Pods-Tests-environment.h</string>
 			<key>sourceTree</key>
 			<string>&lt;group&gt;</string>
 		</dict>
-		<key>3B9C9A8842B73C49A6FD7441</key>
+		<key>3C0BE8D57B76233B2E383C40</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>text</string>
+			<key>path</key>
+			<string>Pods-HLSpriteKit-acknowledgements.markdown</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>3D3664C3A8C6A8AD000DDF94</key>
+		<dict>
+			<key>fileRef</key>
+			<string>7077DCED65CEAEF8FAC55743</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>3E4F1C5E6260DD0747CD2006</key>
+		<dict>
+			<key>fileRef</key>
+			<string>E555E613BEB2CC0465AE6DA0</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>40374C9CA4808F4780FA56E8</key>
+		<dict>
+			<key>fileRef</key>
+			<string>FF804FCADA9B587B19A917E5</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>41D1299DC102EEBD1655CAA1</key>
+		<dict>
+			<key>fileRef</key>
+			<string>FA1FC947C714655B30137273</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>41DDF0368D76DF3146ED4E2C</key>
+		<dict>
+			<key>fileRef</key>
+			<string>47B4F5F0CBDB027C3B029516</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>settings</key>
+			<dict>
+				<key>COMPILER_FLAGS</key>
+				<string>-fobjc-arc</string>
+			</dict>
+		</dict>
+		<key>424793C53FEEF32B77F0BDA3</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>AED411100D0EA098722DC2DE</string>
+				<string>E1FFF3F77F077B64AF643E02</string>
+				<string>38B6C9FD77D56B5AF4AED8ED</string>
+				<string>83C82C0C5EFA075466024558</string>
+				<string>BC4794F9388328FAB9A3BA8E</string>
+				<string>7077DCED65CEAEF8FAC55743</string>
+				<string>4683560B96051D7CD3483188</string>
+				<string>C76A6CA820D0FFCECFE1FCF7</string>
+				<string>2F8F171B0725002DB026398B</string>
+				<string>101349AB339F4CA16839CA98</string>
+				<string>47B4F5F0CBDB027C3B029516</string>
+				<string>5CAAF202D40B3762D3C24B56</string>
+				<string>457976E58701B21B53A1655A</string>
+				<string>E6E4AC973BFEE4B9C11299F2</string>
+				<string>1981FBC56604BED9F51E2524</string>
+				<string>8E63FE277FC6A422A21EED50</string>
+				<string>743301552E1429642EC7C2CF</string>
+				<string>B3AA7828AB9F25063E10542D</string>
+				<string>30AB2E95E25108147D8ADCE5</string>
+				<string>99743330BF6FC06872B6CDEA</string>
+				<string>74C1F28DDFFF962E85D7B1DB</string>
+				<string>FCCE438A8B0BAC81A23DEE05</string>
+				<string>1890DAF3300D8B66CBF724FB</string>
+				<string>831908F0BFF2023313633846</string>
+				<string>6C6F41D5A90235A5225D8843</string>
+				<string>9535CB8BDF64B233CB23E092</string>
+				<string>88A0875B8D3887C5382AE869</string>
+				<string>9FECB121644471A3240819CC</string>
+				<string>483B066D7549CC6B7DFB6001</string>
+				<string>8131F5DBA1CC3349EFA37560</string>
+				<string>CDCB3A32B05737D22CFFE81B</string>
+				<string>A6E2C1B3F5FA7C0F88ABB537</string>
+				<string>79A375D568EE4E8AE2D4F211</string>
+				<string>E555E613BEB2CC0465AE6DA0</string>
+				<string>9A56FBC968FD4678ED13AC98</string>
+				<string>37B25235C56B1FD82700AA36</string>
+				<string>E1FAE53CA841E669A853C1F3</string>
+				<string>C491CEAC741D24B7D6B8B517</string>
+				<string>53797803BD216D8CBCB4851D</string>
+				<string>FA1FC947C714655B30137273</string>
+				<string>32C2A01964E798DC50CE7F10</string>
+				<string>E97B7CB734E6C7258561A063</string>
+				<string>4F42C544FAF65FACFB1EA45C</string>
+				<string>E07F6091D1187EA240FCC311</string>
+				<string>A437C7195EED6CB204C24150</string>
+				<string>FF804FCADA9B587B19A917E5</string>
+				<string>1FFCDA244C45E2BA2C6A83B6</string>
+				<string>DD6B44F5059E58F78A458EAC</string>
+				<string>4BFB45A8AD962B4E2D3C0BA5</string>
+				<string>9A332BF31F2A470ED71302ED</string>
+				<string>289830477F4D0BFE031B37BE</string>
+				<string>2D1426CE4A685B8E53ABC0F8</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>name</key>
+			<string>HLSpriteKit</string>
+			<key>path</key>
+			<string>../..</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>457976E58701B21B53A1655A</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.objc</string>
+			<key>name</key>
+			<string>HLItemNode.m</string>
+			<key>path</key>
+			<string>HLSpriteKit/HLItemNode.m</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>4683560B96051D7CD3483188</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.objc</string>
+			<key>name</key>
+			<string>HLGestureTarget.m</string>
+			<key>path</key>
+			<string>HLSpriteKit/HLGestureTarget.m</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>468A00114977028CC6088071</key>
 		<dict>
 			<key>baseConfigurationReference</key>
-			<string>960F9D3B6D38F0D866F83F1A</string>
+			<string>1BBC6BD6D889361256F302DD</string>
 			<key>buildSettings</key>
 			<dict>
 				<key>ALWAYS_SEARCH_USER_PATHS</key>
@@ -864,7 +1021,14 @@
 			<key>name</key>
 			<string>Debug</string>
 		</dict>
-		<key>3C08EEC0578F80CC57269AAC</key>
+		<key>46ED02615FF745ED20CA18CA</key>
+		<dict>
+			<key>fileRef</key>
+			<string>E6E4AC973BFEE4B9C11299F2</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>47B4F5F0CBDB027C3B029516</key>
 		<dict>
 			<key>includeInIndex</key>
 			<string>1</string>
@@ -873,400 +1037,26 @@
 			<key>lastKnownFileType</key>
 			<string>sourcecode.c.objc</string>
 			<key>name</key>
-			<string>HLGridNode.m</string>
+			<string>HLItemContentNode.m</string>
 			<key>path</key>
-			<string>HLSpriteKit/HLGridNode.m</string>
+			<string>HLSpriteKit/HLItemContentNode.m</string>
 			<key>sourceTree</key>
 			<string>&lt;group&gt;</string>
 		</dict>
-		<key>3DAD123093E9AFDE61E8770B</key>
-		<dict>
-			<key>fileRef</key>
-			<string>26B1F776816BC44B8AC9790B</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>3EC840EC0283ADEA0AA90D60</key>
+		<key>47B72A005668D68551ACEF15</key>
 		<dict>
 			<key>includeInIndex</key>
 			<string>1</string>
 			<key>isa</key>
 			<string>PBXFileReference</string>
 			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>name</key>
-			<string>SKSpriteNode+HLSpriteNodeAdditions.m</string>
+			<string>text.plist.xml</string>
 			<key>path</key>
-			<string>HLSpriteKit/SKSpriteNode+HLSpriteNodeAdditions.m</string>
+			<string>Pods-HLSpriteKit-acknowledgements.plist</string>
 			<key>sourceTree</key>
 			<string>&lt;group&gt;</string>
 		</dict>
-		<key>40A362640F75F668EF57F1DB</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>name</key>
-			<string>HLTiledNode.m</string>
-			<key>path</key>
-			<string>HLSpriteKit/HLTiledNode.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>41CEBB6FA71F639E866B90C9</key>
-		<dict>
-			<key>fileRef</key>
-			<string>8CCD7FDDA8D97D2505AE2128</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>43A6E13AD38E3A8EA0E5E945</key>
-		<dict>
-			<key>fileRef</key>
-			<string>1C11AF65C3AC81161488A1FF</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-			<key>settings</key>
-			<dict>
-				<key>COMPILER_FLAGS</key>
-				<string>-fobjc-arc</string>
-			</dict>
-		</dict>
-		<key>4497B0A2689EDDD5C78FD8D4</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>SKNode+HLGestureTarget.h</string>
-			<key>path</key>
-			<string>HLSpriteKit/SKNode+HLGestureTarget.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>4521EE67FB1FD62D6C25D33B</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array>
-				<string>23D0D16FCA473C16C74460BA</string>
-				<string>0A5154568D41D44DB22B04F4</string>
-				<string>06767BA3BCDAE9751B5BFD73</string>
-				<string>3DAD123093E9AFDE61E8770B</string>
-				<string>2AC0F49F7C151CC389E29CAB</string>
-				<string>A568007DEE6FCB95E5B00DF2</string>
-				<string>C1A6525F522578224AF3244C</string>
-				<string>B7BB88C065B8A7A7A7FCEE9A</string>
-				<string>529AA0C6BB1D2C930F3670BF</string>
-				<string>D1635FD4FCBC842A5A2D5AEB</string>
-				<string>7654518159135B802C0888AC</string>
-				<string>6A09A015A9D542E47236A9C9</string>
-				<string>5106BCF9E4B3C3D27B7E8202</string>
-				<string>128F1A429C375824AEBACD20</string>
-				<string>B96EDEA9FD4B0832F0E25715</string>
-				<string>27B1E094AE30F973E9765B3E</string>
-				<string>79634CB634EDF9051036A494</string>
-				<string>38092704E2934CC643C0F244</string>
-				<string>B8B842FF84B703FE327D0AB5</string>
-				<string>338AD73965FDF372BC2C626F</string>
-				<string>7C87F1991079E0DA3102310D</string>
-				<string>510D7FA5B864945D0CA92B6A</string>
-				<string>455EDC563B3AD9AB6816D678</string>
-				<string>2AFA997A7D53314B10FA4A83</string>
-				<string>A509D84A174CE9A5AC8B9890</string>
-				<string>819B3D46EAE7C6FE9067F97D</string>
-				<string>FB81BD68EE3FF5E7468535DC</string>
-			</array>
-			<key>isa</key>
-			<string>PBXHeadersBuildPhase</string>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-		</dict>
-		<key>455EDC563B3AD9AB6816D678</key>
-		<dict>
-			<key>fileRef</key>
-			<string>051C9995F10B37B2CAADB6A0</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>45C1F522DAD36805EDA22CD9</key>
-		<dict>
-			<key>buildConfigurations</key>
-			<array>
-				<string>734B78BD0FAEBBA577B2AF59</string>
-				<string>14AA1BEFC065C1714E11AFBB</string>
-			</array>
-			<key>defaultConfigurationIsVisible</key>
-			<string>0</string>
-			<key>defaultConfigurationName</key>
-			<string>Release</string>
-			<key>isa</key>
-			<string>XCConfigurationList</string>
-		</dict>
-		<key>46ED7326E6035FA8EB93D1F7</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>text.xcconfig</string>
-			<key>path</key>
-			<string>Pods-HLSpriteKit-HLSpriteKit-Private.xcconfig</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>4B81A7FBD4C655E9824AE72C</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>name</key>
-			<string>HLRingNode.m</string>
-			<key>path</key>
-			<string>HLSpriteKit/HLRingNode.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>4BAA7180296B9C95FEB890DA</key>
-		<dict>
-			<key>buildConfigurations</key>
-			<array>
-				<string>8BCD82D2DB1A22698F2741D4</string>
-				<string>08861ADC76D86829B757DDC2</string>
-			</array>
-			<key>defaultConfigurationIsVisible</key>
-			<string>0</string>
-			<key>defaultConfigurationName</key>
-			<string>Release</string>
-			<key>isa</key>
-			<string>XCConfigurationList</string>
-		</dict>
-		<key>4C70E39F87FE288FEEA5BD59</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>name</key>
-			<string>HLLabelButtonNode.m</string>
-			<key>path</key>
-			<string>HLSpriteKit/HLLabelButtonNode.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>4D5A882D771DDDD781A083D5</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>HLToolbarNode.h</string>
-			<key>path</key>
-			<string>HLSpriteKit/HLToolbarNode.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>4FE3D34BAE9303514F2F315B</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>name</key>
-			<string>UIImage+HLImageAdditions.m</string>
-			<key>path</key>
-			<string>HLSpriteKit/UIImage+HLImageAdditions.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>5106BCF9E4B3C3D27B7E8202</key>
-		<dict>
-			<key>fileRef</key>
-			<string>3875A869A08F93D548CC5F26</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>510A6BBB00B595B344C1E2AE</key>
-		<dict>
-			<key>fileRef</key>
-			<string>89EEAFCA557CB92787EEA3DD</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-			<key>settings</key>
-			<dict>
-				<key>COMPILER_FLAGS</key>
-				<string>-fobjc-arc</string>
-			</dict>
-		</dict>
-		<key>510D7FA5B864945D0CA92B6A</key>
-		<dict>
-			<key>fileRef</key>
-			<string>4D5A882D771DDDD781A083D5</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>529AA0C6BB1D2C930F3670BF</key>
-		<dict>
-			<key>fileRef</key>
-			<string>0F6434AE7D852FC769583689</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>535723D6C1A9B5E1389554E0</key>
-		<dict>
-			<key>fileRef</key>
-			<string>4FE3D34BAE9303514F2F315B</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-			<key>settings</key>
-			<dict>
-				<key>COMPILER_FLAGS</key>
-				<string>-fobjc-arc</string>
-			</dict>
-		</dict>
-		<key>5612448110671FAC1EF40C08</key>
-		<dict>
-			<key>fileRef</key>
-			<string>293CC42F07E1AEF88536C74E</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-			<key>settings</key>
-			<dict>
-				<key>COMPILER_FLAGS</key>
-				<string>-fobjc-arc</string>
-			</dict>
-		</dict>
-		<key>562456155855C15261E0E4A1</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>9B82100AE3013E6DCE92774D</string>
-				<string>1B5080B110CC66083D31B2D1</string>
-				<string>8CCD7FDDA8D97D2505AE2128</string>
-				<string>293CC42F07E1AEF88536C74E</string>
-				<string>08B89668E3A91DC92F15D665</string>
-				<string>26B1F776816BC44B8AC9790B</string>
-				<string>CAB91DA512631B8D57BE6356</string>
-				<string>355CB544D1B70BF1FAFC8992</string>
-				<string>3C08EEC0578F80CC57269AAC</string>
-				<string>D871A53DE66D04856AAC1EA9</string>
-				<string>CB40235FA1A265C702B33E16</string>
-				<string>664C91C07F8CBB73D27B0EDB</string>
-				<string>B26274DD456254B15DB97FF2</string>
-				<string>782AA314FEFAEEDA923680E4</string>
-				<string>4C70E39F87FE288FEEA5BD59</string>
-				<string>0F6434AE7D852FC769583689</string>
-				<string>FC2E96B28321ABA2A36E414C</string>
-				<string>97F97ED7A27A2B8E32C95951</string>
-				<string>A56A0FF8CFBC4FF1BB8D0589</string>
-				<string>66365E6B12366E0285F5BD53</string>
-				<string>725ED362763082B792088B5F</string>
-				<string>9674C2C40A6360C86E2CC896</string>
-				<string>3875A869A08F93D548CC5F26</string>
-				<string>F274B87A4A1F4A7E9E7F77C5</string>
-				<string>6E7AF1405F4354D74226C50A</string>
-				<string>4B81A7FBD4C655E9824AE72C</string>
-				<string>5AB15F769A3D02807AB3BAFE</string>
-				<string>B3673C5985B396590B6A36EC</string>
-				<string>1CC901F779535849086A36BF</string>
-				<string>24E319600240390123445AF4</string>
-				<string>B8A1989B3CA1821BEE6FCD82</string>
-				<string>C9381EE00DB6744120AEB0E3</string>
-				<string>DE77A82833B2302DBA4CA6AA</string>
-				<string>1C4FC053E50090C7A99D9ED6</string>
-				<string>1C11AF65C3AC81161488A1FF</string>
-				<string>34694C2BA3D77FE4A11661DD</string>
-				<string>40A362640F75F668EF57F1DB</string>
-				<string>98B184409954F5F7D09F972E</string>
-				<string>89EEAFCA557CB92787EEA3DD</string>
-				<string>4D5A882D771DDDD781A083D5</string>
-				<string>DA50A1A758CE5E3327DC900D</string>
-				<string>051C9995F10B37B2CAADB6A0</string>
-				<string>DA98F7B93330AADF16885A31</string>
-				<string>4497B0A2689EDDD5C78FD8D4</string>
-				<string>2C1346115703376E72794CF7</string>
-				<string>F3FA0E48AAB4E4FE02E9DEDD</string>
-				<string>1645ED7673163FEC53B44550</string>
-				<string>E61B2FDCB1F87700CA4360B6</string>
-				<string>3EC840EC0283ADEA0AA90D60</string>
-				<string>C6BFF7D69C1722C7A4D4D55B</string>
-				<string>4FE3D34BAE9303514F2F315B</string>
-				<string>90572B0B397F224EB55B1392</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>HLSpriteKit</string>
-			<key>path</key>
-			<string>../..</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>597B475290753CE60C57CD36</key>
-		<dict>
-			<key>attributes</key>
-			<dict>
-				<key>LastUpgradeCheck</key>
-				<string>0510</string>
-			</dict>
-			<key>buildConfigurationList</key>
-			<string>E745F993EC756BDFDAB20D4B</string>
-			<key>compatibilityVersion</key>
-			<string>Xcode 3.2</string>
-			<key>developmentRegion</key>
-			<string>English</string>
-			<key>hasScannedForEncodings</key>
-			<string>0</string>
-			<key>isa</key>
-			<string>PBXProject</string>
-			<key>knownRegions</key>
-			<array>
-				<string>en</string>
-			</array>
-			<key>mainGroup</key>
-			<string>211C2429D5C14602CB3932A9</string>
-			<key>productRefGroup</key>
-			<string>86622622A3D2C22B4D4DF2D9</string>
-			<key>projectDirPath</key>
-			<string></string>
-			<key>projectReferences</key>
-			<array/>
-			<key>projectRoot</key>
-			<string></string>
-			<key>targets</key>
-			<array>
-				<string>1DBFE9CF7113B5057AB3D32B</string>
-				<string>95744CE1E314F6D6A4F40E9F</string>
-				<string>D81AF3D00946041A55B2686A</string>
-				<string>DF829C6F5BC81591B37DF003</string>
-			</array>
-		</dict>
-		<key>59CE85B2638B85DAE0242AD9</key>
-		<dict>
-			<key>fileRef</key>
-			<string>EB33C4905F8A6275BB292B9F</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>5AB15F769A3D02807AB3BAFE</key>
+		<key>483B066D7549CC6B7DFB6001</key>
 		<dict>
 			<key>includeInIndex</key>
 			<string>1</string>
@@ -1281,17 +1071,10 @@
 			<key>sourceTree</key>
 			<string>&lt;group&gt;</string>
 		</dict>
-		<key>5B07E8B48CE392F4C9DD1E76</key>
+		<key>48435529BDFB440E43BA9116</key>
 		<dict>
 			<key>fileRef</key>
-			<string>CAC5856CD4DE1398CC5C25B6</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>5BEEA6623BF9F345CADE1806</key>
-		<dict>
-			<key>fileRef</key>
-			<string>1645ED7673163FEC53B44550</string>
+			<string>E1FAE53CA841E669A853C1F3</string>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 			<key>settings</key>
@@ -1300,29 +1083,23 @@
 				<string>-fobjc-arc</string>
 			</dict>
 		</dict>
-		<key>5FFF2D79A11670719C0C8208</key>
+		<key>4887FDB79A51156C06FA4EB0</key>
 		<dict>
-			<key>fileRef</key>
-			<string>EB33C4905F8A6275BB292B9F</string>
+			<key>includeInIndex</key>
+			<string>1</string>
 			<key>isa</key>
-			<string>PBXBuildFile</string>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>text.plist.xml</string>
+			<key>path</key>
+			<string>Pods-Tests-acknowledgements.plist</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
 		</dict>
-		<key>63942EB6D0C8F0282906249E</key>
+		<key>48DC0DE6F51CEB0695860B1D</key>
 		<dict>
 			<key>fileRef</key>
-			<string>4B81A7FBD4C655E9824AE72C</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-			<key>settings</key>
-			<dict>
-				<key>COMPILER_FLAGS</key>
-				<string>-fobjc-arc</string>
-			</dict>
-		</dict>
-		<key>64C4F4F10D645168CA6D5D8E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>B26274DD456254B15DB97FF2</string>
+			<string>457976E58701B21B53A1655A</string>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 			<key>settings</key>
@@ -1331,7 +1108,19 @@
 				<string>-fobjc-arc</string>
 			</dict>
 		</dict>
-		<key>66365E6B12366E0285F5BD53</key>
+		<key>490F7D7ECFE6F599AC701A74</key>
+		<dict>
+			<key>fileRef</key>
+			<string>9A56FBC968FD4678ED13AC98</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>settings</key>
+			<dict>
+				<key>COMPILER_FLAGS</key>
+				<string>-fobjc-arc</string>
+			</dict>
+		</dict>
+		<key>4BFB45A8AD962B4E2D3C0BA5</key>
 		<dict>
 			<key>includeInIndex</key>
 			<string>1</string>
@@ -1340,31 +1129,103 @@
 			<key>lastKnownFileType</key>
 			<string>sourcecode.c.objc</string>
 			<key>name</key>
-			<string>HLMenuNode.m</string>
+			<string>SKSpriteNode+HLSpriteNodeAdditions.m</string>
 			<key>path</key>
-			<string>HLSpriteKit/HLMenuNode.m</string>
+			<string>HLSpriteKit/SKSpriteNode+HLSpriteNodeAdditions.m</string>
 			<key>sourceTree</key>
 			<string>&lt;group&gt;</string>
 		</dict>
-		<key>664C91C07F8CBB73D27B0EDB</key>
+		<key>4DCE9B6081B7F17D71C0281B</key>
+		<dict>
+			<key>containerPortal</key>
+			<string>19D509A9B8B8C0D8F5F6D99A</string>
+			<key>isa</key>
+			<string>PBXContainerItemProxy</string>
+			<key>proxyType</key>
+			<string>1</string>
+			<key>remoteGlobalIDString</key>
+			<string>33E2958622F90085B68CD45D</string>
+			<key>remoteInfo</key>
+			<string>Pods-Tests-HLSpriteKit</string>
+		</dict>
+		<key>4E1B1E4F4F924F68AC32A085</key>
+		<dict>
+			<key>fileRef</key>
+			<string>37B25235C56B1FD82700AA36</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>4E97B13E175AC4F7D2C83125</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array>
+				<string>2EDF6D04CCC76EC74DF72605</string>
+				<string>C24C96446D65EF9BACE03A86</string>
+				<string>07E219F24C7B9E28DFF330C4</string>
+				<string>3D3664C3A8C6A8AD000DDF94</string>
+				<string>7F53CF875E052A17367CC842</string>
+				<string>F8DE307826A08DFCFB8A1FE8</string>
+				<string>B3AB498CC0EACA4062EC8E20</string>
+				<string>7758B14A9A56DD0E52D61309</string>
+				<string>656F6A557B8CB3EF09DA58BA</string>
+				<string>0CADC8318E61C815197C20E2</string>
+				<string>A8B0E3B99577FD1063FCB350</string>
+				<string>717ADBC90120512DAEA0EE1A</string>
+				<string>CDA20528CD01BA7BAFC9F0BA</string>
+				<string>C7E33E51FD600722799E5058</string>
+				<string>E9E8B11D5A1F6B46460223FA</string>
+				<string>DC873B319B415ACF43CD36A5</string>
+				<string>63FD292D841BEBC96C926919</string>
+				<string>3037EE9275B59E516C96FA0C</string>
+				<string>3E4F1C5E6260DD0747CD2006</string>
+				<string>4E1B1E4F4F924F68AC32A085</string>
+				<string>0A26A6B33ACA73D5CADCDED8</string>
+				<string>41D1299DC102EEBD1655CAA1</string>
+				<string>6930295A7C0E45BD957341AD</string>
+				<string>5C4E63AE230173E6C68F5245</string>
+				<string>40374C9CA4808F4780FA56E8</string>
+				<string>552CCF0316F5D6C52FC77929</string>
+				<string>59FFB22AC3870F7CC2F09289</string>
+			</array>
+			<key>isa</key>
+			<string>PBXHeadersBuildPhase</string>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+		</dict>
+		<key>4F42C544FAF65FACFB1EA45C</key>
 		<dict>
 			<key>includeInIndex</key>
 			<string>1</string>
 			<key>isa</key>
 			<string>PBXFileReference</string>
 			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
+			<string>sourcecode.c.objc</string>
 			<key>name</key>
-			<string>HLItemsNode.h</string>
+			<string>SKLabelNode+HLLabelNodeAdditions.m</string>
 			<key>path</key>
-			<string>HLSpriteKit/HLItemsNode.h</string>
+			<string>HLSpriteKit/SKLabelNode+HLLabelNodeAdditions.m</string>
 			<key>sourceTree</key>
 			<string>&lt;group&gt;</string>
 		</dict>
-		<key>68A696ED857DA94AEB802373</key>
+		<key>50647223A1BA17F45E4171D5</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array>
+				<string>ED3F05AC30D6B781079E8504</string>
+			</array>
+			<key>isa</key>
+			<string>PBXSourcesBuildPhase</string>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+		</dict>
+		<key>5164788323BADB6D8F8E99FD</key>
 		<dict>
 			<key>fileRef</key>
-			<string>3C08EEC0578F80CC57269AAC</string>
+			<string>53797803BD216D8CBCB4851D</string>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 			<key>settings</key>
@@ -1373,28 +1234,114 @@
 				<string>-fobjc-arc</string>
 			</dict>
 		</dict>
-		<key>6A09A015A9D542E47236A9C9</key>
+		<key>52152F2BB3A687DFE0D209DC</key>
 		<dict>
 			<key>fileRef</key>
-			<string>725ED362763082B792088B5F</string>
+			<string>E97B7CB734E6C7258561A063</string>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 		</dict>
-		<key>6E57DE1F8E87A534A9236833</key>
+		<key>52A5467F2B501E4B47F8D55C</key>
 		<dict>
-			<key>buildConfigurations</key>
-			<array>
-				<string>F6BEFC45A960E8356177CAA6</string>
-				<string>3758A84048002D286F1B4AC4</string>
-			</array>
-			<key>defaultConfigurationIsVisible</key>
-			<string>0</string>
-			<key>defaultConfigurationName</key>
-			<string>Release</string>
+			<key>includeInIndex</key>
+			<string>1</string>
 			<key>isa</key>
-			<string>XCConfigurationList</string>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>text.script.sh</string>
+			<key>path</key>
+			<string>Pods-HLSpriteKit-resources.sh</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
 		</dict>
-		<key>6E7AF1405F4354D74226C50A</key>
+		<key>53797803BD216D8CBCB4851D</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.objc</string>
+			<key>name</key>
+			<string>HLTiledNode.m</string>
+			<key>path</key>
+			<string>HLSpriteKit/HLTiledNode.m</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>552CCF0316F5D6C52FC77929</key>
+		<dict>
+			<key>fileRef</key>
+			<string>DD6B44F5059E58F78A458EAC</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>55AF7D82000B5E581F893F33</key>
+		<dict>
+			<key>fileRef</key>
+			<string>4683560B96051D7CD3483188</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>settings</key>
+			<dict>
+				<key>COMPILER_FLAGS</key>
+				<string>-fobjc-arc</string>
+			</dict>
+		</dict>
+		<key>57F4D651AF2A9874D81382D5</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>text.xcconfig</string>
+			<key>path</key>
+			<string>Pods-Tests.release.xcconfig</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>59FFB22AC3870F7CC2F09289</key>
+		<dict>
+			<key>fileRef</key>
+			<string>9A332BF31F2A470ED71302ED</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>5AD4C0F67C3923B6ECEC95EE</key>
+		<dict>
+			<key>fileRef</key>
+			<string>B3AA7828AB9F25063E10542D</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>5BD8E599359E1A829D85C1A2</key>
+		<dict>
+			<key>fileRef</key>
+			<string>32C2A01964E798DC50CE7F10</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>settings</key>
+			<dict>
+				<key>COMPILER_FLAGS</key>
+				<string>-fobjc-arc</string>
+			</dict>
+		</dict>
+		<key>5C3853EE5267EF9FE58E634B</key>
+		<dict>
+			<key>fileRef</key>
+			<string>02E48E13096F8E18CAB78F6D</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>5C4E63AE230173E6C68F5245</key>
+		<dict>
+			<key>fileRef</key>
+			<string>E07F6091D1187EA240FCC311</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>5CAAF202D40B3762D3C24B56</key>
 		<dict>
 			<key>includeInIndex</key>
 			<string>1</string>
@@ -1403,44 +1350,76 @@
 			<key>lastKnownFileType</key>
 			<string>sourcecode.c.h</string>
 			<key>name</key>
-			<string>HLRingNode.h</string>
+			<string>HLItemNode.h</string>
 			<key>path</key>
-			<string>HLSpriteKit/HLRingNode.h</string>
+			<string>HLSpriteKit/HLItemNode.h</string>
 			<key>sourceTree</key>
 			<string>&lt;group&gt;</string>
 		</dict>
-		<key>71CB3C4CA9D0327FCBC9AE64</key>
+		<key>5D112B75BD479C4E1BA05FC0</key>
 		<dict>
-			<key>explicitFileType</key>
-			<string>archive.ar</string>
-			<key>includeInIndex</key>
-			<string>0</string>
+			<key>fileRef</key>
+			<string>4F42C544FAF65FACFB1EA45C</string>
 			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>path</key>
-			<string>libPods-Tests-HLSpriteKit.a</string>
-			<key>sourceTree</key>
-			<string>BUILT_PRODUCTS_DIR</string>
+			<string>PBXBuildFile</string>
+			<key>settings</key>
+			<dict>
+				<key>COMPILER_FLAGS</key>
+				<string>-fobjc-arc</string>
+			</dict>
 		</dict>
-		<key>725ED362763082B792088B5F</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>HLMessageNode.h</string>
-			<key>path</key>
-			<string>HLSpriteKit/HLMessageNode.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>734B78BD0FAEBBA577B2AF59</key>
+		<key>5E1433D70714419E9E47BB4F</key>
 		<dict>
 			<key>baseConfigurationReference</key>
-			<string>C3A3CF72AB022E742427C6F4</string>
+			<string>A812BB6861C942714C224790</string>
+			<key>buildSettings</key>
+			<dict>
+				<key>ALWAYS_SEARCH_USER_PATHS</key>
+				<string>NO</string>
+				<key>COPY_PHASE_STRIP</key>
+				<string>YES</string>
+				<key>DSTROOT</key>
+				<string>/tmp/xcodeproj.dst</string>
+				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
+				<string>YES</string>
+				<key>INSTALL_PATH</key>
+				<string>$(BUILT_PRODUCTS_DIR)</string>
+				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
+				<string>7.0</string>
+				<key>OTHER_CFLAGS</key>
+				<array>
+					<string>-DNS_BLOCK_ASSERTIONS=1</string>
+					<string>$(inherited)</string>
+				</array>
+				<key>OTHER_CPLUSPLUSFLAGS</key>
+				<array>
+					<string>-DNS_BLOCK_ASSERTIONS=1</string>
+					<string>$(inherited)</string>
+				</array>
+				<key>OTHER_LDFLAGS</key>
+				<string></string>
+				<key>OTHER_LIBTOOLFLAGS</key>
+				<string></string>
+				<key>PRODUCT_NAME</key>
+				<string>$(TARGET_NAME)</string>
+				<key>PUBLIC_HEADERS_FOLDER_PATH</key>
+				<string>$(TARGET_NAME)</string>
+				<key>SDKROOT</key>
+				<string>iphoneos</string>
+				<key>SKIP_INSTALL</key>
+				<string>YES</string>
+				<key>VALIDATE_PRODUCT</key>
+				<string>YES</string>
+			</dict>
+			<key>isa</key>
+			<string>XCBuildConfiguration</string>
+			<key>name</key>
+			<string>Release</string>
+		</dict>
+		<key>5E380C1FFE85359547B12ABC</key>
+		<dict>
+			<key>baseConfigurationReference</key>
+			<string>2B2D9B576AD6C3D098898E35</string>
 			<key>buildSettings</key>
 			<dict>
 				<key>ALWAYS_SEARCH_USER_PATHS</key>
@@ -1484,31 +1463,26 @@
 			<key>name</key>
 			<string>Debug</string>
 		</dict>
-		<key>73C9E50805A93A360C3AD3F0</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>89F77755B4F679A77A64A53F</string>
-				<string>A100DDF2721D77E17D2D1DF3</string>
-				<string>CAC5856CD4DE1398CC5C25B6</string>
-				<string>355EE1287782A088C7A5ECF0</string>
-				<string>B00236C9F344AE97F1001FFA</string>
-				<string>272849282F76FA23AD6B5FB5</string>
-				<string>31245AE7C6CD35DD480320EF</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Pods-HLSpriteKit</string>
-			<key>path</key>
-			<string>Target Support Files/Pods-HLSpriteKit</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>74385235E971C1AFE5A9E80F</key>
+		<key>624BBF90041E70FF6FFE96E6</key>
 		<dict>
 			<key>fileRef</key>
-			<string>4C70E39F87FE288FEEA5BD59</string>
+			<string>1890DAF3300D8B66CBF724FB</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>626982E2102B55E3CA83F996</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXTargetDependency</string>
+			<key>target</key>
+			<string>33E2958622F90085B68CD45D</string>
+			<key>targetProxy</key>
+			<string>4DCE9B6081B7F17D71C0281B</string>
+		</dict>
+		<key>62A754DAD36D01BBD2AA01F7</key>
+		<dict>
+			<key>fileRef</key>
+			<string>831908F0BFF2023313633846</string>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 			<key>settings</key>
@@ -1517,35 +1491,108 @@
 				<string>-fobjc-arc</string>
 			</dict>
 		</dict>
-		<key>7453D092B959209F97643ABE</key>
+		<key>63FD292D841BEBC96C926919</key>
 		<dict>
 			<key>fileRef</key>
-			<string>34694C2BA3D77FE4A11661DD</string>
+			<string>CDCB3A32B05737D22CFFE81B</string>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 		</dict>
-		<key>7654518159135B802C0888AC</key>
+		<key>656F6A557B8CB3EF09DA58BA</key>
 		<dict>
 			<key>fileRef</key>
-			<string>A56A0FF8CFBC4FF1BB8D0589</string>
+			<string>8E63FE277FC6A422A21EED50</string>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 		</dict>
-		<key>768614F860090D51516ED328</key>
+		<key>66CBB2A4D9870BAD215B3058</key>
 		<dict>
 			<key>fileRef</key>
-			<string>E61B2FDCB1F87700CA4360B6</string>
+			<string>83C82C0C5EFA075466024558</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>settings</key>
+			<dict>
+				<key>COMPILER_FLAGS</key>
+				<string>-fobjc-arc</string>
+			</dict>
+		</dict>
+		<key>68414AFDE995D06D13D105F4</key>
+		<dict>
+			<key>fileRef</key>
+			<string>C76A6CA820D0FFCECFE1FCF7</string>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 		</dict>
-		<key>7715D3FBC29B868CC2EE0C66</key>
+		<key>69170DAA7553F67AC7134D2F</key>
+		<dict>
+			<key>buildConfigurations</key>
+			<array>
+				<string>5E380C1FFE85359547B12ABC</string>
+				<string>5E1433D70714419E9E47BB4F</string>
+			</array>
+			<key>defaultConfigurationIsVisible</key>
+			<string>0</string>
+			<key>defaultConfigurationName</key>
+			<string>Release</string>
+			<key>isa</key>
+			<string>XCConfigurationList</string>
+		</dict>
+		<key>69200A39EF45F32128CA77DF</key>
 		<dict>
 			<key>fileRef</key>
-			<string>051C9995F10B37B2CAADB6A0</string>
+			<string>8131F5DBA1CC3349EFA37560</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>settings</key>
+			<dict>
+				<key>COMPILER_FLAGS</key>
+				<string>-fobjc-arc</string>
+			</dict>
+		</dict>
+		<key>6930295A7C0E45BD957341AD</key>
+		<dict>
+			<key>fileRef</key>
+			<string>E97B7CB734E6C7258561A063</string>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 		</dict>
-		<key>782AA314FEFAEEDA923680E4</key>
+		<key>6A6D3C498AA624B22FEE2383</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>text.xcconfig</string>
+			<key>path</key>
+			<string>Pods-HLSpriteKit-HLSpriteKit.xcconfig</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>6A7DD1B9FB12C86CD4E40EBE</key>
+		<dict>
+			<key>fileRef</key>
+			<string>FB0231CB7FC090EA2B202A7E</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>6AC365DE0D53F7E59CF19252</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.objc</string>
+			<key>name</key>
+			<string>Pods-Tests-HLSpriteKit-dummy.m</string>
+			<key>path</key>
+			<string>../Pods-Tests-HLSpriteKit/Pods-Tests-HLSpriteKit-dummy.m</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>6C6F41D5A90235A5225D8843</key>
 		<dict>
 			<key>includeInIndex</key>
 			<string>1</string>
@@ -1554,16 +1601,23 @@
 			<key>lastKnownFileType</key>
 			<string>sourcecode.c.h</string>
 			<key>name</key>
-			<string>HLLabelButtonNode.h</string>
+			<string>HLRingLayoutManager.h</string>
 			<key>path</key>
-			<string>HLSpriteKit/HLLabelButtonNode.h</string>
+			<string>HLSpriteKit/HLRingLayoutManager.h</string>
 			<key>sourceTree</key>
 			<string>&lt;group&gt;</string>
 		</dict>
-		<key>78419C26733C7DDDE6793C8D</key>
+		<key>6CCDB90F92DE937A75497B4B</key>
 		<dict>
 			<key>fileRef</key>
-			<string>9674C2C40A6360C86E2CC896</string>
+			<string>02E48E13096F8E18CAB78F6D</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>6F004244A6C14D3B8C4428DD</key>
+		<dict>
+			<key>fileRef</key>
+			<string>FCCE438A8B0BAC81A23DEE05</string>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 			<key>settings</key>
@@ -1572,38 +1626,92 @@
 				<string>-fobjc-arc</string>
 			</dict>
 		</dict>
-		<key>79155BD9D97EF7D3110D6551</key>
+		<key>7077DCED65CEAEF8FAC55743</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.h</string>
+			<key>name</key>
+			<string>HLGestureTarget.h</string>
+			<key>path</key>
+			<string>HLSpriteKit/HLGestureTarget.h</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>717ADBC90120512DAEA0EE1A</key>
 		<dict>
 			<key>fileRef</key>
-			<string>D55D2BE3609CA3815D3CBE47</string>
+			<string>74C1F28DDFFF962E85D7B1DB</string>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 		</dict>
-		<key>79634CB634EDF9051036A494</key>
+		<key>72ADB1ECE6F31252CA783E29</key>
 		<dict>
 			<key>fileRef</key>
-			<string>B8A1989B3CA1821BEE6FCD82</string>
+			<string>7077DCED65CEAEF8FAC55743</string>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 		</dict>
-		<key>7A981F4AA22D4146B7912873</key>
+		<key>743301552E1429642EC7C2CF</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.objc</string>
+			<key>name</key>
+			<string>HLLabelButtonNode.m</string>
+			<key>path</key>
+			<string>HLSpriteKit/HLLabelButtonNode.m</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>74C1F28DDFFF962E85D7B1DB</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.h</string>
+			<key>name</key>
+			<string>HLMenuNode.h</string>
+			<key>path</key>
+			<string>HLSpriteKit/HLMenuNode.h</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>7758B14A9A56DD0E52D61309</key>
 		<dict>
 			<key>fileRef</key>
-			<string>1C4FC053E50090C7A99D9ED6</string>
+			<string>E6E4AC973BFEE4B9C11299F2</string>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 		</dict>
-		<key>7C87F1991079E0DA3102310D</key>
+		<key>7794226818F68E1C68ECE582</key>
 		<dict>
-			<key>fileRef</key>
-			<string>98B184409954F5F7D09F972E</string>
+			<key>children</key>
+			<array>
+				<string>DC8AC27D18BCCC8A570D4410</string>
+				<string>7B2D5F85B024C12A14792213</string>
+				<string>F7CF3163C05C9EFDC354D5A7</string>
+				<string>D84D61A2D4D881E816C9B88D</string>
+			</array>
 			<key>isa</key>
-			<string>PBXBuildFile</string>
+			<string>PBXGroup</string>
+			<key>name</key>
+			<string>Products</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
 		</dict>
-		<key>7CE85C9324E7011814A2FE49</key>
+		<key>786CEF2F3838574F1A6FAE2F</key>
 		<dict>
 			<key>fileRef</key>
-			<string>40A362640F75F668EF57F1DB</string>
+			<string>9535CB8BDF64B233CB23E092</string>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 			<key>settings</key>
@@ -1612,7 +1720,97 @@
 				<string>-fobjc-arc</string>
 			</dict>
 		</dict>
-		<key>7D33A3A6CC24D6F1D8C1B2DC</key>
+		<key>79A375D568EE4E8AE2D4F211</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.h</string>
+			<key>name</key>
+			<string>HLSpriteKit.h</string>
+			<key>path</key>
+			<string>HLSpriteKit/HLSpriteKit.h</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>7A20B95C6436B58B1BB1CF1F</key>
+		<dict>
+			<key>fileRef</key>
+			<string>E07F6091D1187EA240FCC311</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>7A93D1047283B34A3B682E54</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXTargetDependency</string>
+			<key>target</key>
+			<string>29291DF6E319FF3DC48F1249</string>
+			<key>targetProxy</key>
+			<string>0A8FC62412983F8384665E6D</string>
+		</dict>
+		<key>7B2D5F85B024C12A14792213</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>archive.ar</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>path</key>
+			<string>libPods-HLSpriteKit-HLSpriteKit.a</string>
+			<key>sourceTree</key>
+			<string>BUILT_PRODUCTS_DIR</string>
+		</dict>
+		<key>7BAE5FE542D8D1FD5909A00A</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>wrapper.framework</string>
+			<key>name</key>
+			<string>UIKit.framework</string>
+			<key>path</key>
+			<string>Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.1.sdk/System/Library/Frameworks/UIKit.framework</string>
+			<key>sourceTree</key>
+			<string>DEVELOPER_DIR</string>
+		</dict>
+		<key>7E0B82B8C6225226664C502C</key>
+		<dict>
+			<key>buildConfigurationList</key>
+			<string>F6D3611238F420CCC4B1EF6C</string>
+			<key>buildPhases</key>
+			<array>
+				<string>B6D314035E7D7A4822CA579A</string>
+				<string>C15A9A0E042ECC0EC10194B5</string>
+			</array>
+			<key>buildRules</key>
+			<array/>
+			<key>dependencies</key>
+			<array>
+				<string>626982E2102B55E3CA83F996</string>
+			</array>
+			<key>isa</key>
+			<string>PBXNativeTarget</string>
+			<key>name</key>
+			<string>Pods-Tests</string>
+			<key>productName</key>
+			<string>Pods-Tests</string>
+			<key>productReference</key>
+			<string>F7CF3163C05C9EFDC354D5A7</string>
+			<key>productType</key>
+			<string>com.apple.product-type.library.static</string>
+		</dict>
+		<key>7F53CF875E052A17367CC842</key>
+		<dict>
+			<key>fileRef</key>
+			<string>C76A6CA820D0FFCECFE1FCF7</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>7FE3B23D4019AB115EC59764</key>
 		<dict>
 			<key>buildSettings</key>
 			<dict>
@@ -1674,742 +1872,21 @@
 			<key>name</key>
 			<string>Release</string>
 		</dict>
-		<key>7E6479EE329BEB969738C7FC</key>
+		<key>81052587EA25C01E2F6C6365</key>
 		<dict>
-			<key>fileRef</key>
-			<string>1B5080B110CC66083D31B2D1</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-			<key>settings</key>
-			<dict>
-				<key>COMPILER_FLAGS</key>
-				<string>-fobjc-arc</string>
-			</dict>
-		</dict>
-		<key>7E6D8AB6D9C654A03003C73D</key>
-		<dict>
-			<key>fileRef</key>
-			<string>FB2D4EE9D47BA410E869B15A</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>80DB66781E08AAE32549637C</key>
-		<dict>
-			<key>fileRef</key>
-			<string>EB33C4905F8A6275BB292B9F</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>810FC7DEFB25E44CA0901DEC</key>
-		<dict>
-			<key>fileRef</key>
-			<string>B3673C5985B396590B6A36EC</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-			<key>settings</key>
-			<dict>
-				<key>COMPILER_FLAGS</key>
-				<string>-fobjc-arc</string>
-			</dict>
-		</dict>
-		<key>8153556121B9619FAF2FAA1C</key>
-		<dict>
-			<key>fileRef</key>
-			<string>89EEAFCA557CB92787EEA3DD</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-			<key>settings</key>
-			<dict>
-				<key>COMPILER_FLAGS</key>
-				<string>-fobjc-arc</string>
-			</dict>
-		</dict>
-		<key>819B3D46EAE7C6FE9067F97D</key>
-		<dict>
-			<key>fileRef</key>
-			<string>E61B2FDCB1F87700CA4360B6</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>81FFA5B5EF8DD3043582D064</key>
-		<dict>
-			<key>fileRef</key>
-			<string>98B184409954F5F7D09F972E</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>82623DE96166DE86B4E1C069</key>
-		<dict>
-			<key>fileRef</key>
-			<string>2C1346115703376E72794CF7</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-			<key>settings</key>
-			<dict>
-				<key>COMPILER_FLAGS</key>
-				<string>-fobjc-arc</string>
-			</dict>
-		</dict>
-		<key>82FD8B4560AFEA7CE9439E51</key>
-		<dict>
-			<key>fileRef</key>
-			<string>355CB544D1B70BF1FAFC8992</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>86622622A3D2C22B4D4DF2D9</key>
-		<dict>
-			<key>children</key>
+			<key>buildConfigurations</key>
 			<array>
-				<string>E88365DC9B16F1E9434A1301</string>
-				<string>B0E7A5C231DCDF7538A4057F</string>
-				<string>9AC3EF8C4390BFD3B698196B</string>
-				<string>71CB3C4CA9D0327FCBC9AE64</string>
+				<string>16DC909BC5C2D154D90D78E0</string>
+				<string>C0DE0312CD97BDF10F57858B</string>
 			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Products</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>868771156BC8935F41B30EDA</key>
-		<dict>
-			<key>containerPortal</key>
-			<string>597B475290753CE60C57CD36</string>
-			<key>isa</key>
-			<string>PBXContainerItemProxy</string>
-			<key>proxyType</key>
-			<string>1</string>
-			<key>remoteGlobalIDString</key>
-			<string>DF829C6F5BC81591B37DF003</string>
-			<key>remoteInfo</key>
-			<string>Pods-Tests-HLSpriteKit</string>
-		</dict>
-		<key>870A18542B6D54C62C5A774F</key>
-		<dict>
-			<key>fileRef</key>
-			<string>66365E6B12366E0285F5BD53</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-			<key>settings</key>
-			<dict>
-				<key>COMPILER_FLAGS</key>
-				<string>-fobjc-arc</string>
-			</dict>
-		</dict>
-		<key>88EA86D84B1D250F31EF6F52</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>562456155855C15261E0E4A1</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Development Pods</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>89EEAFCA557CB92787EEA3DD</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>name</key>
-			<string>HLToolNode.m</string>
-			<key>path</key>
-			<string>HLSpriteKit/HLToolNode.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>89F77755B4F679A77A64A53F</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>text</string>
-			<key>path</key>
-			<string>Pods-HLSpriteKit-acknowledgements.markdown</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>8B9C92EECD6BFA537B00EC8E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>4497B0A2689EDDD5C78FD8D4</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>8BCD82D2DB1A22698F2741D4</key>
-		<dict>
-			<key>baseConfigurationReference</key>
-			<string>272849282F76FA23AD6B5FB5</string>
-			<key>buildSettings</key>
-			<dict>
-				<key>ALWAYS_SEARCH_USER_PATHS</key>
-				<string>NO</string>
-				<key>COPY_PHASE_STRIP</key>
-				<string>NO</string>
-				<key>DSTROOT</key>
-				<string>/tmp/xcodeproj.dst</string>
-				<key>GCC_DYNAMIC_NO_PIC</key>
-				<string>NO</string>
-				<key>GCC_OPTIMIZATION_LEVEL</key>
-				<string>0</string>
-				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
-				<string>YES</string>
-				<key>GCC_PREPROCESSOR_DEFINITIONS</key>
-				<array>
-					<string>DEBUG=1</string>
-					<string>$(inherited)</string>
-				</array>
-				<key>GCC_SYMBOLS_PRIVATE_EXTERN</key>
-				<string>NO</string>
-				<key>INSTALL_PATH</key>
-				<string>$(BUILT_PRODUCTS_DIR)</string>
-				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
-				<string>7.0</string>
-				<key>OTHER_LDFLAGS</key>
-				<string></string>
-				<key>OTHER_LIBTOOLFLAGS</key>
-				<string></string>
-				<key>PRODUCT_NAME</key>
-				<string>$(TARGET_NAME)</string>
-				<key>PUBLIC_HEADERS_FOLDER_PATH</key>
-				<string>$(TARGET_NAME)</string>
-				<key>SDKROOT</key>
-				<string>iphoneos</string>
-				<key>SKIP_INSTALL</key>
-				<string>YES</string>
-			</dict>
-			<key>isa</key>
-			<string>XCBuildConfiguration</string>
-			<key>name</key>
-			<string>Debug</string>
-		</dict>
-		<key>8C3AABAC9A023CF7F231C4E1</key>
-		<dict>
-			<key>fileRef</key>
-			<string>F65F941BBCB43D0D2EEB60C5</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>8CCD7FDDA8D97D2505AE2128</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>HLEmitterStore.h</string>
-			<key>path</key>
-			<string>HLSpriteKit/HLEmitterStore.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>8D2F635BF6A4A691434A494E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>4FE3D34BAE9303514F2F315B</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-			<key>settings</key>
-			<dict>
-				<key>COMPILER_FLAGS</key>
-				<string>-fobjc-arc</string>
-			</dict>
-		</dict>
-		<key>8D7406363A0089992C48F2B5</key>
-		<dict>
-			<key>fileRef</key>
-			<string>08B89668E3A91DC92F15D665</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>90572B0B397F224EB55B1392</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>1281014B58C1B4ABD2BB1B3B</string>
-				<string>46ED7326E6035FA8EB93D1F7</string>
-				<string>90F7C7408CE2F6FCA9E8A6F5</string>
-				<string>E18ECFC2868E7CBD41187B41</string>
-				<string>1A8F8C19A9080BAF9752C19A</string>
-				<string>960F9D3B6D38F0D866F83F1A</string>
-				<string>F65F941BBCB43D0D2EEB60C5</string>
-				<string>C22CA532A8E327A03E129D68</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Support Files</string>
-			<key>path</key>
-			<string>Example/Pods/Target Support Files/Pods-HLSpriteKit-HLSpriteKit</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>90F7C7408CE2F6FCA9E8A6F5</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>path</key>
-			<string>Pods-HLSpriteKit-HLSpriteKit-dummy.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>916C8A46B4B02FA7F04FB309</key>
-		<dict>
-			<key>fileRef</key>
-			<string>CAB91DA512631B8D57BE6356</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-			<key>settings</key>
-			<dict>
-				<key>COMPILER_FLAGS</key>
-				<string>-fobjc-arc</string>
-			</dict>
-		</dict>
-		<key>940AF3F154560125DC6CE84D</key>
-		<dict>
-			<key>fileRef</key>
-			<string>D871A53DE66D04856AAC1EA9</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>94188449D5A79468FA489F22</key>
-		<dict>
-			<key>fileRef</key>
-			<string>6E7AF1405F4354D74226C50A</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>95744CE1E314F6D6A4F40E9F</key>
-		<dict>
-			<key>buildConfigurationList</key>
-			<string>6E57DE1F8E87A534A9236833</string>
-			<key>buildPhases</key>
-			<array>
-				<string>DF238AD9E2A08EFE2F348452</string>
-				<string>B16FB181FB977223603FB8D8</string>
-				<string>4521EE67FB1FD62D6C25D33B</string>
-			</array>
-			<key>buildRules</key>
-			<array/>
-			<key>dependencies</key>
-			<array/>
-			<key>isa</key>
-			<string>PBXNativeTarget</string>
-			<key>name</key>
-			<string>Pods-HLSpriteKit-HLSpriteKit</string>
-			<key>productName</key>
-			<string>Pods-HLSpriteKit-HLSpriteKit</string>
-			<key>productReference</key>
-			<string>B0E7A5C231DCDF7538A4057F</string>
-			<key>productType</key>
-			<string>com.apple.product-type.library.static</string>
-		</dict>
-		<key>960F9D3B6D38F0D866F83F1A</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>text.xcconfig</string>
-			<key>name</key>
-			<string>Pods-Tests-HLSpriteKit-Private.xcconfig</string>
-			<key>path</key>
-			<string>../Pods-Tests-HLSpriteKit/Pods-Tests-HLSpriteKit-Private.xcconfig</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>9636AFA1A3E89FCB34D8467D</key>
-		<dict>
-			<key>fileRef</key>
-			<string>DA98F7B93330AADF16885A31</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-			<key>settings</key>
-			<dict>
-				<key>COMPILER_FLAGS</key>
-				<string>-fobjc-arc</string>
-			</dict>
-		</dict>
-		<key>9674C2C40A6360C86E2CC896</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>name</key>
-			<string>HLMessageNode.m</string>
-			<key>path</key>
-			<string>HLSpriteKit/HLMessageNode.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>96E04B082C945A4DC52F56CA</key>
-		<dict>
-			<key>fileRef</key>
-			<string>3875A869A08F93D548CC5F26</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>97E6130DC832F7BBF13136D7</key>
-		<dict>
-			<key>fileRef</key>
-			<string>4C70E39F87FE288FEEA5BD59</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-			<key>settings</key>
-			<dict>
-				<key>COMPILER_FLAGS</key>
-				<string>-fobjc-arc</string>
-			</dict>
-		</dict>
-		<key>97F97ED7A27A2B8E32C95951</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>name</key>
-			<string>HLMath.m</string>
-			<key>path</key>
-			<string>HLSpriteKit/HLMath.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>98410857258927BB19CA7A76</key>
-		<dict>
-			<key>baseConfigurationReference</key>
-			<string>960F9D3B6D38F0D866F83F1A</string>
-			<key>buildSettings</key>
-			<dict>
-				<key>ALWAYS_SEARCH_USER_PATHS</key>
-				<string>NO</string>
-				<key>COPY_PHASE_STRIP</key>
-				<string>YES</string>
-				<key>DSTROOT</key>
-				<string>/tmp/xcodeproj.dst</string>
-				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
-				<string>YES</string>
-				<key>GCC_PREFIX_HEADER</key>
-				<string>Target Support Files/Pods-Tests-HLSpriteKit/Pods-Tests-HLSpriteKit-prefix.pch</string>
-				<key>INSTALL_PATH</key>
-				<string>$(BUILT_PRODUCTS_DIR)</string>
-				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
-				<string>7.0</string>
-				<key>OTHER_CFLAGS</key>
-				<array>
-					<string>-DNS_BLOCK_ASSERTIONS=1</string>
-					<string>$(inherited)</string>
-				</array>
-				<key>OTHER_CPLUSPLUSFLAGS</key>
-				<array>
-					<string>-DNS_BLOCK_ASSERTIONS=1</string>
-					<string>$(inherited)</string>
-				</array>
-				<key>OTHER_LDFLAGS</key>
-				<string></string>
-				<key>OTHER_LIBTOOLFLAGS</key>
-				<string></string>
-				<key>PRODUCT_NAME</key>
-				<string>$(TARGET_NAME)</string>
-				<key>PUBLIC_HEADERS_FOLDER_PATH</key>
-				<string>$(TARGET_NAME)</string>
-				<key>SDKROOT</key>
-				<string>iphoneos</string>
-				<key>SKIP_INSTALL</key>
-				<string>YES</string>
-				<key>VALIDATE_PRODUCT</key>
-				<string>YES</string>
-			</dict>
-			<key>isa</key>
-			<string>XCBuildConfiguration</string>
-			<key>name</key>
+			<key>defaultConfigurationIsVisible</key>
+			<string>0</string>
+			<key>defaultConfigurationName</key>
 			<string>Release</string>
-		</dict>
-		<key>98A5C8954E6522BD56D8D319</key>
-		<dict>
-			<key>fileRef</key>
-			<string>24E319600240390123445AF4</string>
 			<key>isa</key>
-			<string>PBXBuildFile</string>
-			<key>settings</key>
-			<dict>
-				<key>COMPILER_FLAGS</key>
-				<string>-fobjc-arc</string>
-			</dict>
+			<string>XCConfigurationList</string>
 		</dict>
-		<key>98B184409954F5F7D09F972E</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>HLToolNode.h</string>
-			<key>path</key>
-			<string>HLSpriteKit/HLToolNode.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>9A74868FEFDBE1C8C3548F80</key>
-		<dict>
-			<key>fileRef</key>
-			<string>FB2D4EE9D47BA410E869B15A</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>9AC3EF8C4390BFD3B698196B</key>
-		<dict>
-			<key>explicitFileType</key>
-			<string>archive.ar</string>
-			<key>includeInIndex</key>
-			<string>0</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>path</key>
-			<string>libPods-Tests.a</string>
-			<key>sourceTree</key>
-			<string>BUILT_PRODUCTS_DIR</string>
-		</dict>
-		<key>9B10491299E0031F2422493E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>24E319600240390123445AF4</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-			<key>settings</key>
-			<dict>
-				<key>COMPILER_FLAGS</key>
-				<string>-fobjc-arc</string>
-			</dict>
-		</dict>
-		<key>9B24EBB2EB8770C0EF369941</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>text</string>
-			<key>path</key>
-			<string>Pods-Tests-acknowledgements.markdown</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>9B82100AE3013E6DCE92774D</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>HLComponentNode.h</string>
-			<key>path</key>
-			<string>HLSpriteKit/HLComponentNode.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>9C84FD22033E01FACD228910</key>
-		<dict>
-			<key>fileRef</key>
-			<string>A56A0FF8CFBC4FF1BB8D0589</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>9D99807164787B32C84565CF</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>Pods-Tests-environment.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>A100DDF2721D77E17D2D1DF3</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>text.plist.xml</string>
-			<key>path</key>
-			<string>Pods-HLSpriteKit-acknowledgements.plist</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>A509D84A174CE9A5AC8B9890</key>
-		<dict>
-			<key>fileRef</key>
-			<string>F3FA0E48AAB4E4FE02E9DEDD</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>A568007DEE6FCB95E5B00DF2</key>
-		<dict>
-			<key>fileRef</key>
-			<string>D871A53DE66D04856AAC1EA9</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>A56A0FF8CFBC4FF1BB8D0589</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>HLMenuNode.h</string>
-			<key>path</key>
-			<string>HLSpriteKit/HLMenuNode.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>A6C8D994A4978833605C212E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>4D5A882D771DDDD781A083D5</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>A88F90D5CA462F9D1C61EBE8</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array>
-				<string>D2FC5BBEA497653F0A4DAD67</string>
-			</array>
-			<key>isa</key>
-			<string>PBXFrameworksBuildPhase</string>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-		</dict>
-		<key>A9D21BD318222398D76619C4</key>
-		<dict>
-			<key>containerPortal</key>
-			<string>597B475290753CE60C57CD36</string>
-			<key>isa</key>
-			<string>PBXContainerItemProxy</string>
-			<key>proxyType</key>
-			<string>1</string>
-			<key>remoteGlobalIDString</key>
-			<string>95744CE1E314F6D6A4F40E9F</string>
-			<key>remoteInfo</key>
-			<string>Pods-HLSpriteKit-HLSpriteKit</string>
-		</dict>
-		<key>B00236C9F344AE97F1001FFA</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>text.script.sh</string>
-			<key>path</key>
-			<string>Pods-HLSpriteKit-resources.sh</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>B0E7A5C231DCDF7538A4057F</key>
-		<dict>
-			<key>explicitFileType</key>
-			<string>archive.ar</string>
-			<key>includeInIndex</key>
-			<string>0</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>path</key>
-			<string>libPods-HLSpriteKit-HLSpriteKit.a</string>
-			<key>sourceTree</key>
-			<string>BUILT_PRODUCTS_DIR</string>
-		</dict>
-		<key>B11C8F84B7C18CDA88E545C1</key>
-		<dict>
-			<key>fileRef</key>
-			<string>9674C2C40A6360C86E2CC896</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-			<key>settings</key>
-			<dict>
-				<key>COMPILER_FLAGS</key>
-				<string>-fobjc-arc</string>
-			</dict>
-		</dict>
-		<key>B16FB181FB977223603FB8D8</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array>
-				<string>5FFF2D79A11670719C0C8208</string>
-				<string>C16C777169DFE40316215B33</string>
-				<string>7E6D8AB6D9C654A03003C73D</string>
-			</array>
-			<key>isa</key>
-			<string>PBXFrameworksBuildPhase</string>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-		</dict>
-		<key>B26274DD456254B15DB97FF2</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>name</key>
-			<string>HLItemsNode.m</string>
-			<key>path</key>
-			<string>HLSpriteKit/HLItemsNode.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>B2D246872FFAE7E8095D1EDC</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>path</key>
-			<string>Pods-Tests-dummy.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>B3673C5985B396590B6A36EC</key>
+		<key>8131F5DBA1CC3349EFA37560</key>
 		<dict>
 			<key>includeInIndex</key>
 			<string>1</string>
@@ -2424,220 +1901,7 @@
 			<key>sourceTree</key>
 			<string>&lt;group&gt;</string>
 		</dict>
-		<key>B668451B5B1DC7AE333E4313</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>9B24EBB2EB8770C0EF369941</string>
-				<string>CDDE95041E2FD655C1047C86</string>
-				<string>B2D246872FFAE7E8095D1EDC</string>
-				<string>9D99807164787B32C84565CF</string>
-				<string>BDDA2F50C7EC267617D686A6</string>
-				<string>C3A3CF72AB022E742427C6F4</string>
-				<string>30BA3724581084321F82E304</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Pods-Tests</string>
-			<key>path</key>
-			<string>Target Support Files/Pods-Tests</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>B777DBFE511B435438839D8C</key>
-		<dict>
-			<key>fileRef</key>
-			<string>F274B87A4A1F4A7E9E7F77C5</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-			<key>settings</key>
-			<dict>
-				<key>COMPILER_FLAGS</key>
-				<string>-fobjc-arc</string>
-			</dict>
-		</dict>
-		<key>B7BB88C065B8A7A7A7FCEE9A</key>
-		<dict>
-			<key>fileRef</key>
-			<string>782AA314FEFAEEDA923680E4</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>B8A1989B3CA1821BEE6FCD82</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>HLSpriteKit.h</string>
-			<key>path</key>
-			<string>HLSpriteKit/HLSpriteKit.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>B8B842FF84B703FE327D0AB5</key>
-		<dict>
-			<key>fileRef</key>
-			<string>1C4FC053E50090C7A99D9ED6</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>B8C7F0749CE2076EAA0F95FC</key>
-		<dict>
-			<key>fileRef</key>
-			<string>3EC840EC0283ADEA0AA90D60</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-			<key>settings</key>
-			<dict>
-				<key>COMPILER_FLAGS</key>
-				<string>-fobjc-arc</string>
-			</dict>
-		</dict>
-		<key>B96EDEA9FD4B0832F0E25715</key>
-		<dict>
-			<key>fileRef</key>
-			<string>5AB15F769A3D02807AB3BAFE</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>BBCBE51C16FB51BF5094B397</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>D499F3937C617E82AF08E3C7</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Frameworks</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>BC8A512BE30B231B21BEC44E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>DA50A1A758CE5E3327DC900D</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-			<key>settings</key>
-			<dict>
-				<key>COMPILER_FLAGS</key>
-				<string>-fobjc-arc</string>
-			</dict>
-		</dict>
-		<key>BDDA2F50C7EC267617D686A6</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>text.script.sh</string>
-			<key>path</key>
-			<string>Pods-Tests-resources.sh</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>BE20749F832DF30B99778F80</key>
-		<dict>
-			<key>fileRef</key>
-			<string>1CC901F779535849086A36BF</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>C16C777169DFE40316215B33</key>
-		<dict>
-			<key>fileRef</key>
-			<string>D55D2BE3609CA3815D3CBE47</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>C1A6525F522578224AF3244C</key>
-		<dict>
-			<key>fileRef</key>
-			<string>664C91C07F8CBB73D27B0EDB</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>C206D85104387304896B59E6</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array>
-				<string>59CE85B2638B85DAE0242AD9</string>
-				<string>79155BD9D97EF7D3110D6551</string>
-				<string>9A74868FEFDBE1C8C3548F80</string>
-			</array>
-			<key>isa</key>
-			<string>PBXFrameworksBuildPhase</string>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-		</dict>
-		<key>C22CA532A8E327A03E129D68</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>Pods-Tests-HLSpriteKit-prefix.pch</string>
-			<key>path</key>
-			<string>../Pods-Tests-HLSpriteKit/Pods-Tests-HLSpriteKit-prefix.pch</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>C3A3CF72AB022E742427C6F4</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>text.xcconfig</string>
-			<key>path</key>
-			<string>Pods-Tests.debug.xcconfig</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>C6BFF7D69C1722C7A4D4D55B</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>UIImage+HLImageAdditions.h</string>
-			<key>path</key>
-			<string>HLSpriteKit/UIImage+HLImageAdditions.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>C9381EE00DB6744120AEB0E3</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>HLTableLayoutManager.h</string>
-			<key>path</key>
-			<string>HLSpriteKit/HLTableLayoutManager.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>CAB91DA512631B8D57BE6356</key>
+		<key>831908F0BFF2023313633846</key>
 		<dict>
 			<key>includeInIndex</key>
 			<string>1</string>
@@ -2646,26 +1910,13 @@
 			<key>lastKnownFileType</key>
 			<string>sourcecode.c.objc</string>
 			<key>name</key>
-			<string>HLGestureTarget.m</string>
+			<string>HLMessageNode.m</string>
 			<key>path</key>
-			<string>HLSpriteKit/HLGestureTarget.m</string>
+			<string>HLSpriteKit/HLMessageNode.m</string>
 			<key>sourceTree</key>
 			<string>&lt;group&gt;</string>
 		</dict>
-		<key>CAC5856CD4DE1398CC5C25B6</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>path</key>
-			<string>Pods-HLSpriteKit-dummy.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>CB40235FA1A265C702B33E16</key>
+		<key>83C82C0C5EFA075466024558</key>
 		<dict>
 			<key>includeInIndex</key>
 			<string>1</string>
@@ -2674,103 +1925,47 @@
 			<key>lastKnownFileType</key>
 			<string>sourcecode.c.objc</string>
 			<key>name</key>
-			<string>HLItemNode.m</string>
+			<string>HLEmitterStore.m</string>
 			<key>path</key>
-			<string>HLSpriteKit/HLItemNode.m</string>
+			<string>HLSpriteKit/HLEmitterStore.m</string>
 			<key>sourceTree</key>
 			<string>&lt;group&gt;</string>
 		</dict>
-		<key>CDDE95041E2FD655C1047C86</key>
+		<key>863CA194791430D445621241</key>
 		<dict>
 			<key>includeInIndex</key>
 			<string>1</string>
 			<key>isa</key>
 			<string>PBXFileReference</string>
 			<key>lastKnownFileType</key>
-			<string>text.plist.xml</string>
+			<string>sourcecode.c.h</string>
 			<key>path</key>
-			<string>Pods-Tests-acknowledgements.plist</string>
+			<string>Pods-HLSpriteKit-environment.h</string>
 			<key>sourceTree</key>
 			<string>&lt;group&gt;</string>
 		</dict>
-		<key>CF951F9D319AB094543D863E</key>
+		<key>88A0875B8D3887C5382AE869</key>
 		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array>
-				<string>80DB66781E08AAE32549637C</string>
-			</array>
+			<key>includeInIndex</key>
+			<string>1</string>
 			<key>isa</key>
-			<string>PBXFrameworksBuildPhase</string>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.h</string>
+			<key>name</key>
+			<string>HLRingNode.h</string>
+			<key>path</key>
+			<string>HLSpriteKit/HLRingNode.h</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
 		</dict>
-		<key>D03FAA06A3E00454904A303F</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array>
-				<string>EAEE2378EF52E25ED3AF2A1B</string>
-				<string>5612448110671FAC1EF40C08</string>
-				<string>916C8A46B4B02FA7F04FB309</string>
-				<string>F6FA834C31CDCFE99FC99E37</string>
-				<string>2FD10BA1C46EED2A05495D59</string>
-				<string>64C4F4F10D645168CA6D5D8E</string>
-				<string>74385235E971C1AFE5A9E80F</string>
-				<string>D77DA6A7F682E3EB0FCBF5DC</string>
-				<string>0D65C0F747B94DC117FEB865</string>
-				<string>78419C26733C7DDDE6793C8D</string>
-				<string>B777DBFE511B435438839D8C</string>
-				<string>63942EB6D0C8F0282906249E</string>
-				<string>810FC7DEFB25E44CA0901DEC</string>
-				<string>98A5C8954E6522BD56D8D319</string>
-				<string>E62FFA7559EE54B0B937DCEF</string>
-				<string>43A6E13AD38E3A8EA0E5E945</string>
-				<string>FE4F4559BD99C0F6D3CF3627</string>
-				<string>510A6BBB00B595B344C1E2AE</string>
-				<string>D5ADDED050C90A6DF678318A</string>
-				<string>8C3AABAC9A023CF7F231C4E1</string>
-				<string>EBCADDD84D4CC02D7EDAA3FE</string>
-				<string>82623DE96166DE86B4E1C069</string>
-				<string>E666D0B35DF8DA8E22547D07</string>
-				<string>B8C7F0749CE2076EAA0F95FC</string>
-				<string>535723D6C1A9B5E1389554E0</string>
-			</array>
-			<key>isa</key>
-			<string>PBXSourcesBuildPhase</string>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-		</dict>
-		<key>D1635FD4FCBC842A5A2D5AEB</key>
-		<dict>
-			<key>fileRef</key>
-			<string>FC2E96B28321ABA2A36E414C</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>D2E139DF2AFDF071B92750C2</key>
-		<dict>
-			<key>fileRef</key>
-			<string>B8A1989B3CA1821BEE6FCD82</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>D2FC5BBEA497653F0A4DAD67</key>
-		<dict>
-			<key>fileRef</key>
-			<string>EB33C4905F8A6275BB292B9F</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>D499F3937C617E82AF08E3C7</key>
+		<key>89340387E03A00E22EC94DAE</key>
 		<dict>
 			<key>children</key>
 			<array>
-				<string>EB33C4905F8A6275BB292B9F</string>
-				<string>D55D2BE3609CA3815D3CBE47</string>
-				<string>FB2D4EE9D47BA410E869B15A</string>
+				<string>02E48E13096F8E18CAB78F6D</string>
+				<string>94A12EF489DB35E52B49EC7C</string>
+				<string>7BAE5FE542D8D1FD5909A00A</string>
 			</array>
 			<key>isa</key>
 			<string>PBXGroup</string>
@@ -2779,7 +1974,96 @@
 			<key>sourceTree</key>
 			<string>&lt;group&gt;</string>
 		</dict>
-		<key>D55D2BE3609CA3815D3CBE47</key>
+		<key>8C1D88A94F1CFA245621210B</key>
+		<dict>
+			<key>fileRef</key>
+			<string>8131F5DBA1CC3349EFA37560</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>settings</key>
+			<dict>
+				<key>COMPILER_FLAGS</key>
+				<string>-fobjc-arc</string>
+			</dict>
+		</dict>
+		<key>8CDCD3BB1D885AD49EE6810F</key>
+		<dict>
+			<key>fileRef</key>
+			<string>DD6B44F5059E58F78A458EAC</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>8E63FE277FC6A422A21EED50</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.h</string>
+			<key>name</key>
+			<string>HLLabelButtonNode.h</string>
+			<key>path</key>
+			<string>HLSpriteKit/HLLabelButtonNode.h</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>8E83D915FEABD992C905A6D2</key>
+		<dict>
+			<key>fileRef</key>
+			<string>9A56FBC968FD4678ED13AC98</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>settings</key>
+			<dict>
+				<key>COMPILER_FLAGS</key>
+				<string>-fobjc-arc</string>
+			</dict>
+		</dict>
+		<key>8F7B5DE105868BB58DC111D1</key>
+		<dict>
+			<key>fileRef</key>
+			<string>37B25235C56B1FD82700AA36</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>9011475D76E42CE96F19958C</key>
+		<dict>
+			<key>fileRef</key>
+			<string>743301552E1429642EC7C2CF</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>settings</key>
+			<dict>
+				<key>COMPILER_FLAGS</key>
+				<string>-fobjc-arc</string>
+			</dict>
+		</dict>
+		<key>91C0EE40E684A59970B91658</key>
+		<dict>
+			<key>fileRef</key>
+			<string>99743330BF6FC06872B6CDEA</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>settings</key>
+			<dict>
+				<key>COMPILER_FLAGS</key>
+				<string>-fobjc-arc</string>
+			</dict>
+		</dict>
+		<key>94413ED09FFFAB8B8F6F8439</key>
+		<dict>
+			<key>fileRef</key>
+			<string>4683560B96051D7CD3483188</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>settings</key>
+			<dict>
+				<key>COMPILER_FLAGS</key>
+				<string>-fobjc-arc</string>
+			</dict>
+		</dict>
+		<key>94A12EF489DB35E52B49EC7C</key>
 		<dict>
 			<key>isa</key>
 			<string>PBXFileReference</string>
@@ -2792,396 +2076,7 @@
 			<key>sourceTree</key>
 			<string>DEVELOPER_DIR</string>
 		</dict>
-		<key>D58C0689BB34B46100B3B251</key>
-		<dict>
-			<key>fileRef</key>
-			<string>5AB15F769A3D02807AB3BAFE</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>D5ADDED050C90A6DF678318A</key>
-		<dict>
-			<key>fileRef</key>
-			<string>DA50A1A758CE5E3327DC900D</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-			<key>settings</key>
-			<dict>
-				<key>COMPILER_FLAGS</key>
-				<string>-fobjc-arc</string>
-			</dict>
-		</dict>
-		<key>D77DA6A7F682E3EB0FCBF5DC</key>
-		<dict>
-			<key>fileRef</key>
-			<string>97F97ED7A27A2B8E32C95951</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-			<key>settings</key>
-			<dict>
-				<key>COMPILER_FLAGS</key>
-				<string>-fobjc-arc</string>
-			</dict>
-		</dict>
-		<key>D81AF3D00946041A55B2686A</key>
-		<dict>
-			<key>buildConfigurationList</key>
-			<string>45C1F522DAD36805EDA22CD9</string>
-			<key>buildPhases</key>
-			<array>
-				<string>E2500F8A24E1258375BF1939</string>
-				<string>A88F90D5CA462F9D1C61EBE8</string>
-			</array>
-			<key>buildRules</key>
-			<array/>
-			<key>dependencies</key>
-			<array>
-				<string>1070E54072D3A260614A65EA</string>
-			</array>
-			<key>isa</key>
-			<string>PBXNativeTarget</string>
-			<key>name</key>
-			<string>Pods-Tests</string>
-			<key>productName</key>
-			<string>Pods-Tests</string>
-			<key>productReference</key>
-			<string>9AC3EF8C4390BFD3B698196B</string>
-			<key>productType</key>
-			<string>com.apple.product-type.library.static</string>
-		</dict>
-		<key>D871A53DE66D04856AAC1EA9</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>HLItemNode.h</string>
-			<key>path</key>
-			<string>HLSpriteKit/HLItemNode.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>D996AC3DBCF71CCBDE181E69</key>
-		<dict>
-			<key>fileRef</key>
-			<string>C9381EE00DB6744120AEB0E3</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>DA50A1A758CE5E3327DC900D</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>name</key>
-			<string>HLToolbarNode.m</string>
-			<key>path</key>
-			<string>HLSpriteKit/HLToolbarNode.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>DA98F7B93330AADF16885A31</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>name</key>
-			<string>SKLabelNode+HLLabelNodeAdditions.m</string>
-			<key>path</key>
-			<string>HLSpriteKit/SKLabelNode+HLLabelNodeAdditions.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>DC95B7830D5D812A77BE04EF</key>
-		<dict>
-			<key>fileRef</key>
-			<string>F3FA0E48AAB4E4FE02E9DEDD</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>DD50515FE0AEEE48CDB1993D</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>73C9E50805A93A360C3AD3F0</string>
-				<string>B668451B5B1DC7AE333E4313</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Targets Support Files</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>DE77A82833B2302DBA4CA6AA</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>name</key>
-			<string>HLTableLayoutManager.m</string>
-			<key>path</key>
-			<string>HLSpriteKit/HLTableLayoutManager.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>DF238AD9E2A08EFE2F348452</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array>
-				<string>7E6479EE329BEB969738C7FC</string>
-				<string>2C9710EBD10531705488F9F9</string>
-				<string>3084AC6EB1B8FDEA292C149D</string>
-				<string>68A696ED857DA94AEB802373</string>
-				<string>15E37B2DCEEFA7F9AEF30AC5</string>
-				<string>13BB20296A780360E9F8A560</string>
-				<string>97E6130DC832F7BBF13136D7</string>
-				<string>370FDD1077DD14E9A03E3817</string>
-				<string>870A18542B6D54C62C5A774F</string>
-				<string>B11C8F84B7C18CDA88E545C1</string>
-				<string>22FF733C93EC55276CBC23DE</string>
-				<string>2FA40D3B91F2475CC75A4DBC</string>
-				<string>1E1440841F80C7E35AEF3D30</string>
-				<string>9B10491299E0031F2422493E</string>
-				<string>272B2FD9133D477AFA790F05</string>
-				<string>14D2D858BA26B4A64A42C101</string>
-				<string>7CE85C9324E7011814A2FE49</string>
-				<string>8153556121B9619FAF2FAA1C</string>
-				<string>BC8A512BE30B231B21BEC44E</string>
-				<string>EC7EE4E0ECB6B9E828D48AB4</string>
-				<string>9636AFA1A3E89FCB34D8467D</string>
-				<string>FEAF0D14D217FF5A50241E4A</string>
-				<string>5BEEA6623BF9F345CADE1806</string>
-				<string>2E399407081B34EDBE453A59</string>
-				<string>8D2F635BF6A4A691434A494E</string>
-			</array>
-			<key>isa</key>
-			<string>PBXSourcesBuildPhase</string>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-		</dict>
-		<key>DF829C6F5BC81591B37DF003</key>
-		<dict>
-			<key>buildConfigurationList</key>
-			<string>14A970B7FE140974DF47433B</string>
-			<key>buildPhases</key>
-			<array>
-				<string>D03FAA06A3E00454904A303F</string>
-				<string>C206D85104387304896B59E6</string>
-				<string>E6D446DDADC1AFA153405BF8</string>
-			</array>
-			<key>buildRules</key>
-			<array/>
-			<key>dependencies</key>
-			<array/>
-			<key>isa</key>
-			<string>PBXNativeTarget</string>
-			<key>name</key>
-			<string>Pods-Tests-HLSpriteKit</string>
-			<key>productName</key>
-			<string>Pods-Tests-HLSpriteKit</string>
-			<key>productReference</key>
-			<string>71CB3C4CA9D0327FCBC9AE64</string>
-			<key>productType</key>
-			<string>com.apple.product-type.library.static</string>
-		</dict>
-		<key>E18ECFC2868E7CBD41187B41</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>Pods-HLSpriteKit-HLSpriteKit-prefix.pch</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>E2500F8A24E1258375BF1939</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array>
-				<string>261FCB704061FCE19ED43A60</string>
-			</array>
-			<key>isa</key>
-			<string>PBXSourcesBuildPhase</string>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-		</dict>
-		<key>E61B2FDCB1F87700CA4360B6</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>SKSpriteNode+HLSpriteNodeAdditions.h</string>
-			<key>path</key>
-			<string>HLSpriteKit/SKSpriteNode+HLSpriteNodeAdditions.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>E62FFA7559EE54B0B937DCEF</key>
-		<dict>
-			<key>fileRef</key>
-			<string>DE77A82833B2302DBA4CA6AA</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-			<key>settings</key>
-			<dict>
-				<key>COMPILER_FLAGS</key>
-				<string>-fobjc-arc</string>
-			</dict>
-		</dict>
-		<key>E666D0B35DF8DA8E22547D07</key>
-		<dict>
-			<key>fileRef</key>
-			<string>1645ED7673163FEC53B44550</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-			<key>settings</key>
-			<dict>
-				<key>COMPILER_FLAGS</key>
-				<string>-fobjc-arc</string>
-			</dict>
-		</dict>
-		<key>E6D446DDADC1AFA153405BF8</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array>
-				<string>16909E27566C9072AAA52066</string>
-				<string>41CEBB6FA71F639E866B90C9</string>
-				<string>8D7406363A0089992C48F2B5</string>
-				<string>24657F5EB829BEDC8A9BCF9B</string>
-				<string>82FD8B4560AFEA7CE9439E51</string>
-				<string>940AF3F154560125DC6CE84D</string>
-				<string>180CCF5CE70C2B9D424B7D00</string>
-				<string>013024BA07599BFC002C5593</string>
-				<string>310FB653A2B70B11BD371DD7</string>
-				<string>F79D71E9131AC1966272A7ED</string>
-				<string>9C84FD22033E01FACD228910</string>
-				<string>EE987E0D024ECD457E3739AF</string>
-				<string>96E04B082C945A4DC52F56CA</string>
-				<string>94188449D5A79468FA489F22</string>
-				<string>D58C0689BB34B46100B3B251</string>
-				<string>BE20749F832DF30B99778F80</string>
-				<string>D2E139DF2AFDF071B92750C2</string>
-				<string>D996AC3DBCF71CCBDE181E69</string>
-				<string>7A981F4AA22D4146B7912873</string>
-				<string>7453D092B959209F97643ABE</string>
-				<string>81FFA5B5EF8DD3043582D064</string>
-				<string>A6C8D994A4978833605C212E</string>
-				<string>7715D3FBC29B868CC2EE0C66</string>
-				<string>8B9C92EECD6BFA537B00EC8E</string>
-				<string>DC95B7830D5D812A77BE04EF</string>
-				<string>768614F860090D51516ED328</string>
-				<string>288858F18DDE62498A7361D0</string>
-			</array>
-			<key>isa</key>
-			<string>PBXHeadersBuildPhase</string>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-		</dict>
-		<key>E745F993EC756BDFDAB20D4B</key>
-		<dict>
-			<key>buildConfigurations</key>
-			<array>
-				<string>FA1F6B0691E42558FC31E6BF</string>
-				<string>7D33A3A6CC24D6F1D8C1B2DC</string>
-			</array>
-			<key>defaultConfigurationIsVisible</key>
-			<string>0</string>
-			<key>defaultConfigurationName</key>
-			<string>Release</string>
-			<key>isa</key>
-			<string>XCConfigurationList</string>
-		</dict>
-		<key>E88365DC9B16F1E9434A1301</key>
-		<dict>
-			<key>explicitFileType</key>
-			<string>archive.ar</string>
-			<key>includeInIndex</key>
-			<string>0</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>path</key>
-			<string>libPods-HLSpriteKit.a</string>
-			<key>sourceTree</key>
-			<string>BUILT_PRODUCTS_DIR</string>
-		</dict>
-		<key>EAEE2378EF52E25ED3AF2A1B</key>
-		<dict>
-			<key>fileRef</key>
-			<string>1B5080B110CC66083D31B2D1</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-			<key>settings</key>
-			<dict>
-				<key>COMPILER_FLAGS</key>
-				<string>-fobjc-arc</string>
-			</dict>
-		</dict>
-		<key>EB33C4905F8A6275BB292B9F</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>wrapper.framework</string>
-			<key>name</key>
-			<string>Foundation.framework</string>
-			<key>path</key>
-			<string>Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.1.sdk/System/Library/Frameworks/Foundation.framework</string>
-			<key>sourceTree</key>
-			<string>DEVELOPER_DIR</string>
-		</dict>
-		<key>EBCADDD84D4CC02D7EDAA3FE</key>
-		<dict>
-			<key>fileRef</key>
-			<string>DA98F7B93330AADF16885A31</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-			<key>settings</key>
-			<dict>
-				<key>COMPILER_FLAGS</key>
-				<string>-fobjc-arc</string>
-			</dict>
-		</dict>
-		<key>EC7EE4E0ECB6B9E828D48AB4</key>
-		<dict>
-			<key>fileRef</key>
-			<string>90F7C7408CE2F6FCA9E8A6F5</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>EE987E0D024ECD457E3739AF</key>
-		<dict>
-			<key>fileRef</key>
-			<string>725ED362763082B792088B5F</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>F274B87A4A1F4A7E9E7F77C5</key>
+		<key>9535CB8BDF64B233CB23E092</key>
 		<dict>
 			<key>includeInIndex</key>
 			<string>1</string>
@@ -3196,39 +2091,51 @@
 			<key>sourceTree</key>
 			<string>&lt;group&gt;</string>
 		</dict>
-		<key>F3FA0E48AAB4E4FE02E9DEDD</key>
+		<key>971667EE92C30996FE1F0794</key>
 		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array>
+				<string>166FBCA2AE35FE3C7976857F</string>
+				<string>66CBB2A4D9870BAD215B3058</string>
+				<string>94413ED09FFFAB8B8F6F8439</string>
+				<string>228B29E8AB9B766ED2BB7E11</string>
+				<string>41DDF0368D76DF3146ED4E2C</string>
+				<string>064B4C10CAA7BDE7AB975756</string>
+				<string>E3F7144F0D2F478089F8CF79</string>
+				<string>9011475D76E42CE96F19958C</string>
+				<string>91C0EE40E684A59970B91658</string>
+				<string>6F004244A6C14D3B8C4428DD</string>
+				<string>62A754DAD36D01BBD2AA01F7</string>
+				<string>1785DC3DD392FF971564211C</string>
+				<string>C6B04B931B48FAB228EB2255</string>
+				<string>8C1D88A94F1CFA245621210B</string>
+				<string>DBA78D834AF4B7AA1B15DBFA</string>
+				<string>8E83D915FEABD992C905A6D2</string>
+				<string>48435529BDFB440E43BA9116</string>
+				<string>C3E182ECE19B1FE00D1EBFDA</string>
+				<string>D74A5CED55DC96D640526A53</string>
+				<string>C96694F2D32A2E69A86D010D</string>
+				<string>E894386F0C6785D8A62C966F</string>
+				<string>C56018F890886EE1EC7B6A71</string>
+				<string>CF82736486EB459C1028F567</string>
+				<string>D1BB0D301DD02C248A14284B</string>
+				<string>B956E746D76C5500EA84B0D4</string>
+			</array>
 			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>SKNode+HLLayoutManager.h</string>
-			<key>path</key>
-			<string>HLSpriteKit/SKNode+HLLayoutManager.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
+			<string>PBXSourcesBuildPhase</string>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
 		</dict>
-		<key>F5D2994109F209DC43A63D4E</key>
+		<key>99312D817FB08D6393D18053</key>
 		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
+			<key>fileRef</key>
+			<string>5CAAF202D40B3762D3C24B56</string>
 			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>text</string>
-			<key>name</key>
-			<string>Podfile</string>
-			<key>path</key>
-			<string>../Podfile</string>
-			<key>sourceTree</key>
-			<string>SOURCE_ROOT</string>
-			<key>xcLanguageSpecificationIdentifier</key>
-			<string>xcode.lang.ruby</string>
+			<string>PBXBuildFile</string>
 		</dict>
-		<key>F65F941BBCB43D0D2EEB60C5</key>
+		<key>99743330BF6FC06872B6CDEA</key>
 		<dict>
 			<key>includeInIndex</key>
 			<string>1</string>
@@ -3237,16 +2144,53 @@
 			<key>lastKnownFileType</key>
 			<string>sourcecode.c.objc</string>
 			<key>name</key>
-			<string>Pods-Tests-HLSpriteKit-dummy.m</string>
+			<string>HLMath.m</string>
 			<key>path</key>
-			<string>../Pods-Tests-HLSpriteKit/Pods-Tests-HLSpriteKit-dummy.m</string>
+			<string>HLSpriteKit/HLMath.m</string>
 			<key>sourceTree</key>
 			<string>&lt;group&gt;</string>
 		</dict>
-		<key>F6BEFC45A960E8356177CAA6</key>
+		<key>9A332BF31F2A470ED71302ED</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.h</string>
+			<key>name</key>
+			<string>UIImage+HLImageAdditions.h</string>
+			<key>path</key>
+			<string>HLSpriteKit/UIImage+HLImageAdditions.h</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>9A56FBC968FD4678ED13AC98</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.objc</string>
+			<key>name</key>
+			<string>HLTableLayoutManager.m</string>
+			<key>path</key>
+			<string>HLSpriteKit/HLTableLayoutManager.m</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>9C2CD482CE71E12972ABA012</key>
+		<dict>
+			<key>fileRef</key>
+			<string>BC4794F9388328FAB9A3BA8E</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>9DC3B1BC1A8AC904FB1EFF2D</key>
 		<dict>
 			<key>baseConfigurationReference</key>
-			<string>46ED7326E6035FA8EB93D1F7</string>
+			<string>E73E691C6C302E8A9E3C7377</string>
 			<key>buildSettings</key>
 			<dict>
 				<key>ALWAYS_SEARCH_USER_PATHS</key>
@@ -3261,8 +2205,6 @@
 				<string>0</string>
 				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
 				<string>YES</string>
-				<key>GCC_PREFIX_HEADER</key>
-				<string>Target Support Files/Pods-HLSpriteKit-HLSpriteKit/Pods-HLSpriteKit-HLSpriteKit-prefix.pch</string>
 				<key>GCC_PREPROCESSOR_DEFINITIONS</key>
 				<array>
 					<string>DEBUG=1</string>
@@ -3292,10 +2234,10 @@
 			<key>name</key>
 			<string>Debug</string>
 		</dict>
-		<key>F6FA834C31CDCFE99FC99E37</key>
+		<key>9E8AD6F96490D038D3389D53</key>
 		<dict>
 			<key>fileRef</key>
-			<string>3C08EEC0578F80CC57269AAC</string>
+			<string>9FECB121644471A3240819CC</string>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 			<key>settings</key>
@@ -3304,14 +2246,59 @@
 				<string>-fobjc-arc</string>
 			</dict>
 		</dict>
-		<key>F79D71E9131AC1966272A7ED</key>
+		<key>9FECB121644471A3240819CC</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.objc</string>
+			<key>name</key>
+			<string>HLRingNode.m</string>
+			<key>path</key>
+			<string>HLSpriteKit/HLRingNode.m</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>A437C7195EED6CB204C24150</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.objc</string>
+			<key>name</key>
+			<string>SKNode+HLGestureTarget.m</string>
+			<key>path</key>
+			<string>HLSpriteKit/SKNode+HLGestureTarget.m</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>A6E2C1B3F5FA7C0F88ABB537</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.objc</string>
+			<key>name</key>
+			<string>HLScrollNode.m</string>
+			<key>path</key>
+			<string>HLSpriteKit/HLScrollNode.m</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>A72C10E10B8FBF3B1F3A85A0</key>
 		<dict>
 			<key>fileRef</key>
-			<string>FC2E96B28321ABA2A36E414C</string>
+			<string>6C6F41D5A90235A5225D8843</string>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 		</dict>
-		<key>FA1F6B0691E42558FC31E6BF</key>
+		<key>A7596D20427BD386D7613681</key>
 		<dict>
 			<key>buildSettings</key>
 			<dict>
@@ -3378,27 +2365,34 @@
 			<key>name</key>
 			<string>Debug</string>
 		</dict>
-		<key>FB2D4EE9D47BA410E869B15A</key>
+		<key>A812BB6861C942714C224790</key>
 		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
 			<key>isa</key>
 			<string>PBXFileReference</string>
 			<key>lastKnownFileType</key>
-			<string>wrapper.framework</string>
-			<key>name</key>
-			<string>UIKit.framework</string>
+			<string>text.xcconfig</string>
 			<key>path</key>
-			<string>Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.1.sdk/System/Library/Frameworks/UIKit.framework</string>
+			<string>Pods-HLSpriteKit.release.xcconfig</string>
 			<key>sourceTree</key>
-			<string>DEVELOPER_DIR</string>
+			<string>&lt;group&gt;</string>
 		</dict>
-		<key>FB81BD68EE3FF5E7468535DC</key>
+		<key>A8B0E3B99577FD1063FCB350</key>
 		<dict>
 			<key>fileRef</key>
-			<string>C6BFF7D69C1722C7A4D4D55B</string>
+			<string>30AB2E95E25108147D8ADCE5</string>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 		</dict>
-		<key>FC2E96B28321ABA2A36E414C</key>
+		<key>ACE95BEEA43057B08B762D9A</key>
+		<dict>
+			<key>fileRef</key>
+			<string>30AB2E95E25108147D8ADCE5</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AED411100D0EA098722DC2DE</key>
 		<dict>
 			<key>includeInIndex</key>
 			<string>1</string>
@@ -3407,16 +2401,81 @@
 			<key>lastKnownFileType</key>
 			<string>sourcecode.c.h</string>
 			<key>name</key>
-			<string>HLMath.h</string>
+			<string>HLComponentNode.h</string>
 			<key>path</key>
-			<string>HLSpriteKit/HLMath.h</string>
+			<string>HLSpriteKit/HLComponentNode.h</string>
 			<key>sourceTree</key>
 			<string>&lt;group&gt;</string>
 		</dict>
-		<key>FE4F4559BD99C0F6D3CF3627</key>
+		<key>B07D45ED3B74A7525651AEA0</key>
 		<dict>
 			<key>fileRef</key>
-			<string>40A362640F75F668EF57F1DB</string>
+			<string>74C1F28DDFFF962E85D7B1DB</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>B1E1D21D6EE0E4336C012F09</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.h</string>
+			<key>name</key>
+			<string>Pods-Tests-HLSpriteKit-prefix.pch</string>
+			<key>path</key>
+			<string>../Pods-Tests-HLSpriteKit/Pods-Tests-HLSpriteKit-prefix.pch</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>B2249303E6ED427926845173</key>
+		<dict>
+			<key>buildConfigurations</key>
+			<array>
+				<string>A7596D20427BD386D7613681</string>
+				<string>7FE3B23D4019AB115EC59764</string>
+			</array>
+			<key>defaultConfigurationIsVisible</key>
+			<string>0</string>
+			<key>defaultConfigurationName</key>
+			<string>Release</string>
+			<key>isa</key>
+			<string>XCConfigurationList</string>
+		</dict>
+		<key>B3AA7828AB9F25063E10542D</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.h</string>
+			<key>name</key>
+			<string>HLLayoutManager.h</string>
+			<key>path</key>
+			<string>HLSpriteKit/HLLayoutManager.h</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>B3AB498CC0EACA4062EC8E20</key>
+		<dict>
+			<key>fileRef</key>
+			<string>5CAAF202D40B3762D3C24B56</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>B3B3AACC4082F3B292A3D290</key>
+		<dict>
+			<key>fileRef</key>
+			<string>7BAE5FE542D8D1FD5909A00A</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>B69EB26EE2B24E33D8118CE3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>A437C7195EED6CB204C24150</string>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 			<key>settings</key>
@@ -3425,10 +2484,51 @@
 				<string>-fobjc-arc</string>
 			</dict>
 		</dict>
-		<key>FEAF0D14D217FF5A50241E4A</key>
+		<key>B6D314035E7D7A4822CA579A</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array>
+				<string>6A7DD1B9FB12C86CD4E40EBE</string>
+			</array>
+			<key>isa</key>
+			<string>PBXSourcesBuildPhase</string>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+		</dict>
+		<key>B922AB7AFFB825713A3DDCCD</key>
 		<dict>
 			<key>fileRef</key>
-			<string>2C1346115703376E72794CF7</string>
+			<string>FF804FCADA9B587B19A917E5</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>B932C624158FEC082B3FFEB4</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>3C0BE8D57B76233B2E383C40</string>
+				<string>47B72A005668D68551ACEF15</string>
+				<string>BEB048C59CC7BD4C65965BAB</string>
+				<string>863CA194791430D445621241</string>
+				<string>52A5467F2B501E4B47F8D55C</string>
+				<string>2B2D9B576AD6C3D098898E35</string>
+				<string>A812BB6861C942714C224790</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>name</key>
+			<string>Pods-HLSpriteKit</string>
+			<key>path</key>
+			<string>Target Support Files/Pods-HLSpriteKit</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>B956E746D76C5500EA84B0D4</key>
+		<dict>
+			<key>fileRef</key>
+			<string>289830477F4D0BFE031B37BE</string>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 			<key>settings</key>
@@ -3436,9 +2536,909 @@
 				<key>COMPILER_FLAGS</key>
 				<string>-fobjc-arc</string>
 			</dict>
+		</dict>
+		<key>BC4794F9388328FAB9A3BA8E</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.h</string>
+			<key>name</key>
+			<string>HLError.h</string>
+			<key>path</key>
+			<string>HLSpriteKit/HLError.h</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>BC4D83C35959839C1B5042D9</key>
+		<dict>
+			<key>fileRef</key>
+			<string>79A375D568EE4E8AE2D4F211</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>BE51DD721755C284B31BD254</key>
+		<dict>
+			<key>fileRef</key>
+			<string>743301552E1429642EC7C2CF</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>settings</key>
+			<dict>
+				<key>COMPILER_FLAGS</key>
+				<string>-fobjc-arc</string>
+			</dict>
+		</dict>
+		<key>BE6615DDFDE4BEF3D9B44D89</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>text.script.sh</string>
+			<key>path</key>
+			<string>Pods-Tests-resources.sh</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>BEB048C59CC7BD4C65965BAB</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.objc</string>
+			<key>path</key>
+			<string>Pods-HLSpriteKit-dummy.m</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>C0DE0312CD97BDF10F57858B</key>
+		<dict>
+			<key>baseConfigurationReference</key>
+			<string>0ED4DDE9D0D358B5EB352935</string>
+			<key>buildSettings</key>
+			<dict>
+				<key>ALWAYS_SEARCH_USER_PATHS</key>
+				<string>NO</string>
+				<key>COPY_PHASE_STRIP</key>
+				<string>YES</string>
+				<key>DSTROOT</key>
+				<string>/tmp/xcodeproj.dst</string>
+				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
+				<string>YES</string>
+				<key>GCC_PREFIX_HEADER</key>
+				<string>Target Support Files/Pods-HLSpriteKit-HLSpriteKit/Pods-HLSpriteKit-HLSpriteKit-prefix.pch</string>
+				<key>INSTALL_PATH</key>
+				<string>$(BUILT_PRODUCTS_DIR)</string>
+				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
+				<string>7.0</string>
+				<key>OTHER_CFLAGS</key>
+				<array>
+					<string>-DNS_BLOCK_ASSERTIONS=1</string>
+					<string>$(inherited)</string>
+				</array>
+				<key>OTHER_CPLUSPLUSFLAGS</key>
+				<array>
+					<string>-DNS_BLOCK_ASSERTIONS=1</string>
+					<string>$(inherited)</string>
+				</array>
+				<key>OTHER_LDFLAGS</key>
+				<string></string>
+				<key>OTHER_LIBTOOLFLAGS</key>
+				<string></string>
+				<key>PRODUCT_NAME</key>
+				<string>$(TARGET_NAME)</string>
+				<key>PUBLIC_HEADERS_FOLDER_PATH</key>
+				<string>$(TARGET_NAME)</string>
+				<key>SDKROOT</key>
+				<string>iphoneos</string>
+				<key>SKIP_INSTALL</key>
+				<string>YES</string>
+				<key>VALIDATE_PRODUCT</key>
+				<string>YES</string>
+			</dict>
+			<key>isa</key>
+			<string>XCBuildConfiguration</string>
+			<key>name</key>
+			<string>Release</string>
+		</dict>
+		<key>C15A9A0E042ECC0EC10194B5</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array>
+				<string>2F044F0C673559D13DD849E7</string>
+			</array>
+			<key>isa</key>
+			<string>PBXFrameworksBuildPhase</string>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+		</dict>
+		<key>C24C96446D65EF9BACE03A86</key>
+		<dict>
+			<key>fileRef</key>
+			<string>38B6C9FD77D56B5AF4AED8ED</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>C30C3D1EFC3488F213353BD3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>38B6C9FD77D56B5AF4AED8ED</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>C3E182ECE19B1FE00D1EBFDA</key>
+		<dict>
+			<key>fileRef</key>
+			<string>53797803BD216D8CBCB4851D</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>settings</key>
+			<dict>
+				<key>COMPILER_FLAGS</key>
+				<string>-fobjc-arc</string>
+			</dict>
+		</dict>
+		<key>C491CEAC741D24B7D6B8B517</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.h</string>
+			<key>name</key>
+			<string>HLTiledNode.h</string>
+			<key>path</key>
+			<string>HLSpriteKit/HLTiledNode.h</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>C56018F890886EE1EC7B6A71</key>
+		<dict>
+			<key>fileRef</key>
+			<string>A437C7195EED6CB204C24150</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>settings</key>
+			<dict>
+				<key>COMPILER_FLAGS</key>
+				<string>-fobjc-arc</string>
+			</dict>
+		</dict>
+		<key>C6B04B931B48FAB228EB2255</key>
+		<dict>
+			<key>fileRef</key>
+			<string>9FECB121644471A3240819CC</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>settings</key>
+			<dict>
+				<key>COMPILER_FLAGS</key>
+				<string>-fobjc-arc</string>
+			</dict>
+		</dict>
+		<key>C76A6CA820D0FFCECFE1FCF7</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.h</string>
+			<key>name</key>
+			<string>HLGridNode.h</string>
+			<key>path</key>
+			<string>HLSpriteKit/HLGridNode.h</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>C7E33E51FD600722799E5058</key>
+		<dict>
+			<key>fileRef</key>
+			<string>6C6F41D5A90235A5225D8843</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>C871CF6357C2060DE98D734F</key>
+		<dict>
+			<key>fileRef</key>
+			<string>94A12EF489DB35E52B49EC7C</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>C90BAE36910986AEB8A1A0E6</key>
+		<dict>
+			<key>fileRef</key>
+			<string>8E63FE277FC6A422A21EED50</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>C96694F2D32A2E69A86D010D</key>
+		<dict>
+			<key>fileRef</key>
+			<string>6AC365DE0D53F7E59CF19252</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>CA304AF8BB75E763555D4D0D</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array>
+				<string>6CCDB90F92DE937A75497B4B</string>
+			</array>
+			<key>isa</key>
+			<string>PBXFrameworksBuildPhase</string>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+		</dict>
+		<key>CDA20528CD01BA7BAFC9F0BA</key>
+		<dict>
+			<key>fileRef</key>
+			<string>1890DAF3300D8B66CBF724FB</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>CDCB3A32B05737D22CFFE81B</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.h</string>
+			<key>name</key>
+			<string>HLScrollNode.h</string>
+			<key>path</key>
+			<string>HLSpriteKit/HLScrollNode.h</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>CE36829E5D04A408F3F986C4</key>
+		<dict>
+			<key>fileRef</key>
+			<string>FA1FC947C714655B30137273</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>CF82736486EB459C1028F567</key>
+		<dict>
+			<key>fileRef</key>
+			<string>1FFCDA244C45E2BA2C6A83B6</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>settings</key>
+			<dict>
+				<key>COMPILER_FLAGS</key>
+				<string>-fobjc-arc</string>
+			</dict>
+		</dict>
+		<key>D1BB0D301DD02C248A14284B</key>
+		<dict>
+			<key>fileRef</key>
+			<string>4BFB45A8AD962B4E2D3C0BA5</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>settings</key>
+			<dict>
+				<key>COMPILER_FLAGS</key>
+				<string>-fobjc-arc</string>
+			</dict>
+		</dict>
+		<key>D607BE0C03604B043EE37596</key>
+		<dict>
+			<key>fileRef</key>
+			<string>2F8F171B0725002DB026398B</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>settings</key>
+			<dict>
+				<key>COMPILER_FLAGS</key>
+				<string>-fobjc-arc</string>
+			</dict>
+		</dict>
+		<key>D74A5CED55DC96D640526A53</key>
+		<dict>
+			<key>fileRef</key>
+			<string>32C2A01964E798DC50CE7F10</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>settings</key>
+			<dict>
+				<key>COMPILER_FLAGS</key>
+				<string>-fobjc-arc</string>
+			</dict>
+		</dict>
+		<key>D7DBC68F29E15B7AAE8B8635</key>
+		<dict>
+			<key>fileRef</key>
+			<string>94A12EF489DB35E52B49EC7C</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>D84D61A2D4D881E816C9B88D</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>archive.ar</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>path</key>
+			<string>libPods-Tests-HLSpriteKit.a</string>
+			<key>sourceTree</key>
+			<string>BUILT_PRODUCTS_DIR</string>
+		</dict>
+		<key>D84F76A65C3F6EEE127BEE25</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AED411100D0EA098722DC2DE</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>D9BD3B19E5EA97F0D603BC54</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.h</string>
+			<key>path</key>
+			<string>Pods-HLSpriteKit-HLSpriteKit-prefix.pch</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>DA43E81EF122062328F1DB86</key>
+		<dict>
+			<key>fileRef</key>
+			<string>831908F0BFF2023313633846</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>settings</key>
+			<dict>
+				<key>COMPILER_FLAGS</key>
+				<string>-fobjc-arc</string>
+			</dict>
+		</dict>
+		<key>DB6477FADE89404CE1E3E0BA</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>text.xcconfig</string>
+			<key>name</key>
+			<string>Pods-Tests-HLSpriteKit.xcconfig</string>
+			<key>path</key>
+			<string>../Pods-Tests-HLSpriteKit/Pods-Tests-HLSpriteKit.xcconfig</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>DBA78D834AF4B7AA1B15DBFA</key>
+		<dict>
+			<key>fileRef</key>
+			<string>A6E2C1B3F5FA7C0F88ABB537</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>settings</key>
+			<dict>
+				<key>COMPILER_FLAGS</key>
+				<string>-fobjc-arc</string>
+			</dict>
+		</dict>
+		<key>DC834E76204EFE5E49BCEBAF</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>06B4024288BBAA06626E131D</string>
+				<string>4887FDB79A51156C06FA4EB0</string>
+				<string>FB0231CB7FC090EA2B202A7E</string>
+				<string>3A8840DFDD11ADEDAB59A8FE</string>
+				<string>BE6615DDFDE4BEF3D9B44D89</string>
+				<string>E73E691C6C302E8A9E3C7377</string>
+				<string>57F4D651AF2A9874D81382D5</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>name</key>
+			<string>Pods-Tests</string>
+			<key>path</key>
+			<string>Target Support Files/Pods-Tests</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>DC873B319B415ACF43CD36A5</key>
+		<dict>
+			<key>fileRef</key>
+			<string>483B066D7549CC6B7DFB6001</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>DC8AC27D18BCCC8A570D4410</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>archive.ar</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>path</key>
+			<string>libPods-HLSpriteKit.a</string>
+			<key>sourceTree</key>
+			<string>BUILT_PRODUCTS_DIR</string>
+		</dict>
+		<key>DD6B44F5059E58F78A458EAC</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.h</string>
+			<key>name</key>
+			<string>SKSpriteNode+HLSpriteNodeAdditions.h</string>
+			<key>path</key>
+			<string>HLSpriteKit/SKSpriteNode+HLSpriteNodeAdditions.h</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>DFC97968B98F805306694FEE</key>
+		<dict>
+			<key>fileRef</key>
+			<string>4BFB45A8AD962B4E2D3C0BA5</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>settings</key>
+			<dict>
+				<key>COMPILER_FLAGS</key>
+				<string>-fobjc-arc</string>
+			</dict>
+		</dict>
+		<key>E07F6091D1187EA240FCC311</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.h</string>
+			<key>name</key>
+			<string>SKNode+HLGestureTarget.h</string>
+			<key>path</key>
+			<string>HLSpriteKit/SKNode+HLGestureTarget.h</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>E1FAE53CA841E669A853C1F3</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.objc</string>
+			<key>name</key>
+			<string>HLTextureStore.m</string>
+			<key>path</key>
+			<string>HLSpriteKit/HLTextureStore.m</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>E1FFF3F77F077B64AF643E02</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.objc</string>
+			<key>name</key>
+			<string>HLComponentNode.m</string>
+			<key>path</key>
+			<string>HLSpriteKit/HLComponentNode.m</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>E2A73ACB20C9146B74B2029F</key>
+		<dict>
+			<key>fileRef</key>
+			<string>88A0875B8D3887C5382AE869</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>E3F7144F0D2F478089F8CF79</key>
+		<dict>
+			<key>fileRef</key>
+			<string>1981FBC56604BED9F51E2524</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>settings</key>
+			<dict>
+				<key>COMPILER_FLAGS</key>
+				<string>-fobjc-arc</string>
+			</dict>
+		</dict>
+		<key>E555E613BEB2CC0465AE6DA0</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.h</string>
+			<key>name</key>
+			<string>HLTableLayoutManager.h</string>
+			<key>path</key>
+			<string>HLSpriteKit/HLTableLayoutManager.h</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>E5852E543506371B52B282D4</key>
+		<dict>
+			<key>fileRef</key>
+			<string>A6E2C1B3F5FA7C0F88ABB537</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>settings</key>
+			<dict>
+				<key>COMPILER_FLAGS</key>
+				<string>-fobjc-arc</string>
+			</dict>
+		</dict>
+		<key>E67981177AC4840E01FBE3ED</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array>
+				<string>204E7B4966B9A93C1C99136D</string>
+				<string>FD4976C9C7BD2E928EEEF388</string>
+				<string>55AF7D82000B5E581F893F33</string>
+				<string>D607BE0C03604B043EE37596</string>
+				<string>25B74E9F56A4CF681D9EC76D</string>
+				<string>48DC0DE6F51CEB0695860B1D</string>
+				<string>25B3AF881EA9EAB06AD9E7BE</string>
+				<string>BE51DD721755C284B31BD254</string>
+				<string>E99B97E925B54F018831459B</string>
+				<string>00219CF91C31D34B05CD8F7B</string>
+				<string>DA43E81EF122062328F1DB86</string>
+				<string>786CEF2F3838574F1A6FAE2F</string>
+				<string>9E8AD6F96490D038D3389D53</string>
+				<string>69200A39EF45F32128CA77DF</string>
+				<string>E5852E543506371B52B282D4</string>
+				<string>490F7D7ECFE6F599AC701A74</string>
+				<string>F00AB4353500C92E30BBFC14</string>
+				<string>5164788323BADB6D8F8E99FD</string>
+				<string>5BD8E599359E1A829D85C1A2</string>
+				<string>0729E65EF0B3A1EBBB6F624E</string>
+				<string>5D112B75BD479C4E1BA05FC0</string>
+				<string>B69EB26EE2B24E33D8118CE3</string>
+				<string>075408D362EB1F0A7616A4D8</string>
+				<string>DFC97968B98F805306694FEE</string>
+				<string>187D6461465E27F6920460E0</string>
+			</array>
+			<key>isa</key>
+			<string>PBXSourcesBuildPhase</string>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+		</dict>
+		<key>E6E4AC973BFEE4B9C11299F2</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.h</string>
+			<key>name</key>
+			<string>HLItemsNode.h</string>
+			<key>path</key>
+			<string>HLSpriteKit/HLItemsNode.h</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>E73E691C6C302E8A9E3C7377</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>text.xcconfig</string>
+			<key>path</key>
+			<string>Pods-Tests.debug.xcconfig</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>E750AE0F380D9B056E8BB477</key>
+		<dict>
+			<key>baseConfigurationReference</key>
+			<string>1BBC6BD6D889361256F302DD</string>
+			<key>buildSettings</key>
+			<dict>
+				<key>ALWAYS_SEARCH_USER_PATHS</key>
+				<string>NO</string>
+				<key>COPY_PHASE_STRIP</key>
+				<string>YES</string>
+				<key>DSTROOT</key>
+				<string>/tmp/xcodeproj.dst</string>
+				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
+				<string>YES</string>
+				<key>GCC_PREFIX_HEADER</key>
+				<string>Target Support Files/Pods-Tests-HLSpriteKit/Pods-Tests-HLSpriteKit-prefix.pch</string>
+				<key>INSTALL_PATH</key>
+				<string>$(BUILT_PRODUCTS_DIR)</string>
+				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
+				<string>7.0</string>
+				<key>OTHER_CFLAGS</key>
+				<array>
+					<string>-DNS_BLOCK_ASSERTIONS=1</string>
+					<string>$(inherited)</string>
+				</array>
+				<key>OTHER_CPLUSPLUSFLAGS</key>
+				<array>
+					<string>-DNS_BLOCK_ASSERTIONS=1</string>
+					<string>$(inherited)</string>
+				</array>
+				<key>OTHER_LDFLAGS</key>
+				<string></string>
+				<key>OTHER_LIBTOOLFLAGS</key>
+				<string></string>
+				<key>PRODUCT_NAME</key>
+				<string>$(TARGET_NAME)</string>
+				<key>PUBLIC_HEADERS_FOLDER_PATH</key>
+				<string>$(TARGET_NAME)</string>
+				<key>SDKROOT</key>
+				<string>iphoneos</string>
+				<key>SKIP_INSTALL</key>
+				<string>YES</string>
+				<key>VALIDATE_PRODUCT</key>
+				<string>YES</string>
+			</dict>
+			<key>isa</key>
+			<string>XCBuildConfiguration</string>
+			<key>name</key>
+			<string>Release</string>
+		</dict>
+		<key>E894386F0C6785D8A62C966F</key>
+		<dict>
+			<key>fileRef</key>
+			<string>4F42C544FAF65FACFB1EA45C</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>settings</key>
+			<dict>
+				<key>COMPILER_FLAGS</key>
+				<string>-fobjc-arc</string>
+			</dict>
+		</dict>
+		<key>E97B7CB734E6C7258561A063</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.h</string>
+			<key>name</key>
+			<string>SKLabelNode+HLLabelNodeAdditions.h</string>
+			<key>path</key>
+			<string>HLSpriteKit/SKLabelNode+HLLabelNodeAdditions.h</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>E99B97E925B54F018831459B</key>
+		<dict>
+			<key>fileRef</key>
+			<string>99743330BF6FC06872B6CDEA</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>settings</key>
+			<dict>
+				<key>COMPILER_FLAGS</key>
+				<string>-fobjc-arc</string>
+			</dict>
+		</dict>
+		<key>E9E8B11D5A1F6B46460223FA</key>
+		<dict>
+			<key>fileRef</key>
+			<string>88A0875B8D3887C5382AE869</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>ED3F05AC30D6B781079E8504</key>
+		<dict>
+			<key>fileRef</key>
+			<string>BEB048C59CC7BD4C65965BAB</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>F00AB4353500C92E30BBFC14</key>
+		<dict>
+			<key>fileRef</key>
+			<string>E1FAE53CA841E669A853C1F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>settings</key>
+			<dict>
+				<key>COMPILER_FLAGS</key>
+				<string>-fobjc-arc</string>
+			</dict>
+		</dict>
+		<key>F0B7B8D2DA21E95DCF55CBF3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>7BAE5FE542D8D1FD5909A00A</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>F0CB3E5E185F0909055DD677</key>
+		<dict>
+			<key>fileRef</key>
+			<string>101349AB339F4CA16839CA98</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>F43B45705C41E173ED527A8B</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>B932C624158FEC082B3FFEB4</string>
+				<string>DC834E76204EFE5E49BCEBAF</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>name</key>
+			<string>Targets Support Files</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>F6D3611238F420CCC4B1EF6C</key>
+		<dict>
+			<key>buildConfigurations</key>
+			<array>
+				<string>9DC3B1BC1A8AC904FB1EFF2D</string>
+				<string>394BEAFBBABC02480B1652C3</string>
+			</array>
+			<key>defaultConfigurationIsVisible</key>
+			<string>0</string>
+			<key>defaultConfigurationName</key>
+			<string>Release</string>
+			<key>isa</key>
+			<string>XCConfigurationList</string>
+		</dict>
+		<key>F6FC72D9A2B2D7BF0473284F</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array>
+				<string>1FA40C14A72E8D89721A40A6</string>
+				<string>D7DBC68F29E15B7AAE8B8635</string>
+				<string>B3B3AACC4082F3B292A3D290</string>
+			</array>
+			<key>isa</key>
+			<string>PBXFrameworksBuildPhase</string>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+		</dict>
+		<key>F71B2EDCC43D5D874AC080BF</key>
+		<dict>
+			<key>fileRef</key>
+			<string>E555E613BEB2CC0465AE6DA0</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>F7CF3163C05C9EFDC354D5A7</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>archive.ar</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>path</key>
+			<string>libPods-Tests.a</string>
+			<key>sourceTree</key>
+			<string>BUILT_PRODUCTS_DIR</string>
+		</dict>
+		<key>F8DE307826A08DFCFB8A1FE8</key>
+		<dict>
+			<key>fileRef</key>
+			<string>101349AB339F4CA16839CA98</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>FA1FC947C714655B30137273</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.h</string>
+			<key>name</key>
+			<string>HLToolbarNode.h</string>
+			<key>path</key>
+			<string>HLSpriteKit/HLToolbarNode.h</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>FAFB8F66163EC7DF8D2EF164</key>
+		<dict>
+			<key>fileRef</key>
+			<string>CDCB3A32B05737D22CFFE81B</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>FB0231CB7FC090EA2B202A7E</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.objc</string>
+			<key>path</key>
+			<string>Pods-Tests-dummy.m</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>FCCE438A8B0BAC81A23DEE05</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.objc</string>
+			<key>name</key>
+			<string>HLMenuNode.m</string>
+			<key>path</key>
+			<string>HLSpriteKit/HLMenuNode.m</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>FD4976C9C7BD2E928EEEF388</key>
+		<dict>
+			<key>fileRef</key>
+			<string>83C82C0C5EFA075466024558</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>settings</key>
+			<dict>
+				<key>COMPILER_FLAGS</key>
+				<string>-fobjc-arc</string>
+			</dict>
+		</dict>
+		<key>FF804FCADA9B587B19A917E5</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.h</string>
+			<key>name</key>
+			<string>SKNode+HLLayoutManager.h</string>
+			<key>path</key>
+			<string>HLSpriteKit/SKNode+HLLayoutManager.h</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
 		</dict>
 	</dict>
 	<key>rootObject</key>
-	<string>597B475290753CE60C57CD36</string>
+	<string>19D509A9B8B8C0D8F5F6D99A</string>
 </dict>
 </plist>

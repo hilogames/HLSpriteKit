@@ -20,7 +20,7 @@ enum {
 @implementation HLGridNode
 {
   SKSpriteNode *_backgroundNode;
-  HLItemsNode *_itemsNode;
+  HLItemsNode *_squaresNode;
 
   // Primary layout-affecting parameters.
   //
@@ -77,8 +77,8 @@ enum {
     itemPrototypeNode.highlightColor = _highlightColor;
     itemPrototypeNode.enabledAlpha = _enabledAlpha;
     itemPrototypeNode.disabledAlpha = _disabledAlpha;
-    _itemsNode = [[HLItemsNode alloc] initWithItemCount:squareCount itemPrototype:itemPrototypeNode];
-    [self addChild:_itemsNode];
+    _squaresNode = [[HLItemsNode alloc] initWithItemCount:squareCount itemPrototype:itemPrototypeNode];
+    [self addChild:_squaresNode];
 
     [self HL_layoutXY];
     [self HL_layoutZ];
@@ -127,7 +127,7 @@ enum {
 
 - (void)setContent:(NSArray *)contentNodes
 {
-  [_itemsNode setContent:contentNodes];
+  [_squaresNode setContent:contentNodes];
 }
 
 - (void)setContent:(SKNode *)contentNode forSquare:(int)squareIndex
@@ -135,7 +135,7 @@ enum {
   if (squareIndex < 0 || squareIndex >= _squareCount) {
     [NSException raise:@"HLGridNodeInvalidIndex" format:@"Square index %d out of range.", squareIndex];
   }
-  NSArray *squareNodes = _itemsNode.itemNodes;
+  NSArray *squareNodes = _squaresNode.itemNodes;
   HLBackdropItemNode *squareNode = squareNodes[(NSUInteger)squareIndex];
   squareNode.content = contentNode;
 }
@@ -145,7 +145,7 @@ enum {
   if (squareIndex < 0 || squareIndex >= _squareCount) {
     [NSException raise:@"HLGridNodeInvalidIndex" format:@"Square index %d out of range.", squareIndex];
   }
-  NSArray *squareNodes = _itemsNode.itemNodes;
+  NSArray *squareNodes = _squaresNode.itemNodes;
   HLBackdropItemNode *squareNode = squareNodes[(NSUInteger)squareIndex];
   return squareNode.content;
 }
@@ -155,7 +155,7 @@ enum {
   if (squareIndex < 0 || squareIndex >= _squareCount) {
     [NSException raise:@"HLGridNodeInvalidIndex" format:@"Square index %d out of range.", squareIndex];
   }
-  NSArray *squareNodes = _itemsNode.itemNodes;
+  NSArray *squareNodes = _squaresNode.itemNodes;
   HLBackdropItemNode *squareNode = squareNodes[(NSUInteger)squareIndex];
   return squareNode;
 }
@@ -220,28 +220,10 @@ enum {
   return _backgroundNode.color;
 }
 
-- (void)setEnabledAlpha:(CGFloat)enabledAlpha
-{
-  _enabledAlpha = enabledAlpha;
-  NSArray *squareNodes = _itemsNode.itemNodes;
-  for (HLBackdropItemNode *squareNode in squareNodes) {
-    squareNode.enabledAlpha = _enabledAlpha;
-  }
-}
-
-- (void)setDisabledAlpha:(CGFloat)disabledAlpha
-{
-  _disabledAlpha = disabledAlpha;
-  NSArray *squareNodes = _itemsNode.itemNodes;
-  for (HLBackdropItemNode *squareNode in squareNodes) {
-    squareNode.disabledAlpha = _disabledAlpha;
-  }
-}
-
 - (void)setSquareColor:(SKColor *)squareColor
 {
   _squareColor = squareColor;
-  NSArray *squareNodes = _itemsNode.itemNodes;
+  NSArray *squareNodes = _squaresNode.itemNodes;
   for (HLBackdropItemNode *squareNode in squareNodes) {
     squareNode.normalColor = _squareColor;
   }
@@ -250,9 +232,27 @@ enum {
 - (void)setHighlightColor:(SKColor *)highlightColor
 {
   _highlightColor = highlightColor;
-  NSArray *squareNodes = _itemsNode.itemNodes;
+  NSArray *squareNodes = _squaresNode.itemNodes;
   for (HLBackdropItemNode *squareNode in squareNodes) {
     squareNode.highlightColor = _highlightColor;
+  }
+}
+
+- (void)setEnabledAlpha:(CGFloat)enabledAlpha
+{
+  _enabledAlpha = enabledAlpha;
+  NSArray *squareNodes = _squaresNode.itemNodes;
+  for (HLBackdropItemNode *squareNode in squareNodes) {
+    squareNode.enabledAlpha = _enabledAlpha;
+  }
+}
+
+- (void)setDisabledAlpha:(CGFloat)disabledAlpha
+{
+  _disabledAlpha = disabledAlpha;
+  NSArray *squareNodes = _squaresNode.itemNodes;
+  for (HLBackdropItemNode *squareNode in squareNodes) {
+    squareNode.disabledAlpha = _disabledAlpha;
   }
 }
 
@@ -261,7 +261,7 @@ enum {
   if (squareIndex < 0 || squareIndex >= _squareCount) {
     [NSException raise:@"HLGridNodeInvalidIndex" format:@"Square index %d out of range.", squareIndex];
   }
-  return ((HLBackdropItemNode *)_itemsNode.itemNodes[squareIndex]).enabled;
+  return ((HLBackdropItemNode *)_squaresNode.itemNodes[squareIndex]).enabled;
 }
 
 - (void)setEnabled:(BOOL)enabled forSquare:(int)squareIndex
@@ -269,7 +269,7 @@ enum {
   if (squareIndex < 0 || squareIndex >= _squareCount) {
     [NSException raise:@"HLGridNodeInvalidIndex" format:@"Square index %d out of range.", squareIndex];
   }
-  ((HLBackdropItemNode *)_itemsNode.itemNodes[squareIndex]).enabled = enabled;
+  ((HLBackdropItemNode *)_squaresNode.itemNodes[squareIndex]).enabled = enabled;
 }
 
 - (BOOL)highlightForSquare:(int)squareIndex
@@ -277,7 +277,7 @@ enum {
   if (squareIndex < 0 || squareIndex >= _squareCount) {
     [NSException raise:@"HLGridNodeInvalidIndex" format:@"Square index %d out of range.", squareIndex];
   }
-  return ((HLBackdropItemNode *)_itemsNode.itemNodes[squareIndex]).highlight;
+  return ((HLBackdropItemNode *)_squaresNode.itemNodes[squareIndex]).highlight;
 }
 
 - (void)setHighlight:(BOOL)highlight forSquare:(int)squareIndex
@@ -285,7 +285,7 @@ enum {
   if (squareIndex < 0 || squareIndex >= _squareCount) {
     [NSException raise:@"HLGridNodeInvalidIndex" format:@"Square index %d out of range.", squareIndex];
   }
-  ((HLBackdropItemNode *)_itemsNode.itemNodes[squareIndex]).highlight = highlight;
+  ((HLBackdropItemNode *)_squaresNode.itemNodes[squareIndex]).highlight = highlight;
 }
 
 - (void)setHighlight:(BOOL)finalHighlight
@@ -297,20 +297,20 @@ enum {
   if (squareIndex < 0 || squareIndex >= _squareCount) {
     [NSException raise:@"HLGridNodeInvalidIndex" format:@"Square index %d out of range.", squareIndex];
   }
-  [(HLBackdropItemNode *)_itemsNode.itemNodes[squareIndex] setHighlight:finalHighlight
-                                                             blinkCount:blinkCount
-                                                      halfCycleDuration:halfCycleDuration
-                                                             completion:completion];
+  [(HLBackdropItemNode *)_squaresNode.itemNodes[squareIndex] setHighlight:finalHighlight
+                                                               blinkCount:blinkCount
+                                                        halfCycleDuration:halfCycleDuration
+                                                               completion:completion];
 }
 
 - (int)selectionSquare
 {
-  return _itemsNode.selectionItem;
+  return _squaresNode.selectionItem;
 }
 
 - (void)setSelectionForSquare:(int)squareIndex
 {
-  [_itemsNode setSelectionForItem:squareIndex];
+  [_squaresNode setSelectionForItem:squareIndex];
 }
 
 - (void)setSelectionForSquare:(int)squareIndex
@@ -318,24 +318,24 @@ enum {
             halfCycleDuration:(NSTimeInterval)halfCycleDuration
                    completion:(void (^)(void))completion
 {
-  [_itemsNode setSelectionForItem:squareIndex
-                       blinkCount:blinkCount
-                halfCycleDuration:halfCycleDuration
-                       completion:completion];
+  [_squaresNode setSelectionForItem:squareIndex
+                         blinkCount:blinkCount
+                  halfCycleDuration:halfCycleDuration
+                         completion:completion];
 }
 
 - (void)clearSelection
 {
-  [_itemsNode clearSelection];
+  [_squaresNode clearSelection];
 }
 
 - (void)clearSelectionBlinkCount:(int)blinkCount
                halfCycleDuration:(NSTimeInterval)halfCycleDuration
                       completion:(void (^)(void))completion
 {
-  [_itemsNode clearSelectionBlinkCount:blinkCount
-                     halfCycleDuration:halfCycleDuration
-                            completion:completion];
+  [_squaresNode clearSelectionBlinkCount:blinkCount
+                       halfCycleDuration:halfCycleDuration
+                              completion:completion];
 }
 
 #pragma mark -
@@ -395,7 +395,7 @@ enum {
                                        (1.0f - anchorPoint.y) * size.height - _backgroundBorderSize);
 
   // Arrange square nodes in grid.
-  NSArray *squareNodes = _itemsNode.itemNodes;
+  NSArray *squareNodes = _squaresNode.itemNodes;
   for (int y = 0; y < gridHeight; ++y) {
 
     int squaresInRow;
@@ -426,8 +426,8 @@ enum {
 {
   CGFloat zPositionLayerIncrement = self.zPositionScale / HLGridNodeZPositionLayerCount;
   _backgroundNode.zPosition = HLGridNodeZPositionLayerBackground * zPositionLayerIncrement;
-  _itemsNode.zPosition = HLGridNodeZPositionLayerSquares * zPositionLayerIncrement;
-  _itemsNode.zPositionScale = zPositionLayerIncrement;
+  _squaresNode.zPosition = HLGridNodeZPositionLayerSquares * zPositionLayerIncrement;
+  _squaresNode.zPositionScale = zPositionLayerIncrement;
 }
 
 @end

@@ -8,6 +8,8 @@
 
 #import "HLItemNode.h"
 
+#import "HLItemContentNode.h"
+
 @implementation HLItemNode
 
 - (instancetype)init
@@ -66,7 +68,6 @@
     [oldContentNode removeFromParent];
   }
   if (contentNode) {
-    [self addChild:contentNode];
     contentNode.name = @"content";
     contentNode.zPosition = 0.0f;
     if ([contentNode isKindOfClass:[HLComponentNode class]]) {
@@ -80,7 +81,13 @@
         [(SKNode <HLItemContentNode> *)contentNode hlItemContentSetHighlight:_highlight];
       }
     }
+    [self addChild:contentNode];
   }
+}
+
+- (SKNode *)content
+{
+  return [self childNodeWithName:@"content"];
 }
 
 - (void)setEnabled:(BOOL)enabled
@@ -94,6 +101,20 @@
   }
 }
 
+- (void)setEnabled:(BOOL)enabled contentDidSetEnabled:(BOOL *)contentDidSetEnabled
+{
+  _enabled = enabled;
+  SKNode *contentNode = [self childNodeWithName:@"content"];
+  if (contentNode
+      && [contentNode conformsToProtocol:@protocol(HLItemContentNode)]
+      && [contentNode respondsToSelector:@selector(hlItemContentSetEnabled:)]) {
+    [(SKNode <HLItemContentNode> *)contentNode hlItemContentSetEnabled:enabled];
+    *contentDidSetEnabled = YES;
+  } else {
+    *contentDidSetEnabled = NO;
+  }
+}
+
 - (void)setHighlight:(BOOL)highlight
 {
   _highlight = highlight;
@@ -102,6 +123,20 @@
       && [contentNode conformsToProtocol:@protocol(HLItemContentNode)]
       && [contentNode respondsToSelector:@selector(hlItemContentSetHighlight:)]) {
     [(SKNode <HLItemContentNode> *)contentNode hlItemContentSetHighlight:highlight];
+  }
+}
+
+- (void)setHighlight:(BOOL)highlight contentDidSetHighlight:(BOOL *)contentDidSetHighlight
+{
+  _highlight = highlight;
+  SKNode *contentNode = [self childNodeWithName:@"content"];
+  if (contentNode
+      && [contentNode conformsToProtocol:@protocol(HLItemContentNode)]
+      && [contentNode respondsToSelector:@selector(hlItemContentSetHighlight:)]) {
+    [(SKNode <HLItemContentNode> *)contentNode hlItemContentSetHighlight:highlight];
+    *contentDidSetHighlight = YES;
+  } else {
+    *contentDidSetHighlight = NO;
   }
 }
 
@@ -119,6 +154,27 @@
                                                               blinkCount:blinkCount
                                                        halfCycleDuration:halfCycleDuration
                                                               completion:completion];
+  }
+}
+
+- (void)setHighlight:(BOOL)finalHighlight
+          blinkCount:(int)blinkCount
+   halfCycleDuration:(NSTimeInterval)halfCycleDuration
+          completion:(void (^)(void))completion
+contentDidSetHighlight:(BOOL *)contentDidSetHighlight
+{
+  _highlight = finalHighlight;
+  SKNode *contentNode = [self childNodeWithName:@"content"];
+  if (contentNode
+      && [contentNode conformsToProtocol:@protocol(HLItemContentNode)]
+      && [contentNode respondsToSelector:@selector(hlItemContentSetHighlight:blinkCount:halfCycleDuration:completion:)]) {
+    [(SKNode <HLItemContentNode> *)contentNode hlItemContentSetHighlight:finalHighlight
+                                                              blinkCount:blinkCount
+                                                       halfCycleDuration:halfCycleDuration
+                                                              completion:completion];
+    *contentDidSetHighlight = YES;
+  } else {
+    *contentDidSetHighlight = NO;
   }
 }
 
@@ -180,9 +236,25 @@ enum {
   return copy;
 }
 
+- (void)setContent:(SKNode *)contentNode
+{
+  [super setContent:contentNode];
+  if (contentNode) {
+    if (self.enabled) {
+      contentNode.alpha = _enabledAlpha;
+    } else {
+      contentNode.alpha = _disabledAlpha;
+    }
+  }
+}
+
 - (void)setEnabled:(BOOL)enabled
 {
-  [super setEnabled:enabled];
+  BOOL contentDidSetEnabled;
+  [super setEnabled:enabled contentDidSetEnabled:&contentDidSetEnabled];
+  if (contentDidSetEnabled) {
+    return;
+  }
   SKSpriteNode *backdropNode = (SKSpriteNode *)[self childNodeWithName:@"backdrop"];
   if (enabled) {
     backdropNode.alpha = _enabledAlpha;
@@ -190,17 +262,24 @@ enum {
     backdropNode.alpha = _disabledAlpha;
   }
   SKSpriteNode *contentNode = (SKSpriteNode *)[self childNodeWithName:@"content"];
-  if (enabled) {
-    contentNode.alpha = _enabledAlpha;
-  } else {
-    contentNode.alpha = _disabledAlpha;
+  if (contentNode) {
+    if (enabled) {
+      contentNode.alpha = _enabledAlpha;
+    } else {
+      contentNode.alpha = _disabledAlpha;
+    }
   }
 }
 
 - (void)setHighlight:(BOOL)highlight
 {
-  [super setHighlight:highlight];
+  BOOL contentDidSetHighlight;
+  [super setHighlight:highlight contentDidSetHighlight:&contentDidSetHighlight];
+  if (contentDidSetHighlight) {
+    return;
+  }
   SKSpriteNode *backdropNode = (SKSpriteNode *)[self childNodeWithName:@"backdrop"];
+  [backdropNode removeActionForKey:@"setHighlight"];
   if (highlight) {
     backdropNode.color = _highlightColor;
   } else {
@@ -213,20 +292,28 @@ enum {
    halfCycleDuration:(NSTimeInterval)halfCycleDuration
           completion:(void (^)(void))completion
 {
+  BOOL contentDidSetHighlight;
   BOOL startingHighlight = self.highlight;
-  [super setHighlight:finalHighlight blinkCount:blinkCount halfCycleDuration:halfCycleDuration completion:completion];
-  
+  [super setHighlight:finalHighlight
+           blinkCount:blinkCount
+    halfCycleDuration:halfCycleDuration
+           completion:completion
+contentDidSetHighlight:&contentDidSetHighlight];
+  if (contentDidSetHighlight) {
+    return;
+  }
+
   SKSpriteNode *backdropNode = (SKSpriteNode *)[self childNodeWithName:@"backdrop"];
 
   [backdropNode removeActionForKey:@"setHighlight"];
-  
+
   SKAction *blinkIn;
   blinkIn = [SKAction colorizeWithColor:(startingHighlight ? _normalColor : _highlightColor) colorBlendFactor:1.0f duration:halfCycleDuration];
   blinkIn.timingMode = (startingHighlight ? SKActionTimingEaseOut : SKActionTimingEaseIn);
   SKAction *blinkOut;
   blinkOut = [SKAction colorizeWithColor:(startingHighlight ? _highlightColor : _normalColor) colorBlendFactor:1.0f duration:halfCycleDuration];
   blinkOut.timingMode = (startingHighlight ? SKActionTimingEaseIn : SKActionTimingEaseOut);
-  
+
   NSMutableArray *blinkActions = [NSMutableArray array];
   for (int b = 0; b < blinkCount; ++b) {
     [blinkActions addObject:blinkIn];
@@ -238,7 +325,7 @@ enum {
   if (completion) {
     [blinkActions addObject:[SKAction runBlock:completion]];
   }
-  
+
   [backdropNode runAction:[SKAction sequence:blinkActions] withKey:@"setHighlight"];
 }
 
@@ -278,6 +365,10 @@ enum {
   if (self.enabled) {
     SKSpriteNode *backdropNode = (SKSpriteNode *)[self childNodeWithName:@"backdrop"];
     backdropNode.alpha = enabledAlpha;
+    SKSpriteNode *contentNode = (SKSpriteNode *)[self childNodeWithName:@"content"];
+    if (contentNode) {
+      contentNode.alpha = enabledAlpha;
+    }
   }
 }
 
@@ -287,6 +378,10 @@ enum {
   if (!self.enabled) {
     SKSpriteNode *backdropNode = (SKSpriteNode *)[self childNodeWithName:@"backdrop"];
     backdropNode.alpha = disabledAlpha;
+    SKSpriteNode *contentNode = (SKSpriteNode *)[self childNodeWithName:@"content"];
+    if (contentNode) {
+      contentNode.alpha = disabledAlpha;
+    }
   }
 }
 

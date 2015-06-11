@@ -11,37 +11,6 @@
 #import "HLComponentNode.h"
 
 /**
- A interface that allows special interaction when implemented by the content node of an
- `HLItemNode`.
-
- In particular, an `HLItemContentNode` will be notified about state changes of the
- `HLItemNode`.
- */
-@protocol HLItemContentNode <NSObject>
-
-@optional
-
-/**
- Called when this content node's `HLItemNode` changes enabled state.
- */
-- (void)hlItemContentSetEnabled:(BOOL)enabled;
-
-/**
- Called when this content node's `HLItemNode` changes highlight state.
- */
-- (void)hlItemContentSetHighlight:(BOOL)highlight;
-
-/**
- Called when this content node's `HLItemNode` changes highlight state with animation.
- */
-- (void)hlItemContentSetHighlight:(BOOL)finalHighlight
-                       blinkCount:(int)blinkCount
-                halfCycleDuration:(NSTimeInterval)halfCycleDuration
-                       completion:(void(^)(void))completion;
-
-@end
-
-/**
  A base class defining an interface (and simple implementation) for an "item" in a
  collection of items.
 
@@ -80,61 +49,95 @@
 
  Default value `YES`.
 
- Item nodes, and their content nodes, typically indicate enabled state visually.
+ The item node and/or the item content node will show enabled state visually.  The
+ base-class implementation is designed to enforce a behavior for the entire class
+ hierarchy: If the content node can set itself enabled, then it always will, and the item
+ node probably will not do anything additional.  The item content node's visual behavior,
+ in other words, overrides the item node.
 
- This base-class implementation checks the content node, if set, to see if it conforms to
- `HLItemContentNode` implementing `hlItemContentSetEnabled`, and calls it if so.
-
- A derived item node can decide for itself how to indicate enabled state.
- 
- @bug Does there need to be a way for a derived class to set the enabled state without
-      calling content node code?
+ The implementation, therefore, checks the content node (if any) to see if it conforms to
+ `HLItemContentNode` implementing `hlItemContentSetEnabled`, and calls it if so.  Derived
+ classes should probably call `[super setEnabled:contentDidSetEnabled:]` (rather than
+ `[super setEnabled:]`) because then they can skip their own visual configuration if the
+ content responded.
  */
 @property (nonatomic, assign) BOOL enabled;
+
+/**
+ Sets the enabled state of the item and returns whether or not the content node was called
+ to set its own enabled effect.
+
+ Considered a protected method: Should only be called by derived classes.
+
+ See notes in property `enabled`.
+ */
+- (void)setEnabled:(BOOL)enabled contentDidSetEnabled:(BOOL *)contentDidSetEnabled;
 
 /**
  The highlight state of the item.
 
  Default value `NO`.
 
- Item nodes, and their content nodes, typically indicate highlight state visually.
+ The item node and/or the item content node will show highlight state visually.  The
+ base-class implementation is designed to enforce a behavior for the entire class
+ hierarchy: If the content node can set itself highlighted, then it always will, and the
+ item node probably will not do anything additional.  The item content node's visual
+ behavior, in other words, overrides the item node.
 
- This base-class implementation checks the content node, if set, to see if it conforms to
+ The implementation, therefore, checks the content node (if any) to see if it conforms to
  `HLItemContentNode` implementing `hlItemContentSetHighlight`, and calls it if so.
-
- A derived item node can decide for itself how to indicate highlight state.  Calling this
- base class implementation is optional.
-
- @bug Does there need to be a way for a derived class to set the highlight state without
-      calling content node code?
+ Derived classes should probably call `[super setHighlight:contentDidSetHighlight:]`
+ (rather than `[super setHighlight:]`) because then they can skip their own visual
+ configuration if the content responded.
  */
 @property (nonatomic, assign) BOOL highlight;
 
 /**
+ Sets the highlight state of the item and returns whether or not the content node was
+ called to set its own highlight effect.
+
+ Considered a protected method: Should only be called by derived classes.
+ 
+ See notes in property `highlight`.
+ */
+- (void)setHighlight:(BOOL)highlight contentDidSetHighlight:(BOOL *)contentDidSetHighlight;
+
+/**
  Sets the highlight state of the item with animation.
- 
+
  This base-class implementation checks the content node, if set, to see if it conforms to
- `HLItemContentNode` implementing `hlItemContentSetHighlight:blinkCount:halfCycleDuration:completion:`,
- and calls it if so.
- 
+ `HLItemContentNode` implementing
+ `hlItemContentSetHighlight:blinkCount:halfCycleDuration:completion:`, and calls it if so.
+
  @param finalHighlight The intended highlight value for the square when the animation is
                       complete.
- 
+
  @param blinkCount The number of times the highlight value will cycle from its current
                    value to the final value.
- 
+
  @param halfCycleDuration The amount of time it takes to cycle the highlight during a
                           blink; a full blink will be completed in twice this duration.
- 
- @param completion A block that will be run when the animation is complete.
 
- @bug Does there need to be a way for a derived class to set the highlight state without
-      calling content node code?
+ @param completion A block that will be run when the animation is complete.
  */
 - (void)setHighlight:(BOOL)finalHighlight
           blinkCount:(int)blinkCount
    halfCycleDuration:(NSTimeInterval)halfCycleDuration
           completion:(void(^)(void))completion;
+
+/**
+ Sets the highlight state of the item with animation, and returns whether or not the
+ content node was called to set its own highlight effect.
+
+ Considered a protected method: Should only be called by derived classes.
+ 
+ See notes in property `highlight`.
+ */
+- (void)setHighlight:(BOOL)finalHighlight
+          blinkCount:(int)blinkCount
+   halfCycleDuration:(NSTimeInterval)halfCycleDuration
+          completion:(void(^)(void))completion
+contentDidSetHighlight:(BOOL *)contentDidSetHighlight;
 
 @end
 
