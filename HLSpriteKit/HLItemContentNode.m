@@ -94,3 +94,90 @@ enum {
 }
 
 @end
+
+enum {
+  HLItemContentFrontHighlightNodeZPositionLayerContent = 0,
+  HLItemContentFrontHighlightNodeZPositionLayerFrontHighlight,
+  HLItemContentFrontHighlightNodeZPositionLayerCount
+};
+
+@implementation HLItemContentFrontHighlightNode
+{
+  SKNode *_frontHighlightNode;
+}
+
+- (instancetype)initWithContentNode:(SKNode *)contentNode frontHighlightNode:(SKNode *)frontHighlightNode
+{
+  self = [super init];
+  if (self) {
+    contentNode.name = @"content";
+    [self addChild:contentNode];
+    frontHighlightNode.name = @"frontHighlight";
+    _frontHighlightNode = frontHighlightNode;
+    [self HL_layoutZ];
+  }
+  return self;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+  self = [super initWithCoder:aDecoder];
+  if (self) {
+    _frontHighlightNode = [aDecoder decodeObjectForKey:@"frontHighlightNode"];
+  }
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+  [super encodeWithCoder:aCoder];
+  [aCoder encodeObject:_frontHighlightNode forKey:@"frontHighlightNode"];
+}
+
+- (instancetype)copyWithZone:(NSZone *)zone
+{
+  HLItemContentFrontHighlightNode *copy = [super copyWithZone:zone];
+  if (copy) {
+    if (_frontHighlightNode.parent) {
+      copy->_frontHighlightNode = [copy childNodeWithName:@"frontHighlightNode"];
+    } else {
+      copy->_frontHighlightNode = [_frontHighlightNode copy];
+    }
+  }
+  return copy;
+}
+
+- (CGSize)size
+{
+  SKNode *contentNode = [self childNodeWithName:@"content"];
+  return [(id)contentNode size];
+}
+
+- (void)setZPositionScale:(CGFloat)zPositionScale
+{
+  [super setZPositionScale:zPositionScale];
+  [self HL_layoutZ];
+}
+
+- (void)hlItemContentSetHighlight:(BOOL)highlight
+{
+  if (highlight) {
+    if (!_frontHighlightNode.parent) {
+      [self addChild:_frontHighlightNode];
+    }
+  } else {
+    if (_frontHighlightNode.parent) {
+      [_frontHighlightNode removeFromParent];
+    }
+  }
+}
+
+- (void)HL_layoutZ
+{
+  CGFloat zPositionLayerIncrement = self.zPositionScale / HLItemContentFrontHighlightNodeZPositionLayerCount;
+  SKNode *contentNode = [self childNodeWithName:@"content"];
+  contentNode.zPosition = HLItemContentFrontHighlightNodeZPositionLayerContent * zPositionLayerIncrement;
+  _frontHighlightNode.zPosition = HLItemContentFrontHighlightNodeZPositionLayerFrontHighlight * zPositionLayerIncrement;
+}
+
+@end

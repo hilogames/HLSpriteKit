@@ -97,7 +97,7 @@
  called to set its own highlight effect.
 
  Considered a protected method: Should only be called by derived classes.
- 
+
  See notes in property `highlight`.
  */
 - (void)setHighlight:(BOOL)highlight contentDidSetHighlight:(BOOL *)contentDidSetHighlight;
@@ -109,8 +109,8 @@
  `HLItemContentNode` implementing
  `hlItemContentSetHighlight:blinkCount:halfCycleDuration:completion:`, and calls it if so.
 
- @param finalHighlight The intended highlight value for the square when the animation is
-                      complete.
+ @param finalHighlight The intended highlight value for the item when the animation is
+                       complete.
 
  @param blinkCount The number of times the highlight value will cycle from its current
                    value to the final value.
@@ -130,7 +130,7 @@
  content node was called to set its own highlight effect.
 
  Considered a protected method: Should only be called by derived classes.
- 
+
  See notes in property `highlight`.
  */
 - (void)setHighlight:(BOOL)finalHighlight
@@ -143,6 +143,13 @@ contentDidSetHighlight:(BOOL *)contentDidSetHighlight;
 
 /**
  An item node that shows its content over a rectangular, single-color backdrop.
+
+ For all overrides of state setter methods (for states like enabled and highlight), the
+ backdrop item node will first check the content node to see if it conforms to
+ `HLItemContentNode` implementing an appropriate state setter.  If so, only the content
+ node's setter will be called.  Otherwise, the state will be visually indicated in the
+ backdrop item node according to object configuration.  See, for example, `normalColor`
+ and `highlightColor`.
  */
 @interface HLBackdropItemNode : HLItemNode
 

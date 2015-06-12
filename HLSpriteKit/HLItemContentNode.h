@@ -58,3 +58,15 @@
 - (void)hlItemContentSetHighlight:(BOOL)highlight;
 
 @end
+
+/**
+ An implementation of `HLItemContentNode` which displays another node in front of the content
+ when the item is highlighted.
+ */
+@interface HLItemContentFrontHighlightNode : HLComponentNode <HLItemContentNode, NSCopying, NSCoding>
+
+- (instancetype)initWithContentNode:(SKNode *)contentNode frontHighlightNode:(SKNode *)frontHighlightNode;
+
+- (void)hlItemContentSetHighlight:(BOOL)highlight;
+
+@end
