@@ -71,7 +71,7 @@ enum {
     _highlightColor = [SKColor colorWithWhite:1.0f alpha:0.6f];
     _enabledAlpha = 1.0f;
     _disabledAlpha = 0.4f;
-    
+
     HLBackdropItemNode *itemPrototypeNode = [[HLBackdropItemNode alloc] initWithSize:_squareSize];
     itemPrototypeNode.normalColor = _squareColor;
     itemPrototypeNode.highlightColor = _highlightColor;
@@ -104,6 +104,9 @@ enum {
   return nil;
 }
 
+#pragma mark -
+#pragma mark Configuring Layout and Geometry
+
 - (CGSize)size
 {
   return _backgroundNode.size;
@@ -124,6 +127,9 @@ enum {
   [super setZPositionScale:zPositionScale];
   [self HL_layoutZ];
 }
+
+#pragma mark -
+#pragma mark Getting and Setting Content
 
 - (void)setContent:(NSArray *)contentNodes
 {
@@ -164,7 +170,7 @@ enum {
 {
   CGPoint anchorPoint = _backgroundNode.anchorPoint;
   CGSize size = _backgroundNode.size;
-  
+
   CGFloat firstSquareBottom = -anchorPoint.y * size.height + _backgroundBorderSize;
   if (location.y < firstSquareBottom) {
     return -1;
@@ -209,6 +215,9 @@ enum {
 
   return row * _gridWidth + column;
 }
+
+#pragma mark -
+#pragma mark Configuring Appearance
 
 - (void)setBackgroundColor:(SKColor *)backgroundColor
 {
@@ -255,6 +264,9 @@ enum {
     squareNode.disabledAlpha = _disabledAlpha;
   }
 }
+
+#pragma mark -
+#pragma mark Managing Grid Square State
 
 - (BOOL)enabledForSquare:(int)squareIndex
 {
@@ -385,7 +397,7 @@ enum {
 - (void)HL_layoutXY
 {
   CGPoint anchorPoint = _backgroundNode.anchorPoint;
-  
+
   int gridHeight = (_squareCount - 1) / _gridWidth + 1;
   CGSize squaresArea = CGSizeMake(_gridWidth * _squareSize.width + (_gridWidth - 1) * _squareSeparatorSize,
                                   gridHeight * _squareSize.height + (gridHeight - 1) * _squareSeparatorSize);
