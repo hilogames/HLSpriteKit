@@ -208,6 +208,108 @@
  */
 @property (nonatomic, strong) SKNode *frameNode;
 
+/// @name Managing Ring Item State
+
+/**
+ Returns a boolean indicating whether an item is enabled.
+
+ See `[HLItemNode enabled]` for details.
+
+ Throws an exception if the item index is out of bounds.
+*/
+- (BOOL)enabledForItem:(int)itemIndex;
+
+/**
+ Sets the enabled state of an item.
+
+ See `[HLItemNode setEnabled:]` for details.
+
+ Throws an exception if the item index is out of bounds.
+*/
+- (void)setEnabled:(BOOL)enabled forItem:(int)itemIndex;
+
+/**
+ Returns a boolean indicating the current highlight state of an item.
+
+ See `[HLItemNode highlight]` for details.
+
+ Throws an exception if the item index is out of bounds.
+*/
+- (BOOL)highlightForItem:(int)itemIndex;
+
+/**
+ Sets the highlight state of an item.
+
+ See `[HLItemNode setHighlight:]` for details.
+
+ Throws an exception if the item index is out of bounds.
+*/
+- (void)setHighlight:(BOOL)highlight forItem:(int)itemIndex;
+
+/**
+ Sets the highlight state of an item with animation.
+
+ See `[HLItemNode setHighlight:blinkCount:halfCycleDuration:completion:]` for details.
+*/
+- (void)setHighlight:(BOOL)finalHighlight
+           forItem:(int)itemIndex
+          blinkCount:(int)blinkCount
+   halfCycleDuration:(NSTimeInterval)halfCycleDuration
+          completion:(void(^)(void))completion;
+
+/**
+ Convenience method for returning the index of the item last selected; see
+ `setSelectionForItem:`.
+
+ Returns -1 if no item is currently selected.
+
+ See `[HLItemsNode selectionItem]` for details.
+*/
+- (int)selectionItem;
+
+/**
+ Convenience method for setting the highlight state of a single item.
+
+ Sets highlight `YES` for the passed item, and sets highlight `NO` for the previously
+ selected item (if any).
+
+ See `[HLItemsNode setSelectionForItem:]` for details.
+*/
+- (void)setSelectionForItem:(int)itemIndex;
+
+/**
+ Convenience method for setting the highlight state of a single item with animation.
+
+ Animates highlight `YES` for the passed item, and sets highlight `NO` (with no
+ animation) for the previously-selected item (if any).
+
+ See `[HLItemsNode setSelectionForItem:blinkCount:halfCycleDuration:completion:]` for details.
+*/
+- (void)setSelectionForItem:(int)itemIndex
+                   blinkCount:(int)blinkCount
+            halfCycleDuration:(NSTimeInterval)halfCycleDuration
+                   completion:(void(^)(void))completion;
+
+/**
+ Convenience method for clearing the highlight state of the last selected item.
+
+ Clears the highlight of the last-selected item, if any.
+
+ See `[HLItemsNode clearSelection]` for details.
+*/
+- (void)clearSelection;
+
+/**
+ Convenience method for clearing the highlight state of the last selected item with animation.
+
+ Clears the highlight of the last-selected item, if any, with animation.
+
+ See `[HLItemsNode clearSelectionBlinkCount:halfCycleDuration:completion:]` for details.
+*/
+- (void)clearSelectionBlinkCount:(int)blinkCount
+               halfCycleDuration:(NSTimeInterval)halfCycleDuration
+                      completion:(void(^)(void))completion;
+
 @end
 
 /**

@@ -73,38 +73,6 @@ enum {
   return copy;
 }
 
-- (void)setBackgroundNode:(SKNode *)backgroundNode
-{
-  if (_backgroundNode) {
-    [_backgroundNode removeFromParent];
-  }
-  _backgroundNode = backgroundNode;
-  if (_backgroundNode) {
-    _backgroundNode.name = @"background";
-    [self addChild:_backgroundNode];
-    [self HL_layoutZForBackgroundNode];
-  }
-}
-
-- (void)setFrameNode:(SKNode *)frameNode
-{
-  if (_frameNode) {
-    [_frameNode removeFromParent];
-  }
-  _frameNode = frameNode;
-  if (_frameNode) {
-    _frameNode.name = @"frame";
-    [self addChild:_frameNode];
-    [self HL_layoutZForFrameNode];
-  }
-}
-
-- (void)setZPositionScale:(CGFloat)zPositionScale
-{
-  super.zPositionScale = zPositionScale;
-  [self HL_layoutZ];
-}
-
 #pragma mark -
 #pragma mark Configuring Geometry and Layout
 
@@ -143,6 +111,12 @@ enum {
   return [_itemsNode itemClosestToPoint:location maximumDistance:_itemAtPointDistanceMax closestDistance:nil];
 }
 
+- (void)setZPositionScale:(CGFloat)zPositionScale
+{
+  super.zPositionScale = zPositionScale;
+  [self HL_layoutZ];
+}
+
 #pragma mark -
 #pragma mark Getting and Setting Content
 
@@ -169,6 +143,125 @@ enum {
     [NSException raise:@"HLRingNodeInvalidIndex" format:@"Item index %d out of range.", itemIndex];
   }
   return ((HLItemNode *)itemNodes[itemIndex]).content;
+}
+
+#pragma mark -
+#pragma mark Configuring Appearance
+
+- (void)setBackgroundNode:(SKNode *)backgroundNode
+{
+  if (_backgroundNode) {
+    [_backgroundNode removeFromParent];
+  }
+  _backgroundNode = backgroundNode;
+  if (_backgroundNode) {
+    _backgroundNode.name = @"background";
+    [self addChild:_backgroundNode];
+    [self HL_layoutZForBackgroundNode];
+  }
+}
+
+- (void)setFrameNode:(SKNode *)frameNode
+{
+  if (_frameNode) {
+    [_frameNode removeFromParent];
+  }
+  _frameNode = frameNode;
+  if (_frameNode) {
+    _frameNode.name = @"frame";
+    [self addChild:_frameNode];
+    [self HL_layoutZForFrameNode];
+  }
+}
+
+#pragma mark -
+#pragma mark Managing Ring Item State
+
+- (BOOL)enabledForItem:(int)itemIndex
+{
+  NSArray *itemNodes = _itemsNode.itemNodes;
+  if (itemIndex < 0 || itemIndex >= [itemNodes count]) {
+    [NSException raise:@"HLGridNodeInvalidIndex" format:@"Item index %d out of range.", itemIndex];
+  }
+  return ((HLBackdropItemNode *)itemNodes[itemIndex]).enabled;
+}
+
+- (void)setEnabled:(BOOL)enabled forItem:(int)itemIndex
+{
+  NSArray *itemNodes = _itemsNode.itemNodes;
+  if (itemIndex < 0 || itemIndex >= [itemNodes count]) {
+    [NSException raise:@"HLGridNodeInvalidIndex" format:@"Item index %d out of range.", itemIndex];
+  }
+  ((HLBackdropItemNode *)itemNodes[itemIndex]).enabled = enabled;
+}
+
+- (BOOL)highlightForItem:(int)itemIndex
+{
+  NSArray *itemNodes = _itemsNode.itemNodes;
+  if (itemIndex < 0 || itemIndex >= [itemNodes count]) {
+    [NSException raise:@"HLGridNodeInvalidIndex" format:@"Item index %d out of range.", itemIndex];
+  }
+  return ((HLBackdropItemNode *)itemNodes[itemIndex]).highlight;
+}
+
+- (void)setHighlight:(BOOL)highlight forItem:(int)itemIndex
+{
+  NSArray *itemNodes = _itemsNode.itemNodes;
+  if (itemIndex < 0 || itemIndex >= [itemNodes count]) {
+    [NSException raise:@"HLGridNodeInvalidIndex" format:@"Item index %d out of range.", itemIndex];
+  }
+  ((HLBackdropItemNode *)itemNodes[itemIndex]).highlight = highlight;
+}
+
+- (void)setHighlight:(BOOL)finalHighlight
+           forItem:(int)itemIndex
+          blinkCount:(int)blinkCount
+   halfCycleDuration:(NSTimeInterval)halfCycleDuration
+          completion:(void(^)(void))completion
+{
+  NSArray *itemNodes = _itemsNode.itemNodes;
+  if (itemIndex < 0 || itemIndex >= [itemNodes count]) {
+    [NSException raise:@"HLGridNodeInvalidIndex" format:@"Item index %d out of range.", itemIndex];
+  }
+  [(HLBackdropItemNode *)itemNodes[itemIndex] setHighlight:finalHighlight
+                                                blinkCount:blinkCount
+                                         halfCycleDuration:halfCycleDuration
+                                                completion:completion];
+}
+
+- (int)selectionItem
+{
+  return _itemsNode.selectionItem;
+}
+
+- (void)setSelectionForItem:(int)itemIndex
+{
+  [_itemsNode setSelectionForItem:itemIndex];
+}
+
+- (void)setSelectionForItem:(int)itemIndex
+                 blinkCount:(int)blinkCount
+          halfCycleDuration:(NSTimeInterval)halfCycleDuration
+                 completion:(void (^)(void))completion
+{
+  [_itemsNode setSelectionForItem:itemIndex
+                       blinkCount:blinkCount
+                halfCycleDuration:halfCycleDuration
+                       completion:completion];
+}
+
+- (void)clearSelection
+{
+  [_itemsNode clearSelection];
+}
+
+- (void)clearSelectionBlinkCount:(int)blinkCount
+               halfCycleDuration:(NSTimeInterval)halfCycleDuration
+                      completion:(void (^)(void))completion
+{
+  [_itemsNode clearSelectionBlinkCount:blinkCount
+                     halfCycleDuration:halfCycleDuration
+                            completion:completion];
 }
 
 #pragma mark -
