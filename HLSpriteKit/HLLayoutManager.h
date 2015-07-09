@@ -14,7 +14,7 @@
 
  Three common patterns for handling child node layout:
 
- 1. The chilren of a node are positioned within it by the owner of the parent node, often
+ 1. The children of a node are positioned within it by the owner of the parent node, often
     the `SKScene`, which considers itself the controller of the entire hierarchy.
 
  2. The children of a custom node subclass are positioned by the node subclass, which

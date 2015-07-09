@@ -28,7 +28,7 @@ static const CGFloat HLBlurEpsilon = 0.001f;
   }
   
   // note: Since we're using CIFilter for the blur, could/should we use it to create the
-  // colorized outline, too?
+  // colorized outline, too?  Maybe with CIColorClamp?
   CIFilter *blurFilter = [CIFilter filterWithName:@"CIGaussianBlur"];
   [blurFilter setDefaults];
   [blurFilter setValue:[NSNumber numberWithFloat:blur] forKey:@"inputRadius"];
