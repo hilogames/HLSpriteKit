@@ -80,7 +80,7 @@ enum {
 {
   NSArray *itemNodes = _itemsNode.itemNodes;
   if ([thetasRadians count] != [itemNodes count]) {
-    [NSException raise:@"HLRingNodeInvalidLayout" format:@"Ring node has %lu items but only %lu thetas were passed.", [itemNodes count], [thetasRadians count]];
+    [NSException raise:@"HLRingNodeInvalidLayout" format:@"Ring node has %lu items but only %lu thetas were passed.", (unsigned long)[itemNodes count], (unsigned long)[thetasRadians count]];
   }
   HLRingLayoutManager *layoutManager = [[HLRingLayoutManager alloc] init];
   layoutManager.radii = @[ @(radius) ];

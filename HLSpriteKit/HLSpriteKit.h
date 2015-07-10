@@ -18,6 +18,7 @@
 #import "HLMath.h"
 #import "HLMenuNode.h"
 #import "HLMessageNode.h"
+#import "HLOutlineLayoutManager.h"
 #import "HLRingLayoutManager.h"
 #import "HLRingNode.h"
 #import "HLScene.h"

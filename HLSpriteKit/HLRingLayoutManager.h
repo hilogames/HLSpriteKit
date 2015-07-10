@@ -14,7 +14,7 @@ FOUNDATION_EXPORT const CGFloat HLRingLayoutManagerEpsilon;
 
 /**
  Provides functionality to lay out (set positions of) nodes in a ring.  This manager may
- be attached to an `SKNode` using `[SKNode+HLLayoutManager hlSetLayoutManager`.
+ be attached to an `SKNode` using `[SKNode+HLLayoutManager hlSetLayoutManager]`.
 */
 @interface HLRingLayoutManager : NSObject <HLLayoutManager, NSCopying, NSCoding>
 
@@ -32,7 +32,7 @@ FOUNDATION_EXPORT const CGFloat HLRingLayoutManagerEpsilon;
 
  For layout to have an effect: `radii` must have at least one element, and one of the
  `setThetas*` methods must have been called with non-empty parameters.
- 
+
  The order of the passed nodes determines position in the ring.  A ring position is
  skipped if the corresponding element in the array is not a kind of `SKNode` class.  (It
  is suggested to pass `[NSNull null]` to intentionally leave positions empty.)

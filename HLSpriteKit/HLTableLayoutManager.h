@@ -94,13 +94,6 @@ FOUNDATION_EXPORT const CGFloat HLTableLayoutManagerEpsilon;
 @property (nonatomic, readonly) NSUInteger rowCount;
 
 /**
- Returns the calculated size of the table at the last layout.
-
- The size is derived from the layout-affecting parameters.
-*/
-@property (nonatomic, readonly) CGSize size;
-
-/**
  Specifies the total width and height of the table when it contains expanding columns and
  rows.
 
@@ -118,14 +111,12 @@ FOUNDATION_EXPORT const CGFloat HLTableLayoutManagerEpsilon;
  Columns in the table without corresponding widths in the array will be sized according to
  the last column width in the array.
 
- Special sizes may be specified as followed:
+ Special sizes may be specified as follows:
 
  - A width of `0.0` (that is, a value that has a difference from `0.0` less than
    `HLTableLayoutNodeEpsilon`) means the layout manager should attempt to size the column
-   to fit the largest node in the column.  This is a little messy: If a node responds to
-   `@selector(size)`, then that width will be used; otherwise if the node is a kind of
-   `SKLabelNode`, then `frame.size` will be used; otherwise, the node is considered to
-   have zero width.
+   to fit the largest node in the column.  The width of a node is determined by
+   `HLLayoutManagerGetNodeWidth()`; see that function for details.
 
  - A width less than zero (actually, less than `-HLTableLayoutEpsilon`) will expand the
    column to share the available constrained width of the table.  Furthermore, the extra
@@ -155,19 +146,18 @@ FOUNDATION_EXPORT const CGFloat HLTableLayoutManagerEpsilon;
  Columns in the table without corresponding anchor points in the array will be anchored
  according to the last anchor point in the array.
 
- The nodes being laid out may or may not have their own `anchorPoint properties; if
- they do, they will be ignored by this layout manager, though in most cases the
- corresponding column anchor point should be set to the same value.
+ The nodes being laid out may or may not have their own `anchorPoint` properties; if they
+ do, they will be ignored by this layout manager.  (In most cases the nodes in a column
+ should have the same anchor point as that column.)
 
- An example: Say a table layout manager is laying out rows that contain an
- icon, a line of text, and a few number values.  The icon is a `SKSpriteNode` with
- default `anchorPoint` `(0.5, 0.5)`.  The line of text is an `SKLabelNode` with
- left horizontal alignment and baseline vertical alignment; a good anchor point
- would be `(0.0, 0.25)` to put the label on the left side of the cell and a bit
- up from the bottom (to leave room for the font descender below the baseline).
- The number values are also `SKLabelNode`s with the same baseline alignment, but
- with right alignment, and so they should go at anchor point `(1.0, 0.25)`.  All
- together, a good setting for `columnAnchorPoints` would be:
+ An example: Say a table layout manager is laying out rows that contain an icon, a line of
+ text, and a few number values.  The icon is a `SKSpriteNode` with default `anchorPoint`
+ `(0.5, 0.5)`.  The line of text is an `SKLabelNode` with left horizontal alignment and
+ baseline vertical alignment; a good anchor point would be `(0.0, 0.25)` to put the label
+ on the left side of the cell and a bit up from the bottom (to leave room for the font
+ descender below the baseline).  The number values are also `SKLabelNode`s with the same
+ baseline alignment, but with right alignment, and so they should go at anchor point
+ `(1.0, 0.25)`.  All together, a good setting for `columnAnchorPoints` would be:
 
      @[ [NSValue valueWithCGPoint:CGPointMake(0.5f, 0.5f)],
         [NSValue valueWithCGPoint:CGPointMake(0.0f, 0.25f)],
@@ -190,5 +180,14 @@ FOUNDATION_EXPORT const CGFloat HLTableLayoutManagerEpsilon;
  The distance (reserved by `layout:`) between adjacent rows.
 */
 @property (nonatomic, assign) CGFloat rowSeparator;
+
+/// @name Accessing Last-Layout State
+
+/**
+ Returns the calculated size of the table at the last layout.
+ 
+ The size is derived from the layout-affecting parameters and last-laid-out nodes.
+ */
+@property (nonatomic, readonly) CGSize size;
 
 @end
