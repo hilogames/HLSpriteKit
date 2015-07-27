@@ -133,40 +133,56 @@ BOOL HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIG
 
 @end
 
+@protocol HLTapGestureTargetDelegate;
+
 /**
  An externally-configurable gesture target which only adds to the (single) tap gesture
- recognizer.  When a tap is recognized, it is forwarded to an owner-provided handling
- block.
+ recognizer.  When a tap is recognized, it is forwarded to an owner-provided delegate
+ or handling block.
 
- The handling block is not encodable, so the caller will have to reset it on decode.
-
- @bug Consider making a version of this (or extension of this) which itself uses
-      delegation for the call to handle the gesture, rather than a block; the delegate
-      pointer, then, would be encodable.
+ Delegation is preferred for two reasons:
+ 
+ * The block is not encodable, but the delegate is.  (The block must be reset on decode.)
+ 
+ * The block is more susceptible to retain cycles.
 */
 @interface HLTapGestureTarget : NSObject <HLGestureTarget, NSCoding, NSCopying>
 
 /// @name Creating a Tap Gesture Target
 
 /**
- Convenience method for instantiating a tap gesture target configured with the passed
- handle gesture block.
-
- See `initWithHandleGestureBlock:`.
+ Initializes a tap gesture target.
 */
-+ (instancetype)tapGestureTargetWithHandleGestureBlock:(void(^)(UIGestureRecognizer *))handleGestureBlock;
+- (instancetype)init;
 
 /**
  Initializes a tap gesture target with the passed handle gesture block.
 */
 - (instancetype)initWithHandleGestureBlock:(void(^)(UIGestureRecognizer *))handleGestureBlock;
 
-/// @name Handling Gestures
+/**
+ Convenience method for instantiating a tap gesture target configured with the passed
+ handle gesture block.
+ 
+ See `initWithHandleGestureBlock:`.
+*/
++ (instancetype)tapGestureTargetWithHandleGestureBlock:(void(^)(UIGestureRecognizer *))handleGestureBlock;
+
+/// @name Setting a Delegate or Handler
 
 /**
- A block that is executed when a tap gesture is handled.
+ A delegate that will be called when the gesture target is tapped.
+ 
+ See `HLTapGestureTargetDelegate`.
 */
-@property (nonatomic, copy) void (^handleGestureBlock)(UIGestureRecognizer *);
+@property (nonatomic, weak) id <HLTapGestureTargetDelegate> delegate;
+
+/**
+ A block that will be executed when the gesture target is tapped.
+*/
+@property (nonatomic, strong) void (^handleGestureBlock)(UIGestureRecognizer *);
+
+/// @name Configuring Gesture Handling
 
 /**
  Whether or not unhandled gestures are considered "isInside" the gesture target.
@@ -175,6 +191,12 @@ BOOL HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIG
  the target to "fall through" to gesture targets below this one.  Default value is `NO`.
 */
 @property (nonatomic, assign, getter=isGestureTransparent) BOOL gestureTransparent;
+
+@end
+
+@protocol HLTapGestureTargetDelegate <NSObject>
+
+- (void)tapGestureTarget:(HLTapGestureTarget *)tapGestureTarget didTap:(UIGestureRecognizer *)gestureRecognizer;
 
 @end
 
