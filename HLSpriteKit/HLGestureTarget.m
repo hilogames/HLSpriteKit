@@ -85,9 +85,24 @@ HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIGestur
 
 @implementation HLTapGestureTarget
 
++ (instancetype)tapGestureTargetWithDelegate:(id<HLTapGestureTargetDelegate>)delegate
+{
+  return [[HLTapGestureTarget alloc] initWithDelegate:delegate];
+}
+
 + (instancetype)tapGestureTargetWithHandleGestureBlock:(void (^)(UIGestureRecognizer *))handleGestureBlock
 {
   return [[HLTapGestureTarget alloc] initWithHandleGestureBlock:handleGestureBlock];
+}
+
+- (instancetype)initWithDelegate:(id<HLTapGestureTargetDelegate>)delegate
+{
+  self = [super init];
+  if (self) {
+    _delegate = delegate;
+    _gestureTransparent = NO;
+  }
+  return self;
 }
 
 - (instancetype)initWithHandleGestureBlock:(void (^)(UIGestureRecognizer *))handleGestureBlock

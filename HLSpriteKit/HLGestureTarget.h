@@ -156,9 +156,22 @@ BOOL HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIG
 - (instancetype)init;
 
 /**
+ Initializes a tap gesture target with the passed delegate.
+ */
+- (instancetype)initWithDelegate:(id <HLTapGestureTargetDelegate>)delegate;
+
+/**
  Initializes a tap gesture target with the passed handle gesture block.
 */
 - (instancetype)initWithHandleGestureBlock:(void(^)(UIGestureRecognizer *))handleGestureBlock;
+
+/**
+ Convenience method for instantiating a tap gesture target configured with the passed
+ delegate.
+ 
+ See `initWithDelegate:`.
+ */
++ (instancetype)tapGestureTargetWithDelegate:(id <HLTapGestureTargetDelegate>)delegate;
 
 /**
  Convenience method for instantiating a tap gesture target configured with the passed
