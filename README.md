@@ -29,7 +29,7 @@ Layout managers currently provided:
 
 * `HLOutlineLayoutManager`, for vertical lists (especially of text) indented in levels.
 
-Putting layout code in a third-party object (rather than in the `SKScene` or `SKNode` subclass) allows for easier re-use of common layout math.
+Putting layout code in a third-party object (rather than in the `SKScene` or `SKNode` subclass) allows for easier reuse of common layout math.
 
 ### Custom SKNode Subclasses
 

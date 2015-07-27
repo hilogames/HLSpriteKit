@@ -235,6 +235,8 @@ FOUNDATION_EXPORT NSString * const HLSceneChildGestureTarget;
  targets by traversing parents in the node tree, or again by `zPosition`?
 
  See `HLSceneGestureTargetHitTestMode` for the options.
+ 
+ Default value is `HLSceneGestureTargetHitTestModeDeepestThenParent`.
 */
 @property (nonatomic, assign) HLSceneGestureTargetHitTestMode gestureTargetHitTestMode;
 

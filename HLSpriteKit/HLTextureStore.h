@@ -10,7 +10,7 @@
 #import <SpriteKit/SpriteKit.h>
 
 /**
- Stores textures and (sometimes) corresponding images by key for easy re-use.
+ Stores textures and (sometimes) corresponding images by key for easy reuse.
 
  @bug This texture store supports both `UIImages` and `SKTextures`, so that the graphics
       can be used either as a texture (for `SpriteKit` purposes) or as a `UIImage` (for
