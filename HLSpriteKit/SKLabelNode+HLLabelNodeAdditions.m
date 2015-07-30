@@ -35,6 +35,9 @@
 
     case HLLabelNodeVerticalAlignFont: {
       UIFont *font = [UIFont fontWithName:self.fontName size:self.fontSize];
+      if (!font) {
+        [NSException raise:@"HLLabelNodeUnknownFont" format:@"Could not find font \"%@\".", self.fontName];
+      }
       if (skVerticalAlignmentMode) {
         *skVerticalAlignmentMode = SKLabelVerticalAlignmentModeBaseline;
       }
@@ -49,6 +52,9 @@
       
     case HLLabelNodeVerticalAlignFontAscender: {
       UIFont *font = [UIFont fontWithName:self.fontName size:self.fontSize];
+      if (!font) {
+        [NSException raise:@"HLLabelNodeUnknownFont" format:@"Could not find font \"%@\".", self.fontName];
+      }
       if (skVerticalAlignmentMode) {
         *skVerticalAlignmentMode = SKLabelVerticalAlignmentModeBaseline;
       }
@@ -63,6 +69,9 @@
 
     case HLLabelNodeVerticalAlignFontAscenderBias: {
       UIFont *font = [UIFont fontWithName:self.fontName size:self.fontSize];
+      if (!font) {
+        [NSException raise:@"HLLabelNodeUnknownFont" format:@"Could not find font \"%@\".", self.fontName];
+      }
       if (skVerticalAlignmentMode) {
         *skVerticalAlignmentMode = SKLabelVerticalAlignmentModeBaseline;
       }

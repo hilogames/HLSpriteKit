@@ -91,6 +91,8 @@
  Specifies if the button should automatically set its width based on the label width.
 
  Label width is determined by various properties including its text, font, and padding.
+
+ Default value is `NO`.
  */
 @property (nonatomic, assign) BOOL automaticWidth;
 
@@ -99,6 +101,8 @@
 
  Label height is determined by various properties including its text, font, padding, and
  vertical alignment mode.
+
+ Default value is `NO`.
  */
 @property (nonatomic, assign) BOOL automaticHeight;
 
@@ -107,6 +111,8 @@
 
  See documentation for `HLLabelNodeVerticalAlignmentMode`.  This alignment mode also
  determines the calculated height used for the button when `automaticHeight` is true.
+
+ Default value is `HLLabelNodeAlignText`.
  */
 @property (nonatomic, assign) HLLabelNodeVerticalAlignmentMode verticalAlignmentMode;
 
