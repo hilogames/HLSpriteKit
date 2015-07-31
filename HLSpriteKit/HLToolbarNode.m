@@ -577,3 +577,120 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
 }
 
 @end
+
+@implementation HLToolbarNodeMultiGestureTarget
+
+- (instancetype)initWithToolbarNode:(HLToolbarNode *)toolbarNode
+{
+  self = [super init];
+  if (self) {
+    _toolbarNode = toolbarNode;
+  }
+  return self;
+}
+
+- (NSArray *)addsToGestureRecognizers
+{
+  UITapGestureRecognizer *doubleTapRecognizer = [[UITapGestureRecognizer alloc] init];
+  doubleTapRecognizer.numberOfTapsRequired = 2;
+  return @[ [[UITapGestureRecognizer alloc] init],
+            doubleTapRecognizer,
+            [[UILongPressGestureRecognizer alloc] init],
+            [[UIPanGestureRecognizer alloc] init] ];
+}
+
+- (BOOL)addToGesture:(UIGestureRecognizer *)gestureRecognizer firstTouch:(UITouch *)touch isInside:(BOOL *)isInside
+{
+  *isInside = YES;
+  if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
+    // note: Require only one touch, same as our gesture recognizer returned from
+    // addsToGestureRecognizers?  I think it's okay to be non-strict.
+    NSUInteger numberOfTapsRequired = [(UITapGestureRecognizer *)gestureRecognizer numberOfTapsRequired];
+    switch (numberOfTapsRequired) {
+      case 1:
+        [gestureRecognizer addTarget:self action:@selector(handleTap:)];
+        return YES;
+      case 2:
+        [gestureRecognizer addTarget:self action:@selector(handleDoubleTap:)];
+        return YES;
+      default:
+        break;
+    }
+  } else if ([gestureRecognizer isKindOfClass:[UILongPressGestureRecognizer class]]) {
+    [gestureRecognizer addTarget:self action:@selector(handleLongPress:)];
+    return YES;
+  } else if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+    [gestureRecognizer addTarget:self action:@selector(handlePan:)];
+    return YES;
+  }
+  return NO;
+}
+
+- (void)handleTap:(UIGestureRecognizer *)gestureRecognizer
+{
+  id <HLToolbarNodeMultiGestureTargetDelegate> delegate = _delegate;
+  if (!delegate) {
+    return;
+  }
+
+  CGPoint viewLocation = [gestureRecognizer locationInView:_toolbarNode.scene.view];
+  CGPoint sceneLocation = [_toolbarNode.scene convertPointFromView:viewLocation];
+  CGPoint location = [_toolbarNode convertPoint:sceneLocation fromNode:_toolbarNode.scene];
+  
+  NSString *toolTag = [_toolbarNode toolAtLocation:location];
+  if (!toolTag) {
+    return;
+  }
+  
+  [delegate toolbarNode:_toolbarNode didTapTool:toolTag];
+}
+
+- (void)handleDoubleTap:(UIGestureRecognizer *)gestureRecognizer
+{
+  id <HLToolbarNodeMultiGestureTargetDelegate> delegate = _delegate;
+  if (!delegate) {
+    return;
+  }
+  
+  CGPoint viewLocation = [gestureRecognizer locationInView:_toolbarNode.scene.view];
+  CGPoint sceneLocation = [_toolbarNode.scene convertPointFromView:viewLocation];
+  CGPoint location = [_toolbarNode convertPoint:sceneLocation fromNode:_toolbarNode.scene];
+  
+  NSString *toolTag = [_toolbarNode toolAtLocation:location];
+  if (!toolTag) {
+    return;
+  }
+  
+  [delegate toolbarNode:_toolbarNode didDoubleTapTool:toolTag];
+}
+
+- (void)handleLongPress:(UIGestureRecognizer *)gestureRecognizer
+{
+  id <HLToolbarNodeMultiGestureTargetDelegate> delegate = _delegate;
+  if (!delegate) {
+    return;
+  }
+  
+  CGPoint viewLocation = [gestureRecognizer locationInView:_toolbarNode.scene.view];
+  CGPoint sceneLocation = [_toolbarNode.scene convertPointFromView:viewLocation];
+  CGPoint location = [_toolbarNode convertPoint:sceneLocation fromNode:_toolbarNode.scene];
+  
+  NSString *toolTag = [_toolbarNode toolAtLocation:location];
+  if (!toolTag) {
+    return;
+  }
+  
+  [delegate toolbarNode:_toolbarNode didLongPressTool:toolTag];
+}
+
+- (void)handlePan:(UIPanGestureRecognizer *)gestureRecognizer
+{
+  id <HLToolbarNodeMultiGestureTargetDelegate> delegate = _delegate;
+  if (!delegate) {
+    return;
+  }
+
+  [delegate toolbarNode:_toolbarNode didPanWithGestureRecognizer:gestureRecognizer];
+}
+
+@end

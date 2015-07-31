@@ -224,6 +224,26 @@ static BOOL _sceneAssetsLoaded = NO;
     return YES;
   }
 
+  // TODO: If the scene has lots of gesture recognizers, then each one will be calling
+  // this same code.  Since the touch location will always be the same, they could
+  // certainly share the hit-testing code.  In addition, the same target will have
+  // addToGesture:firstTouch:isInside: called on it for each gesture recognizer,
+  // perhaps leading to a lot of redundant checking, especially is-inside checking.
+  // Ideas:
+  //
+  //   - That's okay, because is-inside checking is usually quick.
+  //
+  //   - Could separate out the is-inside check, passing only the point and not the
+  //     type of gesture.  This wouldn't work e.g. for HLScrollNode content nodes,
+  //     which consider all gestures inside except is-inside.  To fix that, we make
+  //     it so that gesture targets have another property: gestureTransparent.  The
+  //     flow is then: check is-inside once for all gesture types for a certain target
+  //     (caching the result here?); then if inside, call addToGesture:, and if it
+  //     doesn't add, then check gestureTransparent to see if we should continue
+  //     checking.  (Keep in mind that is-inside checking is often repeated in the
+  //     addToGesture: routine, so separating them would introduce a little redundancy
+  //     in some cases.)
+  
   [gestureRecognizer removeTarget:nil action:NULL];
   CGPoint sceneLocation = [touch locationInNode:self];
 
@@ -253,10 +273,6 @@ static BOOL _sceneAssetsLoaded = NO;
     // to any type of gesture, even if the gesture handler was not returned from the
     // target's addsToGestureRecognizers.  Because, of course, the target usually wants to
     // block gestures of all types if they are "inside" the target.
-
-    // TODO: If the scene has lots of gesture recognizers, then each one will be calling
-    // this same code, including the call to target's addToGesture.  That might lead to
-    // a lot of redundant checking.  Come up with a better design?
 
     NSNumber *optionBits = (node.userData)[HLSceneChildUserDataKey];
     if (optionBits && ([optionBits unsignedIntegerValue] & HLSceneChildBitGestureTarget) != 0) {
