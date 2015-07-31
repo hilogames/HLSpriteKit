@@ -75,8 +75,10 @@ typedef NS_ENUM(NSInteger, HLMenuNodeAnimation) {
  For the sake of simplicity, menu node does not worry about updating its display when
  the caller makes changes to the individual menu items.  Instead, it will only refresh
  the display after a call to `setMenu:animation:` (or from manual or programmatic
- navigation of the menu).  The readonly attribute helps to suggest this pattern.  More
- stringent would be to copy the menu into the menu node, but that is deemed unnecessary.
+ navigation of the menu).  The readonly attribute helps to suggest this pattern.  (The
+ menu is retained, though, not copied, and so the caller is still able to change submenus
+ and items within the menu.  Again, though, those changes will not be displayed until
+ the HLMenuNode is explicitly redisplayed or navigated.)
 
  @bug It is considered convenient for the menu node to keep a strong reference to its
       menu, assuming that the caller typically wants a single fairly-static menu
@@ -105,6 +107,14 @@ typedef NS_ENUM(NSInteger, HLMenuNodeAnimation) {
  buttons currently displayed.
  */
 - (void)setMenu:(HLMenu *)menu animation:(HLMenuNodeAnimation)animation;
+
+/**
+ Recreate display of current menu.
+ 
+ The HLMenuNode tracks a current HLMenu, but changes to that menu are not reflected in the
+ display until an explicit call to `setMenu`, a navigation method, or a call to this method.
+ */
+- (void)redisplayMenuAnimation:(HLMenuNodeAnimation)animation;
 
 /// @name Configuring Menu Item Buttons
 

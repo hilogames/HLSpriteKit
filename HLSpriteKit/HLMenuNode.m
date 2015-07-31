@@ -123,6 +123,14 @@ enum {
   }
 }
 
+- (void)redisplayMenuAnimation:(HLMenuNodeAnimation)animation
+{
+  if (!_currentMenu) {
+    return;
+  }
+  [self HL_showCurrentMenuAnimation:animation];
+}
+
 - (void)setItemButtonPrototype:(HLLabelButtonNode *)itemButtonPrototype
 {
   // noob: Because I'm just starting to think through this, a note: The buttons are
