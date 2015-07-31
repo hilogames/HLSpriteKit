@@ -30,9 +30,10 @@ enum {
     // note: Provide a default item appearance and behavior.  Almost all callers will be
     // providing their own, but this makes it so that the class doesn't throw exceptions
     // or seem to do nothing when used without configuration.
-    _itemSpacing = 60.0f;
-    _itemButtonPrototype = [[HLLabelButtonNode alloc] initWithColor:[UIColor blackColor] size:CGSizeMake(240.0f, 40.0f)];
-    _itemButtonPrototype.centerRect = CGRectMake(0.3333333f, 0.3333333f, 0.3333333f, 0.3333333f);
+    _itemSeparatorSize = 4.0f;
+    _anchorPoint = CGPointMake(0.5f, 0.5f);
+    _itemButtonPrototype = [[HLLabelButtonNode alloc] initWithColor:[UIColor blackColor] size:CGSizeMake(180.0f, 0.0f)];
+    _itemButtonPrototype.automaticHeight = YES;
     _itemButtonPrototype.fontName = @"Helvetica";
     _itemButtonPrototype.fontSize = 24.0f;
     _itemButtonPrototype.fontColor = [UIColor whiteColor];
@@ -51,7 +52,9 @@ enum {
   if (self) {
     _menu = [aDecoder decodeObjectForKey:@"menu"];
     _currentMenu = [aDecoder decodeObjectForKey:@"currentMenu"];
-    _itemSpacing = (CGFloat)[aDecoder decodeDoubleForKey:@"itemSpacing"];
+    _itemSeparatorSize = (CGFloat)[aDecoder decodeDoubleForKey:@"itemSeparatorSize"];
+    _size = [aDecoder decodeCGSizeForKey:@"size"];
+    _anchorPoint = [aDecoder decodeCGPointForKey:@"anchorPoint"];
     _itemButtonPrototype = [aDecoder decodeObjectForKey:@"itemButtonPrototype"];
     _menuItemButtonPrototype = [aDecoder decodeObjectForKey:@"menuItemButtonPrototype"];
     _backItemButtonPrototype = [aDecoder decodeObjectForKey:@"backItemButtonPrototype"];
@@ -76,7 +79,9 @@ enum {
   [super encodeWithCoder:aCoder];
   [aCoder encodeObject:_menu forKey:@"menu"];
   [aCoder encodeObject:_currentMenu forKey:@"currentMenu"];
-  [aCoder encodeDouble:_itemSpacing forKey:@"itemSpacing"];
+  [aCoder encodeDouble:_itemSeparatorSize forKey:@"itemSeparatorSize"];
+  [aCoder encodeCGSize:_size forKey:@"size"];
+  [aCoder encodeCGPoint:_anchorPoint forKey:@"anchorPoint"];
   [aCoder encodeObject:_itemButtonPrototype forKey:@"itemButtonPrototype"];
   [aCoder encodeObject:_menuItemButtonPrototype forKey:@"menuItemButtonPrototype"];
   [aCoder encodeObject:_backItemButtonPrototype forKey:@"backItemButtonPrototype"];
@@ -274,7 +279,10 @@ enum {
   _buttonsNode = [SKNode node];
   [self addChild:_buttonsNode];
 
-  for (NSUInteger i = 0; i < [_currentMenu itemCount]; ++i) {
+  CGFloat widthMax = 0.0f;
+  CGFloat heightTotal = 0.0f;
+  NSUInteger itemCount = [_currentMenu itemCount];
+  for (NSUInteger i = 0; i < itemCount; ++i) {
     HLMenuItem *item = [_currentMenu itemAtIndex:i];
 
     HLLabelButtonNode *buttonPrototype = item.buttonPrototype;
@@ -295,8 +303,27 @@ enum {
     HLLabelButtonNode *buttonNode = [buttonPrototype copy];
     buttonNode.text = item.text;
     buttonNode.zPositionScale = HLMenuNodeZPositionLayerButtons * self.zPositionScale / HLMenuNodeZPositionLayerCount;
-    buttonNode.position = CGPointMake(0.0f, -self.itemSpacing * i);
     [_buttonsNode addChild:buttonNode];
+
+    CGSize buttonSize = buttonNode.size;
+    if (buttonSize.width > widthMax) {
+      widthMax = buttonSize.width;
+    }
+    heightTotal += buttonSize.height;
+  }
+  if (itemCount > 0) {
+    heightTotal += (itemCount - 1) * self.itemSeparatorSize;
+  }
+  _size = CGSizeMake(widthMax, heightTotal);
+
+  // note: x tracks the center of each button; y tracks the top edge of each button.
+  CGFloat x = _size.width * (0.5f - _anchorPoint.x);
+  CGFloat y = _size.height * (1.0f - _anchorPoint.y);
+  for (HLLabelButtonNode *buttonNode in _buttonsNode.children) {
+    buttonNode.anchorPoint = CGPointMake(0.5f, 0.5f);
+    CGFloat buttonHeight = buttonNode.size.height;
+    buttonNode.position = CGPointMake(x, y - buttonHeight * 0.5f);
+    y = y - buttonHeight - _itemSeparatorSize;
   }
 
   if (animation == HLMenuNodeAnimationNone) {
@@ -307,20 +334,13 @@ enum {
 
   } else {
 
-    CGFloat buttonWidthMax = 0.0f;
-    for (HLLabelButtonNode *buttonNode in _buttonsNode.children) {
-      if (buttonNode.size.width > buttonWidthMax) {
-        buttonWidthMax = buttonNode.size.width;
-      }
-    }
-
     CGPoint delta;
     switch (animation) {
       case HLMenuNodeAnimationSlideLeft:
-        delta = CGPointMake(-1.0f * (self.scene.size.width + buttonWidthMax) / 2.0f, 0.0f);
+        delta = CGPointMake(-1.0f * (self.scene.size.width + _size.width) / 2.0f, 0.0f);
         break;
       case HLMenuNodeAnimationSlideRight:
-        delta = CGPointMake((self.scene.size.width + buttonWidthMax) / 2.0f, 0.0f);
+        delta = CGPointMake((self.scene.size.width + _size.width) / 2.0f, 0.0f);
         break;
       default:
         [NSException raise:@"HLMenuNodeUnhandledAnimation" format:@"Unhandled animation %ld.", (long)animation];
