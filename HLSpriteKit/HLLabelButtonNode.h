@@ -172,4 +172,11 @@
  */
 @property (nonatomic, assign) CGRect centerRect;
 
+/**
+ The corner radius of the button. 
+ 
+ Default value it `0.0`.
+ */
+@property (nonatomic, assign) CGFloat cornerRadius;
+
 @end

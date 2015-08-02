@@ -37,7 +37,6 @@ enum {
   }
   return self;
 }
-
 - (instancetype)initWithTexture:(SKTexture *)texture
 {
   self = [super init];
@@ -69,6 +68,7 @@ enum {
   _verticalAlignmentMode = HLLabelNodeVerticalAlignText;
   _labelPadX = 0.0f;
   _labelPadY = 0.0f;
+  _cornerRadius = 0.0f;
   _labelNode = [SKLabelNode labelNodeWithFontNamed:@"Helvetica"];
   _labelNode.zPosition = HLLabelButtonNodeZPositionLayerLabel * self.zPositionScale / HLLabelButtonNodeZPositionLayerCount;
   [self addChild:_labelNode];
@@ -94,6 +94,7 @@ enum {
     _verticalAlignmentMode = (HLLabelNodeVerticalAlignmentMode)[aDecoder decodeIntegerForKey:@"verticalAlignmentMode"];
     _labelPadX = (CGFloat)[aDecoder decodeDoubleForKey:@"labelPadX"];
     _labelPadY = (CGFloat)[aDecoder decodeDoubleForKey:@"labelPadY"];
+    _cornerRadius = (CGFloat)[aDecoder decodeDoubleForKey:@"cornerRadius"];
   }
   return self;
 }
@@ -109,6 +110,7 @@ enum {
   [aCoder encodeInteger:_verticalAlignmentMode forKey:@"verticalAlignmentMode"];
   [aCoder encodeDouble:_labelPadX forKey:@"labelPadX"];
   [aCoder encodeDouble:_labelPadY forKey:@"labelPadY"];
+  [aCoder encodeDouble:_cornerRadius forKey:@"cornerRadius"];
 }
 
 - (instancetype)copyWithZone:(NSZone *)zone
@@ -128,6 +130,7 @@ enum {
   copy->_verticalAlignmentMode = _verticalAlignmentMode;
   copy->_labelPadX = _labelPadX;
   copy->_labelPadY = _labelPadY;
+  copy->_cornerRadius = _cornerRadius;
   return copy;
 }
 
@@ -269,7 +272,11 @@ enum {
 {
   return _backgroundNode.centerRect;
 }
-
+- (void)setCornerRadius:(CGFloat)cornerRadius
+{
+    _cornerRadius = cornerRadius;
+    [self HL_layout];
+}
 - (void)HL_layout
 {
   // note: Don't layout if text not set; this allows the owner some small control over
@@ -321,6 +328,57 @@ enum {
       _backgroundNode.size = newSize;
     }
   }
+    
+  if (_cornerRadius) {
+    _backgroundNode.texture = [self initializeBackgroundColor:_backgroundNode.color size:_backgroundNode.size];
+  }
+}
+- (CAShapeLayer *)newShapeLayerWithBoundsPath:(CGSize)size
+{
+  CAShapeLayer *shapeLayer = [CAShapeLayer new];
+  CGFloat halfBorderWidth = round(1.0 / 2.0); //round(_borderWidth / 2.0);
+    
+  shapeLayer.frame = CGRectMake(0.0, 0.0, size.width, size.height);
+    
+  /* Inset the path so that we don't stroke outside of our bounds */
+  shapeLayer.path = [UIBezierPath bezierPathWithRoundedRect:CGRectInset(shapeLayer.bounds, halfBorderWidth, halfBorderWidth) cornerRadius:_cornerRadius].CGPath;
+    
+  return shapeLayer;
+}
+- (SKTexture *)initializeBackgroundColor:(SKColor *)backgroundColor size:(CGSize)size
+{
+    CAShapeLayer *backgroundLayer = [self newShapeLayerWithBoundsPath:size];
+    
+    backgroundLayer.lineWidth = 0.0f;
+    backgroundLayer.fillColor = backgroundColor.CGColor;
+    
+    return [self textureFromLayer:backgroundLayer];
+}
+/* We are going from CALayer -> UIImage -> SKTexture here, so that we can create SKSpriteNodes instead of SKShapeNodes (SKShapeNode doesn't work well with SKCropNode),
+ which are then plugged into the maskNode property of a SKCropNode.  This approach also conveniently allows us to use the same code path for custom textures and generated
+ textures if you just want a basic progress bar */
+- (SKTexture *)textureFromLayer:(CALayer *)layer
+{
+    CGFloat width = layer.frame.size.width;
+    CGFloat height = layer.frame.size.height;
+    
+    // value of 0 for scale will use device's main screen scale
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake(width, height), NO, 0.0);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    CGContextSetAllowsAntialiasing(context, YES);
+    CGContextSetFillColorWithColor(context, [UIColor clearColor].CGColor);
+    CGContextFillRect(context, CGRectMake(0.0, 0.0, width, height));
+    
+    [layer renderInContext:context];
+    
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    
+    UIGraphicsEndImageContext();
+    
+    SKTexture *texture = [SKTexture textureWithImage:image];
+    
+    return texture;
 }
 
 @end
