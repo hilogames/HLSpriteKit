@@ -17,6 +17,29 @@ enum {
   HLMenuNodeZPositionLayerCount
 };
 
+static void
+HLMenuNodeValidateButtonPrototype(SKNode *buttonPrototype, NSString *label)
+{
+  if (![buttonPrototype respondsToSelector:@selector(setText:)]) {
+    [NSException raise:@"HLMenuNodeInvalidButtonPrototype" format:@"Button prototype for \"%@\" must respond to selector \"setText:\".", label];
+  }
+  if (![buttonPrototype respondsToSelector:@selector(size)]) {
+    [NSException raise:@"HLMenuNodeInvalidButtonPrototype" format:@"Button prototype for \"%@\" must respond to selector \"size\".", label];
+  }
+  if (![buttonPrototype respondsToSelector:@selector(setAnchorPoint:)]) {
+    [NSException raise:@"HLMenuNodeInvalidButtonPrototype" format:@"Button prototype for \"%@\" must respond to selector \"setAnchorPoint:\".", label];
+  }
+  if ([buttonPrototype respondsToSelector:@selector(hlGestureTarget)]) {
+    if ([buttonPrototype hlGestureTarget]) {
+      // This might be okay, but it seems like it will cause confusion if the button is
+      // trying to handle gestures separately from the menu node.  Log error and continue.
+      HLError(HLLevelWarning,
+              [NSString stringWithFormat:@"HLMenuNode: Button prototype for \"%@\" is not expected to have a gesture target; removing it.", label]);
+      [buttonPrototype hlSetGestureTarget:nil];
+    }
+  }
+}
+
 @implementation HLMenuNode
 {
   SKNode *_buttonsNode;
@@ -32,12 +55,13 @@ enum {
     // or seem to do nothing when used without configuration.
     _itemSeparatorSize = 4.0f;
     _anchorPoint = CGPointMake(0.5f, 0.5f);
-    _itemButtonPrototype = [[HLLabelButtonNode alloc] initWithColor:[UIColor blackColor] size:CGSizeMake(180.0f, 0.0f)];
-    _itemButtonPrototype.automaticHeight = YES;
-    _itemButtonPrototype.fontName = @"Helvetica";
-    _itemButtonPrototype.fontSize = 24.0f;
-    _itemButtonPrototype.fontColor = [UIColor whiteColor];
-    _itemButtonPrototype.verticalAlignmentMode = HLLabelNodeVerticalAlignFont;
+    HLLabelButtonNode *itemButtonPrototype = [[HLLabelButtonNode alloc] initWithColor:[UIColor blackColor] size:CGSizeMake(180.0f, 0.0f)];
+    itemButtonPrototype.automaticHeight = YES;
+    itemButtonPrototype.fontName = @"Helvetica";
+    itemButtonPrototype.fontSize = 24.0f;
+    itemButtonPrototype.fontColor = [UIColor whiteColor];
+    itemButtonPrototype.verticalAlignmentMode = HLLabelNodeVerticalAlignFont;
+    _itemButtonPrototype = itemButtonPrototype;
     _menuItemButtonPrototype = nil;
     _backItemButtonPrototype = nil;
     _itemAnimation = HLMenuNodeAnimationSlideLeft;
@@ -104,14 +128,7 @@ enum {
 - (void)setZPositionScale:(CGFloat)zPositionScale
 {
   [super setZPositionScale:zPositionScale];
-  if (_buttonsNode) {
-    CGFloat zPositionLayerIncrement = zPositionScale / HLMenuNodeZPositionLayerCount;
-    CGFloat buttonNodeZPosition = HLMenuNodeZPositionLayerButtons * zPositionLayerIncrement;
-    for (HLLabelButtonNode *buttonNode in _buttonsNode.children) {
-      buttonNode.zPosition = buttonNodeZPosition;
-      buttonNode.zPositionScale = zPositionLayerIncrement;
-    }
-  }
+  [self HL_layoutZ];
 }
 
 - (HLMenu *)displayedMenu
@@ -136,42 +153,22 @@ enum {
   [self HL_showCurrentMenuAnimation:animation];
 }
 
-- (void)setItemButtonPrototype:(HLLabelButtonNode *)itemButtonPrototype
+- (void)setItemButtonPrototype:(SKNode *)itemButtonPrototype
 {
-  // noob: Because I'm just starting to think through this, a note: The buttons are
-  // currently rendered in the same layer as the main HLCompomentNode, because they aren't
-  // expected have gesture targets themselves, so it doesn't matter which one of them is
-  // hit-test first on a recognized gesture.  To back up this assumption, check it here.
-  // So sure, this is an edge case: It only will make a difference in case the hit-test
-  // for gesture targets is using zPosition and not the hierarchy, and it would be easily
-  // be permitted by putting these buttons in their own layer above the component base
-  // node.  BUT.  It makes sense to me that these HLLabelButtons should *not* have gesture
-  // targets, anyway, and it makes sense to me that a component like HLMenuNode (which
-  // incorporates other components like HLLabelButtons) should be totally in control.  So.
-  // Do these checks for consistency with those thoughts.
+  HLMenuNodeValidateButtonPrototype(itemButtonPrototype, @"itemButtonPrototype");
   _itemButtonPrototype = itemButtonPrototype;
-  if ([_itemButtonPrototype hlGestureTarget]) {
-    HLError(HLLevelError, @"HLMenuNode: itemButtonPrototype is not expected to have a gesture target; removing it.");
-    [_itemButtonPrototype hlSetGestureTarget:nil];
-  }
 }
 
-- (void)setMenuItemButtonPrototype:(HLLabelButtonNode *)menuItemButtonPrototype
+- (void)setMenuItemButtonPrototype:(SKNode *)menuItemButtonPrototype
 {
+  HLMenuNodeValidateButtonPrototype(menuItemButtonPrototype, @"menuItemButtonPrototype");
   _menuItemButtonPrototype = menuItemButtonPrototype;
-  if ([_menuItemButtonPrototype hlGestureTarget]) {
-    HLError(HLLevelError, @"HLMenuNode: menuItemButtonPrototype is not expected to have a gesture target; removing it.");
-    [_menuItemButtonPrototype hlSetGestureTarget:nil];
-  }
 }
 
-- (void)setBackItemButtonPrototype:(HLLabelButtonNode *)backItemButtonPrototype
+- (void)setBackItemButtonPrototype:(SKNode *)backItemButtonPrototype
 {
+  HLMenuNodeValidateButtonPrototype(backItemButtonPrototype, @"menuItemButtonPrototype");
   _backItemButtonPrototype = backItemButtonPrototype;
-  if ([_backItemButtonPrototype hlGestureTarget]) {
-    HLError(HLLevelError, @"HLMenuNode: backItemButtonPrototype is not expected to have a gesture target; removing it.");
-    [_backItemButtonPrototype hlSetGestureTarget:nil];
-  }
 }
 
 - (void)navigateToTopMenuAnimation:(HLMenuNodeAnimation)animation
@@ -205,7 +202,7 @@ enum {
   CGPoint location = [touch locationInNode:self];
 
   *isInside = NO;
-  for (HLLabelButtonNode *buttonNode in _buttonsNode.children) {
+  for (SKNode *buttonNode in _buttonsNode.children) {
     if ([buttonNode containsPoint:location]) {
       *isInside = YES;
       if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
@@ -233,7 +230,7 @@ enum {
   CGPoint menuLocation = [self convertPoint:sceneLocation fromNode:self.scene];
 
   NSUInteger i = 0;
-  for (HLLabelButtonNode *buttonNode in _buttonsNode.children) {
+  for (SKNode *buttonNode in _buttonsNode.children) {
     if ([buttonNode containsPoint:menuLocation]) {
       [self HL_tappedItem:i];
       return;
@@ -260,7 +257,7 @@ enum {
   CGPoint menuLocation = [self convertPoint:sceneLocation fromNode:self.scene];
   
   NSUInteger i = 0;
-  for (HLLabelButtonNode *buttonNode in _buttonsNode.children) {
+  for (SKNode *buttonNode in _buttonsNode.children) {
     if ([buttonNode containsPoint:menuLocation]) {
       HLMenuItem *menuItem = [_currentMenu itemAtIndex:i];
       [delegate menuNode:self didLongPressMenuItem:menuItem itemIndex:i];
@@ -285,7 +282,7 @@ enum {
   for (NSUInteger i = 0; i < itemCount; ++i) {
     HLMenuItem *item = [_currentMenu itemAtIndex:i];
 
-    HLLabelButtonNode *buttonPrototype = item.buttonPrototype;
+    SKNode *buttonPrototype = item.buttonPrototype;
     if (!buttonPrototype) {
       if ([item isMemberOfClass:[HLMenuItem class]]) {
         buttonPrototype = _menuItemButtonPrototype;
@@ -300,12 +297,11 @@ enum {
       [NSException raise:@"HLMenuNodeMissingButtonPrototype" format:@"Missing button prototype for menu item."];
     }
 
-    HLLabelButtonNode *buttonNode = [buttonPrototype copy];
-    buttonNode.text = item.text;
-    buttonNode.zPositionScale = HLMenuNodeZPositionLayerButtons * self.zPositionScale / HLMenuNodeZPositionLayerCount;
+    SKNode *buttonNode = [buttonPrototype copy];
+    [(id)buttonNode setText:item.text];
     [_buttonsNode addChild:buttonNode];
 
-    CGSize buttonSize = buttonNode.size;
+    CGSize buttonSize = [(id)buttonNode size];
     if (buttonSize.width > widthMax) {
       widthMax = buttonSize.width;
     }
@@ -319,12 +315,13 @@ enum {
   // note: x tracks the center of each button; y tracks the top edge of each button.
   CGFloat x = _size.width * (0.5f - _anchorPoint.x);
   CGFloat y = _size.height * (1.0f - _anchorPoint.y);
-  for (HLLabelButtonNode *buttonNode in _buttonsNode.children) {
-    buttonNode.anchorPoint = CGPointMake(0.5f, 0.5f);
-    CGFloat buttonHeight = buttonNode.size.height;
+  for (SKNode *buttonNode in _buttonsNode.children) {
+    [(id)buttonNode setAnchorPoint:CGPointMake(0.5f, 0.5f)];
+    CGFloat buttonHeight = [(id)buttonNode size].height;
     buttonNode.position = CGPointMake(x, y - buttonHeight * 0.5f);
     y = y - buttonHeight - _itemSeparatorSize;
   }
+  [self HL_layoutZ];
 
   if (animation == HLMenuNodeAnimationNone) {
 
@@ -363,6 +360,20 @@ enum {
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
     [self HL_loadCurrentMenuSounds];
   });
+}
+
+- (void)HL_layoutZ
+{
+  if (_buttonsNode) {
+    CGFloat zPositionLayerIncrement = self.zPositionScale / HLMenuNodeZPositionLayerCount;
+    CGFloat buttonNodeZPosition = HLMenuNodeZPositionLayerButtons * zPositionLayerIncrement;
+    for (SKNode *buttonNode in _buttonsNode.children) {
+      buttonNode.zPosition = buttonNodeZPosition;
+      if ([buttonNode isKindOfClass:[HLComponentNode class]]) {
+        ((HLComponentNode *)buttonNode).zPositionScale = zPositionLayerIncrement;
+      }
+    }
+  }
 }
 
 - (void)HL_loadCurrentMenuSounds
@@ -479,13 +490,10 @@ enum {
   [aCoder encodeObject:_soundFile forKey:@"soundFile"];
 }
 
-- (void)setButtonPrototype:(HLLabelButtonNode *)buttonPrototype
+- (void)setButtonPrototype:(SKNode *)buttonPrototype
 {
+  HLMenuNodeValidateButtonPrototype(buttonPrototype, @"buttonPrototype");
   _buttonPrototype = buttonPrototype;
-  if ([_buttonPrototype hlGestureTarget]) {
-    HLError(HLLevelError, @"HLMenuItem: buttonPrototype is not expected to have a gesture target; removing it.");
-    [_buttonPrototype hlSetGestureTarget:nil];
-  }
 }
 
 - (NSArray *)path
