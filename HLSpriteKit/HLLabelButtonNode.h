@@ -176,6 +176,8 @@
  The corner radius of the button. 
  
  Default value is `0.0`.
+ 
+ Note: property will only work for label buttons that don’t have a texture.
  */
 @property (nonatomic, assign) CGFloat cornerRadius;
 

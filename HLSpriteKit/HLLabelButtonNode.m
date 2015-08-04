@@ -147,7 +147,13 @@ CGFloat const kPointEpsilon = 0.01;
   // guess this is why finding nodes by name is recommended.)
   for (SKNode *child in copy.children) {
     if ([child isKindOfClass:[SKSpriteNode class]]) {
-      copy->_backgroundNode = (SKSpriteNode *)child;
+        copy->_backgroundNode = (SKSpriteNode *)child;
+//      if (child.zPosition < HLLabelButtonNodeZPositionLayerBackground) {
+//        // note: must be borderNode
+//        copy->_borderNode = (SKSpriteNode *)child;
+//      } else {
+//        copy->_backgroundNode = (SKSpriteNode *)child;
+//      }
     } else if ([child isKindOfClass:[SKLabelNode class]]) {
       copy->_labelNode      = (SKLabelNode *)child;
     }
