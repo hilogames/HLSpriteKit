@@ -175,8 +175,23 @@
 /**
  The corner radius of the button. 
  
- Default value it `0.0`.
+ Default value is `0.0`.
  */
 @property (nonatomic, assign) CGFloat cornerRadius;
+
+/**
+ The boarder width of the button.
+ 
+ Default value is `0.0`.
+ Default color is [SKColor blackColor]
+ */
+@property (nonatomic, assign) CGFloat borderWidth;
+
+/**
+ The color of the border for the button.
+ 
+ Default value is [SKColor blackColor]
+ */
+@property (nonatomic, strong) SKColor *borderColor;
 
 @end

@@ -9,7 +9,8 @@
 #import "HLLabelButtonNode.h"
 
 enum {
-  HLLabelButtonNodeZPositionLayerBackground = 0,
+  HLLabelButtonNodeZPositionLayerBorder = 0,
+  HLLabelButtonNodeZPositionLayerBackground,
   HLLabelButtonNodeZPositionLayerLabel,
   HLLabelButtonNodeZPositionLayerCount
 };
@@ -22,17 +23,24 @@ enum {
   // properties).  If that's ever changed in the future, it would probably be easier to
   // merge the background node and the HLLabelButtonNode again (so that fewer properties
   // need to be wrapped in accessors/mutators).
+  SKSpriteNode *_borderNode;
   SKSpriteNode *_backgroundNode;
   SKLabelNode *_labelNode;
 }
+CGFloat const kPointEpsilon = 0.01;
 
 - (instancetype)initWithColor:(SKColor *)color size:(CGSize)size
 {
   self = [super init];
   if (self) {
+    _borderNode = [SKSpriteNode spriteNodeWithColor:[SKColor blackColor] size:size];
+    _borderNode.zPosition = HLLabelButtonNodeZPositionLayerBorder * self.zPositionScale / HLLabelButtonNodeZPositionLayerCount;
+    [self addChild:_borderNode];
+      
     _backgroundNode = [SKSpriteNode spriteNodeWithColor:color size:size];
     _backgroundNode.zPosition = HLLabelButtonNodeZPositionLayerBackground * self.zPositionScale / HLLabelButtonNodeZPositionLayerCount;
     [self addChild:_backgroundNode];
+      
     [self HL_labelButtonNodeInitCommon];
   }
   return self;
@@ -44,6 +52,11 @@ enum {
     _backgroundNode = [SKSpriteNode spriteNodeWithTexture:texture];
     _backgroundNode.zPosition = HLLabelButtonNodeZPositionLayerBackground * self.zPositionScale / HLLabelButtonNodeZPositionLayerCount;
     [self addChild:_backgroundNode];
+      
+    _borderNode = [SKSpriteNode spriteNodeWithColor:[SKColor blackColor] size:_backgroundNode.size];
+    _borderNode.zPosition = HLLabelButtonNodeZPositionLayerBorder * self.zPositionScale / HLLabelButtonNodeZPositionLayerCount;
+    [self addChild:_borderNode];
+      
     [self HL_labelButtonNodeInitCommon];
   }
   return self;
@@ -56,6 +69,11 @@ enum {
     _backgroundNode = [SKSpriteNode spriteNodeWithImageNamed:name];
     _backgroundNode.zPosition = HLLabelButtonNodeZPositionLayerBackground * self.zPositionScale / HLLabelButtonNodeZPositionLayerCount;
     [self addChild:_backgroundNode];
+      
+    _borderNode = [SKSpriteNode spriteNodeWithColor:[SKColor blackColor] size:_backgroundNode.size];
+    _borderNode.zPosition = HLLabelButtonNodeZPositionLayerBorder * self.zPositionScale / HLLabelButtonNodeZPositionLayerCount;
+    [self addChild:_borderNode];
+      
     [self HL_labelButtonNodeInitCommon];
   }
   return self;
@@ -69,6 +87,8 @@ enum {
   _labelPadX = 0.0f;
   _labelPadY = 0.0f;
   _cornerRadius = 0.0f;
+  _borderColor = nil;
+  _borderWidth = 0.0f;
   _labelNode = [SKLabelNode labelNodeWithFontNamed:@"Helvetica"];
   _labelNode.zPosition = HLLabelButtonNodeZPositionLayerLabel * self.zPositionScale / HLLabelButtonNodeZPositionLayerCount;
   [self addChild:_labelNode];
@@ -87,6 +107,7 @@ enum {
   if (self) {
     // note: Child nodes already decoded in super.  Here we're just hooking up
     // the pointers.
+    _borderNode = [aDecoder decodeObjectForKey:@"borderNode"];
     _backgroundNode = [aDecoder decodeObjectForKey:@"backgroundNode"];
     _labelNode = [aDecoder decodeObjectForKey:@"labelNode"];
     _automaticWidth = [aDecoder decodeBoolForKey:@"automaticWidth"];
@@ -95,6 +116,9 @@ enum {
     _labelPadX = (CGFloat)[aDecoder decodeDoubleForKey:@"labelPadX"];
     _labelPadY = (CGFloat)[aDecoder decodeDoubleForKey:@"labelPadY"];
     _cornerRadius = (CGFloat)[aDecoder decodeDoubleForKey:@"cornerRadius"];
+    _borderWidth = (CGFloat)[aDecoder decodeDoubleForKey:@"borderWidth"];
+    _borderColor = [aDecoder decodeObjectForKey:@"borderColor"];
+
   }
   return self;
 }
@@ -103,6 +127,7 @@ enum {
 {
   [super encodeWithCoder:aCoder];
   // note: Child nodes already decoded in super.  Here we're just recording the pointers.
+  [aCoder encodeObject:_borderNode forKey:@"borderNode"];
   [aCoder encodeObject:_backgroundNode forKey:@"backgroundNode"];
   [aCoder encodeObject:_labelNode forKey:@"labelNode"];
   [aCoder encodeBool:_automaticWidth forKey:@"automaticWidth"];
@@ -111,6 +136,8 @@ enum {
   [aCoder encodeDouble:_labelPadX forKey:@"labelPadX"];
   [aCoder encodeDouble:_labelPadY forKey:@"labelPadY"];
   [aCoder encodeDouble:_cornerRadius forKey:@"cornerRadius"];
+  [aCoder encodeDouble:_borderWidth forKey:@"borderWidth"];
+  [aCoder encodeObject:_borderColor forKey:@"borderColor"];
 }
 
 - (instancetype)copyWithZone:(NSZone *)zone
@@ -122,7 +149,7 @@ enum {
     if ([child isKindOfClass:[SKSpriteNode class]]) {
       copy->_backgroundNode = (SKSpriteNode *)child;
     } else if ([child isKindOfClass:[SKLabelNode class]]) {
-      copy->_labelNode = (SKLabelNode *)child;
+      copy->_labelNode      = (SKLabelNode *)child;
     }
   }
   copy->_automaticHeight = _automaticHeight;
@@ -131,6 +158,8 @@ enum {
   copy->_labelPadX = _labelPadX;
   copy->_labelPadY = _labelPadY;
   copy->_cornerRadius = _cornerRadius;
+  copy->_borderColor = _borderColor;
+  copy->_borderWidth = _borderWidth;
   return copy;
 }
 
@@ -189,6 +218,7 @@ enum {
 {
   [super setZPositionScale:zPositionScale];
   CGFloat zPositionLayerIncrement = zPositionScale / HLLabelButtonNodeZPositionLayerCount;
+  _borderNode.zPosition = HLLabelButtonNodeZPositionLayerBorder * zPositionLayerIncrement;
   _backgroundNode.zPosition = HLLabelButtonNodeZPositionLayerBackground * zPositionLayerIncrement;
   _labelNode.zPosition = HLLabelButtonNodeZPositionLayerLabel * zPositionLayerIncrement;
 }
@@ -272,11 +302,28 @@ enum {
 {
   return _backgroundNode.centerRect;
 }
+
 - (void)setCornerRadius:(CGFloat)cornerRadius
 {
     _cornerRadius = cornerRadius;
     [self HL_layout];
 }
+
+- (void)setBorderWidth:(CGFloat)borderWidth
+{
+    _borderWidth = borderWidth;
+    if (_borderColor == nil) {
+        _borderColor = [SKColor blackColor];
+    }
+    [self HL_layout];
+}
+
+- (void)setBorderColor:(SKColor *)borderColor
+{
+    _borderColor = borderColor;
+    [self HL_layout];
+}
+
 - (void)HL_layout
 {
   // note: Don't layout if text not set; this allows the owner some small control over
@@ -329,35 +376,71 @@ enum {
     }
   }
     
-  if (_cornerRadius) {
-    _backgroundNode.texture = [self initializeBackgroundColor:_backgroundNode.color size:_backgroundNode.size];
+  if (_cornerRadius > kPointEpsilon) {
+    _backgroundNode.texture = [self HL_textureBackgroundColor:_backgroundNode.color size:_backgroundNode.size];
   }
+   
+  if (_borderWidth > kPointEpsilon) {
+      _borderNode.texture = [self HL_textureBorderSize:_backgroundNode.size];
+  }
+  if (_borderColor) {
+      _borderNode.texture = [self HL_textureBorderSize:_backgroundNode.size];
+  }
+    
 }
-- (CAShapeLayer *)newShapeLayerWithBoundsPath:(CGSize)size
-{
-  CAShapeLayer *shapeLayer = [CAShapeLayer new];
-  CGFloat halfBorderWidth = round(1.0 / 2.0); //round(_borderWidth / 2.0);
-    
-  shapeLayer.frame = CGRectMake(0.0, 0.0, size.width, size.height);
-    
-  /* Inset the path so that we don't stroke outside of our bounds */
-  shapeLayer.path = [UIBezierPath bezierPathWithRoundedRect:CGRectInset(shapeLayer.bounds, halfBorderWidth, halfBorderWidth) cornerRadius:_cornerRadius].CGPath;
-    
-  return shapeLayer;
+- (void)HL_initializeBorderSize:(CGSize)size {
+    _borderNode = [SKSpriteNode spriteNodeWithTexture:[self HL_textureFromLayer:[self HL_newBorderLayerWithBoundsPath:_backgroundNode.size]]];
+    _borderNode.zPosition = HLLabelButtonNodeZPositionLayerBorder * self.zPositionScale / HLLabelButtonNodeZPositionLayerCount;
+//    [self addChild:_borderNode];
 }
-- (SKTexture *)initializeBackgroundColor:(SKColor *)backgroundColor size:(CGSize)size
+- (SKTexture *)HL_textureBackgroundColor:(SKColor *)backgroundColor size:(CGSize)size
 {
-    CAShapeLayer *backgroundLayer = [self newShapeLayerWithBoundsPath:size];
+    CAShapeLayer *backgroundLayer = [self HL_newShapeLayerWithBoundsPath:size];
     
-    backgroundLayer.lineWidth = 0.0f;
+//    backgroundLayer.lineWidth = _borderWidth;
     backgroundLayer.fillColor = backgroundColor.CGColor;
     
-    return [self textureFromLayer:backgroundLayer];
+    return [self HL_textureFromLayer:backgroundLayer];
 }
-/* We are going from CALayer -> UIImage -> SKTexture here, so that we can create SKSpriteNodes instead of SKShapeNodes (SKShapeNode doesn't work well with SKCropNode),
- which are then plugged into the maskNode property of a SKCropNode.  This approach also conveniently allows us to use the same code path for custom textures and generated
- textures if you just want a basic progress bar */
-- (SKTexture *)textureFromLayer:(CALayer *)layer
+
+- (SKTexture *)HL_textureBorderSize:(CGSize)size
+{
+    CAShapeLayer *borderLayer = [self HL_newBorderLayerWithBoundsPath:size];
+    
+    borderLayer.fillColor = _borderColor.CGColor;
+    
+    return [self HL_textureFromLayer:borderLayer];
+}
+
+- (CAShapeLayer *)HL_newBorderLayerWithBoundsPath:(CGSize)size
+{
+    CAShapeLayer *shapeLayer    = [CAShapeLayer new];
+    
+    shapeLayer.frame            = CGRectMake(0.0, 0.0, size.width, size.height);
+    
+    // don't inset the path
+    shapeLayer.path             = [UIBezierPath bezierPathWithRoundedRect:shapeLayer.bounds cornerRadius:_cornerRadius].CGPath;
+    
+    return shapeLayer;
+}
+
+- (CAShapeLayer *)HL_newShapeLayerWithBoundsPath:(CGSize)size
+{
+    CAShapeLayer *shapeLayer  = [CAShapeLayer new];
+    
+    CGFloat halfBorderWidth   = round(_borderWidth / 2.0);
+    
+    shapeLayer.frame = CGRectMake(0.0, 0.0, size.width, size.height);
+    
+    //note: Inset the path so that we don't stroke outside of our bounds
+    shapeLayer.path = [UIBezierPath bezierPathWithRoundedRect:CGRectInset(shapeLayer.bounds, halfBorderWidth, halfBorderWidth) cornerRadius:_cornerRadius].CGPath;
+    
+    return shapeLayer;
+}
+
+// note: we are going from CALayer -> UIImage -> SKTexture here, so that we can create SKSpriteNodes instead of SKShapeNodes
+// (SKShapeNode doesn't work well with SKCropNode), which are then plugged into the maskNode property of a SKCropNode.
+- (SKTexture *)HL_textureFromLayer:(CALayer *)layer
 {
     CGFloat width = layer.frame.size.width;
     CGFloat height = layer.frame.size.height;
@@ -380,5 +463,4 @@ enum {
     
     return texture;
 }
-
 @end
