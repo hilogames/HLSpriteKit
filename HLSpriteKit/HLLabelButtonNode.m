@@ -388,11 +388,7 @@ CGFloat const kPointEpsilon = 0.01;
   }
     
 }
-- (void)HL_initializeBorderSize:(CGSize)size {
-    _borderNode = [SKSpriteNode spriteNodeWithTexture:[self HL_textureFromLayer:[self HL_newBorderLayerWithBoundsPath:_backgroundNode.size]]];
-    _borderNode.zPosition = HLLabelButtonNodeZPositionLayerBorder * self.zPositionScale / HLLabelButtonNodeZPositionLayerCount;
-//    [self addChild:_borderNode];
-}
+
 - (SKTexture *)HL_textureBackgroundColor:(SKColor *)backgroundColor size:(CGSize)size
 {
     CAShapeLayer *backgroundLayer = [self HL_newShapeLayerWithBoundsPath:size];
