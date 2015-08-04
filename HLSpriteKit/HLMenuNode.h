@@ -142,9 +142,10 @@ typedef NS_ENUM(NSInteger, HLMenuNodeAnimation) {
  Default prototype button for items in the menu.
 
  Buttons are typed using "duck typing": They must be descended from `SKNode` and must
- additionally respond to the following selectors: `setText:(NSString *)`, `(CGSize)size`,
- and `setAnchorPoint:(CGPoint)`.  A good class to use is `HLLabelButtonNode`.  Selectors
- will be checked at runtime.
+ additionally respond to the following selectors: `(CGSize)size`, and `setAnchorPoint:(CGPoint)`.
+ In addition, if it has a `setText:(NSString *)` selector, it will be automatically set
+ with the corresponding `HLMenuItem` text.  A good class to use is `HLLabelButtonNode`.
+ Selectors will be checked at runtime.
 
  This prototype is used if no other more-specific prototype is specified.  In particular,
  a prototype for an item is found in the following order, from most-specific to
@@ -240,6 +241,18 @@ typedef NS_ENUM(NSInteger, HLMenuNodeAnimation) {
  own gesture target (using `[SKNode+HLGestureTarget hlSetGestureTarget]`).
  */
 @protocol HLMenuNodeDelegate <NSObject>
+
+/// @name Configuring Buttons for Menu Node
+
+/**
+ Called immediately after a button is created for a menu item, but before the button is
+ added to the node hierarchy and displayed.
+ 
+ This callback is optional, but provides an opportunity for the delegate to customize
+ the appearance of a button right before display.
+ */
+@optional
+- (void)menuNode:(HLMenuNode *)menuNode willDisplayButton:(SKNode *)buttonNode forMenuItem:(HLMenuItem *)menuItem itemIndex:(NSUInteger)itemIndex;
 
 /// @name Handling User Interaction
 
