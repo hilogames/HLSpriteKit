@@ -9,8 +9,7 @@
 #import "HLLabelButtonNode.h"
 
 enum {
-  HLLabelButtonNodeZPositionLayerBorder = 0,
-  HLLabelButtonNodeZPositionLayerBackground,
+  HLLabelButtonNodeZPositionLayerBackground = 0,
   HLLabelButtonNodeZPositionLayerLabel,
   HLLabelButtonNodeZPositionLayerCount
 };
