@@ -23,7 +23,6 @@ enum {
   // properties).  If that's ever changed in the future, it would probably be easier to
   // merge the background node and the HLLabelButtonNode again (so that fewer properties
   // need to be wrapped in accessors/mutators).
-  SKSpriteNode *_borderNode;
   SKSpriteNode *_backgroundNode;
   SKLabelNode *_labelNode;
 }
@@ -33,10 +32,6 @@ CGFloat const kPointEpsilon = 0.01;
 {
   self = [super init];
   if (self) {
-    _borderNode = [SKSpriteNode spriteNodeWithColor:[SKColor blackColor] size:size];
-    _borderNode.zPosition = HLLabelButtonNodeZPositionLayerBorder * self.zPositionScale / HLLabelButtonNodeZPositionLayerCount;
-    [self addChild:_borderNode];
-      
     _backgroundNode = [SKSpriteNode spriteNodeWithColor:color size:size];
     _backgroundNode.zPosition = HLLabelButtonNodeZPositionLayerBackground * self.zPositionScale / HLLabelButtonNodeZPositionLayerCount;
     [self addChild:_backgroundNode];
@@ -52,11 +47,6 @@ CGFloat const kPointEpsilon = 0.01;
     _backgroundNode = [SKSpriteNode spriteNodeWithTexture:texture];
     _backgroundNode.zPosition = HLLabelButtonNodeZPositionLayerBackground * self.zPositionScale / HLLabelButtonNodeZPositionLayerCount;
     [self addChild:_backgroundNode];
-      
-    _borderNode = [SKSpriteNode spriteNodeWithColor:[SKColor blackColor] size:_backgroundNode.size];
-    _borderNode.zPosition = HLLabelButtonNodeZPositionLayerBorder * self.zPositionScale / HLLabelButtonNodeZPositionLayerCount;
-    [self addChild:_borderNode];
-      
     [self HL_labelButtonNodeInitCommon];
   }
   return self;
@@ -69,11 +59,6 @@ CGFloat const kPointEpsilon = 0.01;
     _backgroundNode = [SKSpriteNode spriteNodeWithImageNamed:name];
     _backgroundNode.zPosition = HLLabelButtonNodeZPositionLayerBackground * self.zPositionScale / HLLabelButtonNodeZPositionLayerCount;
     [self addChild:_backgroundNode];
-      
-    _borderNode = [SKSpriteNode spriteNodeWithColor:[SKColor blackColor] size:_backgroundNode.size];
-    _borderNode.zPosition = HLLabelButtonNodeZPositionLayerBorder * self.zPositionScale / HLLabelButtonNodeZPositionLayerCount;
-    [self addChild:_borderNode];
-      
     [self HL_labelButtonNodeInitCommon];
   }
   return self;
@@ -107,7 +92,6 @@ CGFloat const kPointEpsilon = 0.01;
   if (self) {
     // note: Child nodes already decoded in super.  Here we're just hooking up
     // the pointers.
-    _borderNode = [aDecoder decodeObjectForKey:@"borderNode"];
     _backgroundNode = [aDecoder decodeObjectForKey:@"backgroundNode"];
     _labelNode = [aDecoder decodeObjectForKey:@"labelNode"];
     _automaticWidth = [aDecoder decodeBoolForKey:@"automaticWidth"];
@@ -127,7 +111,6 @@ CGFloat const kPointEpsilon = 0.01;
 {
   [super encodeWithCoder:aCoder];
   // note: Child nodes already decoded in super.  Here we're just recording the pointers.
-  [aCoder encodeObject:_borderNode forKey:@"borderNode"];
   [aCoder encodeObject:_backgroundNode forKey:@"backgroundNode"];
   [aCoder encodeObject:_labelNode forKey:@"labelNode"];
   [aCoder encodeBool:_automaticWidth forKey:@"automaticWidth"];
@@ -147,13 +130,7 @@ CGFloat const kPointEpsilon = 0.01;
   // guess this is why finding nodes by name is recommended.)
   for (SKNode *child in copy.children) {
     if ([child isKindOfClass:[SKSpriteNode class]]) {
-        copy->_backgroundNode = (SKSpriteNode *)child;
-//      if (child.zPosition < HLLabelButtonNodeZPositionLayerBackground) {
-//        // note: must be borderNode
-//        copy->_borderNode = (SKSpriteNode *)child;
-//      } else {
-//        copy->_backgroundNode = (SKSpriteNode *)child;
-//      }
+      copy->_backgroundNode = (SKSpriteNode *)child;
     } else if ([child isKindOfClass:[SKLabelNode class]]) {
       copy->_labelNode      = (SKLabelNode *)child;
     }
@@ -224,7 +201,6 @@ CGFloat const kPointEpsilon = 0.01;
 {
   [super setZPositionScale:zPositionScale];
   CGFloat zPositionLayerIncrement = zPositionScale / HLLabelButtonNodeZPositionLayerCount;
-  _borderNode.zPosition = HLLabelButtonNodeZPositionLayerBorder * zPositionLayerIncrement;
   _backgroundNode.zPosition = HLLabelButtonNodeZPositionLayerBackground * zPositionLayerIncrement;
   _labelNode.zPosition = HLLabelButtonNodeZPositionLayerLabel * zPositionLayerIncrement;
 }
@@ -382,62 +358,33 @@ CGFloat const kPointEpsilon = 0.01;
     }
   }
     
-  if (_cornerRadius > kPointEpsilon) {
+  if (_cornerRadius > kPointEpsilon && !_backgroundNode.texture) {
     _backgroundNode.texture = [self HL_textureBackgroundColor:_backgroundNode.color size:_backgroundNode.size];
   }
    
   if (_borderWidth > kPointEpsilon) {
-      _borderNode.texture = [self HL_textureBorderSize:_backgroundNode.size];
+      _backgroundNode.texture = [self HL_textureBackgroundColor:_backgroundNode.color size:_backgroundNode.size];
   }
   if (_borderColor) {
-      _borderNode.texture = [self HL_textureBorderSize:_backgroundNode.size];
+      _backgroundNode.texture = [self HL_textureBackgroundColor:_backgroundNode.color size:_backgroundNode.size];
   }
     
 }
 
 - (SKTexture *)HL_textureBackgroundColor:(SKColor *)backgroundColor size:(CGSize)size
 {
-    CAShapeLayer *backgroundLayer = [self HL_newShapeLayerWithBoundsPath:size];
+    UIBezierPath *maskPath      = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(0, 0, size.width, size.height) cornerRadius:_cornerRadius];
     
-//    backgroundLayer.lineWidth = _borderWidth;
-    backgroundLayer.fillColor = backgroundColor.CGColor;
+    CAShapeLayer *shapeLayer    = [CAShapeLayer layer];
+    shapeLayer.frame            = CGRectMake(0, 0, size.width, size.height);
+    shapeLayer.path             = maskPath.CGPath;
+    shapeLayer.fillColor        = backgroundColor.CGColor;
+    shapeLayer.strokeColor      = _borderColor.CGColor;
+    shapeLayer.lineWidth        = _borderWidth;
+    shapeLayer.cornerRadius     = _cornerRadius;
+    shapeLayer.masksToBounds    = YES;
     
-    return [self HL_textureFromLayer:backgroundLayer];
-}
-
-- (SKTexture *)HL_textureBorderSize:(CGSize)size
-{
-    CAShapeLayer *borderLayer = [self HL_newBorderLayerWithBoundsPath:size];
-    
-    borderLayer.fillColor = _borderColor.CGColor;
-    
-    return [self HL_textureFromLayer:borderLayer];
-}
-
-- (CAShapeLayer *)HL_newBorderLayerWithBoundsPath:(CGSize)size
-{
-    CAShapeLayer *shapeLayer    = [CAShapeLayer new];
-    
-    shapeLayer.frame            = CGRectMake(0.0, 0.0, size.width, size.height);
-    
-    // don't inset the path
-    shapeLayer.path             = [UIBezierPath bezierPathWithRoundedRect:shapeLayer.bounds cornerRadius:_cornerRadius].CGPath;
-    
-    return shapeLayer;
-}
-
-- (CAShapeLayer *)HL_newShapeLayerWithBoundsPath:(CGSize)size
-{
-    CAShapeLayer *shapeLayer  = [CAShapeLayer new];
-    
-    CGFloat halfBorderWidth   = round(_borderWidth / 2.0);
-    
-    shapeLayer.frame = CGRectMake(0.0, 0.0, size.width, size.height);
-    
-    //note: Inset the path so that we don't stroke outside of our bounds
-    shapeLayer.path = [UIBezierPath bezierPathWithRoundedRect:CGRectInset(shapeLayer.bounds, halfBorderWidth, halfBorderWidth) cornerRadius:_cornerRadius].CGPath;
-    
-    return shapeLayer;
+    return [self HL_textureFromLayer:shapeLayer];
 }
 
 // note: we are going from CALayer -> UIImage -> SKTexture here, so that we can create SKSpriteNodes instead of SKShapeNodes
