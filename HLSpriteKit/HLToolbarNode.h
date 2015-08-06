@@ -441,3 +441,30 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 - (void)toolbarNode:(HLToolbarNode *)toolbarNode didTapTool:(NSString *)toolTag;
 
 @end
+
+@protocol HLToolbarNodeMultiGestureTargetDelegate;
+
+/**
+ A gesture target for toolbar nodes that handles taps, double-taps, long-presses, and pans.
+*/
+@interface HLToolbarNodeMultiGestureTarget : NSObject <HLGestureTarget>
+
+- (instancetype)initWithToolbarNode:(HLToolbarNode *)toolbarNode;
+
+@property (nonatomic, weak) HLToolbarNode *toolbarNode;
+
+@property (nonatomic, weak) id <HLToolbarNodeMultiGestureTargetDelegate> delegate;
+
+@end
+
+@protocol HLToolbarNodeMultiGestureTargetDelegate <NSObject>
+
+- (void)toolbarNode:(HLToolbarNode *)toolbarNode didTapTool:(NSString *)toolTag;
+
+- (void)toolbarNode:(HLToolbarNode *)toolbarNode didDoubleTapTool:(NSString *)toolTag;
+
+- (void)toolbarNode:(HLToolbarNode *)toolbarNode didLongPressTool:(NSString *)toolTag;
+
+- (void)toolbarNode:(HLToolbarNode *)toolbarNode didPanWithGestureRecognizer:(UIPanGestureRecognizer *)gestureRecognizer;
+
+@end
