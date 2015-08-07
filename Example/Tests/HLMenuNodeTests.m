@@ -45,9 +45,9 @@
   HLLabelButtonNode *labelButtonNode = [[HLLabelButtonNode alloc] init];
   XCTAssertNoThrow(menuNode.itemButtonPrototype = labelButtonNode);
 
-  // A simple SKSpriteNode won't do, under current specifications.
+  // A simple SKSpriteNode will work, under current specifications.
   SKSpriteNode *spriteNode = [SKSpriteNode spriteNodeWithColor:[SKColor redColor] size:CGSizeMake(200.0f, 50.0f)];
-  XCTAssertThrows(menuNode.itemButtonPrototype = spriteNode);
+  XCTAssertNoThrow(menuNode.itemButtonPrototype = spriteNode);
 
   // A simple SKLabelNode won't do, under current specifications.
   SKLabelNode *labelNode = [SKLabelNode labelNodeWithFontNamed:@"Courier"];
