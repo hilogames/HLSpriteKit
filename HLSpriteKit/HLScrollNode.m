@@ -44,6 +44,7 @@ enum {
     _contentScaleMinimum = 1.0f;
     _contentScaleMinimumMode = HLScrollNodeContentScaleMinimumFitTight;
     _contentScaleMaximum = 1.0f;
+    _contentClipped = NO;
   }
   return self;
 }
@@ -72,6 +73,7 @@ enum {
     _contentScaleMinimum = contentScaleMinimum;
     _contentScaleMinimumMode = contentScaleMinimumMode;
     _contentScaleMaximum = contentScaleMaximum;
+    _contentClipped = NO;
 
     self.contentNode = contentNode;
   }
@@ -99,13 +101,16 @@ enum {
 - (void)setSize:(CGSize)size
 {
   _size = size;
-  if (!_contentNode) {
-    return;
+  if (_contentClipped) {
+    SKCropNode *cropNode = (SKCropNode *)self.children.firstObject;
+    ((SKSpriteNode *)cropNode.maskNode).size = size;
   }
-  CGFloat constrainedScale = [self HL_contentConstrainedScale:_contentNode.xScale];
-  _contentNode.xScale = constrainedScale;
-  _contentNode.yScale = constrainedScale;
-  _contentNode.position = [self HL_contentConstrainedPositionX:_contentNode.position.x positionY:_contentNode.position.y scale:constrainedScale];
+  if (_contentNode) {
+    CGFloat constrainedScale = [self HL_contentConstrainedScale:_contentNode.xScale];
+    _contentNode.xScale = constrainedScale;
+    _contentNode.yScale = constrainedScale;
+    _contentNode.position = [self HL_contentConstrainedPositionX:_contentNode.position.x positionY:_contentNode.position.y scale:constrainedScale];
+  }
 }
 
 - (void)setAnchorPoint:(CGPoint)anchorPoint
@@ -142,7 +147,12 @@ enum {
 
   if (_contentNode) {
 
-    [self addChild:_contentNode];
+    if (_contentClipped) {
+      SKCropNode *cropNode = (SKCropNode *)self.children.firstObject;
+      [cropNode addChild:_contentNode];
+    } else {
+      [self addChild:_contentNode];
+    }
 
     CGFloat zPositionLayerIncrement = self.zPositionScale / HLScrollNodeZPositionLayerCount;
     _contentNode.zPosition = HLScrollNodeZPositionLayerContent * zPositionLayerIncrement;
@@ -304,6 +314,30 @@ enum {
   _contentNode.xScale = constrainedScale;
   _contentNode.yScale = constrainedScale;
   _contentNode.position = [self HL_contentConstrainedPositionX:_contentNode.position.x positionY:_contentNode.position.y scale:constrainedScale];
+}
+
+- (void)setContentClipped:(BOOL)contentClipped
+{
+  if (_contentClipped == contentClipped) {
+    return;
+  }
+  _contentClipped = contentClipped;
+  if (_contentClipped) {
+    SKCropNode *cropNode = [SKCropNode node];
+    cropNode.maskNode = [SKSpriteNode spriteNodeWithColor:[SKColor blackColor] size:self.size];
+    [self addChild:cropNode];
+    if (_contentNode) {
+      [_contentNode removeFromParent];
+      [cropNode addChild:_contentNode];
+    }
+  } else {
+    SKCropNode *cropNode = (SKCropNode *)self.children.firstObject;
+    [cropNode removeFromParent];
+    if (_contentNode) {
+      [_contentNode removeFromParent];
+      [self addChild:_contentNode];
+    }
+  }
 }
 
 - (void)setContentOffset:(CGPoint)contentOffset contentScale:(CGFloat)contentScale

@@ -43,7 +43,8 @@ typedef NS_ENUM(NSInteger, HLScrollNodeContentScaleMinimumMode)
 
  The `HLScrollNode` is not completely analogous to `UIScrollView`, but the similarity is
  deliberate.  One notable difference: The `HLScrollNode` does not currently clip the
- contents to its own size.
+ contents to its own size except when configured to do so using the `contentClipped`
+ property.
 
  ## Common Gesture Handling Configurations
 
@@ -118,8 +119,8 @@ typedef NS_ENUM(NSInteger, HLScrollNodeContentScaleMinimumMode)
 /**
  The size of the scroll node in which the content appears.
 
- Currently, the content is not clipped to this area, but the `contentOffset` and
- `contentScale` are constrained to respect it.
+ The `contentOffset` and `contentScale` are constrained to respect this size.
+ If `contentClipped` is `YES`, the content will be cropped to this size.
  */
 @property (nonatomic, assign) CGSize size;
 
@@ -180,6 +181,21 @@ typedef NS_ENUM(NSInteger, HLScrollNodeContentScaleMinimumMode)
  Default value `1.0`.
 */
 @property (nonatomic, assign) CGFloat contentScaleMaximum;
+
+/**
+ Whether or not the content is clipped (cropped) to the overall scroll node dimensions.
+ 
+ Default value is `NO`.
+ 
+ @bug When a descendant node of the `contentNode` is an `SKCropNode`, the clipping of
+      contents is irregular, affecting some descendants but not others.  Unfortunately
+      it can be difficult to determine the culprit, since crop nodes are sometimes
+      hidden in the implementation of custom nodes.  For instance, `HLToolbarNode`
+      includes a crop node in its hierarchy of children nodes.  If a toolbarnode
+      is added to the content of a scroll node, clipping will be affected for all
+      other children of the content node.
+*/
+@property (nonatomic, getter=isContentClipped) BOOL contentClipped;
 
 /// @name Setting Content Offset and Scale
 

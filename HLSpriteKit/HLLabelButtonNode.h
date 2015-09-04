@@ -9,7 +9,6 @@
 #import <SpriteKit/SpriteKit.h>
 
 #import "HLComponentNode.h"
-#import "HLGestureTarget.h"
 #import "SKLabelNode+HLLabelNodeAdditions.h"
 
 /**
