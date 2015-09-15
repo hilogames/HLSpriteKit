@@ -116,10 +116,13 @@ enum {
 - (void)setAnchorPoint:(CGPoint)anchorPoint
 {
   _anchorPoint = anchorPoint;
-  if (!_contentNode) {
-    return;
+  if (_contentClipped) {
+    SKCropNode *cropNode = (SKCropNode *)self.children.firstObject;
+    ((SKSpriteNode *)cropNode.maskNode).anchorPoint = anchorPoint;
   }
-  _contentNode.position = [self HL_contentConstrainedPositionX:_contentNode.position.x positionY:_contentNode.position.y scale:_contentNode.xScale];
+  if (_contentNode) {
+    _contentNode.position = [self HL_contentConstrainedPositionX:_contentNode.position.x positionY:_contentNode.position.y scale:_contentNode.xScale];
+  }
 }
 
 - (void)setZPositionScale:(CGFloat)zPositionScale
@@ -324,7 +327,9 @@ enum {
   _contentClipped = contentClipped;
   if (_contentClipped) {
     SKCropNode *cropNode = [SKCropNode node];
-    cropNode.maskNode = [SKSpriteNode spriteNodeWithColor:[SKColor blackColor] size:self.size];
+    SKSpriteNode *maskNode = [SKSpriteNode spriteNodeWithColor:[SKColor blackColor] size:self.size];
+    maskNode.anchorPoint = _anchorPoint;
+    cropNode.maskNode = maskNode;
     [self addChild:cropNode];
     if (_contentNode) {
       [_contentNode removeFromParent];
