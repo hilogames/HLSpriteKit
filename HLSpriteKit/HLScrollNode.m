@@ -170,6 +170,43 @@ enum {
   }
 }
 
+- (void)setContent:(SKNode *)contentNode
+       contentSize:(CGSize)contentSize
+     contentOffset:(CGPoint)contentOffset
+      contentScale:(CGFloat)contentScale
+{
+  if (_contentNode) {
+    [_contentNode removeFromParent];
+  }
+
+  _contentNode = contentNode;
+  _contentSize = contentSize;
+
+  if (!_contentNode) {
+    _contentOffsetOffline = contentOffset;
+    _contentScaleOffline = contentScale;
+    return;
+  }
+  
+  if (_contentClipped) {
+    SKCropNode *cropNode = (SKCropNode *)self.children.firstObject;
+    [cropNode addChild:_contentNode];
+  } else {
+    [self addChild:_contentNode];
+  }
+  
+  CGFloat zPositionLayerIncrement = self.zPositionScale / HLScrollNodeZPositionLayerCount;
+  _contentNode.zPosition = HLScrollNodeZPositionLayerContent * zPositionLayerIncrement;
+  if ([_contentNode isKindOfClass:[HLComponentNode class]]) {
+    [(HLComponentNode *)_contentNode setZPositionScale:zPositionLayerIncrement];
+  }
+  
+  CGFloat constrainedScale = [self HL_contentConstrainedScale:contentScale];
+  _contentNode.xScale = constrainedScale;
+  _contentNode.yScale = constrainedScale;
+  _contentNode.position = [self HL_contentConstrainedPositionX:contentOffset.x positionY:contentOffset.y scale:constrainedScale];
+}
+
 - (void)setContentSize:(CGSize)contentSize
 {
   _contentSize = contentSize;

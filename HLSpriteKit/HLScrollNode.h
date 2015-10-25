@@ -114,6 +114,33 @@ typedef NS_ENUM(NSInteger, HLScrollNodeContentScaleMinimumMode)
 */
 @property (nonatomic, strong) SKNode *contentNode;
 
+/**
+ Set content node and various content properties at the same time.
+ 
+ This is partly a convenience method, but more importantly it suggests the most efficient
+ way to accomplish the task.  Setting the properties individually, otherwise, might result
+ in superfluous layout calls (internally).
+
+ The properties accepted by the method are not **all** the possible layout-affecting
+ parameters; see the big long init method for notes.  However, these are the deemed
+ the most common layout-affecting parameters that might change if a scroll node's
+ content node is changed.
+ 
+ For an efficient way to set an arbitrary number of layout-affecting parameters, follow
+ this pattern: If `contentNode` is unset, then content properties may be set without any
+ internal layout attempted.  For instance:
+ 
+     scrollNode.contentNode = nil;
+     scrollNode.contentSize = newContentSize;
+     scrollNode.contentOffset = CGPointZero;
+     scrollNode.contentAnchorPoint = newContentAnchorPoint;
+     scrollNode.contentNode = newContentNode;
+*/
+- (void)setContent:(SKNode *)contentNode
+       contentSize:(CGSize)contentSize
+     contentOffset:(CGPoint)contentOffset
+      contentScale:(CGFloat)contentScale;
+
 /// @name Configuring Scroll Node Geometry
 
 /**
