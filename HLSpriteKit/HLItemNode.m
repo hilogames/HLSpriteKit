@@ -52,7 +52,7 @@
 
 - (void)setZPositionScale:(CGFloat)zPositionScale
 {
-  super.zPositionScale = zPositionScale;
+  [super setZPositionScale:zPositionScale];
   SKNode *contentNode = [self childNodeWithName:@"content"];
   if (contentNode) {
     if ([contentNode isKindOfClass:[HLComponentNode class]]) {

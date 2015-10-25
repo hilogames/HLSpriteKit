@@ -131,10 +131,10 @@ enum {
   if (!_contentNode) {
     return;
   }
-  CGFloat zPositionLayerSize = zPositionScale / HLScrollNodeZPositionLayerCount;
-  _contentNode.zPosition = HLScrollNodeZPositionLayerContent * zPositionLayerSize;
+  CGFloat zPositionLayerIncrement = zPositionScale / HLScrollNodeZPositionLayerCount;
+  _contentNode.zPosition = HLScrollNodeZPositionLayerContent * zPositionLayerIncrement;
   if ([_contentNode isKindOfClass:[HLComponentNode class]]) {
-    [(HLComponentNode *)_contentNode setZPositionScale:zPositionLayerSize];
+    [(HLComponentNode *)_contentNode setZPositionScale:zPositionLayerIncrement];
   }
 }
 

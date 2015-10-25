@@ -298,12 +298,7 @@ typedef NS_ENUM(NSInteger, HLMenuNodeAnimation) {
 /**
  Initializes a new menu item.
  */
-- (instancetype)initWithText:(NSString *)text NS_DESIGNATED_INITIALIZER;
-
-// TODO: This is declared for the sake of the NS_DESIGNATED_INITIALIZER; I expected
-// a superclass to do this for me.  Give it some time and then try to remove this
-// declaration.
-- (instancetype)initWithCoder:(NSCoder *)aDecoder NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithText:(NSString *)text;
 
 /// @name Configuring Appearance
 
