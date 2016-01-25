@@ -187,7 +187,7 @@ Here are your options:
 
 #### Create a custom node that can be its own gesture target.
 
-Follow the pattern of components in `HLSpriteKit`: conform to the
+Follow the pattern of components in `HLSpriteKit`, and conform to the
 `HLGestureTarget` protocol in your custom node class. Through the
 `HLGestureTarget` interface, your node will tell its scene what
 `UIGestureRecognizer`s it expects, and what to do when those gesture
