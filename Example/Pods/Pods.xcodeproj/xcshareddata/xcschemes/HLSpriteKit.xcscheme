@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "7610B0048768F6B7D959C9A8C23441E4"
+               BlueprintIdentifier = "589C367BF3F135249A1A9497609D4BB4"
                BuildableName = "libHLSpriteKit.a"
                BlueprintName = "HLSpriteKit"
                ReferencedContainer = "container:Pods.xcodeproj">
@@ -42,10 +42,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "7610B0048768F6B7D959C9A8C23441E4"
-            BuildableName = "libHLSpriteKit.a"
+            BlueprintIdentifier = "6003F589195388D20070C39A"
+            BuildableName = "HLSpriteKit.app"
             BlueprintName = "HLSpriteKit"
-            ReferencedContainer = "container:Pods.xcodeproj">
+            ReferencedContainer = "container:../HLSpriteKit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -61,15 +61,16 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <MacroExpansion>
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "7610B0048768F6B7D959C9A8C23441E4"
-            BuildableName = "libHLSpriteKit.a"
+            BlueprintIdentifier = "6003F589195388D20070C39A"
+            BuildableName = "HLSpriteKit.app"
             BlueprintName = "HLSpriteKit"
-            ReferencedContainer = "container:Pods.xcodeproj">
+            ReferencedContainer = "container:../HLSpriteKit.xcodeproj">
          </BuildableReference>
-      </MacroExpansion>
+      </BuildableProductRunnable>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -82,7 +83,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "7610B0048768F6B7D959C9A8C23441E4"
+            BlueprintIdentifier = "589C367BF3F135249A1A9497609D4BB4"
             BuildableName = "libHLSpriteKit.a"
             BlueprintName = "HLSpriteKit"
             ReferencedContainer = "container:Pods.xcodeproj">

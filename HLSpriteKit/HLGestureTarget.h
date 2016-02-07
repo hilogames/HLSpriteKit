@@ -260,7 +260,7 @@ BOOL HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIG
      dialog box, and add a single button which dismisses it.  So then the button removes
      the dialog box from the node hierarchy, no other references exist, the parent is
      deleted which deletes the children, the button is deleted, so the callback block
-     (being run) is deleted.  So (see notes in notes/objective-c.txt) we have add TWO
+     (being run) is deleted.  So (see notes in notes/objective-c.txt) we have to add TWO
      lines of code, making a strong reference (at block execution time) of a weak
      reference (at block copy time) of the dialog box.  What a pain.  HLGestureTarget
      should make this easier for us somehow.  Could it retain a strong reference for us

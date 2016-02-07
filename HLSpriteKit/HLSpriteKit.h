@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 Hilo Games. All rights reserved.
 //
 
+#import "HLAction.h"
 #import "HLComponentNode.h"
 #import "HLEmitterStore.h"
 #import "HLGestureTarget.h"
