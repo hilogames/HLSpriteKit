@@ -27,7 +27,7 @@
 
  If the layout manager is the same object as the node, then the pointer to `self` is not
  explicitly retained (but will be returned by `hlLayoutManager`).
- 
+
  Pass `nil` to unset the layout manager (if any).
 */
 - (void)hlSetLayoutManager:(id <HLLayoutManager>)layoutManager;

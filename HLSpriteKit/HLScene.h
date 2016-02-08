@@ -17,23 +17,23 @@
       presumably.  But parent-traversal is already coded, and works in simple cases, so
       I'm delaying implementation until I have a use-case for `zPosition`-only.
 
- @bug Okay, I had one use case: I wanted to flash the entire scene white, and so naively
-      I overlaid a white sprite node on the scene and animated its alpha.  Gesture handling
+ @bug Okay, I had one use case: I wanted to flash the entire scene white, and so naively I
+      overlaid a white sprite node on the scene and animated its alpha.  Gesture handling
       started with the highest z-position object, which was the white node, because it was
       over everything.  In particular, it covered over multiple gesture targets which I
       still wanted to work.  (If there were just one target enabled, then I could make the
-      white node the child of that target, and gestures would fall through according to the
-      "ThenParent" of the hit test mode.  But that doesn't work for multiple covered
+      white node the child of that target, and gestures would fall through according to
+      the "ThenParent" of the hit test mode.  But that doesn't work for multiple covered
       targets.)  I preferred to work around the problem (by flashing white in a different
       way), but it still makes a good use case.  The opposite case is this: It's nice to
       be able to disable interaction in the scene by covering everything with a matte
       which has a top-level parent.  However, that function is not impossible when doing
-      HLSceneGestureTargetHitTestModeZPosition (for example, the matte could be itself
-      a gesture target which explicitly does nothing).  One more idea along these lines:
+      HLSceneGestureTargetHitTestModeZPosition (for example, the matte could be itself a
+      gesture target which explicitly does nothing).  One more idea along these lines:
       Rather than having a scene-wide mode, could each node in the tree (optionally) have
-      its own mode?  Like, the scene mode is to find the first target, either "deepest"
-      or "z-position", but then that first target is queried to see how to traverse the
-      node tree, whether by node parent or z-position?
+      its own mode?  Like, the scene mode is to find the first target, either "deepest" or
+      "z-position", but then that first target is queried to see how to traverse the node
+      tree, whether by node parent or z-position?
 */
 typedef NS_ENUM(NSInteger, HLSceneGestureTargetHitTestMode) {
   /**
@@ -148,7 +148,7 @@ FOUNDATION_EXPORT NSString * const HLSceneChildGestureTarget;
 
 /**
  Overridden by the `HLScene` subclass to load all scene assets.
- */
+*/
 + (void)loadSceneAssets;
 
 /**
@@ -235,7 +235,7 @@ FOUNDATION_EXPORT NSString * const HLSceneChildGestureTarget;
  targets by traversing parents in the node tree, or again by `zPosition`?
 
  See `HLSceneGestureTargetHitTestMode` for the options.
- 
+
  Default value is `HLSceneGestureTargetHitTestModeDeepestThenParent`.
 */
 @property (nonatomic, assign) HLSceneGestureTargetHitTestMode gestureTargetHitTestMode;

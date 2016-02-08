@@ -367,7 +367,7 @@ typedef NS_ENUM(NSInteger, HLGridNodeLayoutMode) {
  The delegate is (currently) concerned mostly with handling user interaction.  It's worth
  noting that the `HLGridNode` only receives gestures if it is configured as its own
  gesture target (using `[SKNode+HLGestureTarget hlSetGestureTarget]`).
- */
+*/
 @protocol HLGridNodeDelegate <NSObject>
 
 /// @name Handling User Interaction

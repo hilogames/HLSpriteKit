@@ -444,7 +444,7 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
       naturalToolsSize.height = naturalToolSize.height;
     }
   }
-  
+
   // TODO: Some pretty ugly quantization of border sizes and/or tool locations when scaling sizes.
   // I think it's only when the toolbar node itself is scaled (by the owner), but it might also
   // result from any fractional pixel sizes when scaling internally.  Most obvious: As the toolbar
@@ -469,7 +469,7 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
   // texture store and force it here to use linear filtering, then it looks nice in the toolbar...
   // but then all my segment textures dragged into the track seem to take on the same filtering.
   // And testing the value of texture.filteringMode gives unexpected results.
-  
+
   // Calculate tool scale.
   int squareCount = (int)[squareNodes count];
   CGSize toolbarConstantSize = CGSizeMake(_squareSeparatorSize * (squareCount - 1) + _toolPad * (squareCount * 2) + _backgroundBorderSize * 2,
@@ -508,7 +508,7 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
   // the documented promise is that "no changes take effect until an explicit call to layout"; moreover, since in
   // those mutators the _squaresNode wouldn't be updated, the effected change might only be partial, and therefore
   // ugly.)
-  
+
   // Set toolbar size.
   _size = finalToolbarSize;
   if (animation == HLToolbarNodeAnimationNone) {
@@ -530,7 +530,7 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
   // Set toolbar anchorPoint.
   _backgroundNode.anchorPoint = _anchorPoint;
   [(SKSpriteNode *)_cropNode.maskNode setAnchorPoint:_anchorPoint];
-  
+
   // Calculate justification offset.
   CGFloat justificationOffset = 0.0f;
   if (_justification == HLToolbarNodeJustificationLeft) {
@@ -543,13 +543,13 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
       justificationOffset = remainingToolsWidth;
     }
   }
-  
+
   // Layout tools (scaled and positioned appropriately).
   CGFloat x = _anchorPoint.x * -finalToolbarSize.width + _backgroundBorderSize + justificationOffset;
   CGFloat y = _anchorPoint.y * -finalToolbarSize.height + finalToolbarSize.height / 2.0f;
   for (HLBackdropItemNode *squareNode in squareNodes) {
     SKNode *toolNode = squareNode.content;
-    
+
     CGSize naturalToolSize = HLGetBoundsForTransformation([(id)toolNode size], toolNode.zRotation);
     // note: Can multiply toolNode.scale by finalToolsScale, directly.  But that's messing
     // with the properties of the nodes passed in to us.  Instead, set the scale of the
@@ -563,7 +563,7 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
     squareNode.xScale = finalToolsScale;
     squareNode.yScale = finalToolsScale;
     squareNode.position = CGPointMake(x + finalToolSize.width / 2.0f + _toolPad, y);
-    
+
     x += finalToolSize.width + _toolPad * 2 + _squareSeparatorSize;
   }
 }
@@ -636,12 +636,12 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
   CGPoint viewLocation = [gestureRecognizer locationInView:_toolbarNode.scene.view];
   CGPoint sceneLocation = [_toolbarNode.scene convertPointFromView:viewLocation];
   CGPoint location = [_toolbarNode convertPoint:sceneLocation fromNode:_toolbarNode.scene];
-  
+
   NSString *toolTag = [_toolbarNode toolAtLocation:location];
   if (!toolTag) {
     return;
   }
-  
+
   [delegate toolbarNode:_toolbarNode didTapTool:toolTag];
 }
 
@@ -651,16 +651,16 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
   if (!delegate) {
     return;
   }
-  
+
   CGPoint viewLocation = [gestureRecognizer locationInView:_toolbarNode.scene.view];
   CGPoint sceneLocation = [_toolbarNode.scene convertPointFromView:viewLocation];
   CGPoint location = [_toolbarNode convertPoint:sceneLocation fromNode:_toolbarNode.scene];
-  
+
   NSString *toolTag = [_toolbarNode toolAtLocation:location];
   if (!toolTag) {
     return;
   }
-  
+
   [delegate toolbarNode:_toolbarNode didDoubleTapTool:toolTag];
 }
 
@@ -670,16 +670,16 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
   if (!delegate) {
     return;
   }
-  
+
   CGPoint viewLocation = [gestureRecognizer locationInView:_toolbarNode.scene.view];
   CGPoint sceneLocation = [_toolbarNode.scene convertPointFromView:viewLocation];
   CGPoint location = [_toolbarNode convertPoint:sceneLocation fromNode:_toolbarNode.scene];
-  
+
   NSString *toolTag = [_toolbarNode toolAtLocation:location];
   if (!toolTag) {
     return;
   }
-  
+
   [delegate toolbarNode:_toolbarNode didLongPressTool:toolTag];
 }
 

@@ -13,8 +13,8 @@
 FOUNDATION_EXPORT const CGFloat HLTableLayoutManagerEpsilon;
 
 /**
- Provides functionality to lay out (set positions of) nodes in a table.  This manager
- may be attached to an `SKNode` using `[SKNode+HLLayoutManager hlSetLayoutManager`.
+ Provides functionality to lay out (set positions of) nodes in a table.  This manager may
+ be attached to an `SKNode` using `[SKNode+HLLayoutManager hlSetLayoutManager`.
 */
 @interface HLTableLayoutManager : NSObject <HLLayoutManager, NSCopying, NSCoding>
 
@@ -26,16 +26,15 @@ FOUNDATION_EXPORT const CGFloat HLTableLayoutManagerEpsilon;
 - (instancetype)init NS_DESIGNATED_INITIALIZER;
 
 /**
- Initializes the object with all parameters necessary for a basic table layout
- of nodes.
+ Initializes the object with all parameters necessary for a basic table layout of nodes.
 */
 - (instancetype)initWithColumnCount:(NSUInteger)columnCount
                        columnWidths:(NSArray *)columnWidths
                  columnAnchorPoints:(NSArray *)columnAnchorPoints
                          rowHeights:(NSArray *)rowHeights NS_DESIGNATED_INITIALIZER;
 
-// TODO: This is declared for the sake of the NS_DESIGNATED_INITIALIZER; I expected
-// a superclass to do this for me.  Give it some time and then try to remove this
+// TODO: This is declared for the sake of the NS_DESIGNATED_INITIALIZER; I expected a
+// superclass to do this for me.  Give it some time and then try to remove this
 // declaration.
 - (instancetype)initWithCoder:(NSCoder *)aDecoder NS_DESIGNATED_INITIALIZER;
 
@@ -47,15 +46,15 @@ FOUNDATION_EXPORT const CGFloat HLTableLayoutManagerEpsilon;
  For layout to have an effect: `columnCount` must be non-zero, and `columnWidths` and
  `columnAnchorPoints` and `rowHeights` must have at least one element each.
 
- The order of the passed nodes determines position in the table: rows are filled
- left to right starting with the top row.  A cell is skipped if the corresponding
- element in the array is not a kind of `SKNode` class.  (It is suggested to pass
- `[NSNull null]` to intentionally leave cells empty.)
+ The order of the passed nodes determines position in the table: rows are filled left to
+ right starting with the top row.  A cell is skipped if the corresponding element in the
+ array is not a kind of `SKNode` class.  (It is suggested to pass `[NSNull null]` to
+ intentionally leave cells empty.)
 
- This method must always be called explicitly to realize layout changes.  On one
- hand, it's annoying to have to remember to call it; on the other hand, it allows
- the owner efficiently to make multiple changes (e.g. remove a node, insert another
- node, change the `constrainedSize`, etc) and re-layout only exactly once.
+ This method must always be called explicitly to realize layout changes.  On one hand,
+ it's annoying to have to remember to call it; on the other hand, it allows the owner
+ efficiently to make multiple changes (e.g. remove a node, insert another node, change the
+ `constrainedSize`, etc) and re-layout only exactly once.
 */
 - (void)layout:(NSArray *)nodes;
 
@@ -72,8 +71,8 @@ FOUNDATION_EXPORT const CGFloat HLTableLayoutManagerEpsilon;
 /**
  A constant offset used for the table during layout.
 
- For example, if the `tableOffset` is `(10.0, 0.0)`, all nodes laid out will have
- ten points added to their `position.x`.  Default value is `(0.0, 0.0)`.
+ For example, if the `tableOffset` is `(10.0, 0.0)`, all nodes laid out will have ten
+ points added to their `position.x`.  Default value is `(0.0, 0.0)`.
 */
 @property (nonatomic, assign) CGPoint tableOffset;
 
@@ -97,11 +96,12 @@ FOUNDATION_EXPORT const CGFloat HLTableLayoutManagerEpsilon;
  Specifies the total width and height of the table when it contains expanding columns and
  rows.
 
- See notes on `columnWidths` and `rowHeights` properties.  If there are no expanding columns
- or rows, this size will be ignored.  If the constrained size (in a particular dimension)
- is not large enough to hold all the non-expanding rows or columns, plus the `tableBorder`
- and cell separators, the width or height of the expanding rows will be set to zero, and
- the total size of the table (see size property) will be larger than the constrained size.
+ See notes on `columnWidths` and `rowHeights` properties.  If there are no expanding
+ columns or rows, this size will be ignored.  If the constrained size (in a particular
+ dimension) is not large enough to hold all the non-expanding rows or columns, plus the
+ `tableBorder` and cell separators, the width or height of the expanding rows will be set
+ to zero, and the total size of the table (see size property) will be larger than the
+ constrained size.
 */
 @property (nonatomic, assign) CGSize constrainedSize;
 
@@ -166,8 +166,8 @@ FOUNDATION_EXPORT const CGFloat HLTableLayoutManagerEpsilon;
 @property (nonatomic, strong) NSArray *columnAnchorPoints;
 
 /**
- The distance (reserved by `layout:`) between each edge of the table and the nearest
- cell edge.
+ The distance (reserved by `layout:`) between each edge of the table and the nearest cell
+ edge.
 */
 @property (nonatomic, assign) CGFloat tableBorder;
 
@@ -185,9 +185,9 @@ FOUNDATION_EXPORT const CGFloat HLTableLayoutManagerEpsilon;
 
 /**
  Returns the calculated size of the table at the last layout.
- 
+
  The size is derived from the layout-affecting parameters and last-laid-out nodes.
- */
+*/
 @property (nonatomic, readonly) CGSize size;
 
 @end

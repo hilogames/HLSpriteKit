@@ -17,14 +17,14 @@
  The name is horribly vague, but the idea is this: The item defines button-like or
  tool-like behavior in a menu, toolbar, button bar, or popup.  It tracks state typical of
  such things, such as "enabled" and "highlight".  It has content.
- */
+*/
 @interface HLItemNode : HLComponentNode <NSCopying, NSCoding>
 
 /// @name Creating an Item Node
 
 /**
  Initializes an empty item node.
- */
+*/
 - (instancetype)init;
 
 /// @name Getting and Setting Content
@@ -39,7 +39,7 @@
 
  The origin `(0, 0)` is considered the center of the item for geometrical purposes, and
  the content should normally be positioned so that its visual center is on that origin.
- */
+*/
 @property (nonatomic, strong) SKNode *content;
 
 /// @name Configuring Item State
@@ -60,7 +60,7 @@
  classes should probably call `[super setEnabled:contentDidSetEnabled:]` (rather than
  `[super setEnabled:]`) because then they can skip their own visual configuration if the
  content responded.
- */
+*/
 @property (nonatomic, assign) BOOL enabled;
 
 /**
@@ -70,7 +70,7 @@
  Considered a protected method: Should only be called by derived classes.
 
  See notes in property `enabled`.
- */
+*/
 - (void)setEnabled:(BOOL)enabled contentDidSetEnabled:(BOOL *)contentDidSetEnabled;
 
 /**
@@ -89,7 +89,7 @@
  Derived classes should probably call `[super setHighlight:contentDidSetHighlight:]`
  (rather than `[super setHighlight:]`) because then they can skip their own visual
  configuration if the content responded.
- */
+*/
 @property (nonatomic, assign) BOOL highlight;
 
 /**
@@ -99,7 +99,7 @@
  Considered a protected method: Should only be called by derived classes.
 
  See notes in property `highlight`.
- */
+*/
 - (void)setHighlight:(BOOL)highlight contentDidSetHighlight:(BOOL *)contentDidSetHighlight;
 
 /**
@@ -119,7 +119,7 @@
                           blink; a full blink will be completed in twice this duration.
 
  @param completion A block that will be run when the animation is complete.
- */
+*/
 - (void)setHighlight:(BOOL)finalHighlight
           blinkCount:(int)blinkCount
    halfCycleDuration:(NSTimeInterval)halfCycleDuration
@@ -132,7 +132,7 @@
  Considered a protected method: Should only be called by derived classes.
 
  See notes in property `highlight`.
- */
+*/
 - (void)setHighlight:(BOOL)finalHighlight
           blinkCount:(int)blinkCount
    halfCycleDuration:(NSTimeInterval)halfCycleDuration
@@ -150,21 +150,21 @@ contentDidSetHighlight:(BOOL *)contentDidSetHighlight;
  node's setter will be called.  Otherwise, the state will be visually indicated in the
  backdrop item node according to object configuration.  See, for example, `normalColor`
  and `highlightColor`.
- */
+*/
 @interface HLBackdropItemNode : HLItemNode
 
 /// @name Creating a Backdrop Item Node
 
 /**
  Initializes a backdrop item node with a given size.
- */
+*/
 - (instancetype)initWithSize:(CGSize)size;
 
 /// @name Configuring Geometry
 
 /**
- * The size of the backdrop.
- */
+ The size of the backdrop.
+*/
 @property (nonatomic, assign) CGSize size;
 
 /// @name Configuring Appearance
@@ -173,14 +173,14 @@ contentDidSetHighlight:(BOOL *)contentDidSetHighlight;
  The color of the backdrop in normal (non-highlight) state.
 
  Default value `[SKColor colorWithWhite:0.5 alpha:1.0]`.
- */
+*/
 @property (nonatomic, strong) SKColor *normalColor;
 
 /**
  The color of the backdrop in highlighted state.
 
  Default value `[SKColor colorWithWhite:1.0 alpha:1.0]`.
- */
+*/
 @property (nonatomic, strong) SKColor *highlightColor;
 
 /**
@@ -190,7 +190,7 @@ contentDidSetHighlight:(BOOL *)contentDidSetHighlight;
  and thus it will multiply with the color's alpha.
 
  Default value `1.0`.
- */
+*/
 @property (nonatomic, assign) CGFloat enabledAlpha;
 
 /**
@@ -200,7 +200,7 @@ contentDidSetHighlight:(BOOL *)contentDidSetHighlight;
  and thus it will multiply with the color's alpha.
 
  Default value `0.4`.
- */
+*/
 @property (nonatomic, assign) CGFloat disabledAlpha;
 
 @end

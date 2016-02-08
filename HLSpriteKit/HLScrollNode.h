@@ -116,7 +116,7 @@ typedef NS_ENUM(NSInteger, HLScrollNodeContentScaleMinimumMode)
 
 /**
  Set content node and various content properties at the same time.
- 
+
  This is partly a convenience method, but more importantly it suggests the most efficient
  way to accomplish the task.  Setting the properties individually, otherwise, might result
  in superfluous layout calls (internally).
@@ -125,11 +125,11 @@ typedef NS_ENUM(NSInteger, HLScrollNodeContentScaleMinimumMode)
  parameters; see the big long init method for notes.  However, these are the deemed
  the most common layout-affecting parameters that might change if a scroll node's
  content node is changed.
- 
+
  For an efficient way to set an arbitrary number of layout-affecting parameters, follow
  this pattern: If `contentNode` is unset, then content properties may be set without any
  internal layout attempted.  For instance:
- 
+
      scrollNode.contentNode = nil;
      scrollNode.contentSize = newContentSize;
      scrollNode.contentOffset = CGPointZero;
@@ -146,14 +146,14 @@ typedef NS_ENUM(NSInteger, HLScrollNodeContentScaleMinimumMode)
 /**
  The size of the scroll node in which the content appears.
 
- The `contentOffset` and `contentScale` are constrained to respect this size.
- If `contentClipped` is `YES`, the content will be cropped to this size.
- */
+ The `contentOffset` and `contentScale` are constrained to respect this size.  If
+ `contentClipped` is `YES`, the content will be cropped to this size.
+*/
 @property (nonatomic, assign) CGSize size;
 
 /**
- The anchor point for the position of the `HLScrollNode` within its parent.
- Default value `(0.5, 0.5)`.
+ The anchor point for the position of the `HLScrollNode` within its parent.  Default value
+ `(0.5, 0.5)`.
 */
 @property (nonatomic, assign) CGPoint anchorPoint;
 
@@ -211,9 +211,9 @@ typedef NS_ENUM(NSInteger, HLScrollNodeContentScaleMinimumMode)
 
 /**
  Whether or not the content is clipped (cropped) to the overall scroll node dimensions.
- 
+
  Default value is `NO`.
- 
+
  @bug When a descendant node of the `contentNode` is an `SKCropNode`, the clipping of
       contents is irregular, affecting some descendants but not others.  Unfortunately
       it can be difficult to determine the culprit, since crop nodes are sometimes

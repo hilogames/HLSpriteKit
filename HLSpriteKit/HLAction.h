@@ -76,24 +76,57 @@
      HLPerformSelector *cleanupCaller = [[HLPerformSelector alloc] initWithTarget:self selector:@selector(orcDidFinishDying:) argument:orcNode];
      SKAction *cleanupAction = [SKAction performSelector:@selector(execute) onTarget:cleanupCaller];
      [orcNode runAction:[SKAction sequence:@[ fadeAction, removeAction, cleanupAction ]]];
- */
+*/
 @interface HLPerformSelector : NSObject <NSCoding>
 
+/// @name Creating an HLPerformSelector
+
+/**
+ Initializes an HLPerformSelector with all properties.
+*/
 - (instancetype)initWithTarget:(id)target selector:(SEL)selector argument:(id)argument;
 
+/**
+ The target the selector will be performed on, when triggered.
+
+ When the HLPerformSelector is triggered by the `execute` method, it will invoke its
+ selector on the target, passing the argument.
+*/
 @property (nonatomic, strong) id target;
 
+/// @name Configuring the Selector to be Performed
+
+/**
+ The selector to be performed when triggered.
+
+ When the HLPerformSelector is triggered by the `execute` method, it will invoke its
+ selector on the target, passing the argument.
+*/
 @property (nonatomic, assign) SEL selector;
 
+/**
+ The argument passed to the selector when triggered.
+
+ When the HLPerformSelector is triggered by the `execute` method, it will invoke its
+ selector on the target, passing the argument.
+*/
 @property (nonatomic, strong) id argument;
 
+/// @name Triggering the Selector
+
+/**
+ The triggering method for the HLPerformSelector.
+
+ When the HLPerformSelector is triggered by the `execute` method, it will invoke its
+ selector on the target, passing the argument.
+*/
 - (void)execute;
 
 @end
 
 /**
- A lightweight encodable object that, when triggered, repeatedly performs a selector on
- a target over a duration.
+ A lightweight encodable object that, when triggered, repeatedly performs a selector on a
+ target over a duration.
 
  Intended as a replacement for `SKAction customActionWithDuration:actionBlock:`, which is
  more versatile, but which cannot be encoded.
@@ -121,7 +154,7 @@
 
    - `HLCustomAction` conforms to `NSCoding`.  On decoding, if already triggered, it
      resumes calling the selector for the remainder of its configured duration.
- */
+*/
 // TODO: Implement.
 //@interface HLCustomAction : NSObject <NSCoding>
 //

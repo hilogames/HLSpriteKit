@@ -27,7 +27,7 @@
 
  If the gesture target is the same object as the node, then the pointer to `self` is not
  explicitly retained (but will be returned by `hlGestureTarget`).
- 
+
  Pass `nil` to unset the gesture target (if any).
 */
 - (void)hlSetGestureTarget:(id <HLGestureTarget>)gestureTarget;

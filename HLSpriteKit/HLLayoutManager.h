@@ -59,76 +59,74 @@
 /**
  Many thoughts about accessing the last-layout state, but so far resulting in no interface.
  Here are the thoughts:
- 
+
  . Layout managers are functor-like: They do a single layout, and all their properties are
    parameters of that layout.  They are not expected to be stateful.
-   
+
  . However, the layout manager is an expert of the last layout performed, and it is a
    natural place to query information about it, especially aggregate information.  For
    instance, it is almost always immediately useful and meaningful to ask a layout
    manager: "What is the overall size (or what are the bounds) of your last layout?"
-   
+
  . Last-layout state could be optionally returned by the `layout` method.  This makes
-   sense for two reasons: 1) If the caller didn't request it, then the state wouldn't
-   have to be stored; 2) Returning it from a single call to `layout` indicates quite
-   correctly that it is state associated only with that single layout, and not with
-   the (mutable) current configuration of the layout manager.  The last-layout state
-   is different for different layout managers, and so it would make sense to encapsulate
-   it in an object with both data and code, for example which could answer a question like,
-   "What node contains the following point?"  The layout manager often calculates useful
-   data derived from the main geometrical properties configured; it could store this
-   intermediate data in the layout state object, and the layout state object would
-   then be able to do sophisticated and useful calculations for the owner.  A few
-   drawbacks, though: 1) A separate object to track; 2) A separate object hierarchy
-   to develop; 3) The state object might need to copy many or all of the configuration
-   properties of the original layout manager; 4) All in all, seems like too much
-   engineering.
-   
- . So meanwhile, the layout managers typically *do* track last-layout state like
-   `size` or `height`, and just keep them on the layout manager itself.  Nice to
-   at least put them into a section like these comments: "Accessing Last-Layout State".
-   
- . I wanted to make a `nodeContainingPoint:` method for `HLOutlineLayoutManager`,
-   which involves remembering node y-positions (sometimes automatic) at layout time
-   and then doing a binary search.  But keeping track of those positions is best
-   to do in an NSArray (because of things like copying and encoding), and then
-   the caller might want to customize the search with concepts of nearness or
-   what to do in the X dimension, and really the positions don't need to be
-   stored in a separate array because we can do a binary search in the parent
-   node's children property (which will be sorted by the layout manager), and
-   so on.  All of this suggested that I needed a global static helper method
-   which takes a list of children that have been laid out by an outline layout
+   sense for two reasons: 1) If the caller didn't request it, then the state wouldn't have
+   to be stored; 2) Returning it from a single call to `layout` indicates quite correctly
+   that it is state associated only with that single layout, and not with the (mutable)
+   current configuration of the layout manager.  The last-layout state is different for
+   different layout managers, and so it would make sense to encapsulate it in an object
+   with both data and code, for example which could answer a question like, "What node
+   contains the following point?"  The layout manager often calculates useful data derived
+   from the main geometrical properties configured; it could store this intermediate data
+   in the layout state object, and the layout state object would then be able to do
+   sophisticated and useful calculations for the owner.  A few drawbacks, though: 1) A
+   separate object to track; 2) A separate object hierarchy to develop; 3) The state
+   object might need to copy many or all of the configuration properties of the original
+   layout manager; 4) All in all, seems like too much engineering.
+
+ . So meanwhile, the layout managers typically *do* track last-layout state like `size` or
+   `height`, and just keep them on the layout manager itself.  Nice to at least put them
+   into a section like these comments: "Accessing Last-Layout State".
+
+ . I wanted to make a `nodeContainingPoint:` method for `HLOutlineLayoutManager`, which
+   involves remembering node y-positions (sometimes automatic) at layout time and then
+   doing a binary search.  But keeping track of those positions is best to do in an
+   NSArray (because of things like copying and encoding), and then the caller might want
+   to customize the search with concepts of nearness or what to do in the X dimension, and
+   really the positions don't need to be stored in a separate array because we can do a
+   binary search in the parent node's children property (which will be sorted by the
+   layout manager), and so on.  All of this suggested that I needed a global static helper
+   method which takes a list of children that have been laid out by an outline layout
    manager and does a binary search, with options.  No need for a custom
-   HLOutlineLayoutState class just for that; it might even be useful for other
-   layout managers, too.
- */
+   HLOutlineLayoutState class just for that; it might even be useful for other layout
+   managers, too.
+*/
 
 @end
 
 /**
  Convenience method providing a standard way to calculate the required size of a node for
  layout purposes.
- 
+
  In particular, some managers allow layout geometry to be specified as "automatic" based
  on the nodes laid out, but there is no one way to calculate the size of a node.  This is
  a standard, simplified way (rather than using, say, `calculateAccumulatedFrame`): If the
  node responds to `size`, then that property is used; if the node is an SKLabelNode, then
  the frame size is returned; otherwise, the size is considered to be zero.
- */
+*/
 CGSize HLLayoutManagerGetNodeSize(id node);
 
 /**
  Convenience method providing a standard way to calculate the required width of a node for
  layout purposes.
- 
+
  See `HLLayoutManagerGetNodeSize()`.
- */
+*/
 CGFloat HLLayoutManagerGetNodeWidth(id node);
 
 /**
- Convenience method providing a standard way to calculate the required height of a node for
- layout purposes.
- 
+ Convenience method providing a standard way to calculate the required height of a node
+ for layout purposes.
+
  See `HLLayoutManagerGetNodeSize()`.
- */
+*/
 CGFloat HLLayoutManagerGetNodeHeight(id node);

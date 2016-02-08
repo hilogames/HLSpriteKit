@@ -15,14 +15,14 @@ FOUNDATION_EXPORT const CGFloat HLOutlineLayoutManagerEpsilon;
 /**
  Provides functionality to lay out (set positions of) nodes in an outline.  This manager
  may be attached to an `SKNode` using `[SKNode+HLLayoutManager hlSetLayoutManager]`.
- */
+*/
 @interface HLOutlineLayoutManager : NSObject <HLLayoutManager, NSCopying, NSCoding>
 
 /// @name Creating an Outline Layout Manager
 
 /**
  Initializes an unconfigured outline layout manager.
- */
+*/
 - (instancetype)init;
 
 /**
@@ -59,7 +59,7 @@ FOUNDATION_EXPORT const CGFloat HLOutlineLayoutManagerEpsilon;
  This method must always be called explicitly to realize layout changes.  On one hand,
  it's annoying to have to remember to call it; on the other hand, it allows the owner
  efficiently to make multiple changes and re-layout only exactly once.
- */
+*/
 - (void)layout:(NSArray *)nodes;
 
 /// @name Getting and Setting Outline Geometry
@@ -69,7 +69,7 @@ FOUNDATION_EXPORT const CGFloat HLOutlineLayoutManagerEpsilon;
 
  For example, if the `anchorPointY` is `0.5`, the outline will be centered vertically on
  position `0.0` plus the `outlineOffset.y`.  Default value is `0.5`.
- */
+*/
 @property (nonatomic, assign) CGFloat anchorPointY;
 
 /**
@@ -77,7 +77,7 @@ FOUNDATION_EXPORT const CGFloat HLOutlineLayoutManagerEpsilon;
 
  For example, if the `outlineOffset` is `(10.0, 0.0)`, all nodes laid out will have ten
  points added to their `position.x`.  Default value is `(0.0, 0.0)`.
- */
+*/
 @property (nonatomic, assign) CGPoint outlineOffset;
 
 /**
@@ -88,7 +88,7 @@ FOUNDATION_EXPORT const CGFloat HLOutlineLayoutManagerEpsilon;
 
  Each node must have an explicit level.  Any nodes passed to `layout` that do not have
  corresponding levels here will not be positioned.
- */
+*/
 @property (nonatomic, strong) NSArray *nodeLevels;
 
 /**
@@ -107,7 +107,7 @@ FOUNDATION_EXPORT const CGFloat HLOutlineLayoutManagerEpsilon;
  ...then a node at level 3 will have its X position indented from `outlineOffset.x` by
  `40`, which is the sum of the indents of levels 0 through 3 (respectively, `0`, `20`,
  `10`, and `10`).
- */
+*/
 @property (nonatomic, strong) NSArray *levelIndents;
 
 /**
@@ -142,7 +142,7 @@ FOUNDATION_EXPORT const CGFloat HLOutlineLayoutManagerEpsilon;
                                          ]-- "after separator" at level 0
                                          ]-- "before separator" at level 0
     Example Node III (at Level 0)
- */
+*/
 @property (nonatomic, strong) NSArray *levelNodeHeights;
 
 /**
@@ -165,7 +165,7 @@ FOUNDATION_EXPORT const CGFloat HLOutlineLayoutManagerEpsilon;
 
      outlineLayoutManager.levelNodeHeights = @[ @16.0f, @12.0f ];
      outlineLayoutManager.levelAnchorPointYs = @[ @0.25f ];
- */
+*/
 @property (nonatomic, strong) NSArray *levelAnchorPointYs;
 
 /**
@@ -178,7 +178,7 @@ FOUNDATION_EXPORT const CGFloat HLOutlineLayoutManagerEpsilon;
 
  The "before-separator" height is the space reserved before the node at that level, but
  only if it is not the first node in the outline.
- */
+*/
 @property (nonatomic, strong) NSArray *levelSeparatorBeforeHeights;
 
 /**
@@ -191,16 +191,16 @@ FOUNDATION_EXPORT const CGFloat HLOutlineLayoutManagerEpsilon;
 
  The "after-separator" height is the space reserved after the node at that level, but only
  if it is not the last node in the outline.
- */
+*/
 @property (nonatomic, strong) NSArray *levelSeparatorAfterHeights;
 
 /// @name Accessing Last-Layout State
 
 /**
  Returns the calculated height of the outline at the last layout.
- 
+
  The height is derived from the layout-affecting parameters and the last-laid-out nodes.
- */
+*/
 @property (nonatomic, readonly) CGFloat height;
 
 @end
@@ -208,7 +208,7 @@ FOUNDATION_EXPORT const CGFloat HLOutlineLayoutManagerEpsilon;
 /**
  Convenience method for finding the index of the node containing the passed Y position, for
  nodes that have been laid out by an `HLOutlineLayoutManager`.
- 
+
  Returns `NSNotFound` if no such node is found.
 
  The algorithm uses binary search in the nodes list (assuming it is ordered by descending
@@ -216,7 +216,7 @@ FOUNDATION_EXPORT const CGFloat HLOutlineLayoutManagerEpsilon;
  `HLOutlineLayoutManager` (which involves a few array lookups and `NSValue` conversions).
  X position is not considered.  Separators (both "before" and "after") are not considered
  to be contained by the node.
- */
+*/
 NSUInteger HLOutlineLayoutManagerNodeContainingPointY(NSArray *nodes, CGFloat pointY,
                                                      NSArray *nodeLevels,
                                                      NSArray *levelNodeHeights, NSArray *levelAnchorPointYs);

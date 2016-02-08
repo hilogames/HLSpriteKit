@@ -22,24 +22,24 @@
  possibility: Require implementation of all methods, but return an additional boolean
  which indicates whether or not the `HLItemContentNode` has implemented anything special
  or not.
- */
+*/
 @protocol HLItemContentNode <NSObject>
 
 @optional
 
 /**
  Called when this content node's `HLItemNode` changes enabled state.
- */
+*/
 - (void)hlItemContentSetEnabled:(BOOL)enabled;
 
 /**
  Called when this content node's `HLItemNode` changes highlight state.
- */
+*/
 - (void)hlItemContentSetHighlight:(BOOL)highlight;
 
 /**
  Called when this content node's `HLItemNode` changes highlight state with animation.
- */
+*/
 - (void)hlItemContentSetHighlight:(BOOL)finalHighlight
                        blinkCount:(int)blinkCount
                 halfCycleDuration:(NSTimeInterval)halfCycleDuration
@@ -50,23 +50,49 @@
 /**
  An implementation of `HLItemContentNode` which displays another node behind the content
  when the item is highlighted.
- */
+*/
 @interface HLItemContentBackHighlightNode : HLComponentNode <HLItemContentNode, NSCopying, NSCoding>
 
+/// @name Creating a Back-Highlight Content Node
+
+/**
+ Initialize a back-highlight content node.
+*/
 - (instancetype)initWithContentNode:(SKNode *)contentNode backHighlightNode:(SKNode *)backHighlightNode;
 
+/// @name Setting Node State
+
+/**
+ Sets the highlight of the back-highlight content node.
+
+ A back-highlight node displays highlight by showing a second node behind its content.
+ Here, "behind" refers to `zPosition`.
+*/
 - (void)hlItemContentSetHighlight:(BOOL)highlight;
 
 @end
 
 /**
- An implementation of `HLItemContentNode` which displays another node in front of the content
- when the item is highlighted.
- */
+ An implementation of `HLItemContentNode` which displays another node in front of the
+ content when the item is highlighted.
+*/
 @interface HLItemContentFrontHighlightNode : HLComponentNode <HLItemContentNode, NSCopying, NSCoding>
 
+/// @name Creating a Front-Highlight Content Node
+
+/**
+ Initialize a front-highlight content node.
+*/
 - (instancetype)initWithContentNode:(SKNode *)contentNode frontHighlightNode:(SKNode *)frontHighlightNode;
 
+/// @name Setting Node State
+
+/**
+ Sets the highlight of the front-highlight content node.
+
+ A front-highlight node displays highlight by showing a second node in front of its
+ content.  Here, "in front of" refers to `zPosition`.
+*/
 - (void)hlItemContentSetHighlight:(BOOL)highlight;
 
 @end

@@ -21,7 +21,7 @@
  functionality.  "Inheritance by composition" is recommended: Some of the interface is
  best protected from the end-user, and certain things like `zPosition` management are much
  easier when this class is its own component of an owner.
- */
+*/
 @interface HLItemsNode : HLComponentNode <NSCopying, NSCoding>
 
 /// @name Creating an Items Node
@@ -36,7 +36,7 @@
 
  @param itemPrototypeNode An `HLItemNode` which will be copied to create each item node.
                           If `nil`, a generic `HLItemNode` will be used.
- */
+*/
 - (instancetype)initWithItemCount:(int)itemCount itemPrototype:(HLItemNode *)itemPrototypeNode;
 
 /// @name Getting Items
@@ -46,7 +46,7 @@
 
  This is essentially a protected interface to the items nodes, to be used by derived
  classes for positioning and configuration of the items, if necessary; see `HLItemNode`.
- */
+*/
 @property (nonatomic, readonly) NSArray *itemNodes;
 
 /// @name Setting Item Content
@@ -61,7 +61,7 @@
 
  See `HLItemNode` for notes on how content is managed by the container item node, and for
  notes on `HLItemNode` configuration (for example, what `anchorPoint` to expect).
- */
+*/
 - (void)setContent:(NSArray *)contentNodes;
 
 /// @name Managing Item Geometry
@@ -76,7 +76,7 @@
  @param location The location, in the coordinate system of this node.
 
  @return The index of the first item that contains the passed location, or `-1` for none.
- */
+*/
 - (int)itemContainingPoint:(CGPoint)location;
 
 /**
@@ -95,7 +95,7 @@
 
  @return The index of the item closest to the passed location, within the passed maximum
          distance, or `-1` for none.
- */
+*/
 - (int)itemClosestToPoint:(CGPoint)location
           maximumDistance:(CGFloat)maximumDistance
           closestDistance:(CGFloat *)closestDistance;
@@ -133,14 +133,14 @@
  Convenience method for clearing the last selection.
  
  Sets highlight `NO` for the previously-selected item, if any.
- */
+*/
 - (void)clearSelection;
 
 /**
  Convenience method for clearing the last selection with animation.
  
  Sets highlight `NO` for the previously-selected item, if any, with animation.
- */
+*/
 - (void)clearSelectionBlinkCount:(int)blinkCount
                halfCycleDuration:(NSTimeInterval)halfCycleDuration
                       completion:(void(^)(void))completion;

@@ -81,7 +81,7 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 
  Beware retain cycles when using the callback to invoke a method in the owner.  As a safer
  alternative, use the toolbar node's delegation interface; see `setDelegate:`.
- */
+*/
 @property (nonatomic, copy) void (^toolTappedBlock)(NSString *toolTag);
 
 /// @name Getting and Setting Tools
@@ -215,7 +215,7 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
  In general, this method (or `setTools:tags:animation:`) must be called after modifying
  any geometry-related (layout-affecting) object property.  Requiring an explicit call
  allows the caller to set multiple properties at the same time efficiently.
- */
+*/
 - (void)layoutToolsAnimation:(HLToolbarNodeAnimation)animation;
 
 /**
@@ -430,7 +430,7 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
  The delegate is (currently) concerned mostly with handling user interaction.  It's worth
  noting that the `HLToolbarNode` only receives gestures if it is configured as its own
  gesture target (using `[SKNode+HLGestureTarget hlSetGestureTarget]`).
- */
+*/
 @protocol HLToolbarNodeDelegate <NSObject>
 
 /// @name Handling User Interaction
@@ -445,26 +445,48 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 @protocol HLToolbarNodeMultiGestureTargetDelegate;
 
 /**
- A gesture target for toolbar nodes that handles taps, double-taps, long-presses, and pans.
+ A gesture target for toolbar nodes that handles taps, double-taps, long-presses, and
+ pans.
 */
 @interface HLToolbarNodeMultiGestureTarget : NSObject <HLGestureTarget>
 
+/**
+ Initializes a new multi-gesture target for a particular toolbar node.
+*/
 - (instancetype)initWithToolbarNode:(HLToolbarNode *)toolbarNode;
 
+/**
+ The toolbar node for which this target handles gestures.
+*/
 @property (nonatomic, weak) HLToolbarNode *toolbarNode;
 
+/**
+ The delegate invoked when the target handles gestures.
+*/
 @property (nonatomic, weak) id <HLToolbarNodeMultiGestureTargetDelegate> delegate;
 
 @end
 
 @protocol HLToolbarNodeMultiGestureTargetDelegate <NSObject>
 
+/**
+ Invoked when the multi-gesture target handles a tap on a tool.
+*/
 - (void)toolbarNode:(HLToolbarNode *)toolbarNode didTapTool:(NSString *)toolTag;
 
+/**
+ Invoked when the multi-gesture target handles a double-tap on a tool.
+*/
 - (void)toolbarNode:(HLToolbarNode *)toolbarNode didDoubleTapTool:(NSString *)toolTag;
 
+/**
+ Invoked when the multi-gesture target handles a long press on a tool.
+*/
 - (void)toolbarNode:(HLToolbarNode *)toolbarNode didLongPressTool:(NSString *)toolTag;
 
+/**
+ Invoked when the multi-gesture target handles a pan on a tool.
+*/
 - (void)toolbarNode:(HLToolbarNode *)toolbarNode didPanWithGestureRecognizer:(UIPanGestureRecognizer *)gestureRecognizer;
 
 @end

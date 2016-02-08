@@ -39,7 +39,7 @@
    locations to this node's coordinate system and call `itemAtPoint` as desired.)
 
  - Leave the gesture target unset for no gesture handling.
- */
+*/
 @interface HLRingNode : HLComponentNode <NSCopying, NSCoding, HLGestureTarget>
 
 /// @name Creating a Ring Node
@@ -49,7 +49,7 @@
 
  After initialization, a ring node should be configured with content (see `setContent:`)
  and a layout (see `setLayout*`).
- */
+*/
 - (instancetype)initWithItemCount:(int)itemCount;
 
 /// @name Managing Interaction
@@ -59,7 +59,7 @@
 
  Unless this ring node is its own gesture handler, this delegate will not be called.
  See "Common Gesture Handling Configurations".
- */
+*/
 @property (nonatomic, weak) id <HLRingNodeDelegate> delegate;
 
 /**
@@ -70,12 +70,12 @@
  A tap is considered to be on an item if it is within the distance defined by
  `itemAtPointDistanceMax`.
 
- Unless this item node is its own gesture handler, this callback will not be invoked.
- See "Common Gesture Handling Configurations".
+ Unless this item node is its own gesture handler, this callback will not be invoked.  See
+ "Common Gesture Handling Configurations".
 
  Beware retain cycles when using the callback to invoke a method in the owner.  As a safer
  alternative, use the item node's delegation interface; see `setDelegate:`.
- */
+*/
 @property (nonatomic, copy) void (^itemTappedBlock)(int itemIndex);
 
 /// @name Managing Geometry and Layout
@@ -84,13 +84,13 @@
  Sets the layout of the ring node with items at specified angular coordinates.
 
  note: Currently the layout-affecting parameters are not properties, and so can't be set
- individually, which helps avoid the problem where layout is redone multiple times as
- each parameter is adjusted individually.
+ individually, which helps avoid the problem where layout is redone multiple times as each
+ parameter is adjusted individually.
 
  Layout can be set with or without content set.
 
- Raises an exception if the number of thetas provided doesn't match the number of items
- in the ring.
+ Raises an exception if the number of thetas provided doesn't match the number of items in
+ the ring.
 
  @param radius The distance betwen the origin (position) of the ring node and the center
                of each of the items.
@@ -98,7 +98,7 @@
  @param thetasRadians The angular coordinates (represented by NSValue CGFloats) of each
                       item (measured in radians, where 0 points right, and increasing
                       counter-clockwise).
- */
+*/
 - (void)setLayoutWithRadius:(CGFloat)radius
                      thetas:(NSArray *)thetasRadians;
 
@@ -107,8 +107,8 @@
  starting angular coordinate.
 
  note: Currently the layout-affecting parameters are not properties, and so can't be set
- individually, which helps avoid the problem where layout is redone multiple times as
- each parameter is adjusted individually.
+ individually, which helps avoid the problem where layout is redone multiple times as each
+ parameter is adjusted individually.
 
  Layout can be set with or without content set.
 
@@ -117,7 +117,7 @@
 
  @param initialThetaRadians The angular coordinate of the first item on the ring (measured in
                             radians, where 0 points right, and increasing counter-clockwise).
- */
+*/
 - (void)setLayoutWithRadius:(CGFloat)radius
                initialTheta:(CGFloat)initialThetaRadians;
 
@@ -126,21 +126,22 @@
  angular coordinate.
 
  note: Currently the layout-affecting parameters are not properties, and so can't be set
- individually, which helps avoid the problem where layout is redone multiple times as
- each parameter is adjusted individually.
+ individually, which helps avoid the problem where layout is redone multiple times as each
+ parameter is adjusted individually.
 
  Layout can be set with or without content set.
 
  @param radius The distance betwen the origin (position) of the ring node and the center
                of each of the items.
 
- @param initialThetaRadians The angular coordinate of the first item on the ring (measured in
-                            radians, where 0 points right, and increasing counter-clockwise).
+ @param initialThetaRadians The angular coordinate of the first item on the ring (measured
+                            in radians, where 0 points right, and increasing
+                            counter-clockwise).
 
  @param thetaIncrementRadians The angular distance between successive items on the ring
                               (measured in radians, where positive values indicate the
                               counter-clockwise direction).
- */
+*/
 - (void)setLayoutWithRadius:(CGFloat)radius
                initialTheta:(CGFloat)initialThetaRadians
              thetaIncrement:(CGFloat)thetaIncrementRadians;
@@ -152,15 +153,15 @@
  `itemAtPointDistanceMax`.
 
  The location is expected to be in the coordinate system of this node.
- */
+*/
 - (int)itemAtPoint:(CGPoint)location;
 
 /**
- The distance maximum used in `itemAtPoint` for testing whether a location is "at" or
- "on" a certain item.
+ The distance maximum used in `itemAtPoint` for testing whether a location is "at" or "on"
+ a certain item.
 
  Default value 42.0.
- */
+*/
 @property (nonatomic, assign) CGFloat itemAtPointDistanceMax;
 
 /// @name Getting and Setting Content
@@ -200,12 +201,12 @@
 
 /**
  A node displayed below all items and content.
- */
+*/
 @property (nonatomic, strong) SKNode *backgroundNode;
 
 /**
  A node displayed above all items and content.
- */
+*/
 @property (nonatomic, strong) SKNode *frameNode;
 
 /// @name Managing Ring Item State
@@ -280,10 +281,11 @@
 /**
  Convenience method for setting the highlight state of a single item with animation.
 
- Animates highlight `YES` for the passed item, and sets highlight `NO` (with no
- animation) for the previously-selected item (if any).
+ Animates highlight `YES` for the passed item, and sets highlight `NO` (with no animation)
+ for the previously-selected item (if any).
 
- See `[HLItemsNode setSelectionForItem:blinkCount:halfCycleDuration:completion:]` for details.
+ See `[HLItemsNode setSelectionForItem:blinkCount:halfCycleDuration:completion:]` for
+ details.
 */
 - (void)setSelectionForItem:(int)itemIndex
                    blinkCount:(int)blinkCount
@@ -300,7 +302,8 @@
 - (void)clearSelection;
 
 /**
- Convenience method for clearing the highlight state of the last selected item with animation.
+ Convenience method for clearing the highlight state of the last selected item with
+ animation.
 
  Clears the highlight of the last-selected item, if any, with animation.
 
@@ -318,14 +321,14 @@
  The delegate is (currently) concerned mostly with handling user interaction.  It's worth
  noting that the `HLRingNode` only receives gestures if it is configured as its own
  gesture target (using `[SKNode+HLGestureTarget hlSetGestureTarget]`).
- */
+*/
 @protocol HLRingNodeDelegate <NSObject>
 
 /// @name Handling User Interaction
 
 /**
  Called when the user taps an item in the ring.
- */
+*/
 - (void)ringNode:(HLRingNode *)ringNode didTapItem:(int)itemIndex;
 
 @end

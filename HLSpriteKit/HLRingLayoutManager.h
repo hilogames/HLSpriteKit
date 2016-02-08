@@ -80,7 +80,7 @@ FOUNDATION_EXPORT const CGFloat HLRingLayoutManagerEpsilon;
  @param thetasRadians The angular coordinates (represented by `NSValue` `CGFloat`s) of
                       each node (measured in radians, where 0 points right, and increasing
                       counter-clockwise).
- */
+*/
 - (void)setThetas:(NSArray *)thetasRadians;
 
 /**
@@ -90,7 +90,7 @@ FOUNDATION_EXPORT const CGFloat HLRingLayoutManagerEpsilon;
  @param initialThetaRadians The angular coordinate of the first node on the ring (measured
                             in radians, where 0 points right, and increasing
                             counter-clockwise).
- */
+*/
 - (void)setThetasWithInitialTheta:(CGFloat)initialThetaRadians;
 
 /**
@@ -104,7 +104,7 @@ FOUNDATION_EXPORT const CGFloat HLRingLayoutManagerEpsilon;
  @param thetaIncrementRadians The angular distance between successive nodes on the ring
                               (measured in radians, where positive values indicate the
                               counter-clockwise direction).
- */
+*/
 - (void)setThetasWithInitialTheta:(CGFloat)initialThetaRadians
                    thetaIncrement:(CGFloat)thetaIncrementRadians;
 
