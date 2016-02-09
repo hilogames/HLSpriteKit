@@ -195,12 +195,10 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
     squaresNode.position = CGPointMake(-delta.x, -delta.y);
     [squaresNode runAction:[SKAction moveByX:delta.x y:delta.y duration:HLToolbarSlideDuration]];
     if (oldSquaresNode) {
-      // note: In iOS8, removeFromParent as SKAction in a sequence causes an untraceable EXC_BAD_ACCESS.
-      // Change to a completion block.
-      [oldSquaresNode runAction:[SKAction moveByX:delta.x y:delta.y duration:HLToolbarSlideDuration] completion:^{
-        [oldSquaresNode removeFromParent];
-      }];
-      // note: See containsPoint; after this animation the accumulated from of the crop node is unreliable.
+      // note: In iOS8, [SKAction removeFromParent] in a sequence causes an untraceable EXC_BAD_ACCESS.
+      [oldSquaresNode runAction:[SKAction sequence:@[ [SKAction moveByX:delta.x y:delta.y duration:HLToolbarSlideDuration],
+                                                      [SKAction performSelector:@selector(removeFromParent) onTarget:oldSquaresNode] ]]];
+      // note: See containsPoint; after this animation the accumulated frame of the crop node is unreliable.
     }
   }
 }
@@ -367,9 +365,7 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
     hideGroup.timingMode = SKActionTimingEaseIn;
     // note: Avoiding [SKAction removeFromParent]; see
     //   http://stackoverflow.com/questions/26131591/exc-bad-access-sprite-kit/26188747
-    SKAction *remove = [SKAction runBlock:^{
-      [self removeFromParent];
-    }];
+    SKAction *remove = [SKAction performSelector:@selector(removeFromParent) onTarget:self];
     SKAction *hideSequence = [SKAction sequence:@[ hideGroup, remove ]];
     [self runAction:hideSequence withKey:@"hide"];
   } else {

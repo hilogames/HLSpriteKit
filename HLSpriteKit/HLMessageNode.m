@@ -249,9 +249,7 @@ enum {
   }
   if (!lingerForever) {
     // note: As of iOS8, doing the remove using an [SKAction removeFromParent] causes EXC_BAD_ACCESS.
-    [showActions addObject:[SKAction runBlock:^{
-      [self removeFromParent];
-    }]];
+    [showActions addObject:[SKAction performSelector:@selector(removeFromParent) onTarget:self]];
   }
   if ([showActions count] > 0) {
     [_backgroundNode runAction:[SKAction sequence:showActions] withKey:@"show"];

@@ -477,14 +477,14 @@ static BOOL _sceneAssetsLoaded = NO;
   }
   switch (animation) {
     case HLScenePresentationAnimationFade: {
-      // note: Retain node in a separate variable so that another modal node may immediately
-      // be presented.
-      SKNode *modalPresentationNode = _modalPresentationNode;
+      // note: Avoid using completion or runBlock, since those can't be encoded during application state
+      // preservation and restoration.
+      // note: Also, since iOS8, using [SKAction removeFromParent] sometimes causes EXC_BAD_ACCESS.
+      [_modalPresentationNode runAction:[SKAction sequence:@[ [SKAction fadeOutWithDuration:HLScenePresentationAnimationFadeDuration],
+                                                             [SKAction performSelector:@selector(removeFromParent) onTarget:_modalPresentationNode],
+                                                             [SKAction performSelector:@selector(removeAllChildren) onTarget:_modalPresentationNode] ]]];
+      // note: Allow another modal node to be presented, even during fade-out animation.
       _modalPresentationNode = nil;
-      [modalPresentationNode runAction:[SKAction fadeOutWithDuration:HLScenePresentationAnimationFadeDuration] completion:^{
-        [modalPresentationNode removeFromParent];
-        [modalPresentationNode removeAllChildren];
-      }];
       break;
     }
     case HLScenePresentationAnimationNone:

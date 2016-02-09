@@ -9,8 +9,8 @@
 #import <SpriteKit/SpriteKit.h>
 
 /**
- A lightweight encodable object that, when triggered, can perform a selector on a target
- with an argument.
+ A lightweight encodable object that, when triggered, can perform a selector on a
+ strongly-retained target with a single argument.
 
  Intended as a replacement for `SKAction runBlock:`, which is more versatile, but which
  cannot be encoded.
@@ -18,7 +18,7 @@
  See http://stackoverflow.com/q/35249269/1332415 for context.
 
  When the node hierarchy is encoded, as is common during application state preservation or
- a “game save”, nodes running `SKAction` actions with code blocks must be handled
+ a "game save", nodes running `SKAction` actions with code blocks must be handled
  specially, since the code blocks cannot be encoded.
 
  For example, say an orc has been killed.  It is animated to fade out and then remove
@@ -50,56 +50,66 @@
  After decoding, the orc will fade and be removed from parent, but the cleanup method
  `orcDidFinishDying:` will not be called.
 
- Instead, use `HLPerformSelector`.
+ Instead, use `HLPerformSelectorStrongSingle` (or another variant).
 
-   - The caller instantiates the `HLPerformSelector` object and sets its properties:
-     target, selector, and arguments.
+   - The caller instantiates the perform-selector object and sets its properties: target,
+     selector, and arguments.
 
-   - The `HLPerformSelector` is triggered in a `runAction` animation by the standard
+   - The perform-selector object is triggered in a `runAction` animation by the standard
      no-argument `[SKAction performSelector:onTarget:]`.  For this triggering action, the
-     target is the `HLPerformSelector` object and the selector is a designated `execute`
+     target is the perform-selector object and the selector is a designated `execute`
      method.
 
-   - `HLPerformSelector` conforms to `NSCoding`.
+   - The perform-selector object conforms to `NSCoding`.
 
    - As a bonus, the triggering `SKAction` retains a strong reference to the
-     `HLPerformSelector`, and so both will be encoded along with the node running the
+     perform-selector object, and so both will be encoded along with the node running the
      actions.
-
-   - A version of `HLPerformSelector` could be made that retains the target weakly, which
-     might be nice and/or necessary.
 
  Usage Example
 
      SKAction *fadeAction = [SKAction fadeOutWithDuration:3.0];
      SKAction *removeAction = [SKAction removeFromParent];
-     HLPerformSelector *cleanupCaller = [[HLPerformSelector alloc] initWithTarget:self selector:@selector(orcDidFinishDying:) argument:orcNode];
+     HLPerformSelectorStrongSingle *cleanupCaller = [[HLPerformSelectorStrongSingle alloc] initWithStrongTarget:self selector:@selector(orcDidFinishDying:) argument:orcNode];
      SKAction *cleanupAction = [SKAction performSelector:@selector(execute) onTarget:cleanupCaller];
      [orcNode runAction:[SKAction sequence:@[ fadeAction, removeAction, cleanupAction ]]];
 */
-@interface HLPerformSelector : NSObject <NSCoding>
+@interface HLPerformSelectorStrongSingle : NSObject <NSCoding>
 
-/// @name Creating an HLPerformSelector
+/// @name Creating a Perform-Selector Object
 
 /**
- Initializes an HLPerformSelector with all properties.
+ Initializes a perform-selector object with all properties.
 */
-- (instancetype)initWithTarget:(id)target selector:(SEL)selector argument:(id)argument;
+- (instancetype)initWithStrongTarget:(id)strongTarget selector:(SEL)selector argument:(id)argument;
 
 /**
  The target the selector will be performed on, when triggered.
 
- When the HLPerformSelector is triggered by the `execute` method, it will invoke its
+ When the perform-selector object is triggered by the `execute` method, it will invoke its
  selector on the target, passing the argument.
+
+ The target is retained strongly, despite the potential for retain cycles:
+
+  - Typically, the target is a controller which is also the parent node of the child
+    running the animation sequence.
+
+  - The target, therefore, retains the child; the child retains its running `SKActions`;
+    and the no-argument triggering `performSelector:onTarget:` retains this
+    perform-selector object.
+
+  - This perform-selector object retains the target, completing the cycle.  Such a cycle
+    might be appropriate for a **temporary, short-lived** animation which **guarantees**
+    to perform its selector, even if the target has been released by all other owners.
 */
-@property (nonatomic, strong) id target;
+@property (nonatomic, strong) id strongTarget;
 
 /// @name Configuring the Selector to be Performed
 
 /**
  The selector to be performed when triggered.
 
- When the HLPerformSelector is triggered by the `execute` method, it will invoke its
+ When the perform-selector object is triggered by the `execute` method, it will invoke its
  selector on the target, passing the argument.
 */
 @property (nonatomic, assign) SEL selector;
@@ -107,7 +117,7 @@
 /**
  The argument passed to the selector when triggered.
 
- When the HLPerformSelector is triggered by the `execute` method, it will invoke its
+ When the perform-selector object is triggered by the `execute` method, it will invoke its
  selector on the target, passing the argument.
 */
 @property (nonatomic, strong) id argument;
@@ -115,10 +125,229 @@
 /// @name Triggering the Selector
 
 /**
- The triggering method for the HLPerformSelector.
+ The triggering method for the perform-selector object.
 
- When the HLPerformSelector is triggered by the `execute` method, it will invoke its
+ When the perform-selector object is triggered by the `execute` method, it will invoke its
  selector on the target, passing the argument.
+*/
+- (void)execute;
+
+@end
+
+/**
+ A lightweight encodable object that, when triggered, can perform a selector on a
+ strongly-retained target with two arguments.
+
+ Intended as a replacement for `SKAction runBlock:`, which is more versatile, but which
+ cannot be encoded.
+
+ See `HLPerformSelectorStrongSingle` for documentation.
+*/
+@interface HLPerformSelectorStrongDouble : NSObject <NSCoding>
+
+/// @name Creating a Perform-Selector Object
+
+/**
+ Initializes a perform-selector object with all properties.
+*/
+- (instancetype)initWithStrongTarget:(id)strongTarget selector:(SEL)selector argument1:(id)argument1 argument2:(id)argument2;
+
+/**
+ The target the selector will be performed on, when triggered.
+
+ When the perform-selector object is triggered by the `execute` method, it will invoke its
+ selector on the target, passing the arguments.
+
+ The target is retained strongly, despite the potential for retain cycles:
+
+  - Typically, the target is a controller which is also the parent node of the child
+    running the animation sequence.
+
+  - The target, therefore, retains the child; the child retains its running `SKActions`;
+    and the no-argument triggering `performSelector:onTarget:` retains this
+    perform-selector object.
+
+  - This perform-selector object retains the target, completing the cycle.  Such a cycle
+    might be appropriate for a **temporary, short-lived** animation which **guarantees**
+    to perform its selector, even if the target has been released by all other owners.
+*/
+@property (nonatomic, strong) id strongTarget;
+
+/// @name Configuring the Selector to be Performed
+
+/**
+ The selector to be performed when triggered.
+
+ When the perform-selector object is triggered by the `execute` method, it will invoke its
+ selector on the target, passing the arguments.
+*/
+@property (nonatomic, assign) SEL selector;
+
+/**
+ The first argument passed to the selector when triggered.
+
+ When the perform-selector object is triggered by the `execute` method, it will invoke its
+ selector on the target, passing the arguments.
+*/
+@property (nonatomic, strong) id argument1;
+
+/**
+ The second argument passed to the selector when triggered.
+
+ When the perform-selector object is triggered by the `execute` method, it will invoke its
+ selector on the target, passing the arguments.
+*/
+@property (nonatomic, strong) id argument2;
+
+/// @name Triggering the Selector
+
+/**
+ The triggering method for the perform-selector object.
+
+ When the perform-selector object is triggered by the `execute` method, it will invoke its
+ selector on the target, passing the arguments.
+*/
+- (void)execute;
+
+@end
+
+/**
+ A lightweight encodable object that, when triggered, can perform a selector on a
+ weakly-retained target with a single argument.
+
+ Intended as a replacement for `SKAction runBlock:`, which is more versatile, but which
+ cannot be encoded.
+
+ See `HLPerformSelectorStrongSingle` for documentation.
+*/
+@interface HLPerformSelectorWeakSingle : NSObject <NSCoding>
+
+/// @name Creating a Perform-Selector Object
+
+/**
+ Initializes a perform-selector object with all properties.
+*/
+- (instancetype)initWithWeakTarget:(id)weakTarget selector:(SEL)selector argument:(id)argument;
+
+/**
+ The target the selector will be performed on, when triggered.
+
+ When the perform-selector object is triggered by the `execute` method, it will invoke its
+ selector on the target, passing the argument.
+
+ The target is retained weakly:
+
+  - Typically, the target is a controller which is also the parent node of the child
+    running the animation sequence.
+
+  - The target, therefore, retains the child; the child retains its running `SKActions`;
+    and the no-argument triggering `performSelector:onTarget:` retains this
+    perform-selector object.
+
+  - This perform-selector object retains the target only weakly, to avoid a retain cycle.
+*/
+@property (nonatomic, weak) id weakTarget;
+
+/// @name Configuring the Selector to be Performed
+
+/**
+ The selector to be performed when triggered.
+
+ When the perform-selector object is triggered by the `execute` method, it will invoke its
+ selector on the target, passing the argument.
+*/
+@property (nonatomic, assign) SEL selector;
+
+/**
+ The argument passed to the selector when triggered.
+
+ When the perform-selector object is triggered by the `execute` method, it will invoke its
+ selector on the target, passing the argument.
+*/
+@property (nonatomic, strong) id argument;
+
+/// @name Triggering the Selector
+
+/**
+ The triggering method for the perform-selector object.
+
+ When the perform-selector object is triggered by the `execute` method, it will invoke its
+ selector on the target, passing the argument.
+*/
+- (void)execute;
+
+@end
+
+/**
+ A lightweight encodable object that, when triggered, can perform a selector on a
+ weakly-retained target with two arguments.
+
+ Intended as a replacement for `SKAction runBlock:`, which is more versatile, but which
+ cannot be encoded.
+
+ See `HLPerformSelectorStrongSingle` for documentation.
+*/
+@interface HLPerformSelectorWeakDouble : NSObject <NSCoding>
+
+/// @name Creating a Perform-Selector Object
+
+/**
+ Initializes a perform-selector object with all properties.
+*/
+- (instancetype)initWithWeakTarget:(id)weakTarget selector:(SEL)selector argument1:(id)argument1 argument2:(id)argument2;
+
+/**
+ The target the selector will be performed on, when triggered.
+
+ When the perform-selector object is triggered by the `execute` method, it will invoke its
+ selector on the target, passing the arguments.
+
+ The target is retained strongly, despite the potential for retain cycles:
+
+  - Typically, the target is a controller which is also the parent node of the child
+    running the animation sequence.
+
+  - The target, therefore, retains the child; the child retains its running `SKActions`;
+    and the no-argument triggering `performSelector:onTarget:` retains this
+    perform-selector object.
+
+  - This perform-selector object retains the target only weakly, to avoid a retain cycle.
+*/
+@property (nonatomic, strong) id weakTarget;
+
+/// @name Configuring the Selector to be Performed
+
+/**
+ The selector to be performed when triggered.
+
+ When the perform-selector object is triggered by the `execute` method, it will invoke its
+ selector on the target, passing the arguments.
+*/
+@property (nonatomic, assign) SEL selector;
+
+/**
+ The first argument passed to the selector when triggered.
+
+ When the perform-selector object is triggered by the `execute` method, it will invoke its
+ selector on the target, passing the arguments.
+*/
+@property (nonatomic, strong) id argument1;
+
+/**
+ The second argument passed to the selector when triggered.
+
+ When the perform-selector object is triggered by the `execute` method, it will invoke its
+ selector on the target, passing the arguments.
+*/
+@property (nonatomic, strong) id argument2;
+
+/// @name Triggering the Selector
+
+/**
+ The triggering method for the perform-selector object.
+
+ When the perform-selector object is triggered by the `execute` method, it will invoke its
+ selector on the target, passing the arguments.
 */
 - (void)execute;
 

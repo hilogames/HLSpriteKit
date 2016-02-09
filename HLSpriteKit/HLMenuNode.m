@@ -356,9 +356,8 @@ HLMenuNodeValidateButtonPrototype(SKNode *buttonPrototype, NSString *label)
 
     if (oldButtonsNode) {
       // note: As of iOS8, doing the remove using an [SKAction removeFromParent] causes EXC_BAD_ACCESS.
-      [oldButtonsNode runAction:animationAction completion:^{
-        [oldButtonsNode removeFromParent];
-      }];
+      [oldButtonsNode runAction:[SKAction sequence:@[ animationAction,
+                                                      [SKAction performSelector:@selector(removeFromParent) onTarget:oldButtonsNode] ]]];
     }
   }
 

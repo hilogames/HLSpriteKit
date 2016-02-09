@@ -241,7 +241,7 @@ typedef NS_ENUM(NSInteger, HLScrollNodeContentScaleMinimumMode)
 @property (nonatomic, assign) CGFloat contentScale;
 
 /**
- Set `contentOffset` and contentScale at the same time.
+ Sets `contentOffset` and contentScale at the same time.
 
  Since the offset is sometimes constrained by the current scale, it makes sense to set
  them together if both are going to change.
@@ -294,7 +294,7 @@ typedef NS_ENUM(NSInteger, HLScrollNodeContentScaleMinimumMode)
 - (void)setContentOffset:(CGPoint)contentOffset contentScale:(CGFloat)contentScale animatedDuration:(NSTimeInterval)duration completion:(void (^)(void))completion;
 
 /**
- Set `contentOffset` using a location in the content coordinate system (rather than the
+ Sets `contentOffset` using a location in the content coordinate system (rather than the
  offset, which is always an offset in the `HLScrollNode`'s coordinate system).
 */
 - (void)scrollContentLocation:(CGPoint)contentLocation toNodeLocation:(CGPoint)nodeLocation;
@@ -312,8 +312,8 @@ typedef NS_ENUM(NSInteger, HLScrollNodeContentScaleMinimumMode)
 - (void)scrollContentLocation:(CGPoint)contentLocation toNodeLocation:(CGPoint)nodeLocation animatedDuration:(NSTimeInterval)duration completion:(void (^)(void))completion;
 
 /**
- Set `contentOffset` using a location in the content coordinate system (rather than the
- offset, which is always an offset in the `HLScrollNode`'s coordinate system), and set
+ Sets `contentOffset` using a location in the content coordinate system (rather than the
+ offset, which is always an offset in the `HLScrollNode`'s coordinate system), and sets
  `contentScale` at the same time.
 */
 - (void)scrollContentLocation:(CGPoint)contentLocation toNodeLocation:(CGPoint)nodeLocation andSetContentScale:(CGFloat)contentScale;
@@ -331,13 +331,13 @@ typedef NS_ENUM(NSInteger, HLScrollNodeContentScaleMinimumMode)
 - (void)scrollContentLocation:(CGPoint)contentLocation toNodeLocation:(CGPoint)nodeLocation andSetContentScale:(CGFloat)contentScale animatedDuration:(NSTimeInterval)duration completion:(void (^)(void))completion;
 
 /**
- Change `contentScale` while pinning a certain location in the content coordinate system
+ Changes `contentScale` while pinning a certain location in the content coordinate system
  to a location in the node's coordinate system.
 */
 - (void)pinContentLocation:(CGPoint)contentLocation andSetContentScale:(CGFloat)contentScale;
 
 /**
- Returns an cation that will animate a change of `contentScale` while pinning a certain
+ Returns an action that will animate a change of `contentScale` while pinning a certain
  location in the content coordinate system to a location in the node's coordinate system.
 */
 - (SKAction *)actionForPinContentLocation:(CGPoint)contentLocation andSetContentScale:(CGFloat)contentScale animatedDuration:(NSTimeInterval)duration;
