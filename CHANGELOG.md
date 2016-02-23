@@ -1,6 +1,23 @@
 
 # Change Log
 
+## Master
+
+### Breaking
+
+- Move the class category methods in
+  `SKSpriteNode+HLSpriteNodeAdditions` to a category on `SKNode`, now
+  in the file `SKNode+HLNodeVisuals`.  
+  [Karl Voskuil](https://github.com/karlvoskuil)
+
+### Added
+
+- Implement in `HLAction.h` a number of encodable alternatives to
+  block-related `SKAction`s like `runBlock:`.  These allow running
+  custom animations through application state preservation and
+  restoration.  
+  [Karl Voskuil](https://github.com/karlvoskuil)
+
 ## 0.9.9
 
 ### Breaking
