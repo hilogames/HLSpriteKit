@@ -1,5 +1,5 @@
 //
-//  SKSpriteNode+HLSpriteNodeAdditions.h
+//  SKNode+HLNodeVisuals
 //  HLSpriteKit
 //
 //  Created by Karl Voskuil on 4/3/15.
@@ -8,35 +8,35 @@
 
 #import <SpriteKit/SpriteKit.h>
 
-@interface SKSpriteNode (HLSpriteNodeAdditions)
+@interface SKNode (HLNodeVisuals)
 
-// Convenience Methods for Manipulating Sprite Nodes
+/// @name Convenience Methods for Creating Visual Effects on Nodes
 
 /**
- Convenience method for creating a (single) shadow for the sprite node.
+ Convenience method for creating a (single) shadow for the node.
 
  The shadow is returned as a separate node, to be inserted into the node tree by the
  caller as desired.
 
  The shape and properties are determined by copying self.  This means, of course, that any
- properties of the sprite node which are set at this call will be shared by the shadow,
- and any properties set after this call will not.
+ properties of the node which are set at this call will be shared by the shadow, and any
+ properties set after this call will not.
 */
 - (SKNode *)shadowWithColor:(UIColor *)color blur:(CGFloat)blur;
 
 /**
- Convenience method for creating a "multi-shadow" for the sprite node.
+ Convenience method for creating a "multi-shadow" for the node.
 
  The multi-shadow gives a glow or outline effect.  The effect is achieved as follows:
 
-   - First, the correct shape is created by copying the sprite node multiple times at
+   - First, the correct shape is created by copying the original node multiple times at
      radial offsets from a center point.
 
    - Next, the shape is replaced by the passed color using a crop node.
 
    - Finally, the colorized shape is blurred using an effect node with a Gaussian filter.
 
- The multiple copies of this node will share any copyable properties of the sprite node at
+ The multiple copies of this node will share any copyable properties of the node at
  the time of this call, but of course will not be updated after this call.  The caller
  should be careful, therefore, with the timing of the creation of this multi-shadow.
 
