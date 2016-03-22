@@ -21,29 +21,29 @@ typedef NS_ENUM(NSInteger, HLMessageNodeAnimation) {
  HLMessageNode shows a text message over a solid or textured background, with some
  animation options.
 */
-@interface HLMessageNode : HLComponentNode <NSCopying>
+@interface HLMessageNode : HLComponentNode <NSCoding, NSCopying>
 
 /// @name Creating a Message Node
 
 /**
  Initializes a new message node, specifying color and size for the background.
 */
-- (instancetype)initWithColor:(SKColor *)color size:(CGSize)size NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithColor:(SKColor *)color size:(CGSize)size;
 
 /**
  Initializes a new message node, specifying an image for the background.
 */
-- (instancetype)initWithImageNamed:(NSString *)name NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithImageNamed:(NSString *)name;
 
 /**
  Initializes a new message node, specifying a texture for the background.
 */
-- (instancetype)initWithTexture:(SKTexture *)texture NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithTexture:(SKTexture *)texture;
 
 /**
  Initializes a new message node, specifying a texture and size for the background.
 */
-- (instancetype)initWithTexture:(SKTexture *)texture color:(UIColor *)color size:(CGSize)size NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithTexture:(SKTexture *)texture color:(UIColor *)color size:(CGSize)size;
 
 /// @name Showing and Hiding Messages
 

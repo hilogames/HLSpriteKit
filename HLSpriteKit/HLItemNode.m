@@ -218,6 +218,7 @@ enum {
 
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
+  [super encodeWithCoder:aCoder];
   [aCoder encodeObject:_normalColor forKey:@"normalColor"];
   [aCoder encodeObject:_highlightColor forKey:@"highlightColor"];
   [aCoder encodeDouble:_enabledAlpha forKey:@"enabledAlpha"];

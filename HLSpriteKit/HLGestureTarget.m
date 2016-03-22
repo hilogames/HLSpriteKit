@@ -137,7 +137,7 @@ HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIGestur
 
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
-  [aCoder encodeObject:_delegate forKey:@"delegate"];
+  [aCoder encodeConditionalObject:_delegate forKey:@"delegate"];
   // note: Cannot encode _handleGestureBlock.
   [aCoder encodeBool:_gestureTransparent forKey:@"gestureTransparent"];
 }

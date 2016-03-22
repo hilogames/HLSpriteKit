@@ -88,19 +88,58 @@ enum {
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder
 {
-  [NSException raise:@"HLCodingNotImplemented" format:@"Coding not implemented for this descendant of an NSCoding parent."];
-  // note: Call [init] for the sake of the compiler trying to detect problems with designated initializers.
-  return [self init];
+  self = [super initWithCoder:aDecoder];
+  if (self) {
+
+    _delegate = [aDecoder decodeObjectForKey:@"delegate"];
+
+    // note: Cannot decode squareTappedBlock.  Assume it will be reset on decode.
+    
+    _backgroundNode = [aDecoder decodeObjectForKey:@"backgroundNode"];
+    _squaresNode = [aDecoder decodeObjectForKey:@"squaresNode"];
+
+    _gridWidth = [aDecoder decodeIntForKey:@"gridWidth"];
+    _squareCount = [aDecoder decodeIntForKey:@"squareCount"];
+    _layoutMode = [aDecoder decodeIntegerForKey:@"layoutMode"];
+    _squareSize = [aDecoder decodeCGSizeForKey:@"squareSize"];
+    _backgroundBorderSize = (CGFloat)[aDecoder decodeDoubleForKey:@"backgroundBorderSize"];
+    _squareSeparatorSize = (CGFloat)[aDecoder decodeDoubleForKey:@"squareSeparatorSize"];
+
+    _squareColor = [aDecoder decodeObjectForKey:@"squareColor"];
+    _highlightColor = [aDecoder decodeObjectForKey:@"highlightColor"];
+    _enabledAlpha = (CGFloat)[aDecoder decodeDoubleForKey:@"enabledAlpha"];
+    _disabledAlpha = (CGFloat)[aDecoder decodeDoubleForKey:@"disabledAlpha"];
+  }
+  return self;
 }
 
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
-  [NSException raise:@"HLCodingNotImplemented" format:@"Coding not implemented for this descendant of an NSCoding parent."];
+  [super encodeWithCoder:aCoder];
+  
+  [aCoder encodeConditionalObject:_delegate forKey:@"delegate"];
+
+  // note: Cannot encode squareTappedBlock.  Assume it will be reset on decode.
+
+  [aCoder encodeObject:_backgroundNode forKey:@"backgroundNode"];
+  [aCoder encodeObject:_squaresNode forKey:@"squaresNode"];
+
+  [aCoder encodeInt:_gridWidth forKey:@"gridWidth"];
+  [aCoder encodeInt:_squareCount forKey:@"squareCount"];
+  [aCoder encodeInteger:_layoutMode forKey:@"layoutMode"];
+  [aCoder encodeCGSize:_squareSize forKey:@"squareSize"];
+  [aCoder encodeDouble:_backgroundBorderSize forKey:@"backgroundBorderSize"];
+  [aCoder encodeDouble:_squareSeparatorSize forKey:@"squareSeparatorSize"];
+  
+  [aCoder encodeObject:_squareColor forKey:@"squareColor"];
+  [aCoder encodeObject:_highlightColor forKey:@"highlightColor"];
+  [aCoder encodeDouble:_enabledAlpha forKey:@"enabledAlpha"];
+  [aCoder encodeDouble:_disabledAlpha forKey:@"disabledAlpha"];
 }
 
 - (instancetype)copyWithZone:(NSZone *)zone
 {
-  [NSException raise:@"HLCopyingNotImplemented" format:@"Copying not implemented for this descendant of an NSCopying parent."];
+  [NSException raise:@"HLCopyingNotImplemented" format:@"Copying not yet implemented for this descendant of an NSCopying parent."];
   return nil;
 }
 

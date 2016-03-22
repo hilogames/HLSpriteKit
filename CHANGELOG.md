@@ -18,13 +18,18 @@
   restoration.  
   [Karl Voskuil](https://github.com/karlvoskuil)
 
+- Conform a few more classes to `NSCoding`.  Also, by convention
+  encode delegates (for any class that has a delegate) using
+  `encodeConditionalObject:forKey:`.  
+  [Karl Voskuil](https://github.com/karlvoskuil)
+
 ## 0.9.9
 
 ### Added
 
-- Make `HLMenuNode` accept different types of nodes as buttons : now,
+- Make `HLMenuNode` accept different types of nodes as buttons: now,
   any node can be used if it responds to the correct selectors
-  (currently `size`, and `setAnchorPoint:`).  
+  (currently `size` and `setAnchorPoint:`).  
   [Karl Voskuil](https://github.com/karlvoskuil)
 
 - Add content clipping to `HLScrollNode`, so that content outside the

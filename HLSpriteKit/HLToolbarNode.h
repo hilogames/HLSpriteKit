@@ -59,7 +59,7 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 /**
  Initializes a toolbar node.
 */
-- (instancetype)init NS_DESIGNATED_INITIALIZER;
+- (instancetype)init;
 
 /// @name Managing Interaction
 

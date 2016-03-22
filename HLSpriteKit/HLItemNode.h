@@ -151,7 +151,7 @@ contentDidSetHighlight:(BOOL *)contentDidSetHighlight;
  backdrop item node according to object configuration.  See, for example, `normalColor`
  and `highlightColor`.
 */
-@interface HLBackdropItemNode : HLItemNode
+@interface HLBackdropItemNode : HLItemNode <NSCoding>
 
 /// @name Creating a Backdrop Item Node
 

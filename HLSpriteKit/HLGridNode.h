@@ -49,7 +49,7 @@ typedef NS_ENUM(NSInteger, HLGridNodeLayoutMode) {
  - Leave the gesture target unset for no gesture handling.
 */
 
-@interface HLGridNode : HLComponentNode <HLGestureTarget>
+@interface HLGridNode : HLComponentNode <NSCoding, HLGestureTarget>
 
 /// @name Creating a Grid Node
 
@@ -88,7 +88,7 @@ typedef NS_ENUM(NSInteger, HLGridNodeLayoutMode) {
                        layoutMode:(HLGridNodeLayoutMode)layoutMode
                        squareSize:(CGSize)squareSize
              backgroundBorderSize:(CGFloat)backgroundBorderSize
-              squareSeparatorSize:(CGFloat)squareSeparatorSize NS_DESIGNATED_INITIALIZER;
+              squareSeparatorSize:(CGFloat)squareSeparatorSize;
 
 /// @name Managing Interaction
 

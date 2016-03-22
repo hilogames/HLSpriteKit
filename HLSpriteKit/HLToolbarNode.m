@@ -60,9 +60,65 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder
 {
-  [NSException raise:@"HLCodingNotImplemented" format:@"Coding not implemented for this descendant of an NSCoding parent."];
-  // note: Call [init] for the sake of the compiler trying to detect problems with designated initializers.
-  return [self init];
+  self = [super initWithCoder:aDecoder];
+  if (self) {
+
+    _delegate = [aDecoder decodeObjectForKey:@"delegate"];
+
+    // note: Cannot decode toolTappedBlock.  Assume it will be reset on decode.
+
+    _backgroundNode = [aDecoder decodeObjectForKey:@"backgroundNode"];
+    _cropNode = [aDecoder decodeObjectForKey:@"cropNode"];
+    _squaresNode = [aDecoder decodeObjectForKey:@"squaresNode"];
+
+    _squareColor = [aDecoder decodeObjectForKey:@"squareColor"];
+    _highlightColor = [aDecoder decodeObjectForKey:@"highlightColor"];
+    _enabledAlpha = (CGFloat)[aDecoder decodeDoubleForKey:@"enabledAlpha"];
+    _disabledAlpha = (CGFloat)[aDecoder decodeDoubleForKey:@"disabledAlpha"];
+
+    _automaticWidth = [aDecoder decodeBoolForKey:@"automaticWidth"];
+    _automaticHeight = [aDecoder decodeBoolForKey:@"automaticHeight"];
+    _automaticToolsScaleLimit = [aDecoder decodeBoolForKey:@"automaticToolsScaleLimit"];
+    _size = [aDecoder decodeCGSizeForKey:@"size"];
+    _anchorPoint = [aDecoder decodeCGPointForKey:@"anchorPoint"];
+    _justification = [aDecoder decodeIntegerForKey:@"justification"];
+    _backgroundBorderSize = (CGFloat)[aDecoder decodeDoubleForKey:@"backgroundBorderSize"];
+    _squareSeparatorSize = (CGFloat)[aDecoder decodeDoubleForKey:@"squareSeparatorSize"];
+    _toolPad = (CGFloat)[aDecoder decodeDoubleForKey:@"toolPad"];
+
+    _lastOrigin = [aDecoder decodeCGPointForKey:@"lastOrigin"];
+  }
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+  [super encodeWithCoder:aCoder];
+
+  [aCoder encodeConditionalObject:_delegate forKey:@"delegate"];
+
+  // note: Cannot encode toolTappedBlock.  Assume it will be reset on decode.
+
+  [aCoder encodeObject:_backgroundNode forKey:@"backgroundNode"];
+  [aCoder encodeObject:_cropNode forKey:@"cropNode"];
+  [aCoder encodeObject:_squaresNode forKey:@"squaresNode"];
+
+  [aCoder encodeObject:_squareColor forKey:@"squareColor"];
+  [aCoder encodeObject:_highlightColor forKey:@"highlightColor"];
+  [aCoder encodeDouble:_enabledAlpha forKey:@"enabledAlpha"];
+  [aCoder encodeDouble:_disabledAlpha forKey:@"disabledAlpha"];
+
+  [aCoder encodeBool:_automaticWidth forKey:@"automaticWidth"];
+  [aCoder encodeBool:_automaticHeight forKey:@"automaticHeight"];
+  [aCoder encodeBool:_automaticToolsScaleLimit forKey:@"automaticToolsScaleLimit"];
+  [aCoder encodeCGSize:_size forKey:@"size"];
+  [aCoder encodeCGPoint:_anchorPoint forKey:@"anchorPoint"];
+  [aCoder encodeInteger:_justification forKey:@"justification"];
+  [aCoder encodeDouble:_backgroundBorderSize forKey:@"backgroundBorderSize"];
+  [aCoder encodeDouble:_squareSeparatorSize forKey:@"squareSeparatorSize"];
+  [aCoder encodeDouble:_toolPad forKey:@"toolPad"];
+
+  [aCoder encodeCGPoint:_lastOrigin forKey:@"lastOrigin"];
 }
 
 - (instancetype)copyWithZone:(NSZone *)zone

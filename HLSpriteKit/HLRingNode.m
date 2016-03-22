@@ -42,9 +42,9 @@ enum {
   self = [super initWithCoder:aDecoder];
   if (self) {
     // note: Nodes already decoded by super; decode the references.
+    _delegate = [aDecoder decodeObjectForKey:@"delegate"];
     _itemsNode = [aDecoder decodeObjectForKey:@"itemsNode"];
     _itemAtPointDistanceMax = (CGFloat)[aDecoder decodeDoubleForKey:@"itemAtPointDistanceMax"];
-    // note: Assume _delegate will be reset.
     // note: Cannot encode _itemTappedBlock; assume it will be reset.
     _backgroundNode = [aDecoder decodeObjectForKey:@"backgroundNode"];
     _frameNode = [aDecoder decodeObjectForKey:@"frameNode"];
@@ -56,6 +56,7 @@ enum {
 {
   [super encodeWithCoder:aCoder];
   // note: Nodes already encoded by super; encode the references.
+  [aCoder encodeConditionalObject:_delegate forKey:@"delegate"];
   [aCoder encodeObject:_itemsNode forKey:@"itemsNode"];
   [aCoder encodeDouble:_itemAtPointDistanceMax forKey:@"itemAtPointDistanceMax"];
   [aCoder encodeObject:_backgroundNode forKey:@"backgroundNode"];

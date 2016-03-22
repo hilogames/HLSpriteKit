@@ -84,15 +84,35 @@ enum {
   _labelNode.fontSize = 14.0f;
   _labelNode.fontColor = [UIColor whiteColor];
   [_backgroundNode addChild:_labelNode];
-  
+
   [self HL_layoutLabelNode];
 }
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder
 {
-  [NSException raise:@"HLCodingNotImplemented" format:@"Coding not implemented for this descendant of an NSCoding parent."];
-  // note: Call [init] for the sake of the compiler trying to detect problems with designated initializers.
-  return [self init];
+  self = [super initWithCoder:aDecoder];
+  if (self) {
+    _backgroundNode = [aDecoder decodeObjectForKey:@"backgroundNode"];
+    _labelNode = [aDecoder decodeObjectForKey:@"labelNode"];
+    _verticalAlignmentMode = [aDecoder decodeIntegerForKey:@"verticalAlignmentMode"];
+    _messageAnimation = [aDecoder decodeIntegerForKey:@"messageAnimation"];
+    _messageAnimationDuration = [aDecoder decodeDoubleForKey:@"messageAnimationDuration"];
+    _messageLingerDuration = [aDecoder decodeDoubleForKey:@"messageLingerDuration"];
+    _messageSoundFile = [aDecoder decodeObjectForKey:@"messageSoundFile"];
+  }
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+  [super encodeWithCoder:aCoder];
+  [aCoder encodeObject:_backgroundNode forKey:@"backgroundNode"];
+  [aCoder encodeObject:_labelNode forKey:@"labelNode"];
+  [aCoder encodeInteger:_verticalAlignmentMode forKey:@"verticalAlignmentMode"];
+  [aCoder encodeInteger:_messageAnimation forKey:@"messageAnimation"];
+  [aCoder encodeDouble:_messageAnimationDuration forKey:@"messageAnimationDuration"];
+  [aCoder encodeDouble:_messageLingerDuration forKey:@"messageLingerDuration"];
+  [aCoder encodeObject:_messageSoundFile forKey:@"messageSoundFile"];
 }
 
 - (instancetype)copyWithZone:(NSZone *)zone
@@ -201,7 +221,7 @@ enum {
   BOOL lingerForever = (_messageLingerDuration < GLTimingEpsilon);
 
   _labelNode.text = message;
-  
+
   // note: Reset state for ALL possible animation types; the _messageAnimation
   // type could have changed since it was last animated.  If this gets too crazy,
   // though, then another solution can be found.

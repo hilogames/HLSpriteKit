@@ -123,7 +123,7 @@
 
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
-  [aCoder encodeObject:_weakTarget forKey:@"weakTarget"];
+  [aCoder encodeConditionalObject:_weakTarget forKey:@"weakTarget"];
   [aCoder encodeObject:NSStringFromSelector(_selector) forKey:@"selector"];
   [aCoder encodeObject:_argument forKey:@"argument"];
 }
