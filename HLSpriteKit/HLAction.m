@@ -49,6 +49,11 @@
   func(_strongTarget, _selector, _argument);
 }
 
+- (SKAction *)action
+{
+  return [SKAction performSelector:@selector(execute) onTarget:self];
+}
+
 @end
 
 @implementation HLPerformSelectorStrongDouble
@@ -95,6 +100,11 @@
   func(_strongTarget, _selector, _argument1, _argument2);
 }
 
+- (SKAction *)action
+{
+  return [SKAction performSelector:@selector(execute) onTarget:self];
+}
+
 @end
 
 @implementation HLPerformSelectorWeakSingle
@@ -134,9 +144,14 @@
   if (!target) {
     return;
   }
-  IMP imp = [_weakTarget methodForSelector:_selector];
+  IMP imp = [target methodForSelector:_selector];
   void (*func)(id, SEL, id) = (void (*)(id, SEL, id))imp;
   func(target, _selector, _argument);
+}
+
+- (SKAction *)action
+{
+  return [SKAction performSelector:@selector(execute) onTarget:self];
 }
 
 @end
@@ -169,7 +184,7 @@
 
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
-  [aCoder encodeObject:_weakTarget forKey:@"weakTarget"];
+  [aCoder encodeConditionalObject:_weakTarget forKey:@"weakTarget"];
   [aCoder encodeObject:NSStringFromSelector(_selector) forKey:@"selector"];
   [aCoder encodeObject:_argument1 forKey:@"argument1"];
   [aCoder encodeObject:_argument2 forKey:@"argument2"];
@@ -181,9 +196,175 @@
   if (!target) {
     return;
   }
-  IMP imp = [_weakTarget methodForSelector:_selector];
+  IMP imp = [target methodForSelector:_selector];
   void (*func)(id, SEL, id, id) = (void (*)(id, SEL, id, id))imp;
   func(target, _selector, _argument1, _argument2);
+}
+
+- (SKAction *)action
+{
+  return [SKAction performSelector:@selector(execute) onTarget:self];
+}
+
+@end
+
+NSString * const HLCustomActionSceneDidUpdateNotification = @"HLCustomActionSceneDidUpdateNotification";
+
+@implementation HLCustomAction
+{
+  NSTimeInterval _lastUpdateTime;
+  NSTimeInterval _elapsedTime;
+  BOOL _decodedSinceLastUpdate;
+}
+
+- (instancetype)initWithWeakTarget:(id)weakTarget
+                          selector:(SEL)selector
+                              node:(SKNode *)node
+                          duration:(NSTimeInterval)duration
+{
+  self = [super init];
+  if (self) {
+    _weakTarget = weakTarget;
+    _selector = selector;
+    _node = node;
+    _duration = duration;
+  }
+  return self;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+  self = [super init];
+  if (self) {
+    _weakTarget = [aDecoder decodeObjectForKey:@"weakTarget"];
+    _selector = NSSelectorFromString([aDecoder decodeObjectForKey:@"selector"]);
+    _node = [aDecoder decodeObjectForKey:@"node"];
+    _duration = [aDecoder decodeDoubleForKey:@"duration"];
+    // note: At some point after decoding, we'll get our first notification that SKScene
+    // update has been called.  How much time does SKScene think has elapsed between the
+    // last frame before encoding and the first frame after encoding?  Experience proves
+    // that seconds can pass during encoding and decoding tasks, and it certainly doesn't
+    // think that seconds have elapsed between frames.  There seems to be no point in
+    // coding _lastUpdateTime, or even the time elapsed between encoding and
+    // _lastUpdateTime.
+    _decodedSinceLastUpdate = YES;
+    _elapsedTime = [aDecoder decodeDoubleForKey:@"elapsedTime"];
+  }
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+  [aCoder encodeConditionalObject:_weakTarget forKey:@"weakTarget"];
+  [aCoder encodeObject:NSStringFromSelector(_selector) forKey:@"selector"];
+  [aCoder encodeObject:_node forKey:@"node"];
+  [aCoder encodeDouble:_duration forKey:@"duration"];
+  // note: Don't bother encoding _lastUpdateTime.  See note in initWithCoder.
+  [aCoder encodeDouble:_elapsedTime forKey:@"elapsedTime"];
+}
+
+- (void)dealloc
+{
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
++ (void)notifySceneDidUpdate
+{
+  [[NSNotificationCenter defaultCenter] postNotificationName:HLCustomActionSceneDidUpdateNotification
+                                                      object:self
+                                                    userInfo:nil];
+}
+
+- (void)execute
+{
+  // note: It's common for the trigger for this custom action (self.action) to be running
+  // in an SKAction repeatAction loop, so we must reinitialize carefully.  The previous
+  // loop might never get its selector called with _elapsedTime == _duration; that's fine,
+  // I think.
+
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(HL_sceneDidUpdate:)
+                                               name:HLCustomActionSceneDidUpdateNotification
+                                             object:nil];
+
+  // TODO: As documented in the header: When decoded, an SKAction sequence running on a
+  // node will restart from the beginning.  Tracked as a StackOverflow question at
+  // <http://stackoverflow.com/q/36293846/1332415>.  It's unclear how to respond.  On one
+  // hand, we have the opportunity to restore a more-intuitive behavior, so that our
+  // custom action will not restart.  On the other hand, other actions occuring before
+  // ours in the sequence will be replayed, and our goal is only to make custom actions
+  // encodable, and not to "fix" any other SKAction behavior.  For now, don't try to
+  // "fix".  But for the record, the notification subscription gets blown away, so this
+  // execute method is called before the HL_sceneDidUpdate, and so we have an easy way to
+  // resume in the middle of our custom action, with code like this:
+  //
+  //     if (_decodedSinceLastUpdate && _elapsedTime > 0.0) {
+  //       return;
+  //     }
+
+  _lastUpdateTime = CFAbsoluteTimeGetCurrent();
+  _elapsedTime = 0.0;
+
+  [self HL_performSelectorWithElapsedTime:0.0];
+}
+
+- (SKAction *)action
+{
+  return [SKAction group:@[ [SKAction performSelector:@selector(execute) onTarget:self],
+                            [SKAction waitForDuration:_duration] ]];
+}
+
+- (void)HL_sceneDidUpdate:(NSNotification *)notification
+{
+  const NSTimeInterval HLActionUpdateTimeEpsilon = 0.00001;
+
+  assert(_elapsedTime < _duration);
+
+  NSTimeInterval currentTime = CFAbsoluteTimeGetCurrent();
+
+  NSTimeInterval elapsedTimeSinceLastUpdate;
+  if (_decodedSinceLastUpdate) {
+    _decodedSinceLastUpdate = NO;
+    // note: We are not currently clever enough to understand how much time SKScene thinks
+    // has elapsed between the last frame before encoding and the first frame after
+    // decoding.  For now, we just assume it's considered to be 0.0 seconds.  It seems
+    // unlikely this is exactly right; our idea of _elapsedTime will probably not match
+    // with SKScene's after this.
+    elapsedTimeSinceLastUpdate = 0.0;
+  } else {
+    elapsedTimeSinceLastUpdate = currentTime - _lastUpdateTime;
+    if (elapsedTimeSinceLastUpdate < 0.0) {
+      // note: Monotonicity not guranteed by our clock, but it seems appropriate here; our
+      // whole function relates to elapsed time.  (We store absolute time only to help
+      // figure out how much time has elapsed.)  Again, hard to know what SKScene does in
+      // this case.
+      elapsedTimeSinceLastUpdate = 0.0;
+    }
+  }
+
+  _lastUpdateTime = currentTime;
+
+  _elapsedTime += elapsedTimeSinceLastUpdate;
+  if (_elapsedTime >= _duration - HLActionUpdateTimeEpsilon) {
+    // note: We guarantee this final call with elapsedTime == _duration, even though we
+    // can't guarantee that it actually happens exactly at _duration seconds.
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [self HL_performSelectorWithElapsedTime:_duration];
+    return;
+  }
+
+  [self HL_performSelectorWithElapsedTime:_elapsedTime];
+}
+
+- (void)HL_performSelectorWithElapsedTime:(NSTimeInterval)elapsedTime
+{
+  id target = _weakTarget;
+  if (!target) {
+    return;
+  }
+  IMP imp = [target methodForSelector:_selector];
+  void (*func)(id, SEL, SKNode *, CGFloat, NSTimeInterval) = (void (*)(id, SEL, SKNode *, CGFloat, NSTimeInterval))imp;
+  func(target, _selector, _node, (CGFloat)_elapsedTime, _duration);
 }
 
 @end
