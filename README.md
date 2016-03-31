@@ -7,7 +7,7 @@
 
 SpriteKit scene and node subclasses, plus various utilities.
 
-## Classes
+## Features
 
 ### HLGestureTarget
 
@@ -23,7 +23,7 @@ recognized by a gesture recognizer, the scene figures out which node
 or nodes are the target of the gesture, and it forwards the gestures
 to those nodes using the `HLGestureTarget` interface.
 
-Here's the point: The scene can effectively use `UIGestureRecognizer`s
+Here’s the point: The scene can effectively use `UIGestureRecognizer`s
 rather than the `UIResponder` interface (`touchesBegan:withEvent:` and
 the rest), and the gesture handling code can be encapsulated within
 node subclasses (rather than dumped into a bloated scene).
@@ -69,15 +69,15 @@ layout math.
  * `HLMessageNode`. Shows a text message over a solid or textured
    background, with some animation options.
 
+ * `HLRingNode`. A collection of items (usually buttons) arranged in a
+   circle around a center point.
+
  * `HLScrollNode`. Provides support for scrolling and scaling its
    content with pan and pinch gestures. The interface is deliberately
    analogous to `UIScrollView`.
 
  * `HLToolbarNode`. A horizontal toolbar of squares, with various
    visual formatting, sizing, and animation options.
-
- * `HLRingNode`. A collection of items (usually buttons) arranged in a
-   circle around a center point.
 
  * `HLTiledNode`. Behaves like an `SKSpriteNode` that tiles its
    texture to fit a specified size.
@@ -95,6 +95,25 @@ not limited to:
    (e.g. resizing when the scene resizes; not encoding when the scene
    encodes; and so on)
 
+### HLAction
+
+`HLAction` provides encodable alternatives to block-running `SKAction`
+actions.
+
+The problem: When the `SKScene` node hierarchy is encoded, as is
+common during application state preservation or a “game save”, nodes
+running `SKAction` actions with code blocks must be handled specially,
+since the code blocks cannot be encoded. In particular, attempting to
+encode either `runBlock:` or `customActionWithDuration:actionBlock:`
+leads to a runtime warning message:
+
+  > SKAction: Run block actions can not be properly encoded, Objective-C
+  > blocks do not support NSCoding.
+
+The `HLAction` file provides a few encodable alternatives. The basic
+idea is to use selector callbacks (with extra features) rather than
+code blocks.
+
 ## Gesture Recognition FAQ and Examples
 
 ### I want to use `UIGestureRecognizer` in my scene to recognize gestures.
@@ -110,7 +129,7 @@ Here is the pattern used in `HLSpriteKit`:
 
  * Right before a gesture recognizer starts recognizing, in
    `gestureRecognizer:shouldReceiveTouch:`, your scene sets the
-   gesture recognizer's target (object and selector) to the most
+   gesture recognizer’s target (object and selector) to the most
    relevant receiver node. As the gesture is recognized, that node
    will get the calls.
 
@@ -157,7 +176,7 @@ toolbarNode.delegate = self;
 [self addChild:toolbarNode];
 ```
 
-Finally, set the toolbar's gesture target to itself, and register it
+Finally, set the toolbar’s gesture target to itself, and register it
 with the scene as a gesture target:
 
 ```obj-c
@@ -208,7 +227,7 @@ some examples:
  * You want to pop up a label node with some text on it, and have it
    dismiss itself when tapped.
 
-Or here's a different problem: Say you get an out-of-the-box node
+Or here’s a different problem: Say you get an out-of-the-box node
 class from a third-party library, which doesn't have any kind of
 interaction programmed, and you want it to respond to taps.
 
@@ -242,7 +261,7 @@ SKSpriteNode *redSquareNode = [SKSpriteNode spriteNodeWithColor:[SKColor redColo
 
 The `HLTapGestureTarget` is a simple implementation of a gesture
 target which only knows about tap gestures (and not pans or
-long-presses). Because the tap gesture is so straightforward, it's
+long-presses). Because the tap gesture is so straightforward, it’s
 easy to reuse the same gesture target for just about any node.
 
 The popup example:
@@ -370,7 +389,7 @@ implementations. Let me know what you need!
 `HLSpriteKit` is under active development, and so includes other
 experimental classes and functions which seem general enough for
 reuse. For instance, a generic `SKTexture` store and `SKEmitterNode`
-store are included, but it's not clear they are useful.
+store are included, but it’s not clear they are useful.
 
 ## Installation
 

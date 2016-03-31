@@ -47,8 +47,8 @@
  Unfortunately, the code block will not encode.  During application state preservation (or
  game save), if this sequence is running, a warning will be issued:
 
-     > SKAction: Run block actions can not be properly encoded,
-     > Objective-C blocks do not support NSCoding.
+   > SKAction: Run block actions can not be properly encoded,
+   > Objective-C blocks do not support NSCoding.
 
  After decoding, the orc will fade and be removed from parent, but the cleanup method
  `orcDidFinishDying:` will not be called.
