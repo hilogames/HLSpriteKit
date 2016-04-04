@@ -221,6 +221,7 @@ NSString * const HLCustomActionSceneDidUpdateNotification = @"HLCustomActionScen
                           selector:(SEL)selector
                               node:(SKNode *)node
                           duration:(NSTimeInterval)duration
+                          userData:(id)userData
 {
   self = [super init];
   if (self) {
@@ -228,6 +229,7 @@ NSString * const HLCustomActionSceneDidUpdateNotification = @"HLCustomActionScen
     _selector = selector;
     _node = node;
     _duration = duration;
+    _userData = userData;
   }
   return self;
 }
@@ -240,6 +242,7 @@ NSString * const HLCustomActionSceneDidUpdateNotification = @"HLCustomActionScen
     _selector = NSSelectorFromString([aDecoder decodeObjectForKey:@"selector"]);
     _node = [aDecoder decodeObjectForKey:@"node"];
     _duration = [aDecoder decodeDoubleForKey:@"duration"];
+    _userData = [aDecoder decodeObjectForKey:@"userData"];
     // note: At some point after decoding, we'll get our first notification that SKScene
     // update has been called.  How much time does SKScene think has elapsed between the
     // last frame before encoding and the first frame after encoding?  Experience proves
@@ -259,6 +262,7 @@ NSString * const HLCustomActionSceneDidUpdateNotification = @"HLCustomActionScen
   [aCoder encodeObject:NSStringFromSelector(_selector) forKey:@"selector"];
   [aCoder encodeObject:_node forKey:@"node"];
   [aCoder encodeDouble:_duration forKey:@"duration"];
+  [aCoder encodeObject:_userData forKey:@"userData"];
   // note: Don't bother encoding _lastUpdateTime.  See note in initWithCoder.
   [aCoder encodeDouble:_elapsedTime forKey:@"elapsedTime"];
 }
@@ -363,8 +367,28 @@ NSString * const HLCustomActionSceneDidUpdateNotification = @"HLCustomActionScen
     return;
   }
   IMP imp = [target methodForSelector:_selector];
-  void (*func)(id, SEL, SKNode *, CGFloat, NSTimeInterval) = (void (*)(id, SEL, SKNode *, CGFloat, NSTimeInterval))imp;
-  func(target, _selector, _node, (CGFloat)_elapsedTime, _duration);
+  void (*func)(id, SEL, SKNode *, CGFloat, NSTimeInterval, id) = (void (*)(id, SEL, SKNode *, CGFloat, NSTimeInterval, id))imp;
+  func(target, _selector, _node, (CGFloat)_elapsedTime, _duration, _userData);
+}
+
+@end
+
+@implementation HLCustomActionEndPoints
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+  self = [super init];
+  if (self) {
+    _start = (CGFloat)[aDecoder decodeDoubleForKey:@"start"];
+    _finish = (CGFloat)[aDecoder decodeDoubleForKey:@"finish"];
+  }
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+  [aCoder encodeDouble:_start forKey:@"start"];
+  [aCoder encodeDouble:_finish forKey:@"finish"];
 }
 
 @end

@@ -511,7 +511,11 @@ FOUNDATION_EXPORT NSString * const HLCustomActionSceneDidUpdateNotification;
 
         - (void)HL_showFlashingRedNode {
           SKSpriteNode *redNode = [SKSpriteNode spriteNodeWithColor:[SKColor redColor] size:CGSizeMake(100.0f, 100.0f)];
-          HLCustomAction *flashInAction = [[HLCustomAction alloc] initWithWeakTarget:self selector:@selector(HL_flashInWithNode:elapsedTime:duration:) node:redNode duration:3.0 typicalInterval:(1.0 / 60.0)];
+          HLCustomAction *flashInAction = [[HLCustomAction alloc] initWithWeakTarget:self
+                                                                            selector:@selector(HL_flashInWithNode:elapsedTime:duration:userData:)
+                                                                                node:redNode
+                                                                            duration:3.0
+                                                                            userData:nil];
           [redNode runAction:flashInAction.action];
         }
 
@@ -548,7 +552,8 @@ FOUNDATION_EXPORT NSString * const HLCustomActionSceneDidUpdateNotification;
 - (instancetype)initWithWeakTarget:(id)weakTarget
                           selector:(SEL)selector
                               node:(SKNode *)node
-                          duration:(NSTimeInterval)duration;
+                          duration:(NSTimeInterval)duration
+                          userData:(id)userData;
 
 /// @name Issuing Notifications to Running Custom Actions
 
@@ -594,12 +599,12 @@ FOUNDATION_EXPORT NSString * const HLCustomActionSceneDidUpdateNotification;
  The selector to be performed repeatedly by the custom action (to affect a node over a
  duration).
 
- The selector must take three arguments: the configurednode, the current elapsed time, and
- the configured duration.  (The `elapsedTime` and `duration` arguments have different
- types, corresponding to the different types used by
+ The selector must take four arguments: the configured node, the current elapsed time, the
+ configured duration, and (arbitrary) user data.  (The `elapsedTime` and `duration`
+ arguments have different types, corresponding to the different types used by
  `customActionWithDuration:actionBlock:`.)
 
-     ^(SKNode *node, CGFloat elapsedTime, NSTimeInterval duration)
+     ^(SKNode *node, CGFloat elapsedTime, NSTimeInterval duration, id userData)
 */
 @property (nonatomic, assign) SEL selector;
 
@@ -612,6 +617,11 @@ FOUNDATION_EXPORT NSString * const HLCustomActionSceneDidUpdateNotification;
  The duration for the custom action.
 */
 @property (nonatomic, assign) NSTimeInterval duration;
+
+/**
+ Optional, abitrary user data to be passed (repeatedly) to the selector.
+*/
+@property (nonatomic, strong) id userData;
 
 /// @name Triggering the Custom Action
 
@@ -640,5 +650,45 @@ FOUNDATION_EXPORT NSString * const HLCustomActionSceneDidUpdateNotification;
                         [SKAction waitForDuration:thisObject.duration] ]]
 */
 - (SKAction *)action;
+
+@end
+
+/**
+ A commonly-useful encodable user data object to use with `HLCustomAction`.
+
+ A common use case for `HLCustomAction` is tweening between two values (whether position,
+ alpha, scale, or something else), which can be tracked by this user data object.  In the
+ following example, a user data object is provided to the custom action in order to track
+ a start and end point for an overshooting slide.
+
+     - (void)slideUpdate:(SKNode *)node
+             elapsedTime:(CGFloat)elapsedTime
+                duration:(NSTimeInterval)duration
+                userData:(HLCustomActionEndPoints *)userData
+     {
+       CGFloat normalTime = (CGFloat)(elapsedTime / duration);
+       CGFloat normalValue = BackStandardEaseInOut(normalTime);
+       node.position = CGPointMake(userData.start * (1.0f - normalValue) + userData.finish * normalValue, 0.0f);
+     }
+
+     - (void)slideNode:(SKNode *)node
+     {
+       HLCustomActionEndPoints *slideUserData = [[HLCustomActionEndPoints alloc] init];
+       slideUserData.start = node.position.x;
+       slideUserData.finish = self.size.width / 2.0f;
+
+       HLCustomAction *slideAction = [[HLCustomAction alloc] initWithWeakTarget:self
+                                                                       selector:@selector(slideUpdate:elapsedTime:duration:userData:)
+                                                                           node:node
+                                                                       duration:2.0
+                                                                       userData:slideUserData];
+       [node runAction:slideAction.action];
+     }
+*/
+@interface HLCustomActionEndPoints : NSObject <NSCoding>
+
+@property (nonatomic, assign) CGFloat start;
+
+@property (nonatomic, assign) CGFloat finish;
 
 @end
