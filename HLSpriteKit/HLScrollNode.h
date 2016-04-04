@@ -59,7 +59,7 @@ typedef NS_ENUM(NSInteger, HLScrollNodeContentScaleMinimumMode)
  of `addToGestureRecognizer:firstTouch:isInside:`.  See, for instance, the implementation
  of that method in `HLTapGestureTarget`.
 */
-@interface HLScrollNode : HLComponentNode <HLGestureTarget>
+@interface HLScrollNode : HLComponentNode <NSCoding, HLGestureTarget>
 
 /// @name Creating a Scroll Node
 
@@ -85,7 +85,7 @@ typedef NS_ENUM(NSInteger, HLScrollNodeContentScaleMinimumMode)
  the `contentNode`, or else use the other init method (which fully specifies all layout-
  affecting parameters).
 */
-- (instancetype)initWithSize:(CGSize)size contentSize:(CGSize)contentSize NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithSize:(CGSize)size contentSize:(CGSize)contentSize;
 
 /**
  Initializes an `HLScrollNode` with all layout-affecting parameters.
@@ -105,7 +105,7 @@ typedef NS_ENUM(NSInteger, HLScrollNodeContentScaleMinimumMode)
                 contentScale:(CGFloat)contentScale
          contentScaleMinimum:(CGFloat)contentScaleMinimum
      contentScaleMinimumMode:(HLScrollNodeContentScaleMinimumMode)contentScaleMinimumMode
-         contentScaleMaximum:(CGFloat)contentScaleMaximum NS_DESIGNATED_INITIALIZER;
+         contentScaleMaximum:(CGFloat)contentScaleMaximum;
 
 /// @name Setting Content
 

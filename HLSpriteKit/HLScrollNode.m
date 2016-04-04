@@ -82,14 +82,53 @@ enum {
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder
 {
-  [NSException raise:@"HLCodingNotImplemented" format:@"Coding not implemented for this descendant of an NSCoding parent."];
-  // note: Call [init] for the sake of the compiler trying to detect problems with designated initializers.
-  return [self initWithSize:CGSizeZero contentSize:CGSizeZero];
+  self = [super initWithCoder:aDecoder];
+  if (self) {
+
+    _contentNode = [aDecoder decodeObjectForKey:@"contentNode"];
+    _size = [aDecoder decodeCGSizeForKey:@"size"];
+    _anchorPoint = [aDecoder decodeCGPointForKey:@"anchorPoint"];
+    _contentSize = [aDecoder decodeCGSizeForKey:@"contentSize"];
+    _contentAnchorPoint = [aDecoder decodeCGPointForKey:@"contentAnchorPoint"];
+    _contentInset = [aDecoder decodeUIEdgeInsetsForKey:@"contentInset"];
+    _contentScaleMinimum = (CGFloat)[aDecoder decodeDoubleForKey:@"contentScaleMinimum"];
+    _contentScaleMinimumMode = [aDecoder decodeIntegerForKey:@"contentScaleMinimumMode"];
+    _contentScaleMaximum = (CGFloat)[aDecoder decodeDoubleForKey:@"contentScaleMaximum"];
+    _contentClipped = [aDecoder decodeBoolForKey:@"contentClipped"];
+
+    _contentOffsetOffline = [aDecoder decodeCGPointForKey:@"contentOffsetOffline"];
+    _contentScaleOffline = (CGFloat)[aDecoder decodeDoubleForKey:@"contentScaleOffline"];
+
+    _panLastNodeLocation = [aDecoder decodeCGPointForKey:@"panLastNodeLocation"];
+    _pinchPinContentLocation = [aDecoder decodeCGPointForKey:@"pinchPinContentLocation"];
+    _pinchPinNodeLocation = [aDecoder decodeCGPointForKey:@"pinchPinNodeLocation"];
+    _pinchOriginalContentScale = (CGFloat)[aDecoder decodeDoubleForKey:@"pinchOriginalContentScale"];
+  }
+  return self;
 }
 
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
-  [NSException raise:@"HLCodingNotImplemented" format:@"Coding not implemented for this descendant of an NSCoding parent."];
+  [super encodeWithCoder:aCoder];
+
+  [aCoder encodeObject:_contentNode forKey:@"contentNode"];
+  [aCoder encodeCGSize:_size forKey:@"size"];
+  [aCoder encodeCGPoint:_anchorPoint forKey:@"anchorPoint"];
+  [aCoder encodeCGSize:_contentSize forKey:@"contentSize"];
+  [aCoder encodeCGPoint:_contentAnchorPoint forKey:@"contentAnchorPoint"];
+  [aCoder encodeUIEdgeInsets:_contentInset forKey:@"contentInset"];
+  [aCoder encodeDouble:_contentScaleMinimum forKey:@"contentScaleMinimum"];
+  [aCoder encodeInteger:_contentScaleMinimumMode forKey:@"contentScaleMinimumMode"];
+  [aCoder encodeDouble:_contentScaleMaximum forKey:@"contentScaleMaximum"];
+  [aCoder encodeBool:_contentClipped forKey:@"contentClipped"];
+
+  [aCoder encodeCGPoint:_contentOffsetOffline forKey:@"contentOffsetOffline"];
+  [aCoder encodeDouble:_contentScaleOffline forKey:@"contentScaleOffline"];
+
+  [aCoder encodeCGPoint:_panLastNodeLocation forKey:@"panLastNodeLocation"];
+  [aCoder encodeCGPoint:_pinchPinContentLocation forKey:@"pinchPinContentLocation"];
+  [aCoder encodeCGPoint:_pinchPinNodeLocation forKey:@"pinchPinNodeLocation"];
+  [aCoder encodeDouble:_pinchOriginalContentScale forKey:@"pinchOriginalContentScale"];
 }
 
 - (instancetype)copyWithZone:(NSZone *)zone
@@ -187,20 +226,20 @@ enum {
     _contentScaleOffline = contentScale;
     return;
   }
-  
+
   if (_contentClipped) {
     SKCropNode *cropNode = (SKCropNode *)self.children.firstObject;
     [cropNode addChild:_contentNode];
   } else {
     [self addChild:_contentNode];
   }
-  
+
   CGFloat zPositionLayerIncrement = self.zPositionScale / HLScrollNodeZPositionLayerCount;
   _contentNode.zPosition = HLScrollNodeZPositionLayerContent * zPositionLayerIncrement;
   if ([_contentNode isKindOfClass:[HLComponentNode class]]) {
     [(HLComponentNode *)_contentNode setZPositionScale:zPositionLayerIncrement];
   }
-  
+
   CGFloat constrainedScale = [self HL_contentConstrainedScale:contentScale];
   _contentNode.xScale = constrainedScale;
   _contentNode.yScale = constrainedScale;
