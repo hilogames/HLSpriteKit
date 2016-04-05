@@ -368,7 +368,7 @@ NSString * const HLCustomActionSceneDidUpdateNotification = @"HLCustomActionScen
   }
   IMP imp = [target methodForSelector:_selector];
   void (*func)(id, SEL, SKNode *, CGFloat, NSTimeInterval, id) = (void (*)(id, SEL, SKNode *, CGFloat, NSTimeInterval, id))imp;
-  func(target, _selector, _node, (CGFloat)_elapsedTime, _duration, _userData);
+  func(target, _selector, _node, (CGFloat)elapsedTime, _duration, _userData);
 }
 
 @end
