@@ -392,3 +392,78 @@ NSString * const HLCustomActionSceneDidUpdateNotification = @"HLCustomActionScen
 }
 
 @end
+
+@implementation HLSequence
+{
+  NSUInteger _actionIndex;
+}
+
+- (instancetype)initWithNode:(SKNode *)node actions:(NSArray *)actions
+{
+  self = [super init];
+  if (self) {
+    _node = node;
+    _actions = actions;
+  }
+  return self;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+  self = [super init];
+  if (self) {
+    _node = [aDecoder decodeObjectForKey:@"node"];
+    _actions = [aDecoder decodeObjectForKey:@"actions"];
+    _actionIndex = (NSUInteger)[aDecoder decodeIntegerForKey:@"actionIndex"];
+  }
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+  [aCoder encodeConditionalObject:_node forKey:@"node"];
+  [aCoder encodeObject:_actions forKey:@"actions"];
+  [aCoder encodeInteger:(NSInteger)_actionIndex forKey:@"actionIndex"];
+}
+
+- (void)execute
+{
+  _actionIndex = 0;
+  if (_node && _actionIndex < [_actions count]) {
+    [self GL_runNextSubsequence];
+  }
+}
+
+- (void)GL_runNextSubsequence
+{
+  NSUInteger actionsCount = [_actions count];
+  assert(_actionIndex < actionsCount);
+  SKNode *node = _node;
+  if (!node) {
+    return;
+  }
+  NSMutableArray *subsequence = [NSMutableArray arrayWithObject:_actions[_actionIndex]];
+  ++_actionIndex;
+  while (_actionIndex < actionsCount) {
+    SKAction *action = _actions[_actionIndex];
+    // note: The comparison without epsilon seems appropriate here.  Zero-duration actions
+    // will presumably have a duration set with a floating-point value 0.0, which we assume
+    // can be represented exactly as a float.
+    if (action.duration > 0.0) {
+      break;
+    }
+    [subsequence addObject:action];
+    ++_actionIndex;
+  }
+  if (_actionIndex < actionsCount) {
+    [subsequence addObject:[SKAction performSelector:@selector(GL_runNextSubsequence) onTarget:self]];
+  }
+  [node runAction:[SKAction sequence:subsequence]];
+}
+
+- (SKAction *)action
+{
+  return [SKAction performSelector:@selector(execute) onTarget:self];
+}
+
+@end

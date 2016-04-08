@@ -70,6 +70,20 @@
      perform-selector object, and so both will be encoded along with the node running the
      actions.
 
+ Special Considerations
+ ----------------------
+
+ When a node is encoded with a running (not yet completed) `SKAction`, and then decoded,
+ it will restart the `SKAction` from the beginning.  This is standard SpriteKit behavior.
+
+ The behavior can be surprising, though, when this perform-selector action is running in a
+ sequence: Upon decoding, the entire sequence (if it is not yet completed) will restart
+ from the beginning, and even if this perform-selector object was performed before
+ preservation, it will perform again after restoration.
+
+ See `HLSequence` for an alternative; upon decoding, it will not re-run parts of the
+ sequence that have already completed.
+
  Examples
  --------
 
@@ -105,7 +119,7 @@
 
  The target is retained strongly, despite the potential for retain cycles:
 
-  - Typically, the target is a controller which is also the parent node of the child
+  - Typically, the target is a controller that is also the parent node of the child
     running the animation sequence.
 
   - The target, therefore, retains the child; the child retains its running `SKActions`;
@@ -113,8 +127,8 @@
     perform-selector object.
 
   - This perform-selector object retains the target, completing the cycle.  Such a cycle
-    might be appropriate for a **temporary, short-lived** animation which **guarantees**
-    to perform its selector, even if the target has been released by all other owners.
+    might be appropriate for a **temporary, short-lived** animation that **guarantees** to
+    perform its selector, even if the target has been released by all other owners.
 */
 @property (nonatomic, strong) id strongTarget;
 
@@ -187,7 +201,7 @@
 
  The target is retained strongly, despite the potential for retain cycles:
 
-  - Typically, the target is a controller which is also the parent node of the child
+  - Typically, the target is a controller that is also the parent node of the child
     running the animation sequence.
 
   - The target, therefore, retains the child; the child retains its running `SKActions`;
@@ -195,8 +209,8 @@
     perform-selector object.
 
   - This perform-selector object retains the target, completing the cycle.  Such a cycle
-    might be appropriate for a **temporary, short-lived** animation which **guarantees**
-    to perform its selector, even if the target has been released by all other owners.
+    might be appropriate for a **temporary, short-lived** animation that **guarantees** to
+    perform its selector, even if the target has been released by all other owners.
 */
 @property (nonatomic, strong) id strongTarget;
 
@@ -277,7 +291,7 @@
 
  The target is retained weakly:
 
-  - Typically, the target is a controller which is also the parent node of the child
+  - Typically, the target is a controller that is also the parent node of the child
     running the animation sequence.
 
   - The target, therefore, retains the child; the child retains its running `SKActions`;
@@ -357,7 +371,7 @@
 
  The target is retained strongly, despite the potential for retain cycles:
 
-  - Typically, the target is a controller which is also the parent node of the child
+  - Typically, the target is a controller that is also the parent node of the child
     running the animation sequence.
 
   - The target, therefore, retains the child; the child retains its running `SKActions`;
@@ -528,19 +542,25 @@ FOUNDATION_EXPORT NSString * const HLCustomActionSceneDidUpdateNotification;
 
    - The ability to pause the custom action when the node is paused.
 
- One more issue.  As documented on this StackOverflow question
- <http://stackoverflow.com/q/36293846/1332415>: When a node is encoded with a running
- SKAction sequence, and then decoded, it will run the entire sequence from the beginning.
- The whole idea of encoding a sequence including a custom action is conditioned on the
- desired behavior: Do you really want your sequence to restart from the beginning when it
- is decoded?  That's apparently the standard SpriteKit behavior, though, and so it is
- faithfully followed here.
-
  Also, notifications are an awkward way to do updates.  Two alternate versions of this
  object have been attempted so far: One that used the `NSObject` runloop (that is, using
  `performSelector:`) to do periodic updates of the custom action, and one that forced the
  caller to make explicit calls to update the custom action (presumably from her `SKScene
  update:`).  Both alternates have their own problems.
+
+ Special Considerations
+ ----------------------
+
+ When a node is encoded with a running (not yet completed) `SKAction`, and then decoded,
+ it will restart the `SKAction` from the beginning.  This is standard SpriteKit behavior.
+
+ The behavior can be surprising, though, when this perform-selector action is running in a
+ sequence: Upon decoding, the entire sequence (if it is not yet completed) will restart
+ from the beginning, and even if this perform-selector object was performed before
+ preservation, it will perform again after restoration.
+
+ See `HLSequence` for an alternative; upon decoding, it will not re-run parts of the
+ sequence that have already completed.
 */
 @interface HLCustomAction : NSObject <NSCoding>
 
@@ -580,7 +600,7 @@ FOUNDATION_EXPORT NSString * const HLCustomActionSceneDidUpdateNotification;
 
  The target is retained weakly to avoid retain cycles:
 
-   - Typically, the target is a controller which is also the parent node of the child
+   - Typically, the target is a controller that is also the parent node of the child
      running the animation sequence.
 
    - The target, therefore, retains the child; the child retains its running `SKActions`;
@@ -690,5 +710,174 @@ FOUNDATION_EXPORT NSString * const HLCustomActionSceneDidUpdateNotification;
 @property (nonatomic, assign) CGFloat start;
 
 @property (nonatomic, assign) CGFloat finish;
+
+@end
+
+/**
+ A lightweight encodable object that, when triggered, can run a sequence of actions on a
+ node.
+
+ Intended as an alternative (or companion) to `SKAction sequence:`.  The important
+ difference is this: When this action-sequence object is decoded, it will not re-run any
+ of its actions that have already completed.
+
+ See http://stackoverflow.com/q/36293846/1332415 for context.
+
+ Details
+ -------
+
+ When a node is encoded with a running `SKAction`, and then decoded, it will restart the
+ `SKAction` from the beginning.  This is standard SpriteKit behavior.
+
+ The same behavior holds true for the sequence `SKAction`: upon decoding, if it has not
+ yet completed, the entire sequence will restart from the beginning.  Any actions in the
+ sequence that completed before encoding will be run again after decoding.
+
+ Sometimes this behavior is undesirable.  It would be hard to rewrite all `SKAction` types
+ so that they resumed without restarting, but consider the sequence as a special case.
+ Would it possible to run a list of actions in a sequence such that, when each action in
+ the sequence completes, it is marked as such, and not re-run after decoding?
+
+ One possibility to that end is to split the sequence into a few independent
+ subsequences.  As each subsequence completes, it will no longer be running, and so will
+ not be encoded if the application is preserved.  For instance, an original sequence like
+ this:
+
+     [self runAction:[SKAction sequence:@[ [SKAction performSelector:@selector(doX) onTarget:self],
+                                           [SKAction waitForDuration:10.0],
+                                           [SKAction performSelector:@selector(doY) onTarget:self],
+                                           [SKAction waitForDuration:1.0],
+                                           [SKAction performSelector:@selector(doZ) onTarget:self] ]]];
+
+ could be split like this:
+
+     [self runAction:[SKAction sequence:@[ [SKAction performSelector:@selector(doX) onTarget:self] ]]];
+
+     [self runAction:[SKAction sequence:@[ [SKAction waitForDuration:10.0],
+                                           [SKAction performSelector:@selector(doY) onTarget:self] ]]];
+
+     [self runAction:[SKAction sequence:@[ [SKAction waitForDuration:11.0],
+                                           [SKAction performSelector:@selector(doZ) onTarget:self] ]]];
+
+ No matter when the node is encoded, the methods `doX`, `doY`, and `doZ` will only be
+ run once.
+
+ Depending on the animation, though, the duration of the waits might seem weird.  For
+ example, say the application is preserved after `doX` and `doY` have run, during the
+ 1-second delay before `doZ`.  Then, upon restoration, the application won't run `doX` or
+ `doY` again, but it will wait 11 seconds before running `doZ`.
+
+ To avoid the perhaps-strange delays, split the sequence into a chain of dependent
+ subsequences, each of which triggers the next one.  For the example, the split might
+ look like this:
+
+       - (void)doX
+       {
+         // do X...
+         [self runAction:[SKAction sequence:@[ [SKAction waitForDuration:10.0],
+                                               [SKAction performSelector:@selector(doY) onTarget:self] ]]];
+       }
+
+       - (void)doY
+       {
+         // do Y...
+         [self runAction:[SKAction sequence:@[ [SKAction waitForDuration:1.0],
+                                               [SKAction performSelector:@selector(doZ) onTarget:self] ]]];
+       }
+
+       - (void)doZ
+       {
+         // do Z...
+       }
+
+       - (void)runAnimationSequence
+       {
+         [self runAction:[SKAction performSelector:@selector(doX) onTarget:self]];
+       }
+
+ With this implementation, if the sequence is preserved after `doX` and `doY` have run,
+ then, upon restoration, the delay before `doZ` will be only 1 second.  Sure, it's a full
+ second (even if it was half elapsed before encoding), but the result is fairly
+ understandable: Whatever action in the sequence was in progress at the time of encoding
+ will restart, but once it completes, it is done.
+
+ `HLSequence` is an abstracted version of the described concept.
+
+ Special Considerations
+ ----------------------
+
+ Should actions in the sequence still be retained once they have completed?  There seems
+ no reason to, except perhaps that this object is trying to imitate `SKAction sequence`,
+ which **does** retain them for the lifetime of the sequence.  And users might be
+ accustomed to such behavior; for instance, `HLCustomAction` depends on it.  So, for now,
+ actions in the sequence will be retained for the lifetime of the `HLSequence`.
+
+ Another consideration: Nesting this sequence with other groups and sequences will be
+ problematic.  The timing will be probably be off: The triggering action for the
+ `HLSequence` has no duration, and anyway, if this `HLSequence` is running in parallel to
+ a `SKAction sequence` (or a `SKAction waitForDuration:`), and both are encoded, they will
+ be out of sync on decoding.
+*/
+@interface HLSequence : NSObject <NSCoding>
+
+/// @name Creating a Sequence
+
+/**
+ Initializes a sequence with all properties.
+*/
+- (instancetype)initWithNode:(SKNode *)node actions:(NSArray *)actions;
+
+/// @name Configuring the Sequence
+
+/**
+ The node on which to run the actions of the sequence.
+
+ The node is retained weakly because the node will be running the action subsequences for
+ this sequence, which means it will retain this object strongly (since every subsequence
+ but the last refers back to this object).  Retaining the node strongly would create a
+ retain cycle, and would cause the sequence to keep running on the object even when no one
+ else cared about the node anymore.
+
+ It would be strange to change this node after initialization, but it would not cause any
+ errors, and so the property allows writes.
+*/
+@property (nonatomic, weak) SKNode *node;
+
+/**
+ The actions to run on the node, when this sequence is triggered.
+
+ Note that the actions are retained by this object even when they have completed.  See
+ note in header.
+*/
+@property (nonatomic, readonly) NSArray *actions;
+
+/// @name Triggering the Sequence
+
+/**
+ The triggering method for the sequence.
+
+ When the sequence is triggered by the `execute` method, it will run its actions (one at a
+ time in order) on the configured node.
+*/
+- (void)execute;
+
+/**
+ Returns an `SKAction` to trigger this sequence.
+
+ The action returned by
+
+     [thisObject action]
+
+ is equivalent to
+
+     [SKAction performSelector:@selector(execute) onTarget:thisObject]
+
+ Note that, as in `HLCustomAction`, this triggering action has no duration, even though
+ the triggered sequence of actions (probably) does.  For `HLSequence`, unlike
+ `HLCustomAction`, the owner probably doesn't care and won't notice.  If the caller does
+ care, she's on her own to pad out the triggering action with a corresponding wait.  See
+ header notes ("Special Considerations") for a discussion of related problems.
+*/
+- (SKAction *)action;
 
 @end
