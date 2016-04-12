@@ -771,29 +771,29 @@ FOUNDATION_EXPORT NSString * const HLCustomActionSceneDidUpdateNotification;
  subsequences, each of which triggers the next one.  For the example, the split might
  look like this:
 
-       - (void)doX
-       {
-         // do X...
-         [self runAction:[SKAction sequence:@[ [SKAction waitForDuration:10.0],
-                                               [SKAction performSelector:@selector(doY) onTarget:self] ]]];
-       }
+     - (void)doX
+     {
+       // do X...
+       [self runAction:[SKAction sequence:@[ [SKAction waitForDuration:10.0],
+                                             [SKAction performSelector:@selector(doY) onTarget:self] ]]];
+     }
 
-       - (void)doY
-       {
-         // do Y...
-         [self runAction:[SKAction sequence:@[ [SKAction waitForDuration:1.0],
-                                               [SKAction performSelector:@selector(doZ) onTarget:self] ]]];
-       }
+     - (void)doY
+     {
+       // do Y...
+       [self runAction:[SKAction sequence:@[ [SKAction waitForDuration:1.0],
+                                             [SKAction performSelector:@selector(doZ) onTarget:self] ]]];
+     }
 
-       - (void)doZ
-       {
-         // do Z...
-       }
+     - (void)doZ
+     {
+       // do Z...
+     }
 
-       - (void)runAnimationSequence
-       {
-         [self runAction:[SKAction performSelector:@selector(doX) onTarget:self]];
-       }
+     - (void)runAnimationSequence
+     {
+       [self runAction:[SKAction performSelector:@selector(doX) onTarget:self]];
+     }
 
  With this implementation, if the sequence is preserved after `doX` and `doY` have run,
  then, upon restoration, the delay before `doZ` will be only 1 second.  Sure, it's a full
