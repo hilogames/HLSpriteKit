@@ -373,7 +373,7 @@ NSString * const HLCustomActionSceneDidUpdateNotification = @"HLCustomActionScen
 
 @end
 
-@implementation HLCustomActionEndPoints
+@implementation HLCustomActionTwoValues
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder
 {
@@ -389,6 +389,26 @@ NSString * const HLCustomActionSceneDidUpdateNotification = @"HLCustomActionScen
 {
   [aCoder encodeDouble:_start forKey:@"start"];
   [aCoder encodeDouble:_finish forKey:@"finish"];
+}
+
+@end
+
+@implementation HLCustomActionTwoPoints
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+  self = [super init];
+  if (self) {
+    _start = [aDecoder decodeCGPointForKey:@"start"];
+    _finish = [aDecoder decodeCGPointForKey:@"finish"];
+  }
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+  [aCoder encodeCGPoint:_start forKey:@"start"];
+  [aCoder encodeCGPoint:_finish forKey:@"finish"];
 }
 
 @end

@@ -693,7 +693,7 @@ FOUNDATION_EXPORT NSString * const HLCustomActionSceneDidUpdateNotification;
 
      - (void)slideNode:(SKNode *)node
      {
-       HLCustomActionEndPoints *slideUserData = [[HLCustomActionEndPoints alloc] init];
+       HLCustomActionTwoValues *slideUserData = [[HLCustomActionTwoValues alloc] init];
        slideUserData.start = node.position.x;
        slideUserData.finish = self.size.width / 2.0f;
 
@@ -705,11 +705,25 @@ FOUNDATION_EXPORT NSString * const HLCustomActionSceneDidUpdateNotification;
        [node runAction:slideAction.action];
      }
 */
-@interface HLCustomActionEndPoints : NSObject <NSCoding>
+@interface HLCustomActionTwoValues : NSObject <NSCoding>
 
 @property (nonatomic, assign) CGFloat start;
 
 @property (nonatomic, assign) CGFloat finish;
+
+@end
+
+/**
+ A commonly-useful encodable user data object to use with `HLCustomAction`.
+ 
+ See notes for `HLCustomActionTwoValues`.  This is the same idea, but offering a start
+ and end `CGPoint` rather than `CGFloat`.
+*/
+@interface HLCustomActionTwoPoints : NSObject <NSCoding>
+
+@property (nonatomic, assign) CGPoint start;
+
+@property (nonatomic, assign) CGPoint finish;
 
 @end
 
