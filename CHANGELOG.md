@@ -1,7 +1,7 @@
 
 # Change Log
 
-## Master
+## 1.0.0
 
 ### Breaking
 
