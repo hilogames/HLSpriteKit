@@ -1,6 +1,20 @@
 
 # Change Log
 
+## Master
+
+### Breaking
+
+- Add `contentClipped` option to `HLToolbarNode`. As in
+  `HLScrollNode`, the result of clipping content is to add an
+  `SKCropNode` to the internal node tree. The breaking change is the
+  default: `NO`, which means the setting-tools animations in
+  `HLToolbarNode` will look silly by default. However, keeping
+  `SKCropNode` out of the node tree prevents a seeming multitude of
+  problems when another crop node or `SKEffectNode` exist in the same
+  scene as a toolbar.  
+  [Karl Voskuil](https://github.com/karlvoskuil)
+
 ## 1.0.0
 
 ### Breaking

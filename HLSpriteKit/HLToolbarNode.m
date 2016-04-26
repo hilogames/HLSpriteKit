@@ -49,11 +49,6 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
 
     _backgroundNode = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithWhite:0.0f alpha:0.5f] size:CGSizeZero];
     [self addChild:_backgroundNode];
-
-    // note: All animations happen within a cropped area, currently.
-    _cropNode = [SKCropNode node];
-    _cropNode.maskNode = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithWhite:1.0f alpha:1.0f] size:CGSizeZero];
-    [self addChild:_cropNode];
   }
   return self;
 }
@@ -186,7 +181,11 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
   // containsPoint).  But if I'm really correcting a bug here, then this is bigger than just
   // HLGestureTarget and should apply to all callers.  (Well, and all callers of calculateAccumulatedFrame,
   // too.)
-  return [_backgroundNode containsPoint:[self convertPoint:p fromNode:self.parent]];
+  if (_contentClipped) {
+    return [_backgroundNode containsPoint:[self convertPoint:p fromNode:self.parent]];
+  } else {
+    return [super containsPoint:p];
+  }
 }
 
 - (void)setZPositionScale:(CGFloat)zPositionScale
@@ -217,7 +216,11 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
 
   HLItemsNode *oldSquaresNode = _squaresNode;
   _squaresNode = squaresNode;
-  [_cropNode addChild:squaresNode];
+  if (_contentClipped) {
+    [_cropNode addChild:squaresNode];
+  } else {
+    [self addChild:squaresNode];
+  }
 
   CGSize oldSize = _size;
   [self HL_layoutXYAnimation:animation];
@@ -275,6 +278,32 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
 - (void)layoutToolsAnimation:(HLToolbarNodeAnimation)animation
 {
   [self HL_layoutXYAnimation:animation];
+}
+
+- (void)setContentClipped:(BOOL)contentClipped
+{
+  if (contentClipped == _contentClipped) {
+    return;
+  }
+  _contentClipped = contentClipped;
+  if (_contentClipped) {
+    _cropNode = [SKCropNode node];
+    SKSpriteNode *maskNode = [SKSpriteNode spriteNodeWithColor:[SKColor blackColor] size:_size];
+    maskNode.anchorPoint = _anchorPoint;
+    _cropNode.maskNode = maskNode;
+    [self addChild:_cropNode];
+    if (_squaresNode) {
+      [_squaresNode removeFromParent];
+      [_cropNode addChild:_squaresNode];
+    }
+  } else {
+    [_cropNode removeFromParent];
+    _cropNode = nil;
+    if (_squaresNode) {
+      [_squaresNode removeFromParent];
+      [self addChild:_squaresNode];
+    }
+  }
 }
 
 - (NSUInteger)toolCount
@@ -565,23 +594,29 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
   _size = finalToolbarSize;
   if (animation == HLToolbarNodeAnimationNone) {
     _backgroundNode.size = finalToolbarSize;
-    [(SKSpriteNode *)_cropNode.maskNode setSize:finalToolbarSize];
+    if (_contentClipped) {
+      [(SKSpriteNode *)_cropNode.maskNode setSize:finalToolbarSize];
+    }
   } else if (!CGSizeEqualToSize(_backgroundNode.size, finalToolbarSize)) {
     SKAction *resize = [SKAction resizeToWidth:finalToolbarSize.width height:finalToolbarSize.height duration:HLToolbarResizeDuration];
     resize.timingMode = SKActionTimingEaseOut;
     [_backgroundNode runAction:resize];
     // noob: The cropNode mask must be resized along with the toolbar size.  Or am I missing something?
-    SKAction *resizeMaskNode = [SKAction customActionWithDuration:HLToolbarResizeDuration actionBlock:^(SKNode *node, CGFloat elapsedTime){
-      SKSpriteNode *maskNode = (SKSpriteNode *)node;
-      maskNode.size = self->_backgroundNode.size;
-    }];
-    resizeMaskNode.timingMode = resize.timingMode;
-    [_cropNode.maskNode runAction:resizeMaskNode];
+    if (_contentClipped) {
+      SKAction *resizeMaskNode = [SKAction customActionWithDuration:HLToolbarResizeDuration actionBlock:^(SKNode *node, CGFloat elapsedTime){
+        SKSpriteNode *maskNode = (SKSpriteNode *)node;
+        maskNode.size = self->_backgroundNode.size;
+      }];
+      resizeMaskNode.timingMode = resize.timingMode;
+      [_cropNode.maskNode runAction:resizeMaskNode];
+    }
   }
 
   // Set toolbar anchorPoint.
   _backgroundNode.anchorPoint = _anchorPoint;
-  [(SKSpriteNode *)_cropNode.maskNode setAnchorPoint:_anchorPoint];
+  if (_contentClipped) {
+    [(SKSpriteNode *)_cropNode.maskNode setAnchorPoint:_anchorPoint];
+  }
 
   // Calculate justification offset.
   CGFloat justificationOffset = 0.0f;
