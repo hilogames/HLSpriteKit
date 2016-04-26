@@ -114,7 +114,7 @@ BOOL HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIG
 - (BOOL)addToGesture:(UIGestureRecognizer *)gestureRecognizer firstTouch:(UITouch *)touch isInside:(BOOL *)isInside;
 
 // Commented out: Another idea, for callers with lots of targets: A version of
-// addToGesture to be implemented by SKNode descendents who care about sceneLocation not
+// addToGesture to be implemented by SKNode descendants who care about sceneLocation not
 // touch.  This could avoid every target doing the same coordinates conversion over and
 // over.
 //- (BOOL)addToGesture:(UIGestureRecognizer *)gestureRecognizer firstTouchSceneLocation:(CGPoint)sceneLocation isInside:(BOOL *)isInside;

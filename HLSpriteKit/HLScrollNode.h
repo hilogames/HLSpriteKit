@@ -217,10 +217,9 @@ typedef NS_ENUM(NSInteger, HLScrollNodeContentScaleMinimumMode)
  @bug When a descendant node of the `contentNode` is an `SKCropNode`, the clipping of
       contents is irregular, affecting some descendants but not others.  Unfortunately
       it can be difficult to determine the culprit, since crop nodes are sometimes
-      hidden in the implementation of custom nodes.  For instance, `HLToolbarNode`
-      includes a crop node in its hierarchy of children nodes.  If a toolbarnode
-      is added to the content of a scroll node, clipping will be affected for all
-      other children of the content node.
+      hidden in the implementation of custom nodes.  Also: In certain versions of iOS,
+      adding an SKEffectNode as a descendant of an SKCropNode causes the effect to render
+      incorrectly.
 */
 @property (nonatomic, getter=isContentClipped) BOOL contentClipped;
 

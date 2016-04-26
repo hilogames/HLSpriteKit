@@ -75,17 +75,17 @@ typedef NS_ENUM(NSInteger, HLScenePresentationAnimation) {
  name.
 */
 /**
- Option for `registerDescendent:withOptions:`: Do not encode this node (or any of its
+ Option for `registerDescendant:withOptions:`: Do not encode this node (or any of its
  children) during <NSCoding> operations.
 */
 FOUNDATION_EXPORT NSString * const HLSceneChildNoCoding;
 /**
- Option for `registerDescendent:withOptions:`: Set this node's size property with the size
+ Option for `registerDescendant:withOptions:`: Set this node's size property with the size
  of the scene when the scene size changes.
 */
 FOUNDATION_EXPORT NSString * const HLSceneChildResizeWithScene;
 /**
- Option for `registerDescendent:withOptions:`: Considers this child node's gesture target
+ Option for `registerDescendant:withOptions:`: Considers this child node's gesture target
  (via `[SKNode+HLGestureTarget hlGestureTarget]`) when processing gestures with the
  default `HLScene` gesture recognition system; see `HLGestureTarget`.
 */
