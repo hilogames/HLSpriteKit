@@ -22,7 +22,7 @@
  properties of the node which are set at this call will be shared by the shadow, and any
  properties set after this call will not.
 */
-- (SKNode *)shadowWithColor:(UIColor *)color blur:(CGFloat)blur;
+- (SKNode *)shadowWithColor:(SKColor *)color blur:(CGFloat)blur;
 
 /**
  Convenience method for creating a "multi-shadow" for the node.
@@ -32,7 +32,8 @@
    - First, the correct shape is created by copying the original node multiple times at
      radial offsets from a center point.
 
-   - Next, the shape is replaced by the passed color using a crop node.
+   - Next, the shape is replaced by the passed color using an effect node with a
+     color-clamp filter.
 
    - Finally, the colorized shape is blurred using an effect node with a Gaussian filter.
 
@@ -60,7 +61,7 @@
 - (SKNode *)multiShadowWithOffset:(CGFloat)offset
                       shadowCount:(int)shadowCount
                      initialTheta:(CGFloat)initialTheta
-                            color:(UIColor *)color
+                            color:(SKColor *)color
                              blur:(CGFloat)blur;
 
 @end
