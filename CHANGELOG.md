@@ -15,6 +15,11 @@
   scene as a toolbar.  
   [Karl Voskuil](https://github.com/karlvoskuil)
 
+- Remove `HLTextureStore`. It has proven not general enough for
+  reuse. In the unlikely case you are upset by this, I will buy you a
+  beer and code up a replacement.  
+  [Karl Voskuil](https://github.com/karlvoskuil)
+
 ## 1.0.0
 
 ### Breaking

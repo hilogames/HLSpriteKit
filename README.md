@@ -388,8 +388,9 @@ implementations. Let me know what you need!
 
 `HLSpriteKit` is under active development, and so includes other
 experimental classes and functions which seem general enough for
-reuse. For instance, a generic `SKTexture` store and `SKEmitterNode`
-store are included, but it’s not clear they are useful.
+reuse. For instance, an `SKEmitterNode` store and some image
+manipulation functions are included, but it’s not clear they are
+useful.
 
 ## Installation
 

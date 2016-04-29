@@ -25,7 +25,6 @@
 #import "HLScene.h"
 #import "HLScrollNode.h"
 #import "HLTableLayoutManager.h"
-#import "HLTextureStore.h"
 #import "HLTiledNode.h"
 #import "HLToolbarNode.h"
 #import "SKLabelNode+HLLabelNodeAdditions.h"
