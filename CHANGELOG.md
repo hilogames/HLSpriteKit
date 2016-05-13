@@ -20,6 +20,9 @@
   beer and code up a replacement.  
   [Karl Voskuil](https://github.com/karlvoskuil)
 
+- Drop support for iOS 7.  
+  [Karl Voskuil](https://github.com/karlvoskuil)
+
 ### Added
 
 - Add `HLMultilineLabelNode`. I know, I know, there are other

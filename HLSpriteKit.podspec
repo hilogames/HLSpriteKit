@@ -19,7 +19,7 @@ Pod::Spec.new do |s|
   s.homepage     = "https://github.com/hilogames/HLSpriteKit"
   s.license      = { :type => "MIT", :file => "LICENSE" }
   s.author       = { "Karl Voskuil" => "karl@hilogames.com" }
-  s.platform     = :ios, "7.0"
+  s.platform     = :ios, "8.4"
   s.source       = { :git => "https://github.com/hilogames/HLSpriteKit.git", :tag => "1.0.0" }
   s.source_files = "HLSpriteKit/*"
   s.frameworks   = "Foundation", "UIKit", "SpriteKit"
