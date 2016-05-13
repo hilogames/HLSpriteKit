@@ -20,6 +20,12 @@
   beer and code up a replacement.  
   [Karl Voskuil](https://github.com/karlvoskuil)
 
+### Added
+
+- Add `HLMultilineLabelNode`. I know, I know, there are other
+  implementations already freely available. But this one is mine.  
+  [Karl Voskuil](https://github.com/karlvoskuil)
+
 ## 1.0.0
 
 ### Breaking

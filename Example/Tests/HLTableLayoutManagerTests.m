@@ -17,16 +17,6 @@
 
 @implementation HLTableLayoutManagerTests
 
-- (void)setUp
-{
-  [super setUp];
-}
-
-- (void)tearDown
-{
-  [super tearDown];
-}
-
 - (void)testLayoutGeometry
 {
   const CGFloat epsilon = 0.0001f;

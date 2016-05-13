@@ -23,6 +23,7 @@
 		B8F2A68CE5B9597AF6DD3965 /* libPods-HLSpriteKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3192C2AF3415A6BFB72AB01F /* libPods-HLSpriteKit.a */; };
 		CB020BA31B6FFDD700E7D845 /* HLMenuNodeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CB020BA21B6FFDD700E7D845 /* HLMenuNodeTests.m */; };
 		CB8835041A1838F800584A05 /* HLTableLayoutManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CB8835031A1838F800584A05 /* HLTableLayoutManagerTests.m */; };
+		CB89D82F1CE60D5700EB1B7F /* HLMultilineLabelNodeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CB89D82E1CE60D5700EB1B7F /* HLMultilineLabelNodeTests.m */; };
 		CBCE84F91A165A66005555A9 /* HLCatalogScene.m in Sources */ = {isa = PBXBuildFile; fileRef = CBCE84F81A165A66005555A9 /* HLCatalogScene.m */; };
 		CBCE84FB1A165E8F005555A9 /* SpriteKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CBCE84FA1A165E8F005555A9 /* SpriteKit.framework */; };
 		CBD2982F1A16FF1A00CC7C2F /* HLMathTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CBD2982E1A16FF1A00CC7C2F /* HLMathTests.m */; };
@@ -67,6 +68,7 @@
 		C96EBB7FEB4207166E346319 /* Pods-Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Tests/Pods-Tests.release.xcconfig"; sourceTree = "<group>"; };
 		CB020BA21B6FFDD700E7D845 /* HLMenuNodeTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLMenuNodeTests.m; sourceTree = "<group>"; };
 		CB8835031A1838F800584A05 /* HLTableLayoutManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLTableLayoutManagerTests.m; sourceTree = "<group>"; };
+		CB89D82E1CE60D5700EB1B7F /* HLMultilineLabelNodeTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLMultilineLabelNodeTests.m; sourceTree = "<group>"; };
 		CBCE84F71A165A66005555A9 /* HLCatalogScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLCatalogScene.h; sourceTree = "<group>"; };
 		CBCE84F81A165A66005555A9 /* HLCatalogScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLCatalogScene.m; sourceTree = "<group>"; };
 		CBCE84FA1A165E8F005555A9 /* SpriteKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SpriteKit.framework; path = System/Library/Frameworks/SpriteKit.framework; sourceTree = SDKROOT; };
@@ -167,6 +169,7 @@
 			children = (
 				CBD2982E1A16FF1A00CC7C2F /* HLMathTests.m */,
 				CB020BA21B6FFDD700E7D845 /* HLMenuNodeTests.m */,
+				CB89D82E1CE60D5700EB1B7F /* HLMultilineLabelNodeTests.m */,
 				CB8835031A1838F800584A05 /* HLTableLayoutManagerTests.m */,
 				6003F5B6195388D20070C39A /* Supporting Files */,
 			);
@@ -413,6 +416,7 @@
 			files = (
 				CB020BA31B6FFDD700E7D845 /* HLMenuNodeTests.m in Sources */,
 				CB8835041A1838F800584A05 /* HLTableLayoutManagerTests.m in Sources */,
+				CB89D82F1CE60D5700EB1B7F /* HLMultilineLabelNodeTests.m in Sources */,
 				CBD2982F1A16FF1A00CC7C2F /* HLMathTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

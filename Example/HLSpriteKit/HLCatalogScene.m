@@ -29,7 +29,7 @@
 - (void)HL_createContent
 {
   SKSpriteNode *catalogNode = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithRed:0.5f green:0.7f blue:0.9f alpha:1.0f] size:CGSizeZero];
-  HLTableLayoutManager *catalogLayoutManager = [[HLTableLayoutManager alloc] initWithColumnCount:3
+  HLTableLayoutManager *catalogLayoutManager = [[HLTableLayoutManager alloc] initWithColumnCount:2
                                                                                     columnWidths:@[ @(0.0f) ]
                                                                               columnAnchorPoints:@[ [NSValue valueWithCGPoint:CGPointMake(0.5f, 0.5f)] ]
                                                                                       rowHeights:@[ @(0.0f) ]];
@@ -38,6 +38,17 @@
   catalogLayoutManager.rowSeparator = 15.0f;
   [catalogNode hlSetLayoutManager:catalogLayoutManager];
 
+  HLMultilineLabelNode *multilineLabelNode = [self HL_createContentMultilineLabelNode];
+  // note: Show the label on a solid background to illustrate the size of the multiline label node.
+  SKSpriteNode *multilineLabelBackgroundNode = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithRed:0.65f green:0.8f blue:0.95f alpha:1.0f]
+                                                                            size:multilineLabelNode.size];
+  [multilineLabelBackgroundNode addChild:multilineLabelNode];
+  [catalogNode addChild:multilineLabelBackgroundNode];
+  [multilineLabelNode hlSetGestureTarget:[HLTapGestureTarget tapGestureTargetWithHandleGestureBlock:^(UIGestureRecognizer *gestureRecognizer){
+    [self HL_showMessage:@"Tapped HLMultilineLabelNode."];
+  }]];
+  [self registerDescendant:multilineLabelNode withOptions:[NSSet setWithObject:HLSceneChildGestureTarget]];
+  
   HLGridNode *gridNode = [self HL_createContentGridNode];
   [catalogNode addChild:gridNode];
   [gridNode hlSetGestureTarget:gridNode];
@@ -46,12 +57,13 @@
   };
   [self registerDescendant:gridNode withOptions:[NSSet setWithObject:HLSceneChildGestureTarget]];
 
-  HLLabelButtonNode *labelButtonNode = [self HL_createContentLabelButtonNode];
-  [catalogNode addChild:labelButtonNode];
-  [labelButtonNode hlSetGestureTarget:[HLTapGestureTarget tapGestureTargetWithHandleGestureBlock:^(UIGestureRecognizer *gestureRecognizer){
-    [self HL_showMessage:@"Tapped HLLabelButtonNode."];
-  }]];
-  [self registerDescendant:labelButtonNode withOptions:[NSSet setWithObject:HLSceneChildGestureTarget]];
+  HLToolbarNode *toolbarNode = [self HL_createContentToolbarNode];
+  [catalogNode addChild:toolbarNode];
+  [toolbarNode hlSetGestureTarget:toolbarNode];
+  toolbarNode.toolTappedBlock = ^(NSString *toolTag){
+    [self HL_showMessage:[NSString stringWithFormat:@"Tapped tool '%@' on HLToolbarNode.", toolTag]];
+  };
+  [self registerDescendant:toolbarNode withOptions:[NSSet setWithObject:HLSceneChildGestureTarget]];
 
   HLTiledNode *tiledNode = [self HL_createContentTiledNode];
   [catalogNode addChild:tiledNode];
@@ -59,17 +71,14 @@
     [self HL_showMessage:@"Tapped HLTiledNode."];
   }]];
   [self registerDescendant:tiledNode withOptions:[NSSet setWithObject:HLSceneChildGestureTarget]];
-
-  HLToolbarNode *toolbarNode = [self HL_createContentToolbarNode];
-  [catalogNode addChild:[SKNode node]];
-  [catalogNode addChild:toolbarNode];
-  [catalogNode addChild:[SKNode node]];
-  [toolbarNode hlSetGestureTarget:toolbarNode];
-  toolbarNode.toolTappedBlock = ^(NSString *toolTag){
-    [self HL_showMessage:[NSString stringWithFormat:@"Tapped tool '%@' on HLToolbarNode.", toolTag]];
-  };
-  [self registerDescendant:toolbarNode withOptions:[NSSet setWithObject:HLSceneChildGestureTarget]];
-
+  
+  HLLabelButtonNode *labelButtonNode = [self HL_createContentLabelButtonNode];
+  [catalogNode addChild:labelButtonNode];
+  [labelButtonNode hlSetGestureTarget:[HLTapGestureTarget tapGestureTargetWithHandleGestureBlock:^(UIGestureRecognizer *gestureRecognizer){
+    [self HL_showMessage:@"Tapped HLLabelButtonNode."];
+  }]];
+  [self registerDescendant:labelButtonNode withOptions:[NSSet setWithObject:HLSceneChildGestureTarget]];
+  
   [catalogNode hlLayoutChildren];
   catalogNode.size = catalogLayoutManager.size;
 
@@ -178,6 +187,19 @@
 
   [toolbarNode setTools:toolNodes tags:toolTags animation:HLToolbarNodeAnimationSlideUp];
   return toolbarNode;
+}
+
+- (HLMultilineLabelNode *)HL_createContentMultilineLabelNode
+{
+  NSString *text = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
+  HLMultilineLabelNode *multilineLabelNode = [[HLMultilineLabelNode alloc] initWithText:text
+                                                                           widthMaximum:240.0f
+                                                                            lineSpacing:0.0f
+                                                                              alignment:NSTextAlignmentLeft
+                                                                               fontName:@"Helvetica"
+                                                                               fontSize:12.0f
+                                                                              fontColor:[UIColor darkGrayColor]];
+  return multilineLabelNode;
 }
 
 - (void)HL_showMessage:(NSString *)message
