@@ -69,6 +69,9 @@ layout math.
  * `HLMessageNode`. Shows a text message over a solid or textured
    background, with some animation options.
 
+ * `HLMultilineLabelNode`. A label node that can display multiline
+   text.
+
  * `HLRingNode`. A collection of items (usually buttons) arranged in a
    circle around a center point.
 
