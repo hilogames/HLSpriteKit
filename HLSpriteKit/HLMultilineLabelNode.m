@@ -185,9 +185,9 @@
                                          attributes:attributes
                                             context:nil];
 
-  // note: The bitmap graphics context will convert the input size to pixels using the
-  // current device scaling and then rounding up to the nearest whole pixel.  For example
-  // on a lorum ipsum label on an iPhone 6 plus simulator:
+  // note: [Tested on iOS 8.4 and 9.3.] The bitmap graphics context will convert the input
+  // size to pixels using the current device scaling and then rounding up to the nearest
+  // whole pixel.  For example on a lorum ipsum label on an iPhone 6 plus simulator:
   //
   //     _widthMaximum                   240.0
   //     boundingRect.size.width         229.48828125        calculated

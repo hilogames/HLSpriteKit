@@ -25,9 +25,14 @@
   XCTAssertGreaterThan(labelNode.size.width, 0.0f);
   XCTAssertGreaterThan(labelNode.size.height, 0.0f);
 
-  for (int widthMaximum = 1; widthMaximum < 100; ++widthMaximum) {
-    labelNode.widthMaximum = (CGFloat)widthMaximum;
-    XCTAssertLessThanOrEqual(labelNode.size.width, (CGFloat)widthMaximum);
+  // note: The behavior of the underlying bounds calculation changed in iOS 9.0.  Previously, the
+  // the width of the multiline label node might be wider than the provided maximum.
+  NSOperatingSystemVersion iOS90000Version = { 9, 0, 0 };
+  if ([[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:iOS90000Version]) {
+    for (int widthMaximum = 1; widthMaximum < 100; ++widthMaximum) {
+      labelNode.widthMaximum = (CGFloat)widthMaximum;
+      XCTAssertLessThanOrEqual(labelNode.size.width, (CGFloat)widthMaximum);
+    }
   }
 }
 

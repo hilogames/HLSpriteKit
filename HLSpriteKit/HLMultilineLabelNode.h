@@ -18,6 +18,17 @@
  The interface is similar to `SKLabelNode`; however, see `widthMaximum` to control line
  breaks, and see `anchorPoint` and `alignment` to control vertical and horizontal text
  alignment.
+
+ @bug In iOS 8.4 and earlier, `widthMaximum` works more like a suggestion than a limit.
+      Its behavior is determined by `[NSAttributedString
+      boundingRectWithSize:options:context:]` which notes
+
+        > However, the actual bounding rectangle returned by this method can be larger
+        > than the constraints if additional space is needed to render the entire
+        > string. Typically, the renderer preserves the width constraint and adjusts the
+        > height constraint as needed.
+
+      In iOS 8.4 and earlier, the width would usually not, in fact, be preserved.
 */
 
 @interface HLMultilineLabelNode : SKNode <NSCoding>
@@ -85,11 +96,14 @@
 
  Default value is `0.0`.
 
- The configured text will wrap so that no line is longer than the maximum width.  In the
- current implementation, the line will prefer to break on word boundaries.  If constrained
- by a long word, it will not hyphenate, but will break on latter boundaries.  If
- constrained so that even a single letter doesn't fit on the line, it will visually
- truncate the letter.
+ In iOS 9 and later, the configured text will wrap so that no line is longer than the
+ maximum width.  In the current implementation, the line will prefer to break on word
+ boundaries.  If constrained by a long word, it will not hyphenate, but will break on
+ latter boundaries.  If constrained so that even a single letter doesn't fit on the line,
+ it will visually truncate the letter.
+
+ Before iOS 9, the `widthMaximum` is more approximate; the label width will be near, but
+ not necessarily less than, the maximum.
 
  Setting this property results in the label being rendered (if `text` is set and
  non-empty).
