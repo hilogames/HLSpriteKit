@@ -17,8 +17,7 @@
 
  See http://stackoverflow.com/q/35249269/1332415 for context.
 
- Details
- -------
+ ## Details
 
  When the node hierarchy is encoded, as is common during application state preservation or
  a "game save", nodes running `SKAction` actions with code blocks must be handled
@@ -70,8 +69,7 @@
      perform-selector object, and so both will be encoded along with the node running the
      actions.
 
- Special Considerations
- ----------------------
+ ## Special Considerations
 
  When a node is encoded with a running (not yet completed) `SKAction`, and then decoded,
  it will restart the `SKAction` from the beginning.  This is standard SpriteKit behavior.
@@ -84,8 +82,7 @@
  See `HLSequence` for an alternative; upon decoding, it will not re-run parts of the
  sequence that have already completed.
 
- Examples
- --------
+ ## Examples
 
  Example with manual creation of triggering `SKAction`.
 
@@ -461,8 +458,7 @@ FOUNDATION_EXPORT NSString * const HLCustomActionSceneDidUpdateNotification;
 
  See http://stackoverflow.com/q/35249269/1332415 for context.
 
- Details
- -------
+ ## Details
 
  When the node hierarchy is encoded, as is common during application state preservation or
  a "game save", nodes running `SKAction` actions with code blocks must be handled
@@ -502,8 +498,7 @@ FOUNDATION_EXPORT NSString * const HLCustomActionSceneDidUpdateNotification;
 
  Use the method `action` for convience.
 
- Examples
- --------
+ ## Examples
 
  A tweening example using the non-encodable `customActionWithDuration:actionBlock:`.
 
@@ -533,8 +528,7 @@ FOUNDATION_EXPORT NSString * const HLCustomActionSceneDidUpdateNotification;
           [redNode runAction:flashInAction.action];
         }
 
- Limitations
- -----------
+ ## Limitations
 
  Currently the custom action does not implement much `SKAction` functionality, including:
 
@@ -548,8 +542,7 @@ FOUNDATION_EXPORT NSString * const HLCustomActionSceneDidUpdateNotification;
  caller to make explicit calls to update the custom action (presumably from her `SKScene
  update:`).  Both alternates have their own problems.
 
- Special Considerations
- ----------------------
+ ## Special Considerations
 
  When a node is encoded with a running (not yet completed) `SKAction`, and then decoded,
  it will restart the `SKAction` from the beginning.  This is standard SpriteKit behavior.
@@ -679,7 +672,7 @@ FOUNDATION_EXPORT NSString * const HLCustomActionSceneDidUpdateNotification;
  A common use case for `HLCustomAction` is tweening between two values (whether position,
  alpha, scale, or something else), which can be tracked by this user data object.  In the
  following example, a user data object is provided to the custom action in order to track
- a start and end point for an overshooting slide.
+ a start and finish value for an overshooting slide.
 
      - (void)slideUpdate:(SKNode *)node
              elapsedTime:(CGFloat)elapsedTime
@@ -715,9 +708,9 @@ FOUNDATION_EXPORT NSString * const HLCustomActionSceneDidUpdateNotification;
 
 /**
  A commonly-useful encodable user data object to use with `HLCustomAction`.
- 
+
  See notes for `HLCustomActionTwoValues`.  This is the same idea, but offering a start
- and end `CGPoint` rather than `CGFloat`.
+ and finish `CGPoint` rather than `CGFloat`.
 */
 @interface HLCustomActionTwoPoints : NSObject <NSCoding>
 
@@ -737,8 +730,7 @@ FOUNDATION_EXPORT NSString * const HLCustomActionSceneDidUpdateNotification;
 
  See http://stackoverflow.com/q/36293846/1332415 for context.
 
- Details
- -------
+ ## Details
 
  When a node is encoded with a running `SKAction`, and then decoded, it will restart the
  `SKAction` from the beginning.  This is standard SpriteKit behavior.
@@ -817,8 +809,7 @@ FOUNDATION_EXPORT NSString * const HLCustomActionSceneDidUpdateNotification;
 
  `HLSequence` is an abstracted version of the described concept.
 
- Special Considerations
- ----------------------
+ ## Special Considerations
 
  Should actions in the sequence still be retained once they have completed?  There seems
  no reason to, except perhaps that this object is trying to imitate `SKAction sequence`,
