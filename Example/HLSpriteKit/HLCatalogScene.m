@@ -198,7 +198,8 @@
                                                                               alignment:NSTextAlignmentLeft
                                                                                fontName:@"Helvetica"
                                                                                fontSize:12.0f
-                                                                              fontColor:[UIColor darkGrayColor]];
+                                                                              fontColor:[UIColor darkGrayColor]
+                                                                                 shadow:nil];
   return multilineLabelNode;
 }
 
