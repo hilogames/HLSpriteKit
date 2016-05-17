@@ -58,7 +58,8 @@
                    alignment:(NSTextAlignment)alignment
                     fontName:(NSString *)fontName
                     fontSize:(CGFloat)fontSize
-                   fontColor:(SKColor *)fontColor;
+                   fontColor:(SKColor *)fontColor
+                      shadow:(NSShadow *)shadow;
 
 /**
  Returns an initialized multiline label node.
@@ -181,5 +182,15 @@
  non-empty).
 */
 @property (nonatomic, strong) SKColor *fontColor;
+
+/**
+ Shadow parameters for the rendered multiline label; `nil` for no shadow.
+ 
+ Default value is `nil`.
+ 
+ Setting this property results in the label being rendered (if `text` is set and
+ non-empty).
+*/
+@property (nonatomic, strong) NSShadow *shadow;
 
 @end

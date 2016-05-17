@@ -27,6 +27,7 @@
     _fontName = [fontName copy];
     _fontSize = 32.0f;
     _fontColor = [SKColor whiteColor];
+    _shadow = nil;
 
     [self GL_render];
   }
@@ -40,6 +41,7 @@
                     fontName:(NSString *)fontName
                     fontSize:(CGFloat)fontSize
                    fontColor:(UIColor *)fontColor
+                      shadow:(NSShadow *)shadow
 {
   self = [super init];
   if (self) {
@@ -54,6 +56,7 @@
     _fontName = [fontName copy];
     _fontSize = fontSize;
     _fontColor = fontColor;
+    _shadow = shadow;
 
     [self GL_render];
   }
@@ -80,6 +83,7 @@
     _fontName = [aDecoder decodeObjectForKey:@"fontName"];
     _fontSize = (CGFloat)[aDecoder decodeDoubleForKey:@"fontSize"];
     _fontColor = [aDecoder decodeObjectForKey:@"fontColor"];
+    _shadow = [aDecoder decodeObjectForKey:@"shadow"];
 
     [self GL_render];
   }
@@ -99,6 +103,7 @@
   [aCoder encodeObject:_fontName forKey:@"fontName"];
   [aCoder encodeDouble:_fontSize forKey:@"fontSize"];
   [aCoder encodeObject:_fontColor forKey:@"fontColor"];
+  [aCoder encodeObject:_shadow forKey:@"shadow"];
 
   [self addChild:_renderNode];
 }
@@ -160,6 +165,12 @@
   [self GL_render];
 }
 
+- (void)setShadow:(NSShadow *)shadow
+{
+  _shadow = shadow;
+  [self GL_render];
+}
+
 #pragma mark - Common
 
 - (void)GL_render
@@ -175,15 +186,20 @@
   paragraphStyle.lineSpacing = _lineSpacing;
   paragraphStyle.alignment = _alignment;
 
-  NSDictionary *attributes = @{ NSFontAttributeName : [UIFont fontWithName:_fontName size:_fontSize],
-                                NSForegroundColorAttributeName : _fontColor,
-                                NSParagraphStyleAttributeName : paragraphStyle };
+  NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
+  attributes[NSFontAttributeName] = [UIFont fontWithName:_fontName size:_fontSize];
+  attributes[NSForegroundColorAttributeName] = _fontColor;
+  attributes[NSParagraphStyleAttributeName] = paragraphStyle;
+  if (_shadow) {
+    attributes[NSShadowAttributeName] = _shadow;
+  }
+
+  NSAttributedString *attributedText = [[NSAttributedString alloc] initWithString:_text attributes:attributes];
 
   CGFloat width = (_widthMaximum > 0.0f ? _widthMaximum : CGFLOAT_MAX);
-  CGRect boundingRect = [_text boundingRectWithSize:CGSizeMake(width, CGFLOAT_MAX)
-                                            options:(NSStringDrawingUsesLineFragmentOrigin)
-                                         attributes:attributes
-                                            context:nil];
+  CGRect boundingRect = [attributedText boundingRectWithSize:CGSizeMake(width, CGFLOAT_MAX)
+                                                     options:(NSStringDrawingUsesLineFragmentOrigin)
+                                                     context:nil];
 
   // note: [Tested on iOS 8.4 and 9.3.] The bitmap graphics context will convert the input
   // size to pixels using the current device scaling and then rounding up to the nearest
@@ -196,7 +212,9 @@
   //
   // This would all seem to be exactly what we want.
   UIGraphicsBeginImageContextWithOptions(boundingRect.size, NO, 0.0f);
-  [_text drawInRect:boundingRect withAttributes:attributes];
+  // note: Use `drawInRect:` on an attributed string, rather than `drawInRect:attributes:`.
+  // On iOS 9.3 the latter does not render shadows correctly on multiline text.
+  [attributedText drawInRect:boundingRect];
   UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
   UIGraphicsEndImageContext();
 
