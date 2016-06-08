@@ -10,7 +10,7 @@
 
 /**
  A lightweight encodable object that, when triggered, can perform a selector on a
- strongly-retained target with a single argument.
+ weakly-retained target with a single argument.
 
  Intended as a replacement for `SKAction runBlock:`, which is more versatile, but which
  cannot be encoded.
@@ -52,7 +52,7 @@
  After decoding, the orc will fade and be removed from parent, but the cleanup method
  `orcDidFinishDying:` will not be called.
 
- Instead, use `HLPerformSelectorStrongSingle` (or another variant).
+ Instead, use `HLPerformSelectorWeakSingle` (or another variant).
 
    - The caller instantiates the perform-selector object and sets its properties: target,
      selector, and arguments.
@@ -68,6 +68,17 @@
    - As a bonus, the triggering `SKAction` retains a strong reference to the
      perform-selector object, and so both will be encoded along with the node running the
      actions.
+
+ ## Weak or Strong Perform-Selector Object?
+
+ Most often it is not appropriate to use the "strong" variants of HLPerformSelector.  In
+ all variants the node running the triggering action retains its `SKAction` strongly,
+ which retains the perform-selector object strongly.  So then in "strong" variants, the
+ target of the perform-selector object is retained strongly, also; this target is
+ typically the node itself, or the scene that owns it, and so a retain cycle is created
+ and won't be broken until the node has completed its running actions.  In particular, if
+ the node is removed from its parent, then its running actions will be stopped (not
+ destroyed!), and the retain cycle won't be broken.
 
  ## Special Considerations
 
@@ -88,7 +99,7 @@
 
      SKAction *fadeAction = [SKAction fadeOutWithDuration:3.0];
      SKAction *removeAction = [SKAction removeFromParent];
-     HLPerformSelectorStrongSingle *cleanupCaller = [[HLPerformSelectorStrongSingle alloc] initWithStrongTarget:self selector:@selector(orcDidFinishDying:) argument:orcNode];
+     HLPerformSelectorWeakSingle *cleanupCaller = [[HLPerformSelectorWeakSingle alloc] initWithWeakTarget:self selector:@selector(orcDidFinishDying:) argument:orcNode];
      SKAction *cleanupAction = [SKAction performSelector:@selector(execute) onTarget:cleanupCaller];
      [orcNode runAction:[SKAction sequence:@[ fadeAction, removeAction, cleanupAction ]]];
 
@@ -96,180 +107,8 @@
 
      SKAction *fadeAction = [SKAction fadeOutWithDuration:3.0];
      SKAction *removeAction = [SKAction removeFromParent];
-     HLPerformSelectorStrongSingle *cleanupCaller = [[HLPerformSelectorStrongSingle alloc] initWithStrongTarget:self selector:@selector(orcDidFinishDying:) argument:orcNode];
+     HLPerformSelectorWeakSingle *cleanupCaller = [[HLPerformSelectorWeakSingle alloc] initWithWeakTarget:self selector:@selector(orcDidFinishDying:) argument:orcNode];
      [orcNode runAction:[SKAction sequence:@[ fadeAction, removeAction, cleanupCaller.action ]]];
-*/
-@interface HLPerformSelectorStrongSingle : NSObject <NSCoding>
-
-/// @name Creating a Perform-Selector Object
-
-/**
- Initializes a perform-selector object with all properties.
-*/
-- (instancetype)initWithStrongTarget:(id)strongTarget selector:(SEL)selector argument:(id)argument;
-
-/**
- The target the selector will be performed on, when triggered.
-
- When the perform-selector object is triggered by the `execute` method, it will invoke its
- selector on the target, passing the argument.
-
- The target is retained strongly, despite the potential for retain cycles:
-
-  - Typically, the target is a controller that is also the parent node of the child
-    running the animation sequence.
-
-  - The target, therefore, retains the child; the child retains its running `SKActions`;
-    and the no-argument triggering `performSelector:onTarget:` retains this
-    perform-selector object.
-
-  - This perform-selector object retains the target, completing the cycle.  Such a cycle
-    might be appropriate for a **temporary, short-lived** animation that **guarantees** to
-    perform its selector, even if the target has been released by all other owners.
-*/
-@property (nonatomic, strong) id strongTarget;
-
-/// @name Configuring the Selector to be Performed
-
-/**
- The selector to be performed when triggered.
-
- When the perform-selector object is triggered by the `execute` method, it will invoke its
- selector on the target, passing the argument.
-*/
-@property (nonatomic, assign) SEL selector;
-
-/**
- The argument passed to the selector when triggered.
-
- When the perform-selector object is triggered by the `execute` method, it will invoke its
- selector on the target, passing the argument.
-*/
-@property (nonatomic, strong) id argument;
-
-/// @name Triggering the Selector
-
-/**
- The triggering method for the perform-selector object.
-
- When the perform-selector object is triggered by the `execute` method, it will invoke its
- selector on the target, passing the argument.
-*/
-- (void)execute;
-
-/**
- Returns an `SKAction` to trigger this perform-selector object.
-
- The action returned by
-
-     [thisObject action]
-
- is equivalent to
-
-     [SKAction performSelector:@selector(execute) onTarget:thisObject]
-*/
-- (SKAction *)action;
-
-@end
-
-/**
- A lightweight encodable object that, when triggered, can perform a selector on a
- strongly-retained target with two arguments.
-
- Intended as a replacement for `SKAction runBlock:`, which is more versatile, but which
- cannot be encoded.
-
- See `HLPerformSelectorStrongSingle` for documentation.
-*/
-@interface HLPerformSelectorStrongDouble : NSObject <NSCoding>
-
-/// @name Creating a Perform-Selector Object
-
-/**
- Initializes a perform-selector object with all properties.
-*/
-- (instancetype)initWithStrongTarget:(id)strongTarget selector:(SEL)selector argument1:(id)argument1 argument2:(id)argument2;
-
-/**
- The target the selector will be performed on, when triggered.
-
- When the perform-selector object is triggered by the `execute` method, it will invoke its
- selector on the target, passing the arguments.
-
- The target is retained strongly, despite the potential for retain cycles:
-
-  - Typically, the target is a controller that is also the parent node of the child
-    running the animation sequence.
-
-  - The target, therefore, retains the child; the child retains its running `SKActions`;
-    and the no-argument triggering `performSelector:onTarget:` retains this
-    perform-selector object.
-
-  - This perform-selector object retains the target, completing the cycle.  Such a cycle
-    might be appropriate for a **temporary, short-lived** animation that **guarantees** to
-    perform its selector, even if the target has been released by all other owners.
-*/
-@property (nonatomic, strong) id strongTarget;
-
-/// @name Configuring the Selector to be Performed
-
-/**
- The selector to be performed when triggered.
-
- When the perform-selector object is triggered by the `execute` method, it will invoke its
- selector on the target, passing the arguments.
-*/
-@property (nonatomic, assign) SEL selector;
-
-/**
- The first argument passed to the selector when triggered.
-
- When the perform-selector object is triggered by the `execute` method, it will invoke its
- selector on the target, passing the arguments.
-*/
-@property (nonatomic, strong) id argument1;
-
-/**
- The second argument passed to the selector when triggered.
-
- When the perform-selector object is triggered by the `execute` method, it will invoke its
- selector on the target, passing the arguments.
-*/
-@property (nonatomic, strong) id argument2;
-
-/// @name Triggering the Selector
-
-/**
- The triggering method for the perform-selector object.
-
- When the perform-selector object is triggered by the `execute` method, it will invoke its
- selector on the target, passing the arguments.
-*/
-- (void)execute;
-
-/**
- Returns an `SKAction` to trigger this perform-selector object.
-
- The action returned by
-
-     [thisObject action]
-
- is equivalent to
-
-     [SKAction performSelector:@selector(execute) onTarget:thisObject]
-*/
-- (SKAction *)action;
-
-@end
-
-/**
- A lightweight encodable object that, when triggered, can perform a selector on a
- weakly-retained target with a single argument.
-
- Intended as a replacement for `SKAction runBlock:`, which is more versatile, but which
- cannot be encoded.
-
- See `HLPerformSelectorStrongSingle` for documentation.
 */
 @interface HLPerformSelectorWeakSingle : NSObject <NSCoding>
 
@@ -349,7 +188,7 @@
  Intended as a replacement for `SKAction runBlock:`, which is more versatile, but which
  cannot be encoded.
 
- See `HLPerformSelectorStrongSingle` for documentation.
+ See `HLPerformSelectorWeakSingle` for documentation.
 */
 @interface HLPerformSelectorWeakDouble : NSObject <NSCoding>
 
@@ -366,7 +205,7 @@
  When the perform-selector object is triggered by the `execute` method, it will invoke its
  selector on the target, passing the arguments.
 
- The target is retained strongly, despite the potential for retain cycles:
+ The target is retained weakly:
 
   - Typically, the target is a controller that is also the parent node of the child
     running the animation sequence.
@@ -377,7 +216,189 @@
 
   - This perform-selector object retains the target only weakly, to avoid a retain cycle.
 */
-@property (nonatomic, strong) id weakTarget;
+@property (nonatomic, weak) id weakTarget;
+
+/// @name Configuring the Selector to be Performed
+
+/**
+ The selector to be performed when triggered.
+
+ When the perform-selector object is triggered by the `execute` method, it will invoke its
+ selector on the target, passing the arguments.
+*/
+@property (nonatomic, assign) SEL selector;
+
+/**
+ The first argument passed to the selector when triggered.
+
+ When the perform-selector object is triggered by the `execute` method, it will invoke its
+ selector on the target, passing the arguments.
+*/
+@property (nonatomic, strong) id argument1;
+
+/**
+ The second argument passed to the selector when triggered.
+
+ When the perform-selector object is triggered by the `execute` method, it will invoke its
+ selector on the target, passing the arguments.
+*/
+@property (nonatomic, strong) id argument2;
+
+/// @name Triggering the Selector
+
+/**
+ The triggering method for the perform-selector object.
+
+ When the perform-selector object is triggered by the `execute` method, it will invoke its
+ selector on the target, passing the arguments.
+*/
+- (void)execute;
+
+/**
+ Returns an `SKAction` to trigger this perform-selector object.
+
+ The action returned by
+
+     [thisObject action]
+
+ is equivalent to
+
+     [SKAction performSelector:@selector(execute) onTarget:thisObject]
+*/
+- (SKAction *)action;
+
+@end
+
+/**
+ A lightweight encodable object that, when triggered, can perform a selector on a
+ strongly-retained target with a single argument.
+
+ Intended as a replacement for `SKAction runBlock:`, which is more versatile, but which
+ cannot be encoded.
+
+ See `HLPerformSelectorWeakSingle` for documentation.
+*/
+@interface HLPerformSelectorStrongSingle : NSObject <NSCoding>
+
+/// @name Creating a Perform-Selector Object
+
+/**
+ Initializes a perform-selector object with all properties.
+*/
+- (instancetype)initWithStrongTarget:(id)strongTarget selector:(SEL)selector argument:(id)argument;
+
+/**
+ The target the selector will be performed on, when triggered.
+
+ When the perform-selector object is triggered by the `execute` method, it will invoke its
+ selector on the target, passing the argument.
+
+ The target is retained strongly, despite the potential for retain cycles:
+
+  - Typically, the target is a controller that is also the parent node of the child
+    running the animation sequence.
+
+  - The target, therefore, retains the child; the child retains its running `SKActions`;
+    and the no-argument triggering `performSelector:onTarget:` retains this
+    perform-selector object.
+
+  - This perform-selector object retains the target, completing the cycle, which won't be
+    broken until the animation sequence completes.  (If the node running the sequence is
+    removed from parent, then the sequence won't complete and the cycle will not be
+    broken.)
+
+ A strongly-retained target might be appropriate, however, if the target does not itself
+ retain the animating node, and if the selector **must** be performed even if the target
+ has been released by all other owners.
+*/
+@property (nonatomic, strong) id strongTarget;
+
+/// @name Configuring the Selector to be Performed
+
+/**
+ The selector to be performed when triggered.
+
+ When the perform-selector object is triggered by the `execute` method, it will invoke its
+ selector on the target, passing the argument.
+*/
+@property (nonatomic, assign) SEL selector;
+
+/**
+ The argument passed to the selector when triggered.
+
+ When the perform-selector object is triggered by the `execute` method, it will invoke its
+ selector on the target, passing the argument.
+*/
+@property (nonatomic, strong) id argument;
+
+/// @name Triggering the Selector
+
+/**
+ The triggering method for the perform-selector object.
+
+ When the perform-selector object is triggered by the `execute` method, it will invoke its
+ selector on the target, passing the argument.
+*/
+- (void)execute;
+
+/**
+ Returns an `SKAction` to trigger this perform-selector object.
+
+ The action returned by
+
+     [thisObject action]
+
+ is equivalent to
+
+     [SKAction performSelector:@selector(execute) onTarget:thisObject]
+*/
+- (SKAction *)action;
+
+@end
+
+/**
+ A lightweight encodable object that, when triggered, can perform a selector on a
+ strongly-retained target with two arguments.
+
+ Intended as a replacement for `SKAction runBlock:`, which is more versatile, but which
+ cannot be encoded.
+
+ See `HLPerformSelectorWeakSingle` for documentation.
+*/
+@interface HLPerformSelectorStrongDouble : NSObject <NSCoding>
+
+/// @name Creating a Perform-Selector Object
+
+/**
+ Initializes a perform-selector object with all properties.
+*/
+- (instancetype)initWithStrongTarget:(id)strongTarget selector:(SEL)selector argument1:(id)argument1 argument2:(id)argument2;
+
+/**
+ The target the selector will be performed on, when triggered.
+
+ When the perform-selector object is triggered by the `execute` method, it will invoke its
+ selector on the target, passing the arguments.
+
+ The target is retained strongly, despite the potential for retain cycles:
+
+  - Typically, the target is a controller that is also the parent node of the child
+    running the animation sequence.
+
+  - The target, therefore, retains the child; the child retains its running `SKActions`;
+    and the no-argument triggering `performSelector:onTarget:` retains this
+    perform-selector object.
+
+  - This perform-selector object retains the target, completing the cycle, which won't be
+    broken until the animation sequence completes.  (If the node running the sequence is
+    removed from parent, then the sequence won't complete and the cycle will not be
+    broken.)
+
+ A strongly-retained target might be appropriate, however, if the target does not itself
+ retain the animating node, and if the selector **must** be performed even if the target
+ has been released by all other owners.
+*/
+@property (nonatomic, strong) id strongTarget;
 
 /// @name Configuring the Selector to be Performed
 
@@ -601,10 +622,9 @@ FOUNDATION_EXPORT NSString * const HLCustomActionSceneDidUpdateNotification;
      action object.
 
    - If this custom action object retained the target strongly, it would complete a retain
-     cycle.
-
- A retain cycle like that would be fine for short-lived animations, but it seems a weak
- retention is more-generally useful.
+     cycle, which would not be broken until the animation sequence completes.  (In
+     particular, if the node running the sequence is removed from parent, then the
+     sequence won't complete and the cycle will not be broken.)
 */
 @property (nonatomic, weak) id weakTarget;
 
@@ -840,8 +860,8 @@ FOUNDATION_EXPORT NSString * const HLCustomActionSceneDidUpdateNotification;
  The node is retained weakly because the node will be running the action subsequences for
  this sequence, which means it will retain this object strongly (since every subsequence
  but the last refers back to this object).  Retaining the node strongly would create a
- retain cycle, and would cause the sequence to keep running on the object even when no one
- else cared about the node anymore.
+ retain cycle that would not be broken if the node were removed from its scene (pausing
+ actions).
 
  It would be strange to change this node after initialization, but it would not cause any
  errors, and so the property allows writes.
