@@ -1,8 +1,8 @@
 language: objective-c
-osx_image: xcode7.3
+osx_image: xcode7.2
 xcode_workspace: Example/HLSpriteKit.xcworkspace
 xcode_scheme: HLSpriteKit
-xcode_sdk: [iphonesimulator8.4, iphonesimulator9.3]
+xcode_sdk: iphonesimulator
 podfile: Example/Podfile
 branches:
   only:
