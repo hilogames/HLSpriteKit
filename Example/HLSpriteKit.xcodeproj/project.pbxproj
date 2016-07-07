@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		274D5A654000D721DB652DBD /* libPods-Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 463684A3232F9DEA51329820 /* libPods-Tests.a */; };
+		46E32E187123F3F0A27D428E /* libPods-HLSpriteKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6786DE10E0545DC768ADA659 /* libPods-HLSpriteKit.a */; };
 		6003F58E195388D20070C39A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58D195388D20070C39A /* Foundation.framework */; };
 		6003F590195388D20070C39A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58F195388D20070C39A /* CoreGraphics.framework */; };
 		6003F592195388D20070C39A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F591195388D20070C39A /* UIKit.framework */; };
@@ -19,8 +21,6 @@
 		6003F5B1195388D20070C39A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58D195388D20070C39A /* Foundation.framework */; };
 		6003F5B2195388D20070C39A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F591195388D20070C39A /* UIKit.framework */; };
 		6003F5BA195388D20070C39A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6003F5B8195388D20070C39A /* InfoPlist.strings */; };
-		9E32F9127A5A6F02E5D5D4EC /* libPods-Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FE0B79C24CDD2E37C1D51E6 /* libPods-Tests.a */; };
-		B8F2A68CE5B9597AF6DD3965 /* libPods-HLSpriteKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3192C2AF3415A6BFB72AB01F /* libPods-HLSpriteKit.a */; };
 		CB020BA31B6FFDD700E7D845 /* HLMenuNodeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CB020BA21B6FFDD700E7D845 /* HLMenuNodeTests.m */; };
 		CB8835041A1838F800584A05 /* HLTableLayoutManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CB8835031A1838F800584A05 /* HLTableLayoutManagerTests.m */; };
 		CB89D82F1CE60D5700EB1B7F /* HLMultilineLabelNodeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CB89D82E1CE60D5700EB1B7F /* HLMultilineLabelNodeTests.m */; };
@@ -40,9 +40,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		1FE0B79C24CDD2E37C1D51E6 /* libPods-Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		3192C2AF3415A6BFB72AB01F /* libPods-HLSpriteKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-HLSpriteKit.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		3FDD58724AEFBE05ED42415E /* Pods-Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Tests/Pods-Tests.debug.xcconfig"; sourceTree = "<group>"; };
+		463684A3232F9DEA51329820 /* libPods-Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		53B25ADC12B8713CDB069049 /* Pods-Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Tests/Pods-Tests.release.xcconfig"; sourceTree = "<group>"; };
 		6003F58A195388D20070C39A /* HLSpriteKit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HLSpriteKit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6003F58D195388D20070C39A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		6003F58F195388D20070C39A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -61,11 +60,9 @@
 		6003F5B7195388D20070C39A /* Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Tests-Info.plist"; sourceTree = "<group>"; };
 		6003F5B9195388D20070C39A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		606FC2411953D9B200FFA9A0 /* Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tests-Prefix.pch"; sourceTree = "<group>"; };
-		63E56CDC13241E200DA0CC72 /* HLSpriteKit.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = HLSpriteKit.podspec; path = ../HLSpriteKit.podspec; sourceTree = "<group>"; };
-		96623D19CB885DFE31301E11 /* Pods-HLSpriteKit.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HLSpriteKit.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HLSpriteKit/Pods-HLSpriteKit.debug.xcconfig"; sourceTree = "<group>"; };
-		AD5DC334657A06BED67FEE15 /* Pods-HLSpriteKit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HLSpriteKit.release.xcconfig"; path = "Pods/Target Support Files/Pods-HLSpriteKit/Pods-HLSpriteKit.release.xcconfig"; sourceTree = "<group>"; };
-		C8322B2330584B88F688B128 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
-		C96EBB7FEB4207166E346319 /* Pods-Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Tests/Pods-Tests.release.xcconfig"; sourceTree = "<group>"; };
+		6786DE10E0545DC768ADA659 /* libPods-HLSpriteKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-HLSpriteKit.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C4B2BF6A0B15605487FA1118 /* Pods-HLSpriteKit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HLSpriteKit.release.xcconfig"; path = "Pods/Target Support Files/Pods-HLSpriteKit/Pods-HLSpriteKit.release.xcconfig"; sourceTree = "<group>"; };
+		C6F537ECCADC99EB3416072C /* Pods-HLSpriteKit.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HLSpriteKit.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HLSpriteKit/Pods-HLSpriteKit.debug.xcconfig"; sourceTree = "<group>"; };
 		CB020BA21B6FFDD700E7D845 /* HLMenuNodeTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLMenuNodeTests.m; sourceTree = "<group>"; };
 		CB8835031A1838F800584A05 /* HLTableLayoutManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLTableLayoutManagerTests.m; sourceTree = "<group>"; };
 		CB89D82E1CE60D5700EB1B7F /* HLMultilineLabelNodeTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLMultilineLabelNodeTests.m; sourceTree = "<group>"; };
@@ -73,7 +70,7 @@
 		CBCE84F81A165A66005555A9 /* HLCatalogScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLCatalogScene.m; sourceTree = "<group>"; };
 		CBCE84FA1A165E8F005555A9 /* SpriteKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SpriteKit.framework; path = System/Library/Frameworks/SpriteKit.framework; sourceTree = SDKROOT; };
 		CBD2982E1A16FF1A00CC7C2F /* HLMathTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLMathTests.m; sourceTree = "<group>"; };
-		D2E5971AD6606BFFAAC0939C /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		D544BBBB62CE90C0F762849C /* Pods-Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Tests/Pods-Tests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,7 +82,7 @@
 				6003F590195388D20070C39A /* CoreGraphics.framework in Frameworks */,
 				6003F592195388D20070C39A /* UIKit.framework in Frameworks */,
 				6003F58E195388D20070C39A /* Foundation.framework in Frameworks */,
-				B8F2A68CE5B9597AF6DD3965 /* libPods-HLSpriteKit.a in Frameworks */,
+				46E32E187123F3F0A27D428E /* libPods-HLSpriteKit.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -96,7 +93,7 @@
 				6003F5B0195388D20070C39A /* XCTest.framework in Frameworks */,
 				6003F5B2195388D20070C39A /* UIKit.framework in Frameworks */,
 				6003F5B1195388D20070C39A /* Foundation.framework in Frameworks */,
-				9E32F9127A5A6F02E5D5D4EC /* libPods-Tests.a in Frameworks */,
+				274D5A654000D721DB652DBD /* libPods-Tests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -106,12 +103,11 @@
 		6003F581195388D10070C39A = {
 			isa = PBXGroup;
 			children = (
-				60FF7A9C1954A5C5007DD14C /* Podspec Metadata */,
 				6003F593195388D20070C39A /* HLSpriteKit */,
 				6003F5B5195388D20070C39A /* Tests */,
 				6003F58C195388D20070C39A /* Frameworks */,
 				6003F58B195388D20070C39A /* Products */,
-				C32C8049D98F11CC2B6D2C5B /* Pods */,
+				D00720485336F77FA6944D81 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -132,8 +128,8 @@
 				6003F58F195388D20070C39A /* CoreGraphics.framework */,
 				6003F591195388D20070C39A /* UIKit.framework */,
 				6003F5AF195388D20070C39A /* XCTest.framework */,
-				3192C2AF3415A6BFB72AB01F /* libPods-HLSpriteKit.a */,
-				1FE0B79C24CDD2E37C1D51E6 /* libPods-Tests.a */,
+				6786DE10E0545DC768ADA659 /* libPods-HLSpriteKit.a */,
+				463684A3232F9DEA51329820 /* libPods-Tests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -186,23 +182,13 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		60FF7A9C1954A5C5007DD14C /* Podspec Metadata */ = {
+		D00720485336F77FA6944D81 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				63E56CDC13241E200DA0CC72 /* HLSpriteKit.podspec */,
-				D2E5971AD6606BFFAAC0939C /* README.md */,
-				C8322B2330584B88F688B128 /* LICENSE */,
-			);
-			name = "Podspec Metadata";
-			sourceTree = "<group>";
-		};
-		C32C8049D98F11CC2B6D2C5B /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				96623D19CB885DFE31301E11 /* Pods-HLSpriteKit.debug.xcconfig */,
-				AD5DC334657A06BED67FEE15 /* Pods-HLSpriteKit.release.xcconfig */,
-				3FDD58724AEFBE05ED42415E /* Pods-Tests.debug.xcconfig */,
-				C96EBB7FEB4207166E346319 /* Pods-Tests.release.xcconfig */,
+				C6F537ECCADC99EB3416072C /* Pods-HLSpriteKit.debug.xcconfig */,
+				C4B2BF6A0B15605487FA1118 /* Pods-HLSpriteKit.release.xcconfig */,
+				D544BBBB62CE90C0F762849C /* Pods-Tests.debug.xcconfig */,
+				53B25ADC12B8713CDB069049 /* Pods-Tests.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -214,12 +200,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6003F5BF195388D20070C39A /* Build configuration list for PBXNativeTarget "HLSpriteKit" */;
 			buildPhases = (
-				D325252E7BA66168EAB271B8 /* Check Pods Manifest.lock */,
+				7A2FADA2352634EE32C93AC9 /* [CP] Check Pods Manifest.lock */,
 				6003F586195388D20070C39A /* Sources */,
 				6003F587195388D20070C39A /* Frameworks */,
 				6003F588195388D20070C39A /* Resources */,
-				EA8557E8F5F26108CC19188F /* Copy Pods Resources */,
-				518F461477F447004BE795A1 /* Embed Pods Frameworks */,
+				B8F4DAFE3605A09212C1393C /* [CP] Embed Pods Frameworks */,
+				944C083C0CF4781403B4AFB8 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -234,12 +220,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6003F5C2195388D20070C39A /* Build configuration list for PBXNativeTarget "Tests" */;
 			buildPhases = (
-				A767F4688771D1BBE335188D /* Check Pods Manifest.lock */,
+				27011D1AA501B834413E1C2E /* [CP] Check Pods Manifest.lock */,
 				6003F5AA195388D20070C39A /* Sources */,
 				6003F5AB195388D20070C39A /* Frameworks */,
 				6003F5AC195388D20070C39A /* Resources */,
-				24986C95A096B41A29B50043 /* Copy Pods Resources */,
-				C88DDCFF9D0205394AC71F23 /* Embed Pods Frameworks */,
+				0CF9B385CEE754872E94CC07 /* [CP] Embed Pods Frameworks */,
+				5888E707FAA6EFE9F176CD35 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -306,59 +292,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		24986C95A096B41A29B50043 /* Copy Pods Resources */ = {
+		0CF9B385CEE754872E94CC07 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Tests/Pods-Tests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		518F461477F447004BE795A1 /* Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HLSpriteKit/Pods-HLSpriteKit-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		A767F4688771D1BBE335188D /* Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		C88DDCFF9D0205394AC71F23 /* Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Embed Pods Frameworks";
+			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -366,14 +307,14 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Tests/Pods-Tests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		D325252E7BA66168EAB271B8 /* Check Pods Manifest.lock */ = {
+		27011D1AA501B834413E1C2E /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Check Pods Manifest.lock";
+			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -381,19 +322,64 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		EA8557E8F5F26108CC19188F /* Copy Pods Resources */ = {
+		5888E707FAA6EFE9F176CD35 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Copy Pods Resources";
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Tests/Pods-Tests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		7A2FADA2352634EE32C93AC9 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		944C083C0CF4781403B4AFB8 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HLSpriteKit/Pods-HLSpriteKit-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B8F4DAFE3605A09212C1393C /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HLSpriteKit/Pods-HLSpriteKit-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -526,14 +512,14 @@
 		};
 		6003F5C0195388D20070C39A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 96623D19CB885DFE31301E11 /* Pods-HLSpriteKit.debug.xcconfig */;
+			baseConfigurationReference = C6F537ECCADC99EB3416072C /* Pods-HLSpriteKit.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "HLSpriteKit/HLSpriteKit-Prefix.pch";
 				INFOPLIST_FILE = "HLSpriteKit/HLSpriteKit-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -542,14 +528,14 @@
 		};
 		6003F5C1195388D20070C39A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AD5DC334657A06BED67FEE15 /* Pods-HLSpriteKit.release.xcconfig */;
+			baseConfigurationReference = C4B2BF6A0B15605487FA1118 /* Pods-HLSpriteKit.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "HLSpriteKit/HLSpriteKit-Prefix.pch";
 				INFOPLIST_FILE = "HLSpriteKit/HLSpriteKit-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -558,14 +544,9 @@
 		};
 		6003F5C3195388D20070C39A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3FDD58724AEFBE05ED42415E /* Pods-Tests.debug.xcconfig */;
+			baseConfigurationReference = D544BBBB62CE90C0F762849C /* Pods-Tests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/HLSpriteKit.app/HLSpriteKit";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Tests/Tests-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -582,14 +563,9 @@
 		};
 		6003F5C4195388D20070C39A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C96EBB7FEB4207166E346319 /* Pods-Tests.release.xcconfig */;
+			baseConfigurationReference = 53B25ADC12B8713CDB069049 /* Pods-Tests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/HLSpriteKit.app/HLSpriteKit";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Tests/Tests-Prefix.pch";
 				INFOPLIST_FILE = "Tests/Tests-Info.plist";

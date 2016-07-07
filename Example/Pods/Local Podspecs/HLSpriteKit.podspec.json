@@ -12,7 +12,7 @@
     "Karl Voskuil": "karl@hilogames.com"
   },
   "platforms": {
-    "ios": "7.0"
+    "ios": "8.4"
   },
   "source": {
     "git": "https://github.com/hilogames/HLSpriteKit.git",
