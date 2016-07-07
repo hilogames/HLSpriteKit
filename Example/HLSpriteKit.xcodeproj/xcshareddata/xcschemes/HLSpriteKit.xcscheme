@@ -17,7 +17,7 @@
                BlueprintIdentifier = "589C367BF3F135249A1A9497609D4BB4"
                BuildableName = "libHLSpriteKit.a"
                BlueprintName = "HLSpriteKit"
-               ReferencedContainer = "container:Pods.xcodeproj">
+               ReferencedContainer = "container:Pods/Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -35,7 +35,7 @@
                BlueprintIdentifier = "6003F5AD195388D20070C39A"
                BuildableName = "Tests.xctest"
                BlueprintName = "Tests"
-               ReferencedContainer = "container:../HLSpriteKit.xcodeproj">
+               ReferencedContainer = "container:HLSpriteKit.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -45,7 +45,7 @@
             BlueprintIdentifier = "6003F589195388D20070C39A"
             BuildableName = "HLSpriteKit.app"
             BlueprintName = "HLSpriteKit"
-            ReferencedContainer = "container:../HLSpriteKit.xcodeproj">
+            ReferencedContainer = "container:HLSpriteKit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -68,7 +68,7 @@
             BlueprintIdentifier = "6003F589195388D20070C39A"
             BuildableName = "HLSpriteKit.app"
             BlueprintName = "HLSpriteKit"
-            ReferencedContainer = "container:../HLSpriteKit.xcodeproj">
+            ReferencedContainer = "container:HLSpriteKit.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -86,7 +86,7 @@
             BlueprintIdentifier = "589C367BF3F135249A1A9497609D4BB4"
             BuildableName = "libHLSpriteKit.a"
             BlueprintName = "HLSpriteKit"
-            ReferencedContainer = "container:Pods.xcodeproj">
+            ReferencedContainer = "container:Pods/Pods.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>
