@@ -58,6 +58,15 @@ FOUNDATION_EXPORT const CGFloat HLTableLayoutManagerEpsilon;
 */
 - (void)layout:(NSArray *)nodes;
 
+/**
+ Layout and (optionally) return calculated final column widths and row heights.
+
+ See `layout:` for details.
+ 
+ Also see "Accessing Last-Layout State" notes in this class and in `HLLayoutManager`.
+*/
+- (void)layout:(NSArray *)nodes getColumnWidths:(NSArray * __strong *)columnWidths rowHeights:(NSArray * __strong *)rowHeights;
+
 /// @name Getting and Setting Table Geometry
 
 /**

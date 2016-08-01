@@ -57,55 +57,81 @@
 /// @name Accessing Last-Layout State
 
 /**
- Many thoughts about accessing the last-layout state, but so far resulting in no interface.
- Here are the thoughts:
+ The two starting points for thinking about last-layout state are these:
 
  . Layout managers are functor-like: They do a single layout, and all their properties are
-   parameters of that layout.  They are not expected to be stateful.
+   parameters of that layout.  They are not expected to be stateful in terms of the work
+   done during layout.
 
  . However, the layout manager is an expert of the last layout performed, and it is a
    natural place to query information about it, especially aggregate information.  For
    instance, it is almost always immediately useful and meaningful to ask a layout
-   manager: "What is the overall size (or what are the bounds) of your last layout?"
+   manager: "What was the overall size (or what were the bounds) of your last layout?"
 
- . Last-layout state could be optionally returned by the `layout` method.  This makes
-   sense for two reasons: 1) If the caller didn't request it, then the state wouldn't have
-   to be stored; 2) Returning it from a single call to `layout` indicates quite correctly
-   that it is state associated only with that single layout, and not with the (mutable)
-   current configuration of the layout manager.  The last-layout state is different for
-   different layout managers, and so it would make sense to encapsulate it in an object
-   with both data and code, for example which could answer a question like, "What node
-   contains the following point?"  The layout manager often calculates useful data derived
-   from the main geometrical properties configured; it could store this intermediate data
-   in the layout state object, and the layout state object would then be able to do
-   sophisticated and useful calculations for the owner.  A few drawbacks, though: 1) A
-   separate object to track; 2) A separate object hierarchy to develop; 3) The state
-   object might need to copy many or all of the configuration properties of the original
-   layout manager; 4) All in all, seems like too much engineering.
+ So far there is not a single unified interface among the layout managers for accesing
+ last-layout state.  The design of a such a unified interface, if any is possible, has
+ not fully emerged yet; different last-layout information seems suited to different kinds
+ of interfaces.  For example:
 
- . So meanwhile, the layout managers typically *do* track last-layout state like `size` or
-   `height`, and just keep them on the layout manager itself.  Nice to at least put them
-   into a section like these comments: "Accessing Last-Layout State".
+ . Most of the managers retain a **small** amount of information from the last layout,
+   for example `size` from `HLTableLayoutManager` or `height` from `HLOutlineLayoutManager`.
+   This information is explicitly marked in a Tasks section _Accessing Last-Layout State_.
 
- . I wanted to make a `nodeContainingPoint:` method for `HLOutlineLayoutManager`, which
-   involves remembering node y-positions (sometimes automatic) at layout time and then
-   doing a binary search.  But keeping track of those positions is best to do in an
-   NSArray (because of things like copying and encoding), and then the caller might want
-   to customize the search with concepts of nearness or what to do in the X dimension, and
-   really the positions don't need to be stored in a separate array because we can do a
-   binary search in the parent node's children property (which will be sorted by the
-   layout manager), and so on.  All of this suggested that I needed a global static helper
-   method which takes a list of children that have been laid out by an outline layout
-   manager and does a binary search, with options.  No need for a custom
-   HLOutlineLayoutState class just for that; it might even be useful for other layout
-   managers, too.
+ . `HLOutlineLayoutManager` provides a global static helper function which can make
+   calculations related to last-layout state (namely, finding the node that contains a
+   certain point).  In this case, though, the necessary state is already present on the
+   laid-out nodes themselves, and so the function takes the last-laid-out nodes (and a
+   few key manager properties) as input, and needs no other persistent state.
+
+ . `HLTableLayoutManager` can optionally return from the `layout` method certain derived
+   last-layout properties (namely, column widths and row heights).
+
+ Here are further thoughts about these kinds of last-layout state:
+
+ . Keeping small last-layout state on the layout manager itself makes good sense in the
+   typical use case.  Most owners need it, and it's nice for the owner not to have to
+   track a separate state variable after layout.
+
+ . Returning last-layout state separately from the `layout` method makes good sense
+   because it correctly indicates that the state is associated only with that single
+   layout, and not with the (mutable) current configuration of the layout manager.
+
+   . Returning it optionally is best, so that layouts don't waste time or space
+     storing layout data that won't be needed.
+
+   . Different managers will need to track and return different state, so perhaps there
+     should be a single interface, with an associated hierarchy of state objects:
+     
+       - (void)layout:(NSArray *)nodes getState:(GLLayoutState * __strong *)layoutState;
+
+     The layout manager often calculates useful data derived from the main geometrical
+     properties configured; it could store this intermediate data in the layout state
+     object, and the layout state object would then be able to do sophisticated and useful
+     calculations for the owner.
+
+     Then again, perhaps that's over-engineered, and perhaps there is no need for
+     polymorphism or encapsulation.  (And one more problem: Often the layout state needs
+     to copy some or all of the properties of the layout manager itself in order to make
+     sophisticated calculations.)  Instead, if the last-layout state is more-or-less
+     plain-old-data, then each layout manager could declare similarly-named layout methods
+     returning simple state potentially interesting to an owner:
+     
+       - (void)layout:(NSArray *)nodes getSize:(CGSize *)size;
+       - (void)layout:(NSArray *)nodes getColumnWidths:(NSArray * __strong *)columnWidths;
+
+ . Related to the last point about over-engineering, above: The global helper function
+   approach really can help simplify things.  Last-layout state is often completely
+   and efficiently represented by 1) the layout manager's properties and 2) the final
+   positions of the laid-out nodes.  In that case, we don't want extra state objects
+   flying around; we want reusable code which knows how to do useful calculations
+   on the already-extant last-layout state information.  So: global helper function.
 */
 
 @end
 
 /**
- Convenience method providing a standard way to calculate the required size of a node for
- layout purposes.
+ Convenience method (for layout managers) providing a standard way to calculate the required
+ size of a node for layout purposes.
 
  In particular, some managers allow layout geometry to be specified as "automatic" based
  on the nodes laid out, but there is no one way to calculate the size of a node.  This is
@@ -116,16 +142,16 @@
 CGSize HLLayoutManagerGetNodeSize(id node);
 
 /**
- Convenience method providing a standard way to calculate the required width of a node for
- layout purposes.
+ Convenience method (for layout managers) providing a standard way to calculate the required
+ width of a node for layout purposes.
 
  See `HLLayoutManagerGetNodeSize()`.
 */
 CGFloat HLLayoutManagerGetNodeWidth(id node);
 
 /**
- Convenience method providing a standard way to calculate the required height of a node
- for layout purposes.
+ Convenience method (for layout managers) providing a standard way to calculate the required
+ height of a node for layout purposes.
 
  See `HLLayoutManagerGetNodeSize()`.
 */

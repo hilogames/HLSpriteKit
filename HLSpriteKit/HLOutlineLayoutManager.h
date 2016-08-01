@@ -218,5 +218,5 @@ FOUNDATION_EXPORT const CGFloat HLOutlineLayoutManagerEpsilon;
  to be contained by the node.
 */
 NSUInteger HLOutlineLayoutManagerNodeContainingPointY(NSArray *nodes, CGFloat pointY,
-                                                     NSArray *nodeLevels,
-                                                     NSArray *levelNodeHeights, NSArray *levelAnchorPointYs);
+                                                      NSArray *nodeLevels,
+                                                      NSArray *levelNodeHeights, NSArray *levelAnchorPointYs);

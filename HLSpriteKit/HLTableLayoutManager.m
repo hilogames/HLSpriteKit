@@ -98,6 +98,16 @@ const CGFloat HLTableLayoutManagerEpsilon = 0.001f;
 
 - (void)layout:(NSArray *)nodes
 {
+  [self GL_layout:nodes getColumnWidths:nil rowHeights:nil];
+}
+
+- (void)layout:(NSArray *)nodes getColumnWidths:(NSArray *__strong *)columnWidths rowHeights:(NSArray *__strong *)rowHeights
+{
+  [self GL_layout:nodes getColumnWidths:columnWidths rowHeights:rowHeights];
+}
+
+- (void)GL_layout:(NSArray *)nodes getColumnWidths:(NSArray *__strong *)returnColumnWidths rowHeights:(NSArray *__strong *)returnRowHeights
+{
   if (_columnCount == 0) {
     return;
   }
@@ -122,7 +132,8 @@ const CGFloat HLTableLayoutManagerEpsilon = 0.001f;
     return;
   }
 
-  CGFloat *columnWidthsPartiallyCalculated = (CGFloat *)malloc(_columnCount * sizeof(CGFloat));
+  // First pass (columns): Calculate fixed-size column widths, and sum expanding-column ratios.
+  CGFloat *columnWidths = (CGFloat *)malloc(_columnCount * sizeof(CGFloat));
   CGFloat widthTotalFixed = 0.0f;
   CGFloat widthExpandingColumnRatioSum = 0.0f;
   {
@@ -134,10 +145,10 @@ const CGFloat HLTableLayoutManagerEpsilon = 0.001f;
       }
       if (widthColumn > HLTableLayoutManagerEpsilon) {
         widthTotalFixed += widthColumn;
-        columnWidthsPartiallyCalculated[column] = widthColumn;
+        columnWidths[column] = widthColumn;
       } else if (widthColumn < -HLTableLayoutManagerEpsilon) {
         widthExpandingColumnRatioSum += widthColumn;
-        columnWidthsPartiallyCalculated[column] = widthColumn;
+        columnWidths[column] = widthColumn;
       } else {
         CGFloat widthCellMax = 0.0f;
         for (NSUInteger row = 0; row < _rowCount; ++row) {
@@ -152,7 +163,7 @@ const CGFloat HLTableLayoutManagerEpsilon = 0.001f;
           }
         }
         widthTotalFixed += widthCellMax;
-        columnWidthsPartiallyCalculated[column] = widthCellMax;
+        columnWidths[column] = widthCellMax;
       }
     }
   }
@@ -162,7 +173,16 @@ const CGFloat HLTableLayoutManagerEpsilon = 0.001f;
     widthTotalExpanding = 0.0f;
   }
 
-  CGFloat *rowHeightsPartiallyCalculated = (CGFloat *)malloc(_rowCount * sizeof(CGFloat));
+  // Second pass (columns): Calculate expanding column widths.
+  for (NSUInteger column = 0; column < _columnCount; ++column) {
+    CGFloat widthColumn = columnWidths[column];
+    if (widthColumn < -HLTableLayoutManagerEpsilon) {
+      columnWidths[column] = widthTotalExpanding / widthExpandingColumnRatioSum * widthColumn;
+    }
+  }
+
+  // First pass (rows): Calculate fixed-size row heights, and sum expanding row ratios.
+  CGFloat *rowHeights = (CGFloat *)malloc(_rowCount * sizeof(CGFloat));
   CGFloat heightTotalFixed = 0.0f;
   CGFloat heightExpandingRowRatioSum = 0.0f;
   {
@@ -174,10 +194,10 @@ const CGFloat HLTableLayoutManagerEpsilon = 0.001f;
       }
       if (heightRow > HLTableLayoutManagerEpsilon) {
         heightTotalFixed += heightRow;
-        rowHeightsPartiallyCalculated[row] = heightRow;
+        rowHeights[row] = heightRow;
       } else if (heightRow < -HLTableLayoutManagerEpsilon) {
         heightExpandingRowRatioSum += heightRow;
-        rowHeightsPartiallyCalculated[row] = heightRow;
+        rowHeights[row] = heightRow;
       } else {
         CGFloat heightCellMax = 0.0f;
         for (NSUInteger column = 0; column < _columnCount; ++column) {
@@ -192,7 +212,7 @@ const CGFloat HLTableLayoutManagerEpsilon = 0.001f;
           }
         }
         heightTotalFixed += heightCellMax;
-        rowHeightsPartiallyCalculated[row] = heightCellMax;
+        rowHeights[row] = heightCellMax;
       }
     }
   }
@@ -201,22 +221,43 @@ const CGFloat HLTableLayoutManagerEpsilon = 0.001f;
   if (heightTotalExpanding <= 0.0f) {
     heightTotalExpanding = 0.0f;
   }
-  
+
+  // Second pass (rows): Calculate expanding row heights.
+  for (NSUInteger row = 0; row < _rowCount; ++row) {
+    CGFloat heightRow = rowHeights[row];
+    if (heightRow < -HLTableLayoutManagerEpsilon) {
+      rowHeights[row] = heightTotalExpanding / heightExpandingRowRatioSum * heightRow;
+    }
+  }
+
   _size = CGSizeMake(widthTotalFixed + widthTotalExpanding + widthTotalConstant,
                      heightTotalFixed + heightTotalExpanding + heightTotalConstant);
+
+  if (returnColumnWidths) {
+    NSMutableArray *rcw = [NSMutableArray array];
+    for (NSUInteger column = 0; column < _columnCount; ++column) {
+      [rcw addObject:[NSNumber numberWithDouble:columnWidths[column]]];
+    }
+    *returnColumnWidths = rcw;
+  }
+  if (returnRowHeights) {
+    NSMutableArray *rrh = [NSMutableArray array];
+    for (NSUInteger row = 0; row < _rowCount; ++row) {
+      [rrh addObject:[NSNumber numberWithDouble:rowHeights[row]]];
+    }
+    *returnRowHeights = rrh;
+  }
 
   // note: x and y track the upper left corner of each cell.
   NSEnumerator *nodesEnumerator = [nodes objectEnumerator];
   CGFloat yCell = _size.height * (1.0f - _anchorPoint.y) - _tableBorder + _tableOffset.y;
+  CGFloat startXCell = _size.width * -1.0f * _anchorPoint.x + _tableBorder + _tableOffset.x;
   id node = nil;
   for (NSUInteger row = 0; row < _rowCount; ++row) {
 
-    CGFloat heightCell = rowHeightsPartiallyCalculated[row];
-    if (heightCell < -HLTableLayoutManagerEpsilon) {
-      heightCell = heightTotalExpanding / heightExpandingRowRatioSum * heightCell;
-    }
+    CGFloat heightCell = rowHeights[row];
     
-    CGFloat xCell = _size.width * -1.0f * _anchorPoint.x + _tableBorder + _tableOffset.x;
+    CGFloat xCell = startXCell;
     CGPoint anchorPointCell = CGPointZero;
     for (NSUInteger column = 0; column < _columnCount; ++column) {
 
@@ -225,10 +266,7 @@ const CGFloat HLTableLayoutManagerEpsilon = 0.001f;
         break;
       }
 
-      CGFloat widthCell = columnWidthsPartiallyCalculated[column];
-      if (widthCell < -HLTableLayoutManagerEpsilon) {
-        widthCell = widthTotalExpanding / widthExpandingColumnRatioSum * widthCell;
-      }
+      CGFloat widthCell = columnWidths[column];
 
       if (column < columnAnchorPointsCount) {
         NSValue *anchorPointValue = _columnAnchorPoints[column];
@@ -249,8 +287,8 @@ const CGFloat HLTableLayoutManagerEpsilon = 0.001f;
     yCell = yCell - heightCell - _rowSeparator;
   }
 
-  free(columnWidthsPartiallyCalculated);
-  free(rowHeightsPartiallyCalculated);
+  free(columnWidths);
+  free(rowHeights);
 }
 
 @end
