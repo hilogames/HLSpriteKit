@@ -42,6 +42,19 @@
 */
 @property (nonatomic, strong) SKNode *content;
 
+/**
+ Sets the content of the item.
+
+ If the content node conforms to `HLItemContentNode`, then the item enabled and highlight
+ state will be set on the new content.  The extra boolean parameters indicate whether the
+ content responded or not.
+
+ Considered a protected method: Should only be called by derived classes.
+
+ See notes in property `content`.
+*/
+- (void)setContent:(SKNode *)content contentDidSetEnabled:(BOOL *)contentDidSetEnabled contentDidSetHighlight:(BOOL *)contentDidSetHighlight;
+
 /// @name Configuring Item State
 
 /**
@@ -49,17 +62,13 @@
 
  Default value `YES`.
 
- The item node and/or the item content node will show enabled state visually.  The
- base-class implementation is designed to enforce a behavior for the entire class
- hierarchy: If the content node can set itself enabled, then it always will, and the item
- node probably will not do anything additional.  The item content node's visual behavior,
- in other words, overrides the item node.
+ This base-class implementation checks the content node (if any) to see if it conforms to
+ `HLItemContentNode` implementing `hlItemContentSetEnabled`, and calls it if so.  In other
+ words, the content node always gets a chance to enable itself.
 
- The implementation, therefore, checks the content node (if any) to see if it conforms to
- `HLItemContentNode` implementing `hlItemContentSetEnabled`, and calls it if so.  Derived
- classes should probably call `[super setEnabled:contentDidSetEnabled:]` (rather than
- `[super setEnabled:]`) because then they can skip their own visual configuration if the
- content responded.
+ Probably the derived item node class will do something additional to indicate enabled
+ state visually.  The derived calss can call `[super setEnabled:contentDidSetEnabled:]` to
+ make its behavior conditional on what the content node did.
 */
 @property (nonatomic, assign) BOOL enabled;
 
@@ -78,17 +87,13 @@
 
  Default value `NO`.
 
- The item node and/or the item content node will show highlight state visually.  The
- base-class implementation is designed to enforce a behavior for the entire class
- hierarchy: If the content node can set itself highlighted, then it always will, and the
- item node probably will not do anything additional.  The item content node's visual
- behavior, in other words, overrides the item node.
+ This base-class implementation checks the content node (if any) to see if it conforms to
+ `HLItemContentNode` implementing `hlItemContentSetHighlight`, and calls it if so.  In
+ other words, the content node always gets a chance to highlight itself.
 
- The implementation, therefore, checks the content node (if any) to see if it conforms to
- `HLItemContentNode` implementing `hlItemContentSetHighlight`, and calls it if so.
- Derived classes should probably call `[super setHighlight:contentDidSetHighlight:]`
- (rather than `[super setHighlight:]`) because then they can skip their own visual
- configuration if the content responded.
+ Probably the derived item node class will do something additional to indicate highlight
+ state visually.  The derived calss can call `[super setEnabled:contentDidSetHighlight:]`
+ to make its behavior conditional on what the content node did.
 */
 @property (nonatomic, assign) BOOL highlight;
 
@@ -150,6 +155,23 @@ contentDidSetHighlight:(BOOL *)contentDidSetHighlight;
  node's setter will be called.  Otherwise, the state will be visually indicated in the
  backdrop item node according to object configuration.  See, for example, `normalColor`
  and `highlightColor`.
+
+ @bug This might be over-engineered.  Ffirst, it's annoying that each `HLBackdropItemNode`
+      in a `HLItemsNode` collection has its own `enabledAlpha` and `normalColor`, as if it
+      might be in an items node with lots of different types of items.  (It never is.)
+      Second, it's not clear that the various collection objects that use this class
+      (`HLToolbarNode`, `HLGridNode`, `HLRingNode`) need or want a smart backdrop item
+      node that only sets enabled/highlight state if its content does not.  (Sure, that
+      might be nice.  But maybe not, and right now, none of those collections offer the
+      choice.)  Third, if they *did* want such behavior, then they could make do with a
+      much simpler implementation of the backdrop item node where for certain items (that
+      have special content), the owner sets the backdrop node's `disabledAlpha` the same
+      as `enabledAlpha`.  The main justification for keeping this the way it is, is: Right
+      now, all the collections nodes use this backdrop node in the exact same way, without
+      any need for customization, and so this is the easiest place to reuse the logic and
+      code.  The very first time some collection needs to have different item node classes
+      for different item nodes, then this class might get a lot simpler, and the logic and
+      code might be distributed to `HLItemsNode` or its users.
 */
 @interface HLBackdropItemNode : HLItemNode <NSCoding>
 

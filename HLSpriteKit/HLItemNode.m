@@ -85,6 +85,34 @@
   }
 }
 
+- (void)setContent:(SKNode *)contentNode contentDidSetEnabled:(BOOL *)contentDidSetEnabled contentDidSetHighlight:(BOOL *)contentDidSetHighlight
+{
+  SKNode *oldContentNode = [self childNodeWithName:@"content"];
+  if (oldContentNode) {
+    [oldContentNode removeFromParent];
+  }
+  if (contentNode) {
+    contentNode.name = @"content";
+    contentNode.zPosition = 0.0f;
+    if ([contentNode isKindOfClass:[HLComponentNode class]]) {
+      ((HLComponentNode *)contentNode).zPositionScale = self.zPositionScale;
+    }
+    *contentDidSetEnabled = NO;
+    *contentDidSetHighlight = NO;
+    if ([contentNode conformsToProtocol:@protocol(HLItemContentNode)]) {
+      if ([contentNode respondsToSelector:@selector(hlItemContentSetEnabled:)]) {
+        [(SKNode <HLItemContentNode> *)contentNode hlItemContentSetEnabled:_enabled];
+        *contentDidSetEnabled = YES;
+      }
+      if ([contentNode respondsToSelector:@selector(hlItemContentSetHighlight:)]) {
+        [(SKNode <HLItemContentNode> *)contentNode hlItemContentSetHighlight:_highlight];
+        *contentDidSetHighlight = YES;
+      }
+    }
+    [self addChild:contentNode];
+  }
+}
+
 - (SKNode *)content
 {
   return [self childNodeWithName:@"content"];
@@ -239,12 +267,20 @@ enum {
 
 - (void)setContent:(SKNode *)contentNode
 {
-  [super setContent:contentNode];
+  BOOL contentDidSetEnabled;
+  BOOL contentDidSetHighlight;
+  [super setContent:contentNode contentDidSetEnabled:&contentDidSetEnabled contentDidSetHighlight:&contentDidSetHighlight];
   if (contentNode) {
-    if (self.enabled) {
+    if (contentDidSetEnabled || self.enabled) {
       contentNode.alpha = _enabledAlpha;
     } else {
       contentNode.alpha = _disabledAlpha;
+    }
+    SKSpriteNode *backdropNode = (SKSpriteNode *)[self childNodeWithName:@"backdrop"];
+    if (contentDidSetHighlight || !self.highlight) {
+      backdropNode.color = _normalColor;
+    } else {
+      backdropNode.color = _highlightColor;
     }
   }
 }
