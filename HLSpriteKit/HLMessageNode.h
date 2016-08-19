@@ -57,11 +57,31 @@ typedef NS_ENUM(NSInteger, HLMessageNodeAnimation) {
 - (void)showMessage:(NSString *)message parent:(SKNode *)parent;
 
 /**
+ Shows the passed message, optionally bypassing the node's animation options.
+
+ Here "animation" refers to the `messageAnimation` and `messageSoundFile`
+ during showing.  The message will still linger and hide according to the
+ message node's configured animation options.
+
+ The message node shows itself by adding itself to the passed parent.  When the message is
+ hidden, either automatically or manually, it will remove itself from the parent.
+*/
+- (void)showMessage:(NSString *)message animated:(BOOL)animated parent:(SKNode *)parent;
+
+/**
  Immediately hides the currently shown message, if any.
 
  A hidden message node removes itself from its parent in the node hierarchy.
 */
 - (void)hideMessage;
+
+/**
+ The message node's message.
+
+ Setting the message here will not change whether the message is currently showing or
+ hidden; use `showMessage:parent:` to set a message and show it.
+*/
+@property (nonatomic, copy) NSString *message;
 
 /// @name Configuring Geometry
 
