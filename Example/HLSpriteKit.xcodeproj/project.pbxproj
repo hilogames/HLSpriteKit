@@ -245,7 +245,7 @@
 			attributes = {
 				CLASSPREFIX = HL;
 				LastUpgradeCheck = 0710;
-				ORGANIZATIONNAME = "Karl Voskuil";
+				ORGANIZATIONNAME = "Hilo Games";
 				TargetAttributes = {
 					6003F589195388D20070C39A = {
 						DevelopmentTeam = L2559SMXTM;

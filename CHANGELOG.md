@@ -3,6 +3,8 @@
 
 ## Master
 
+## 1.1.0
+
 ### Breaking
 
 - Add `contentClipped` option to `HLToolbarNode`. As in
@@ -24,6 +26,9 @@
   [Karl Voskuil](https://github.com/karlvoskuil)
 
 ### Added
+
+- Add support for Carthage.
+  [Brent Traut](https://github.com/btraut)
 
 - Add `HLMultilineLabelNode`. I know, I know, there are other
   implementations already freely available. But this one is mine.  
