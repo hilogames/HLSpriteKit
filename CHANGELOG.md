@@ -3,6 +3,14 @@
 
 ## Master
 
+## 1.1.1  2016-09-13
+
+### Fixed
+
+- Ensure umbrella header file contains all project headers. (This silences
+  a warning from Carthage, which makes everyone happy.)  
+  [Brent Traut](https://github.com/btraut)
+
 ## 1.1.0
 
 ### Breaking
@@ -27,7 +35,7 @@
 
 ### Added
 
-- Add support for Carthage.
+- Add support for Carthage.  
   [Brent Traut](https://github.com/btraut)
 
 - Add `HLMultilineLabelNode`. I know, I know, there are other

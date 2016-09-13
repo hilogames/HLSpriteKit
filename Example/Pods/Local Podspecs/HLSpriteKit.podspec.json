@@ -1,6 +1,6 @@
 {
   "name": "HLSpriteKit",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "summary": "SpriteKit scene and node subclasses, plus various utilities.",
   "description": "`HLSpriteKit` is yet another companion library to Apple's `SpriteKit` with the goal of abstracting reusable code.\n`HLSpriteKit`, in its current form, should probably be used in one of two ways:\n- Non-committally: As a supply of useful custom `SKNode` subclasses, for example `HLScrollNode` (a node equivalent of `UIScrollView`) or `HLToolbarNode` (a simple button toolbar).\n- Full committment: As a system for designing an interactive scene, inheriting from `HLScene` and using `UIGestureRecognizers` via `HLGestureTarget`.",
   "homepage": "https://github.com/hilogames/HLSpriteKit",
@@ -16,7 +16,7 @@
   },
   "source": {
     "git": "https://github.com/hilogames/HLSpriteKit.git",
-    "tag": "1.0.0"
+    "tag": "1.1.1"
   },
   "source_files": "HLSpriteKit/*",
   "frameworks": [
