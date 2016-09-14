@@ -403,7 +403,7 @@ enum {
   _contentClipped = contentClipped;
   if (_contentClipped) {
     SKCropNode *cropNode = [SKCropNode node];
-    SKSpriteNode *maskNode = [SKSpriteNode spriteNodeWithColor:[SKColor blackColor] size:self.size];
+    SKSpriteNode *maskNode = [SKSpriteNode spriteNodeWithColor:[SKColor blackColor] size:_size];
     maskNode.anchorPoint = _anchorPoint;
     cropNode.maskNode = maskNode;
     [self addChild:cropNode];
@@ -660,6 +660,19 @@ enum {
 
 - (BOOL)addToGesture:(UIGestureRecognizer *)gestureRecognizer firstTouch:(UITouch *)touch isInside:(BOOL *)isInside
 {
+  // note: The content might extend beyond the boundaries of the scroll node.  If a gesture
+  // starts in this extended area, a gesture handler like HLScene might ask us if we'd like
+  // to be the target for the gesture.  Whether we're clipping content or not, it seems like
+  // the answer should be "no".
+  CGPoint locationInSelf = [touch locationInNode:self];
+  if (locationInSelf.x < _size.width * -_anchorPoint.x
+      || locationInSelf.x > _size.width * (1.0f - _anchorPoint.x)
+      || locationInSelf.y < _size.height * -_anchorPoint.y
+      || locationInSelf.y > _size.height * (1.0f - _anchorPoint.y)) {
+    *isInside = NO;
+    return NO;
+  }
+
   if (HLGestureTarget_areEquivalentGestureRecognizers(gestureRecognizer, [[UIPanGestureRecognizer alloc] init])) {
     [gestureRecognizer addTarget:self action:@selector(handlePan:)];
     *isInside = YES;
@@ -670,6 +683,7 @@ enum {
     *isInside = YES;
     return YES;
   }
+
   *isInside = NO;
   return NO;
 }
