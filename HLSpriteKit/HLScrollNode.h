@@ -221,7 +221,7 @@ typedef NS_ENUM(NSInteger, HLScrollNodeContentScaleMinimumMode)
       adding an SKEffectNode as a descendant of an SKCropNode causes the effect to render
       incorrectly.
 */
-@property (nonatomic, getter=isContentClipped) BOOL contentClipped;
+@property (nonatomic, assign, getter=isContentClipped) BOOL contentClipped;
 
 /// @name Setting Content Offset and Scale
 

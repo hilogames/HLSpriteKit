@@ -224,7 +224,7 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 
 /**
  Whether or not the content is clipped (cropped) to the overall toolbar dimensions.
- 
+
  Default value is `NO`.
 
  This is especially relevant to the animation options offered by `HLToolbarNodeAnimation`
@@ -232,7 +232,7 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
  clipping.  And in fact, this option would default `YES`, or would not even be offered
  as an option, except that sometimes the owner needs to control whether or not the
  hierarchy includes an `SKCropNode`; see the bug below.
- 
+
  @bug When a descendant node of the `contentNode` is an `SKCropNode`, the clipping of
       contents is irregular, affecting some descendants but not others.  Unfortunately
       it can be difficult to determine the culprit, since crop nodes are sometimes
@@ -240,7 +240,7 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
       adding an SKEffectNode as a descendant of an SKCropNode causes the effect to render
       incorrectly.
  */
-@property (nonatomic, getter=isContentClipped) BOOL contentClipped;
+@property (nonatomic, assign, getter=isContentClipped) BOOL contentClipped;
 
 /**
  Whether the toolbar should automatically size its width according to its tools.
