@@ -3,6 +3,12 @@
 
 ## Master
 
+## Breaking
+
+- Rename `HLMenuNode` property `menu` to `topMenu`. The old name
+  conflicts under OS X with an inherited `NSResponder` property.  
+  [Karl Voskuil](https://github.com/karlvoskuil)
+
 ## 1.1.1  2016-09-13
 
 ### Fixed

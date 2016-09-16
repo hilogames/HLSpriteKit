@@ -73,7 +73,7 @@ typedef NS_ENUM(NSInteger, HLMenuNodeAnimation) {
 
  For the sake of simplicity, menu node does not worry about updating its display when
  the caller makes changes to the individual menu items.  Instead, it will only refresh
- the display after a call to `setMenu:animation:`, `redisplayMenuAnimation:`, or from
+ the display after a call to `setTopMenu:animation:`, `redisplayMenuAnimation:`, or from
  manual or programmatic navigation of the menu.  The readonly attribute helps to suggest
  this pattern.  (The menu is retained, though, not copied, and so the caller is still
  able to change submenus and items within the menu.  Again, though, those changes will
@@ -85,7 +85,7 @@ typedef NS_ENUM(NSInteger, HLMenuNodeAnimation) {
       and submenus or parent menus are returned dynamically from delegate calls, should
       be considered if useful.
 */
-@property (nonatomic, readonly) HLMenu *menu;
+@property (nonatomic, readonly) HLMenu *topMenu;
 
 /**
  The submenu (of the `menu`) currently displayed by the menu node (readonly).
@@ -98,13 +98,13 @@ typedef NS_ENUM(NSInteger, HLMenuNodeAnimation) {
 /**
  Sets the hierarchical menu that the menu node will navigate.
 */
-- (void)setMenu:(HLMenu *)menu animation:(HLMenuNodeAnimation)animation;
+- (void)setTopMenu:(HLMenu *)topMenu animation:(HLMenuNodeAnimation)animation;
 
 /**
  Recreate display of current menu.
- 
+
  The HLMenuNode tracks a current HLMenu, but changes to that menu are not reflected in the
- display until an explicit call to `setMenu`, a navigation method, or a call to this method.
+ display until an explicit call to `setTopMenu`, a navigation method, or a call to this method.
 */
 - (void)redisplayMenuAnimation:(HLMenuNodeAnimation)animation;
 
@@ -112,7 +112,7 @@ typedef NS_ENUM(NSInteger, HLMenuNodeAnimation) {
 
 /**
  The vertical distance between the edges of adjacent buttons in the menu node.
- 
+
  Changes to this property won't take effect on the currently displayed menu until it
  is explicitly redisplayed (for example by navigation or `redisplayMenuAnimation:`).
 */
@@ -161,7 +161,7 @@ typedef NS_ENUM(NSInteger, HLMenuNodeAnimation) {
  All buttons in the menu hierarchy must have a button prototype, or an exception is
  raised at runtime.  Setting this property (`itemButtonPrototype`) is the easiest way to
  ensure prototypes for all items.
- 
+
  Changes to this property won't take effect on the currently displayed menu until it
  is explicitly redisplayed (for example by navigation or `redisplayMenuAnimation:`).
 */
@@ -247,7 +247,7 @@ typedef NS_ENUM(NSInteger, HLMenuNodeAnimation) {
 /**
  Called immediately after a button is created for a menu item, but before the button is
  added to the node hierarchy and displayed.
- 
+
  This callback is optional, but provides an opportunity for the delegate to customize
  the appearance of a button right before display.
 */

@@ -72,7 +72,7 @@ HLMenuNodeValidateButtonPrototype(SKNode *buttonPrototype, NSString *label)
   self = [super initWithCoder:aDecoder];
   if (self) {
     _delegate = [aDecoder decodeObjectForKey:@"delegate"];
-    _menu = [aDecoder decodeObjectForKey:@"menu"];
+    _topMenu = [aDecoder decodeObjectForKey:@"topMenu"];
     _currentMenu = [aDecoder decodeObjectForKey:@"currentMenu"];
     _itemSeparatorSize = (CGFloat)[aDecoder decodeDoubleForKey:@"itemSeparatorSize"];
     _size = [aDecoder decodeCGSizeForKey:@"size"];
@@ -92,7 +92,7 @@ HLMenuNodeValidateButtonPrototype(SKNode *buttonPrototype, NSString *label)
 
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
-  // Don't encode buttons node; it can be regenerated from _menu.
+  // Don't encode buttons node; it can be regenerated from _topMenu.
   if (_buttonsNode) {
     [_buttonsNode removeFromParent];
   }
@@ -100,7 +100,7 @@ HLMenuNodeValidateButtonPrototype(SKNode *buttonPrototype, NSString *label)
   // Encode.
   [super encodeWithCoder:aCoder];
   [aCoder encodeConditionalObject:_delegate forKey:@"delegate"];
-  [aCoder encodeObject:_menu forKey:@"menu"];
+  [aCoder encodeObject:_topMenu forKey:@"topMenu"];
   [aCoder encodeObject:_currentMenu forKey:@"currentMenu"];
   [aCoder encodeDouble:_itemSeparatorSize forKey:@"itemSeparatorSize"];
   [aCoder encodeCGSize:_size forKey:@"size"];
@@ -135,10 +135,10 @@ HLMenuNodeValidateButtonPrototype(SKNode *buttonPrototype, NSString *label)
   return _currentMenu;
 }
 
-- (void)setMenu:(HLMenu *)menu animation:(HLMenuNodeAnimation)animation
+- (void)setTopMenu:(HLMenu *)topMenu animation:(HLMenuNodeAnimation)animation
 {
-  _menu = menu;
-  _currentMenu = menu;
+  _topMenu = topMenu;
+  _currentMenu = topMenu;
   if (_currentMenu) {
     [self HL_showCurrentMenuAnimation:animation];
   }
@@ -172,13 +172,13 @@ HLMenuNodeValidateButtonPrototype(SKNode *buttonPrototype, NSString *label)
 
 - (void)navigateToTopMenuAnimation:(HLMenuNodeAnimation)animation
 {
-  _currentMenu = _menu;
+  _currentMenu = _topMenu;
   [self HL_showCurrentMenuAnimation:animation];
 }
 
 - (void)navigateToSubmenuWithPath:(NSArray *)path animation:(HLMenuNodeAnimation)animation
 {
-  HLMenuItem *item = [_menu itemForPath:path];
+  HLMenuItem *item = [_topMenu itemForPath:path];
   if (![item isKindOfClass:[HLMenu class]]) {
     return;
   }
