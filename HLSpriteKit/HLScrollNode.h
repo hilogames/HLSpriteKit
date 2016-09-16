@@ -59,7 +59,11 @@ typedef NS_ENUM(NSInteger, HLScrollNodeContentScaleMinimumMode)
  of `addToGestureRecognizer:firstTouch:isInside:`.  See, for instance, the implementation
  of that method in `HLTapGestureTarget`.
 */
+#if HLGESTURETARGET_AVAILABLE
 @interface HLScrollNode : HLComponentNode <NSCoding, HLGestureTarget>
+#else
+@interface HLScrollNode : HLComponentNode <NSCoding>
+#endif
 
 /// @name Creating a Scroll Node
 
@@ -101,7 +105,11 @@ typedef NS_ENUM(NSInteger, HLScrollNodeContentScaleMinimumMode)
                  contentSize:(CGSize)contentSize
           contentAnchorPoint:(CGPoint)contentAnchorPoint
                contentOffset:(CGPoint)contentOffset
+#if TARGET_OS_IPHONE
                 contentInset:(UIEdgeInsets)contentInset
+#else
+                contentInset:(NSEdgeInsets)contentInset
+#endif
                 contentScale:(CGFloat)contentScale
          contentScaleMinimum:(CGFloat)contentScaleMinimum
      contentScaleMinimumMode:(HLScrollNodeContentScaleMinimumMode)contentScaleMinimumMode
@@ -185,7 +193,11 @@ typedef NS_ENUM(NSInteger, HLScrollNodeContentScaleMinimumMode)
 
  Default value `UIEdgeInsetsZero`.
 */
+#if TARGET_OS_IPHONE
 @property (nonatomic, assign) UIEdgeInsets contentInset;
+#else
+@property (nonatomic, assign) NSEdgeInsets contentInset;
+#endif
 
 /**
  The configured minimum value for content scale (when zooming out).

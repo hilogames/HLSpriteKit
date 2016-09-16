@@ -44,7 +44,11 @@ const CGFloat HLOutlineLayoutManagerEpsilon = 0.001f;
   self = [super init];
   if (self) {
     _anchorPointY = (CGFloat)[aDecoder decodeDoubleForKey:@"anchorPointY"];
+#if TARGET_OS_IPHONE
     _outlineOffset = [aDecoder decodeCGPointForKey:@"outlineOffset"];
+#else
+    _outlineOffset = [aDecoder decodePointForKey:@"outlineOffset"];
+#endif
     _height = (CGFloat)[aDecoder decodeDoubleForKey:@"height"];
     _nodeLevels = [aDecoder decodeObjectForKey:@"nodeLevels"];
     _levelIndents = [aDecoder decodeObjectForKey:@"levelIndents"];
@@ -59,7 +63,11 @@ const CGFloat HLOutlineLayoutManagerEpsilon = 0.001f;
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
   [aCoder encodeDouble:_anchorPointY forKey:@"anchorPointY"];
+#if TARGET_OS_IPHONE
   [aCoder encodeCGPoint:_outlineOffset forKey:@"outlineOffset"];
+#else
+  [aCoder encodePoint:_outlineOffset forKey:@"outlineOffset"];
+#endif
   [aCoder encodeDouble:_height forKey:@"height"];
   [aCoder encodeObject:_nodeLevels forKey:@"nodeLevels"];
   [aCoder encodeObject:_levelIndents forKey:@"levelIndents"];

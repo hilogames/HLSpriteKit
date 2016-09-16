@@ -56,7 +56,11 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 
  - Leave the gesture target unset for no gesture handling.
 */
+#if HLGESTURETARGET_AVAILABLE
 @interface HLToolbarNode : HLComponentNode <NSCoding, HLGestureTarget>
+#else
+@interface HLToolbarNode : HLComponentNode <NSCoding>
+#endif
 
 /// @name Creating a Toolbar Node
 
@@ -466,6 +470,8 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 
 @end
 
+#if HLGESTURETARGET_AVAILABLE
+
 @protocol HLToolbarNodeMultiGestureTargetDelegate;
 
 /**
@@ -514,3 +520,5 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 - (void)toolbarNode:(HLToolbarNode *)toolbarNode didPanWithGestureRecognizer:(UIPanGestureRecognizer *)gestureRecognizer;
 
 @end
+
+#endif

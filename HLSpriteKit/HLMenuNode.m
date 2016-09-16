@@ -26,6 +26,7 @@ HLMenuNodeValidateButtonPrototype(SKNode *buttonPrototype, NSString *label)
   if (![buttonPrototype respondsToSelector:@selector(setAnchorPoint:)]) {
     [NSException raise:@"HLMenuNodeInvalidButtonPrototype" format:@"Button prototype for \"%@\" must respond to selector \"setAnchorPoint:\".", label];
   }
+#if HLGESTURETARGET_AVAILABLE
   if ([buttonPrototype respondsToSelector:@selector(hlGestureTarget)]) {
     if ([buttonPrototype hlGestureTarget]) {
       // This might be okay, but it seems like it will cause confusion if the button is
@@ -35,6 +36,7 @@ HLMenuNodeValidateButtonPrototype(SKNode *buttonPrototype, NSString *label)
       [buttonPrototype hlSetGestureTarget:nil];
     }
   }
+#endif
 }
 
 @implementation HLMenuNode
@@ -52,11 +54,11 @@ HLMenuNodeValidateButtonPrototype(SKNode *buttonPrototype, NSString *label)
     // or seem to do nothing when used without configuration.
     _itemSeparatorSize = 4.0f;
     _anchorPoint = CGPointMake(0.5f, 0.5f);
-    HLLabelButtonNode *itemButtonPrototype = [[HLLabelButtonNode alloc] initWithColor:[UIColor blackColor] size:CGSizeMake(180.0f, 0.0f)];
+    HLLabelButtonNode *itemButtonPrototype = [[HLLabelButtonNode alloc] initWithColor:[SKColor blackColor] size:CGSizeMake(180.0f, 0.0f)];
     itemButtonPrototype.automaticHeight = YES;
     itemButtonPrototype.fontName = @"Helvetica";
     itemButtonPrototype.fontSize = 24.0f;
-    itemButtonPrototype.fontColor = [UIColor whiteColor];
+    itemButtonPrototype.fontColor = [SKColor whiteColor];
     itemButtonPrototype.verticalAlignmentMode = HLLabelNodeVerticalAlignFont;
     _itemButtonPrototype = itemButtonPrototype;
     _menuItemButtonPrototype = nil;
@@ -75,8 +77,13 @@ HLMenuNodeValidateButtonPrototype(SKNode *buttonPrototype, NSString *label)
     _topMenu = [aDecoder decodeObjectForKey:@"topMenu"];
     _currentMenu = [aDecoder decodeObjectForKey:@"currentMenu"];
     _itemSeparatorSize = (CGFloat)[aDecoder decodeDoubleForKey:@"itemSeparatorSize"];
+#if TARGET_OS_IPHONE
     _size = [aDecoder decodeCGSizeForKey:@"size"];
     _anchorPoint = [aDecoder decodeCGPointForKey:@"anchorPoint"];
+#else
+    _size = [aDecoder decodeSizeForKey:@"size"];
+    _anchorPoint = [aDecoder decodePointForKey:@"anchorPoint"];
+#endif
     _itemButtonPrototype = [aDecoder decodeObjectForKey:@"itemButtonPrototype"];
     _menuItemButtonPrototype = [aDecoder decodeObjectForKey:@"menuItemButtonPrototype"];
     _backItemButtonPrototype = [aDecoder decodeObjectForKey:@"backItemButtonPrototype"];
@@ -103,8 +110,13 @@ HLMenuNodeValidateButtonPrototype(SKNode *buttonPrototype, NSString *label)
   [aCoder encodeObject:_topMenu forKey:@"topMenu"];
   [aCoder encodeObject:_currentMenu forKey:@"currentMenu"];
   [aCoder encodeDouble:_itemSeparatorSize forKey:@"itemSeparatorSize"];
+#if TARGET_OS_IPHONE
   [aCoder encodeCGSize:_size forKey:@"size"];
   [aCoder encodeCGPoint:_anchorPoint forKey:@"anchorPoint"];
+#else
+  [aCoder encodeSize:_size forKey:@"size"];
+  [aCoder encodePoint:_anchorPoint forKey:@"anchorPoint"];
+#endif
   [aCoder encodeObject:_itemButtonPrototype forKey:@"itemButtonPrototype"];
   [aCoder encodeObject:_menuItemButtonPrototype forKey:@"menuItemButtonPrototype"];
   [aCoder encodeObject:_backItemButtonPrototype forKey:@"backItemButtonPrototype"];
@@ -187,6 +199,8 @@ HLMenuNodeValidateButtonPrototype(SKNode *buttonPrototype, NSString *label)
   [self HL_showCurrentMenuAnimation:animation];
 }
 
+#if HLGESTURETARGET_AVAILABLE
+
 #pragma mark -
 #pragma mark HLGestureTarget
 
@@ -265,6 +279,8 @@ HLMenuNodeValidateButtonPrototype(SKNode *buttonPrototype, NSString *label)
     ++i;
   }
 }
+
+#endif
 
 #pragma mark -
 #pragma mark Private

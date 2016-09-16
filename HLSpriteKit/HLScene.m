@@ -9,19 +9,22 @@
 #import "HLScene.h"
 
 #import "HLError.h"
-#import "HLGestureTarget.h"
 #import "SKNode+HLGestureTarget.h"
 
 NSString * const HLSceneChildNoCoding = @"HLSceneChildNoCoding";
 NSString * const HLSceneChildResizeWithScene = @"HLSceneChildResizeWithScene";
+#if HLGESTURETARGET_AVAILABLE
 NSString * const HLSceneChildGestureTarget = @"HLSceneChildGestureTarget";
+#endif
 
 static NSString * const HLSceneChildUserDataKey = @"HLScene";
 
 typedef NS_OPTIONS(NSUInteger, HLSceneChildOptionBits) {
   HLSceneChildBitNoCoding = (1 << 0),
   HLSceneChildBitResizeWithScene = (1 << 1),
+#if HLGESTURETARGET_AVAILABLE
   HLSceneChildBitGestureTarget = (1 << 2),
+#endif
 };
 
 static const NSTimeInterval HLScenePresentationAnimationFadeDuration = 0.2f;
@@ -32,7 +35,9 @@ static BOOL _sceneAssetsLoaded = NO;
 {
   NSMutableDictionary *_childNoCoding;
   NSMutableDictionary *_childResizeWithScene;
+#if HLGESTURETARGET_AVAILABLE
   BOOL _childGestureTargetsExisted;
+#endif
 
   SKNode *_modalPresentationNode;
 }
@@ -42,9 +47,13 @@ static BOOL _sceneAssetsLoaded = NO;
   self = [super initWithCoder:aDecoder];
   if (self) {
 
+#if HLGESTURETARGET_AVAILABLE
     _gestureTargetHitTestMode = (HLSceneGestureTargetHitTestMode)[aDecoder decodeIntegerForKey:@"gestureTargetHitTestMode"];
+#endif
 
+#if HLGESTURETARGET_AVAILABLE
     _childGestureTargetsExisted = NO;
+#endif
     NSMutableArray *childrenArrayQueue = [NSMutableArray arrayWithObject:self.children];
     NSUInteger a = 0;
     while (a < [childrenArrayQueue count]) {
@@ -76,6 +85,7 @@ static BOOL _sceneAssetsLoaded = NO;
             _childResizeWithScene[[NSValue valueWithNonretainedObject:node]] = node;
           }
         }
+#if HLGESTURETARGET_AVAILABLE
         if ((optionBits & HLSceneChildBitGestureTarget) != 0) {
           id <HLGestureTarget> target = [node hlGestureTarget];
           if (!target) {
@@ -84,6 +94,7 @@ static BOOL _sceneAssetsLoaded = NO;
           _childGestureTargetsExisted = YES;
           [self needSharedGestureRecognizers:[target addsToGestureRecognizers]];
         }
+#endif
       }
     }
   }
@@ -121,7 +132,9 @@ static BOOL _sceneAssetsLoaded = NO;
 
   [super encodeWithCoder:aCoder];
 
+#if HLGESTURETARGET_AVAILABLE
   [aCoder encodeInteger:_gestureTargetHitTestMode forKey:@"gestureTargetHitTestMode"];
+#endif
 
   [removedChildren enumerateKeysAndObjectsUsingBlock:^(id key, id object, BOOL *stop){
     SKNode *child = [key nonretainedObjectValue];
@@ -139,21 +152,25 @@ static BOOL _sceneAssetsLoaded = NO;
 - (void)didMoveToView:(SKView *)view
 {
   [super didMoveToView:view];
+#if HLGESTURETARGET_AVAILABLE
   if (_sharedGestureRecognizers) {
     for (UIGestureRecognizer *sharedGestureRecognizer in _sharedGestureRecognizers) {
       [view addGestureRecognizer:sharedGestureRecognizer];
     }
   }
+#endif
 }
 
 - (void)willMoveFromView:(SKView *)view
 {
   [super willMoveFromView:view];
+#if HLGESTURETARGET_AVAILABLE
   if (_sharedGestureRecognizers) {
     for (UIGestureRecognizer *sharedGestureRecognizer in _sharedGestureRecognizers) {
       [view removeGestureRecognizer:sharedGestureRecognizer];
     }
   }
+#endif
 }
 
 - (void)didChangeSize:(CGSize)oldSize
@@ -176,6 +193,8 @@ static BOOL _sceneAssetsLoaded = NO;
     }];
   }
 }
+
+#if HLGESTURETARGET_AVAILABLE
 
 #pragma mark -
 #pragma mark Shared Gesture Recognizers
@@ -298,6 +317,8 @@ static BOOL _sceneAssetsLoaded = NO;
   // target action for the gesture recognizer at initialization.
 }
 
+#endif
+
 #pragma mark -
 #pragma mark Child Behavior Registration
 
@@ -340,6 +361,7 @@ static BOOL _sceneAssetsLoaded = NO;
     }
   }
 
+#if HLGESTURETARGET_AVAILABLE
   if ([options containsObject:HLSceneChildGestureTarget]) {
     id <HLGestureTarget> target = [node hlGestureTarget];
     if (!target) {
@@ -349,6 +371,7 @@ static BOOL _sceneAssetsLoaded = NO;
     _childGestureTargetsExisted = YES;
     [self needSharedGestureRecognizers:[target addsToGestureRecognizers]];
   }
+#endif
 
   if (!node.userData) {
     node.userData = [NSMutableDictionary dictionaryWithObject:@(optionBits) forKey:HLSceneChildUserDataKey];
@@ -451,7 +474,7 @@ static BOOL _sceneAssetsLoaded = NO;
   // background node as the first receiving node, and (walking up the node tree, according
   // to current implementation) will find no other targets for the gesture.
 
-  _modalPresentationNode = [SKSpriteNode spriteNodeWithColor:[UIColor colorWithWhite:0.0f alpha:HLBackgroundFadeAlpha] size:self.size];
+  _modalPresentationNode = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithWhite:0.0f alpha:HLBackgroundFadeAlpha] size:self.size];
   _modalPresentationNode.zPosition = zPositionMin;
   [self addChild:_modalPresentationNode withOptions:[NSSet setWithObjects:HLSceneChildNoCoding, HLSceneChildResizeWithScene, nil]];
 

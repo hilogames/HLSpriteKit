@@ -265,6 +265,8 @@ enum {
                             completion:completion];
 }
 
+#if HLGESTURETARGET_AVAILABLE
+
 #pragma mark -
 #pragma mark HLGestureTarget
 
@@ -305,6 +307,8 @@ enum {
     [delegate ringNode:self didTapItem:itemIndex];
   }
 }
+
+#endif
 
 #pragma mark -
 #pragma mark Private

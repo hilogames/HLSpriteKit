@@ -8,6 +8,9 @@
 
 #import <SpriteKit/SpriteKit.h>
 
+#import "HLGestureTarget.h"
+
+#if HLGESTURETARGET_AVAILABLE
 /**
  A mode specifying how hit-testing should work in a gesture recognition system.
 
@@ -52,6 +55,7 @@ typedef NS_ENUM(NSInteger, HLSceneGestureTargetHitTestMode) {
   HLSceneGestureTargetHitTestModeZPositionThenParent,
 //  HLSceneGestureTargetHitTestModeZPosition,
 };
+#endif
 
 /**
  A style of animation for presentation or dismissal of modal nodes.
@@ -89,7 +93,9 @@ FOUNDATION_EXPORT NSString * const HLSceneChildResizeWithScene;
  (via `[SKNode+HLGestureTarget hlGestureTarget]`) when processing gestures with the
  default `HLScene` gesture recognition system; see `HLGestureTarget`.
 */
+#if HLGESTURETARGET_AVAILABLE
 FOUNDATION_EXPORT NSString * const HLSceneChildGestureTarget;
+#endif
 
 /**
  `HLScene` contains functionality useful to many scenes, including but not limited to:
@@ -133,7 +139,11 @@ FOUNDATION_EXPORT NSString * const HLSceneChildGestureTarget;
  @bug Composition would be better than inheritance.  Consider grouping functionality into
       modules or functions.
 */
+#if HLGESTURETARGET_AVAILABLE
 @interface HLScene : SKScene <NSCoding, UIGestureRecognizerDelegate>
+#else
+@interface HLScene : SKScene <NSCoding>
+#endif
 {
   NSMutableArray *_sharedGestureRecognizers;
 }
@@ -221,6 +231,8 @@ FOUNDATION_EXPORT NSString * const HLSceneChildGestureTarget;
 */
 - (void)unregisterDescendant:(SKNode *)node;
 
+#if HLGESTURETARGET_AVAILABLE
+
 /// @name Configuring the Shared Gesture Recognizer System
 
 /**
@@ -261,6 +273,8 @@ FOUNDATION_EXPORT NSString * const HLSceneChildGestureTarget;
  didMoveToView]`.
 */
 - (void)needSharedGestureRecognizers:(NSArray *)gestureRecognizer;
+
+#endif
 
 /// @name Presenting a Modal Node
 

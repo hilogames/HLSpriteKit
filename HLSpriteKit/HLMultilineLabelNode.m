@@ -40,7 +40,7 @@
                    alignment:(NSTextAlignment)alignment
                     fontName:(NSString *)fontName
                     fontSize:(CGFloat)fontSize
-                   fontColor:(UIColor *)fontColor
+                   fontColor:(SKColor *)fontColor
                       shadow:(NSShadow *)shadow
 {
   self = [super init];
@@ -78,7 +78,11 @@
     _text = [aDecoder decodeObjectForKey:@"text"];
     _widthMaximum = (CGFloat)[aDecoder decodeDoubleForKey:@"widthMaximum"];
     _lineSpacing = (CGFloat)[aDecoder decodeDoubleForKey:@"lineSpacing"];
+#if TARGET_OS_IPHONE
     _renderNode.anchorPoint = [aDecoder decodeCGPointForKey:@"anchorPoint"];
+#else
+    _renderNode.anchorPoint = [aDecoder decodePointForKey:@"anchorPoint"];
+#endif
     _alignment = [aDecoder decodeIntegerForKey:@"alignment"];
     _fontName = [aDecoder decodeObjectForKey:@"fontName"];
     _fontSize = (CGFloat)[aDecoder decodeDoubleForKey:@"fontSize"];
@@ -99,7 +103,11 @@
   [aCoder encodeObject:_text forKey:@"text"];
   [aCoder encodeDouble:_widthMaximum forKey:@"widthMaximum"];
   [aCoder encodeDouble:_lineSpacing forKey:@"lineSpacing"];
+#if TARGET_OS_IPHONE
   [aCoder encodeCGPoint:_renderNode.anchorPoint forKey:@"anchorPoint"];
+#else
+  [aCoder encodePoint:_renderNode.anchorPoint forKey:@"anchorPoint"];
+#endif
   [aCoder encodeObject:_fontName forKey:@"fontName"];
   [aCoder encodeDouble:_fontSize forKey:@"fontSize"];
   [aCoder encodeObject:_fontColor forKey:@"fontColor"];
@@ -159,7 +167,7 @@
   [self GL_render];
 }
 
-- (void)setFontColor:(UIColor *)fontColor
+- (void)setFontColor:(SKColor *)fontColor
 {
   _fontColor = fontColor;
   [self GL_render];
@@ -187,7 +195,11 @@
   paragraphStyle.alignment = _alignment;
 
   NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
+#if TARGET_OS_IPHONE
   attributes[NSFontAttributeName] = [UIFont fontWithName:_fontName size:_fontSize];
+#else
+  attributes[NSFontAttributeName] = [NSFont fontWithName:_fontName size:_fontSize];
+#endif
   attributes[NSForegroundColorAttributeName] = _fontColor;
   attributes[NSParagraphStyleAttributeName] = paragraphStyle;
   if (_shadow) {
@@ -200,6 +212,8 @@
   CGRect boundingRect = [attributedText boundingRectWithSize:CGSizeMake(width, CGFLOAT_MAX)
                                                      options:(NSStringDrawingUsesLineFragmentOrigin)
                                                      context:nil];
+
+#if TARGET_OS_IPHONE
 
   // note: [Tested on iOS 8.4 and 9.3.] The bitmap graphics context will convert the input
   // size to pixels using the current device scaling and then rounding up to the nearest
@@ -217,6 +231,16 @@
   [attributedText drawInRect:boundingRect];
   UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
   UIGraphicsEndImageContext();
+
+#else
+
+  // TODO: Test this!
+  NSImage *image = [[NSImage alloc] initWithSize:boundingRect.size];
+  [image lockFocus];
+  [attributedText drawInRect:boundingRect];
+  [image unlockFocus];
+
+#endif
 
   SKTexture *texture = [SKTexture textureWithImage:image];
   _renderNode.texture = texture;

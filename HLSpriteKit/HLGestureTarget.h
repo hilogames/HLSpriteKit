@@ -6,6 +6,14 @@
 //  Copyright (c) 2014 Hilo Games. All rights reserved.
 //
 
+#if TARGET_OS_IPHONE
+#define HLGESTURETARGET_AVAILABLE 1
+#else
+#define HLGESTURETARGET_AVAILABLE 0
+#endif
+
+#if HLGESTURETARGET_AVAILABLE
+
 #import <UIKit/UIKit.h>
 
 /**
@@ -141,9 +149,9 @@ BOOL HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIG
  or handling block.
 
  Delegation is preferred for two reasons:
- 
+
  * The block is not encodable, but the delegate is.  (The block must be reset on decode.)
- 
+
  * The block is more susceptible to retain cycles.
 */
 @interface HLTapGestureTarget : NSObject <HLGestureTarget, NSCoding, NSCopying>
@@ -168,7 +176,7 @@ BOOL HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIG
 /**
  Convenience method for instantiating a tap gesture target configured with the passed
  delegate.
- 
+
  See `initWithDelegate:`.
 */
 + (instancetype)tapGestureTargetWithDelegate:(id <HLTapGestureTargetDelegate>)delegate;
@@ -176,7 +184,7 @@ BOOL HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIG
 /**
  Convenience method for instantiating a tap gesture target configured with the passed
  handle gesture block.
- 
+
  See `initWithHandleGestureBlock:`.
 */
 + (instancetype)tapGestureTargetWithHandleGestureBlock:(void(^)(UIGestureRecognizer *))handleGestureBlock;
@@ -185,7 +193,7 @@ BOOL HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIG
 
 /**
  A delegate that will be called when the gesture target is tapped.
- 
+
  See `HLTapGestureTargetDelegate`.
 */
 @property (nonatomic, weak) id <HLTapGestureTargetDelegate> delegate;
@@ -224,7 +232,7 @@ BOOL HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIG
  configured once at setup, and then displayed, with no other state necessary in the
  scene.
 
- So...it's pretty messy, because the cleanup needs to be exremely careful about retain
+ So...it's pretty messy, because the cleanup needs to be extremely careful about retain
  cycles.  Furthermore, it gets more complicated when there are multiple gesture targets
  on the modal presentation: For example, each of them needs to unregister themselves and
  *all* the others from the HLScene.  Nasty.
@@ -311,3 +319,5 @@ BOOL HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIG
 
   ...etc...
 */
+
+#endif

@@ -9,6 +9,11 @@
   conflicts under OS X with an inherited `NSResponder` property.  
   [Karl Voskuil](https://github.com/karlvoskuil)
 
+## Added
+
+- Add support for OS X / MacOS.  
+  [Karl Voskuil](https://github.com/karlvoskuil)
+
 ## 1.1.1  2016-09-13
 
 ### Fixed

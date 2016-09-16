@@ -43,38 +43,64 @@ const CGFloat HLTableLayoutManagerEpsilon = 0.001f;
 {
   self = [super init];
   if (self) {
+#if TARGET_OS_IPHONE
     _anchorPoint = [aDecoder decodeCGPointForKey:@"anchorPoint"];
     _tableOffset = [aDecoder decodeCGPointForKey:@"tableOffset"];
+#else
+    _anchorPoint = [aDecoder decodePointForKey:@"anchorPoint"];
+    _tableOffset = [aDecoder decodePointForKey:@"tableOffset"];
+#endif
     _columnCount = (NSUInteger)[aDecoder decodeIntegerForKey:@"columnCount"];
     _rowCount = (NSUInteger)[aDecoder decodeIntegerForKey:@"rowCount"];
+#if TARGET_OS_IPHONE
     _constrainedSize = [aDecoder decodeCGSizeForKey:@"constrainedSize"];
+#else
+    _constrainedSize = [aDecoder decodeSizeForKey:@"constrainedSize"];
+#endif
     _columnWidths = [aDecoder decodeObjectForKey:@"columnWidths"];
     _columnAnchorPoints = [aDecoder decodeObjectForKey:@"columnAnchorPoints"];
     _rowHeights = [aDecoder decodeObjectForKey:@"rowHeight"];
     _tableBorder = (CGFloat)[aDecoder decodeDoubleForKey:@"tableBorder"];
     _columnSeparator = (CGFloat)[aDecoder decodeDoubleForKey:@"columnSeparator"];
     _rowSeparator = (CGFloat)[aDecoder decodeDoubleForKey:@"rowSeparator"];
+#if TARGET_OS_IPHONE
     _size = [aDecoder decodeCGSizeForKey:@"size"];
+#else
+    _size = [aDecoder decodeSizeForKey:@"size"];
+#endif
   }
   return self;
 }
 
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
+#if TARGET_OS_IPHONE
   [aCoder encodeCGPoint:_anchorPoint forKey:@"anchorPoint"];
   [aCoder encodeCGPoint:_tableOffset forKey:@"tableOffset"];
+#else
+  [aCoder encodePoint:_anchorPoint forKey:@"anchorPoint"];
+  [aCoder encodePoint:_tableOffset forKey:@"tableOffset"];
+#endif
   [aCoder encodeInteger:(NSInteger)_columnCount forKey:@"columnCount"];
   // noob: rowCount and size could be recalculated, but since they are
   // typically not recalculated after layout, it makes sense to me to encode them.
   [aCoder encodeInteger:(NSInteger)_rowCount forKey:@"rowCount"];
+#if TARGET_OS_IPHONE
   [aCoder encodeCGSize:_constrainedSize forKey:@"constrainedSize"];
+#else
+  [aCoder encodeSize:_constrainedSize forKey:@"constrainedSize"];
+#endif
   [aCoder encodeObject:_columnWidths forKey:@"columnWidths"];
   [aCoder encodeObject:_columnAnchorPoints forKey:@"columnAnchorPoints"];
   [aCoder encodeObject:_rowHeights forKey:@"rowHeights"];
   [aCoder encodeDouble:_tableBorder forKey:@"tableBorder"];
   [aCoder encodeDouble:_columnSeparator forKey:@"columnSeparator"];
   [aCoder encodeDouble:_rowSeparator forKey:@"rowSeparator"];
+#if TARGET_OS_IPHONE
   [aCoder encodeCGSize:_size forKey:@"size"];
+#else
+  [aCoder encodeSize:_size forKey:@"size"];
+#endif
 }
 
 - (instancetype)copyWithZone:(NSZone *)zone
@@ -270,7 +296,11 @@ const CGFloat HLTableLayoutManagerEpsilon = 0.001f;
 
       if (column < columnAnchorPointsCount) {
         NSValue *anchorPointValue = _columnAnchorPoints[column];
+#if TARGET_OS_IPHONE
         anchorPointCell = [anchorPointValue CGPointValue];
+#else
+        anchorPointCell = [anchorPointValue pointValue];
+#endif
       }
 
       if ([node isKindOfClass:[SKNode class]]) {

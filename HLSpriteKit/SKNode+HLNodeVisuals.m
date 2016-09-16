@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 Hilo Games. All rights reserved.
 //
 
+#import <CoreImage/CIFilter.h>
+
 #import "SKNode+HLNodeVisuals.h"
 
 static const CGFloat HLBlurEpsilon = 0.001f;

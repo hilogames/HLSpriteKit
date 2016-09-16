@@ -8,6 +8,8 @@
 
 #import "HLGestureTarget.h"
 
+#if HLGESTURETARGET_AVAILABLE
+
 BOOL
 HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIGestureRecognizer *b)
 {
@@ -189,3 +191,5 @@ HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIGestur
 }
 
 @end
+
+#endif

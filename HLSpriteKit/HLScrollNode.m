@@ -39,7 +39,11 @@ enum {
     _contentSize = contentSize;
     _contentAnchorPoint = CGPointMake(0.5f, 0.5f);
     _contentOffsetOffline = CGPointZero;
+#if TARGET_OS_IPHONE
     _contentInset = UIEdgeInsetsZero;
+#else
+    _contentInset = NSEdgeInsetsZero;
+#endif
     _contentScaleOffline = 1.0f;
     _contentScaleMinimum = 1.0f;
     _contentScaleMinimumMode = HLScrollNodeContentScaleMinimumFitTight;
@@ -55,7 +59,11 @@ enum {
                  contentSize:(CGSize)contentSize
                  contentAnchorPoint:(CGPoint)contentAnchorPoint
                contentOffset:(CGPoint)contentOffset
+#if TARGET_OS_IPHONE
                 contentInset:(UIEdgeInsets)contentInset
+#else
+                contentInset:(NSEdgeInsets)contentInset
+#endif
                 contentScale:(CGFloat)contentScale
          contentScaleMinimum:(CGFloat)contentScaleMinimum
      contentScaleMinimumMode:(HLScrollNodeContentScaleMinimumMode)contentScaleMinimumMode
@@ -86,22 +94,43 @@ enum {
   if (self) {
 
     _contentNode = [aDecoder decodeObjectForKey:@"contentNode"];
+#if TARGET_OS_IPHONE
     _size = [aDecoder decodeCGSizeForKey:@"size"];
     _anchorPoint = [aDecoder decodeCGPointForKey:@"anchorPoint"];
     _contentSize = [aDecoder decodeCGSizeForKey:@"contentSize"];
     _contentAnchorPoint = [aDecoder decodeCGPointForKey:@"contentAnchorPoint"];
     _contentInset = [aDecoder decodeUIEdgeInsetsForKey:@"contentInset"];
+#else
+    _size = [aDecoder decodeSizeForKey:@"size"];
+    _anchorPoint = [aDecoder decodePointForKey:@"anchorPoint"];
+    _contentSize = [aDecoder decodeSizeForKey:@"contentSize"];
+    _contentAnchorPoint = [aDecoder decodePointForKey:@"contentAnchorPoint"];
+    _contentInset = NSEdgeInsetsMake((CGFloat)[aDecoder decodeDoubleForKey:@"contentInsetTop"],
+                                     (CGFloat)[aDecoder decodeDoubleForKey:@"contentInsetLeft"],
+                                     (CGFloat)[aDecoder decodeDoubleForKey:@"contentInsetBottom"],
+                                     (CGFloat)[aDecoder decodeDoubleForKey:@"contentInsetRight"]);
+#endif
     _contentScaleMinimum = (CGFloat)[aDecoder decodeDoubleForKey:@"contentScaleMinimum"];
     _contentScaleMinimumMode = [aDecoder decodeIntegerForKey:@"contentScaleMinimumMode"];
     _contentScaleMaximum = (CGFloat)[aDecoder decodeDoubleForKey:@"contentScaleMaximum"];
     _contentClipped = [aDecoder decodeBoolForKey:@"contentClipped"];
 
+#if TARGET_OS_IPHONE
     _contentOffsetOffline = [aDecoder decodeCGPointForKey:@"contentOffsetOffline"];
+#else
+    _contentOffsetOffline = [aDecoder decodePointForKey:@"contentOffsetOffline"];
+#endif
     _contentScaleOffline = (CGFloat)[aDecoder decodeDoubleForKey:@"contentScaleOffline"];
 
+#if TARGET_OS_IPHONE
     _panLastNodeLocation = [aDecoder decodeCGPointForKey:@"panLastNodeLocation"];
     _pinchPinContentLocation = [aDecoder decodeCGPointForKey:@"pinchPinContentLocation"];
     _pinchPinNodeLocation = [aDecoder decodeCGPointForKey:@"pinchPinNodeLocation"];
+#else
+    _panLastNodeLocation = [aDecoder decodePointForKey:@"panLastNodeLocation"];
+    _pinchPinContentLocation = [aDecoder decodePointForKey:@"pinchPinContentLocation"];
+    _pinchPinNodeLocation = [aDecoder decodePointForKey:@"pinchPinNodeLocation"];
+#endif
     _pinchOriginalContentScale = (CGFloat)[aDecoder decodeDoubleForKey:@"pinchOriginalContentScale"];
   }
   return self;
@@ -112,22 +141,43 @@ enum {
   [super encodeWithCoder:aCoder];
 
   [aCoder encodeObject:_contentNode forKey:@"contentNode"];
+#if TARGET_OS_IPHONE
   [aCoder encodeCGSize:_size forKey:@"size"];
   [aCoder encodeCGPoint:_anchorPoint forKey:@"anchorPoint"];
   [aCoder encodeCGSize:_contentSize forKey:@"contentSize"];
   [aCoder encodeCGPoint:_contentAnchorPoint forKey:@"contentAnchorPoint"];
   [aCoder encodeUIEdgeInsets:_contentInset forKey:@"contentInset"];
+#else
+  [aCoder encodeSize:_size forKey:@"size"];
+  [aCoder encodePoint:_anchorPoint forKey:@"anchorPoint"];
+  [aCoder encodeSize:_contentSize forKey:@"contentSize"];
+  [aCoder encodePoint:_contentAnchorPoint forKey:@"contentAnchorPoint"];
+  [aCoder encodeDouble:_contentInset.top forKey:@"contentInsetTop"];
+  [aCoder encodeDouble:_contentInset.left forKey:@"contentInsetLeft"];
+  [aCoder encodeDouble:_contentInset.bottom forKey:@"contentInsetBottom"];
+  [aCoder encodeDouble:_contentInset.right forKey:@"contentInsetRight"];
+#endif
   [aCoder encodeDouble:_contentScaleMinimum forKey:@"contentScaleMinimum"];
   [aCoder encodeInteger:_contentScaleMinimumMode forKey:@"contentScaleMinimumMode"];
   [aCoder encodeDouble:_contentScaleMaximum forKey:@"contentScaleMaximum"];
   [aCoder encodeBool:_contentClipped forKey:@"contentClipped"];
 
+#if TARGET_OS_IPHONE
   [aCoder encodeCGPoint:_contentOffsetOffline forKey:@"contentOffsetOffline"];
+#else
+  [aCoder encodePoint:_contentOffsetOffline forKey:@"contentOffsetOffline"];
+#endif
   [aCoder encodeDouble:_contentScaleOffline forKey:@"contentScaleOffline"];
 
+#if TARGET_OS_IPHONE
   [aCoder encodeCGPoint:_panLastNodeLocation forKey:@"panLastNodeLocation"];
   [aCoder encodeCGPoint:_pinchPinContentLocation forKey:@"pinchPinContentLocation"];
   [aCoder encodeCGPoint:_pinchPinNodeLocation forKey:@"pinchPinNodeLocation"];
+#else
+  [aCoder encodePoint:_panLastNodeLocation forKey:@"panLastNodeLocation"];
+  [aCoder encodePoint:_pinchPinContentLocation forKey:@"pinchPinContentLocation"];
+  [aCoder encodePoint:_pinchPinNodeLocation forKey:@"pinchPinNodeLocation"];
+#endif
   [aCoder encodeDouble:_pinchOriginalContentScale forKey:@"pinchOriginalContentScale"];
 }
 
@@ -307,7 +357,11 @@ enum {
   return [SKAction moveTo:constrainedPosition duration:duration];
 }
 
+#if TARGET_OS_IPHONE
 - (void)setContentInset:(UIEdgeInsets)contentInset
+#else
+- (void)setContentInset:(NSEdgeInsets)contentInset
+#endif
 {
   _contentInset = contentInset;
   if (!_contentNode) {
@@ -649,6 +703,8 @@ enum {
   }];
 }
 
+#if HLGESTURETARGET_AVAILABLE
+
 #pragma mark -
 #pragma mark HLGestureTarget
 
@@ -747,6 +803,8 @@ enum {
   }
 
 }
+
+#endif
 
 #pragma mark -
 #pragma mark Private

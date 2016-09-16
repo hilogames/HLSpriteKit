@@ -34,24 +34,38 @@
       break;
 
     case HLLabelNodeVerticalAlignFont: {
+#if TARGET_OS_IPHONE
       UIFont *font = [UIFont fontWithName:self.fontName size:self.fontSize];
+#else
+      NSFont *font = [NSFont fontWithName:self.fontName size:self.fontSize];
+#endif
       if (!font) {
         [NSException raise:@"HLLabelNodeUnknownFont" format:@"Could not find font \"%@\".", self.fontName];
       }
       if (skVerticalAlignmentMode) {
         *skVerticalAlignmentMode = SKLabelVerticalAlignmentModeBaseline;
       }
+#if TARGET_OS_IPHONE
+      CGFloat lineHeight = font.lineHeight;
+#else
+      // TODO: Check this; should this be ascender + (-)descender + leading?
+      CGFloat lineHeight = font.leading;
+#endif
       if (labelHeight) {
-        *labelHeight = font.lineHeight;
+        *labelHeight = lineHeight;
       }
       if (yOffset) {
-        *yOffset = -font.lineHeight / 2.0f - font.descender;
+        *yOffset = -lineHeight / 2.0f - font.descender;
       }
       break;
     }
       
     case HLLabelNodeVerticalAlignFontAscender: {
+#if TARGET_OS_IPHONE
       UIFont *font = [UIFont fontWithName:self.fontName size:self.fontSize];
+#else
+      NSFont *font = [NSFont fontWithName:self.fontName size:self.fontSize];
+#endif
       if (!font) {
         [NSException raise:@"HLLabelNodeUnknownFont" format:@"Could not find font \"%@\".", self.fontName];
       }
@@ -68,7 +82,11 @@
     }
 
     case HLLabelNodeVerticalAlignFontAscenderBias: {
+#if TARGET_OS_IPHONE
       UIFont *font = [UIFont fontWithName:self.fontName size:self.fontSize];
+#else
+      NSFont *font = [NSFont fontWithName:self.fontName size:self.fontSize];
+#endif
       if (!font) {
         [NSException raise:@"HLLabelNodeUnknownFont" format:@"Could not find font \"%@\".", self.fontName];
       }

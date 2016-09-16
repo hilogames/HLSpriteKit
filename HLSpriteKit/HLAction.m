@@ -399,16 +399,26 @@ NSString * const HLCustomActionSceneDidUpdateNotification = @"HLCustomActionScen
 {
   self = [super init];
   if (self) {
+#if TARGET_OS_IPHONE
     _start = [aDecoder decodeCGPointForKey:@"start"];
     _finish = [aDecoder decodeCGPointForKey:@"finish"];
+#else
+    _start = [aDecoder decodePointForKey:@"start"];
+    _finish = [aDecoder decodePointForKey:@"finish"];
+#endif
   }
   return self;
 }
 
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
+#if TARGET_OS_IPHONE
   [aCoder encodeCGPoint:_start forKey:@"start"];
   [aCoder encodeCGPoint:_finish forKey:@"finish"];
+#else
+  [aCoder encodePoint:_start forKey:@"start"];
+  [aCoder encodePoint:_finish forKey:@"finish"];
+#endif
 }
 
 @end

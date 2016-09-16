@@ -74,14 +74,23 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
     _automaticWidth = [aDecoder decodeBoolForKey:@"automaticWidth"];
     _automaticHeight = [aDecoder decodeBoolForKey:@"automaticHeight"];
     _automaticToolsScaleLimit = [aDecoder decodeBoolForKey:@"automaticToolsScaleLimit"];
+#if TARGET_OS_IPHONE
     _size = [aDecoder decodeCGSizeForKey:@"size"];
     _anchorPoint = [aDecoder decodeCGPointForKey:@"anchorPoint"];
+#else
+    _size = [aDecoder decodeSizeForKey:@"size"];
+    _anchorPoint = [aDecoder decodePointForKey:@"anchorPoint"];
+#endif
     _justification = [aDecoder decodeIntegerForKey:@"justification"];
     _backgroundBorderSize = (CGFloat)[aDecoder decodeDoubleForKey:@"backgroundBorderSize"];
     _squareSeparatorSize = (CGFloat)[aDecoder decodeDoubleForKey:@"squareSeparatorSize"];
     _toolPad = (CGFloat)[aDecoder decodeDoubleForKey:@"toolPad"];
 
+#if TARGET_OS_IPHONE
     _lastOrigin = [aDecoder decodeCGPointForKey:@"lastOrigin"];
+#else
+    _lastOrigin = [aDecoder decodePointForKey:@"lastOrigin"];
+#endif
   }
   return self;
 }
@@ -106,14 +115,23 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
   [aCoder encodeBool:_automaticWidth forKey:@"automaticWidth"];
   [aCoder encodeBool:_automaticHeight forKey:@"automaticHeight"];
   [aCoder encodeBool:_automaticToolsScaleLimit forKey:@"automaticToolsScaleLimit"];
+#if TARGET_OS_IPHONE
   [aCoder encodeCGSize:_size forKey:@"size"];
   [aCoder encodeCGPoint:_anchorPoint forKey:@"anchorPoint"];
+#else
+  [aCoder encodeSize:_size forKey:@"size"];
+  [aCoder encodePoint:_anchorPoint forKey:@"anchorPoint"];
+#endif
   [aCoder encodeInteger:_justification forKey:@"justification"];
   [aCoder encodeDouble:_backgroundBorderSize forKey:@"backgroundBorderSize"];
   [aCoder encodeDouble:_squareSeparatorSize forKey:@"squareSeparatorSize"];
   [aCoder encodeDouble:_toolPad forKey:@"toolPad"];
 
+#if TARGET_OS_IPHONE
   [aCoder encodeCGPoint:_lastOrigin forKey:@"lastOrigin"];
+#else
+  [aCoder encodePoint:_lastOrigin forKey:@"lastOrigin"];
+#endif
 }
 
 - (instancetype)copyWithZone:(NSZone *)zone
@@ -132,7 +150,7 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
   return _backgroundNode.color;
 }
 
-- (void)setSquareColor:(UIColor *)squareColor
+- (void)setSquareColor:(SKColor *)squareColor
 {
   _squareColor = squareColor;
   NSArray *squareNodes = _squaresNode.itemNodes;
@@ -141,7 +159,7 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
   }
 }
 
-- (void)setHighlightColor:(UIColor *)highlightColor
+- (void)setHighlightColor:(SKColor *)highlightColor
 {
   _highlightColor = highlightColor;
   NSArray *squareNodes = _squaresNode.itemNodes;
@@ -465,6 +483,8 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
   }
 }
 
+#if HLGESTURETARGET_AVAILABLE
+
 #pragma mark -
 #pragma mark HLGestureTarget
 
@@ -505,6 +525,8 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
     [delegate toolbarNode:self didTapTool:toolTag];
   }
 }
+
+#endif
 
 #pragma mark -
 #pragma mark Private
@@ -665,6 +687,8 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
 
 @end
 
+#if HLGESTURETARGET_AVAILABLE
+
 @implementation HLToolbarNodeMultiGestureTarget
 
 - (instancetype)initWithToolbarNode:(HLToolbarNode *)toolbarNode
@@ -781,3 +805,5 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
 }
 
 @end
+
+#endif

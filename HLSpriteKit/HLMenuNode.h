@@ -48,7 +48,11 @@ typedef NS_ENUM(NSInteger, HLMenuNodeAnimation) {
  - Set this node as its own gesture target (via `[SKNode+HLGestureTarget
    hlSetGestureTarget]`) to get a callbacks via the `HLMenuNodeDelegate` interface.
 */
+#if HLGESTURETARGET_AVAILABLE
 @interface HLMenuNode : HLComponentNode <NSCoding, HLGestureTarget>
+#else
+@interface HLMenuNode : HLComponentNode <NSCoding>
+#endif
 
 /// @name Creating a Menu Node
 

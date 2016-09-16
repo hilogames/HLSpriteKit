@@ -387,7 +387,7 @@ contentDidSetHighlight:&contentDidSetHighlight];
   }
 }
 
-- (void)setHighlightColor:(UIColor *)highlightColor
+- (void)setHighlightColor:(SKColor *)highlightColor
 {
   _highlightColor = highlightColor;
   if (self.highlight) {

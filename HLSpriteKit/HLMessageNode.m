@@ -55,7 +55,7 @@ enum {
   return self;
 }
 
-- (instancetype)initWithTexture:(SKTexture *)texture color:(UIColor *)color size:(CGSize)size
+- (instancetype)initWithTexture:(SKTexture *)texture color:(SKColor *)color size:(CGSize)size
 {
   self = [super init];
   if (self) {
@@ -82,7 +82,7 @@ enum {
   _labelNode = [SKLabelNode labelNodeWithFontNamed:@"Courier"];
   _labelNode.zPosition = (HLMessageNodeZPositionLayerLabel - HLMessageNodeZPositionLayerBackground) * zPositionLayerIncrement;
   _labelNode.fontSize = 14.0f;
-  _labelNode.fontColor = [UIColor whiteColor];
+  _labelNode.fontColor = [SKColor whiteColor];
   [_backgroundNode addChild:_labelNode];
 
   [self HL_layoutLabelNode];

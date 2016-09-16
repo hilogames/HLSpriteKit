@@ -8,6 +8,8 @@
 
 #import "SKNode+HLGestureTarget.h"
 
+#if HLGESTURETARGET_AVAILABLE
+
 static NSString * const HLGestureTargetUserDataKey = @"HLGestureTarget";
 
 @implementation SKNode (HLGestureTarget)
@@ -64,3 +66,5 @@ static NSString * const HLGestureTargetUserDataKey = @"HLGestureTarget";
 }
 
 @end
+
+#endif

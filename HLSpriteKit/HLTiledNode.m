@@ -44,7 +44,7 @@
   return [self initWithTexture:texture color:[SKColor whiteColor] size:size];
 }
 
-- (instancetype)initWithTexture:(SKTexture *)texture color:(UIColor *)color size:(CGSize)size
+- (instancetype)initWithTexture:(SKTexture *)texture color:(SKColor *)color size:(CGSize)size
 {
   self = [super init];
   if (self) {
@@ -59,8 +59,13 @@
 {
   self = [super initWithCoder:aDecoder];
   if (self) {
+#if TARGET_OS_IPHONE
     _size = [aDecoder decodeCGSizeForKey:@"size"];
     _anchorPoint = [aDecoder decodeCGPointForKey:@"anchorPoint"];
+#else
+    _size = [aDecoder decodeSizeForKey:@"size"];
+    _anchorPoint = [aDecoder decodePointForKey:@"anchorPoint"];
+#endif
   }
   return self;
 }
@@ -68,8 +73,13 @@
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
   [super encodeWithCoder:aCoder];
+#if TARGET_OS_IPHONE
   [aCoder encodeCGSize:_size forKey:@"size"];
   [aCoder encodeCGPoint:_anchorPoint forKey:@"anchorPoint"];
+#else
+  [aCoder encodeSize:_size forKey:@"size"];
+  [aCoder encodePoint:_anchorPoint forKey:@"anchorPoint"];
+#endif
 }
 
 - (instancetype)copyWithZone:(NSZone *)zone

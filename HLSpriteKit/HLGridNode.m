@@ -101,7 +101,11 @@ enum {
     _gridWidth = [aDecoder decodeIntForKey:@"gridWidth"];
     _squareCount = [aDecoder decodeIntForKey:@"squareCount"];
     _layoutMode = [aDecoder decodeIntegerForKey:@"layoutMode"];
+#if TARGET_OS_IPHONE
     _squareSize = [aDecoder decodeCGSizeForKey:@"squareSize"];
+#else
+    _squareSize = [aDecoder decodeSizeForKey:@"squareSize"];
+#endif
     _backgroundBorderSize = (CGFloat)[aDecoder decodeDoubleForKey:@"backgroundBorderSize"];
     _squareSeparatorSize = (CGFloat)[aDecoder decodeDoubleForKey:@"squareSeparatorSize"];
 
@@ -127,7 +131,11 @@ enum {
   [aCoder encodeInt:_gridWidth forKey:@"gridWidth"];
   [aCoder encodeInt:_squareCount forKey:@"squareCount"];
   [aCoder encodeInteger:_layoutMode forKey:@"layoutMode"];
+#if TARGET_OS_IPHONE
   [aCoder encodeCGSize:_squareSize forKey:@"squareSize"];
+#else
+  [aCoder encodeSize:_squareSize forKey:@"squareSize"];
+#endif
   [aCoder encodeDouble:_backgroundBorderSize forKey:@"backgroundBorderSize"];
   [aCoder encodeDouble:_squareSeparatorSize forKey:@"squareSeparatorSize"];
   
@@ -389,6 +397,8 @@ enum {
                               completion:completion];
 }
 
+#if HLGESTURETARGET_AVAILABLE
+
 #pragma mark -
 #pragma mark HLGestureTarget
 
@@ -429,6 +439,8 @@ enum {
     [delegate gridNode:self didTapSquare:squareIndex];
   }
 }
+
+#endif
 
 #pragma mark -
 #pragma mark Private

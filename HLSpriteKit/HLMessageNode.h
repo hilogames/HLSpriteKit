@@ -43,7 +43,7 @@ typedef NS_ENUM(NSInteger, HLMessageNodeAnimation) {
 /**
  Initializes a new message node, specifying a texture and size for the background.
 */
-- (instancetype)initWithTexture:(SKTexture *)texture color:(UIColor *)color size:(CGSize)size;
+- (instancetype)initWithTexture:(SKTexture *)texture color:(SKColor *)color size:(CGSize)size;
 
 /// @name Showing and Hiding Messages
 

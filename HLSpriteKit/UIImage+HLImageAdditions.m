@@ -10,6 +10,8 @@
 
 #include <tgmath.h>
 
+#if TARGET_OS_IPHONE
+
 @implementation UIImage (HLImageAdditions)
 
 // note: In all conversions between UIKit and CoreGraphics:
@@ -121,3 +123,5 @@
 }
 
 @end
+
+#endif

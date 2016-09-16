@@ -40,7 +40,11 @@
 
  - Leave the gesture target unset for no gesture handling.
 */
+#if HLGESTURETARGET_AVAILABLE
 @interface HLRingNode : HLComponentNode <NSCopying, NSCoding, HLGestureTarget>
+#else
+@interface HLRingNode : HLComponentNode <NSCopying, NSCoding>
+#endif
 
 /// @name Creating a Ring Node
 
