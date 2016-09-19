@@ -11,18 +11,27 @@
   "authors": {
     "Karl Voskuil": "karl@hilogames.com"
   },
-  "platforms": {
-    "ios": "8.4"
-  },
   "source": {
     "git": "https://github.com/hilogames/HLSpriteKit.git",
     "tag": "1.1.1"
   },
   "source_files": "HLSpriteKit/*",
-  "frameworks": [
-    "Foundation",
-    "UIKit",
-    "SpriteKit"
-  ],
-  "requires_arc": true
+  "requires_arc": true,
+  "platforms": {
+    "ios": "8.4",
+    "osx": "10.10"
+  },
+  "ios": {
+    "frameworks": [
+      "Foundation",
+      "UIKit",
+      "SpriteKit"
+    ]
+  },
+  "osx": {
+    "frameworks": [
+      "Foundation",
+      "SpriteKit"
+    ]
+  }
 }

@@ -1,9 +1,24 @@
 source 'https://github.com/CocoaPods/Specs.git'
 
-target 'HLSpriteKit' do
-  pod "HLSpriteKit", :path => "../"
+target 'iOS' do
 
-  target 'Tests' do
+  platform :ios, '8.4'
+
+  pod 'HLSpriteKit', :path => '../'
+
+  target 'iOS-Tests' do
+    inherit! :search_paths
+  end
+
+end
+
+target 'macOS' do
+
+  platform :osx, '10.11'
+
+  pod 'HLSpriteKit', :path => '../'
+
+  target 'macOS-Tests' do
     inherit! :search_paths
   end
 

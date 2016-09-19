@@ -1,10 +1,3 @@
-#
-#  Be sure to run `pod spec lint HLSpriteKit.podspec' to ensure this is a
-#  valid spec and to remove all comments including this before submitting the spec.
-#
-#  To learn more about Podspec attributes see http://docs.cocoapods.org/specification.html
-#  To see working Podspecs in the CocoaPods repo see https://github.com/CocoaPods/Specs/
-#
 
 Pod::Spec.new do |s|
   s.name         = "HLSpriteKit"
@@ -19,9 +12,13 @@ Pod::Spec.new do |s|
   s.homepage     = "https://github.com/hilogames/HLSpriteKit"
   s.license      = { :type => "MIT", :file => "LICENSE" }
   s.author       = { "Karl Voskuil" => "karl@hilogames.com" }
-  s.platform     = :ios, "8.4"
-  s.source       = { :git => "https://github.com/hilogames/HLSpriteKit.git", :tag => "1.1.1" }
+  s.source       = { :git => "https://github.com/hilogames/HLSpriteKit.git", :tag => s.version.to_s }
   s.source_files = "HLSpriteKit/*"
-  s.frameworks   = "Foundation", "UIKit", "SpriteKit"
   s.requires_arc = true
+
+  s.ios.deployment_target = "8.4"
+  s.ios.frameworks        = "Foundation", "UIKit", "SpriteKit"
+
+  s.osx.deployment_target = "10.10"
+  s.osx.frameworks        = "Foundation", "SpriteKit"
 end
