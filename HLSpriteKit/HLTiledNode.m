@@ -175,6 +175,13 @@
 {
   [self removeAllChildren];
 
+  if (texture.size.width == 0.0f || texture.size.height == 0.0f) {
+    // note: Add one child anyway: Need a placeholder to hold properties.
+    SKSpriteNode *tileNode = [[SKSpriteNode alloc] initWithTexture:texture color:color size:texture.size];
+    [self addChild:tileNode];
+    return;
+  }
+
   CGPoint origin = CGPointMake(_anchorPoint.x * -1.0f * _size.width,
                                _anchorPoint.y * -1.0f * _size.height);
   CGSize textureSize = texture.size;
