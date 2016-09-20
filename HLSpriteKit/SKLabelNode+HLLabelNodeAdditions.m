@@ -45,12 +45,7 @@
       if (skVerticalAlignmentMode) {
         *skVerticalAlignmentMode = SKLabelVerticalAlignmentModeBaseline;
       }
-#if TARGET_OS_IPHONE
-      CGFloat lineHeight = font.lineHeight;
-#else
-      // TODO: Check this; should this be ascender + (-)descender + leading?
-      CGFloat lineHeight = font.leading;
-#endif
+      CGFloat lineHeight = font.ascender - font.descender;
       if (labelHeight) {
         *labelHeight = lineHeight;
       }
@@ -72,11 +67,12 @@
       if (skVerticalAlignmentMode) {
         *skVerticalAlignmentMode = SKLabelVerticalAlignmentModeBaseline;
       }
+      CGFloat lineHeight = font.ascender;
       if (labelHeight) {
-        *labelHeight = font.ascender;
+        *labelHeight = lineHeight;
       }
       if (yOffset) {
-        *yOffset = -font.ascender / 2.0f;
+        *yOffset = -lineHeight / 2.0f;
       }
       break;
     }
@@ -93,11 +89,16 @@
       if (skVerticalAlignmentMode) {
         *skVerticalAlignmentMode = SKLabelVerticalAlignmentModeBaseline;
       }
+      // note: Ascender bias leaves room for the full ascender plus half of the descender
+      // (keep in mind font.descender metric is a negative offset).  This is arbitrary.
+      CGFloat lineHeight = font.ascender - font.descender / 2.0f;
       if (labelHeight) {
-        *labelHeight = font.ascender + font.descender / 2.0f;
+        *labelHeight = lineHeight;
       }
       if (yOffset) {
-        *yOffset = -font.ascender / 2.0f - font.descender / 4.0f;
+        // note: Find bottom of line, then go up by half the descender.
+        // Simplifies -(a - d/2)/2 - d/2 = -a/2 - d/4 but written this way for clarity.
+        *yOffset = -lineHeight / 2.0f - font.descender / 2.0f;
       }
       break;
     }
