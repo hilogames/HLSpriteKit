@@ -8,6 +8,8 @@
 
 #import "HLAction.h"
 
+#import <TargetConditionals.h>
+
 @implementation HLPerformSelectorStrongSingle
 
 - (instancetype)initWithStrongTarget:(id)strongTarget selector:(SEL)selector argument:(id)argument

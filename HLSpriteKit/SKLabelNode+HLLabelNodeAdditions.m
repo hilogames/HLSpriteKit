@@ -8,6 +8,8 @@
 
 #import "SKLabelNode+HLLabelNodeAdditions.h"
 
+#import <TargetConditionals.h>
+
 @implementation SKLabelNode (HLLabelNodeAdditions)
 
 - (void)getAlignmentForHLVerticalAlignmentMode:(HLLabelNodeVerticalAlignmentMode)hlVerticalAlignmentMode

@@ -8,6 +8,8 @@
 
 #import "HLOutlineLayoutManager.h"
 
+#import <TargetConditionals.h>
+
 const CGFloat HLOutlineLayoutManagerEpsilon = 0.001f;
 
 @implementation HLOutlineLayoutManager

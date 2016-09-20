@@ -7,6 +7,7 @@
 //
 
 #import <SpriteKit/SpriteKit.h>
+#import <TargetConditionals.h>
 
 #import "HLComponentNode.h"
 #import "HLGestureTarget.h"

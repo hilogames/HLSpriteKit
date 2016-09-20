@@ -8,6 +8,8 @@
 
 #import "HLTableLayoutManager.h"
 
+#import <TargetConditionals.h>
+
 const CGFloat HLTableLayoutManagerEpsilon = 0.001f;
 
 @implementation HLTableLayoutManager

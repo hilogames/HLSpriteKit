@@ -8,6 +8,8 @@
 
 #import "HLTiledNode.h"
 
+#import <TargetConditionals.h>
+
 @implementation HLTiledNode
 {
   CGSize _size;

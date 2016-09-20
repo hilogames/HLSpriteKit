@@ -8,6 +8,8 @@
 
 #import "HLMultilineLabelNode.h"
 
+#import <TargetConditionals.h>
+
 @implementation HLMultilineLabelNode
 {
   SKSpriteNode *_renderNode;

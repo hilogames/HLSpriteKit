@@ -8,6 +8,8 @@
 
 #import "HLRingLayoutManager.h"
 
+#import <TargetConditionals.h>
+
 const CGFloat HLRingLayoutManagerEpsilon = 0.001f;
 
 typedef NS_ENUM(NSInteger, HLRingLayoutManagerThetasMode) {

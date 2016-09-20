@@ -8,6 +8,8 @@
 
 #import "HLToolbarNode.h"
 
+#import <TargetConditionals.h>
+
 #import "HLMath.h"
 #import "HLItemNode.h"
 #import "HLItemsNode.h"

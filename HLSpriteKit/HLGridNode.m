@@ -8,6 +8,8 @@
 
 #import "HLGridNode.h"
 
+#import <TargetConditionals.h>
+
 #import "HLItemNode.h"
 #import "HLItemsNode.h"
 

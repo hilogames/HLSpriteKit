@@ -8,6 +8,8 @@
 
 #import "HLMenuNode.h"
 
+#import <TargetConditionals.h>
+
 #import "HLError.h"
 #import "HLLabelButtonNode.h"
 #import "SKNode+HLGestureTarget.h"
