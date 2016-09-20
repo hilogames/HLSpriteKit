@@ -13,7 +13,6 @@
 		CB3339041D905A22008CAFE0 /* HLAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CB3339031D905A22008CAFE0 /* HLAppDelegate.m */; };
 		CB3339071D905A22008CAFE0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CB3339061D905A22008CAFE0 /* main.m */; };
 		CB33390A1D905A22008CAFE0 /* HLViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CB3339091D905A22008CAFE0 /* HLViewController.m */; };
-		CBBD5FA91D905B310047D9F7 /* macOS_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = CBBD5FA81D905B310047D9F7 /* macOS_Tests.m */; };
 		CBBD5FC01D905F240047D9F7 /* HLAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CBBD5FBD1D905F240047D9F7 /* HLAppDelegate.m */; };
 		CBBD5FC11D905F240047D9F7 /* HLViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CBBD5FBF1D905F240047D9F7 /* HLViewController.m */; };
 		CBBD5FC41D905F510047D9F7 /* HLCatalogScene.m in Sources */ = {isa = PBXBuildFile; fileRef = CBBD5FC31D905F510047D9F7 /* HLCatalogScene.m */; };
@@ -73,7 +72,6 @@
 		CBBD5F981D905B180047D9F7 /* iOS-Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "iOS-Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CBBD5F9C1D905B180047D9F7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CBBD5FA61D905B310047D9F7 /* macOS-Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "macOS-Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		CBBD5FA81D905B310047D9F7 /* macOS_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = macOS_Tests.m; sourceTree = "<group>"; };
 		CBBD5FAA1D905B310047D9F7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CBBD5FBC1D905F240047D9F7 /* HLAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLAppDelegate.h; sourceTree = "<group>"; };
 		CBBD5FBD1D905F240047D9F7 /* HLAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLAppDelegate.m; sourceTree = "<group>"; };
@@ -231,7 +229,6 @@
 		CBBD5FA71D905B310047D9F7 /* macOS-Tests */ = {
 			isa = PBXGroup;
 			children = (
-				CBBD5FA81D905B310047D9F7 /* macOS_Tests.m */,
 				CBBD5FAA1D905B310047D9F7 /* Info.plist */,
 			);
 			path = "macOS-Tests";
@@ -654,7 +651,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				CBBD5FDC1D9062710047D9F7 /* HLMenuNodeTests.m in Sources */,
-				CBBD5FA91D905B310047D9F7 /* macOS_Tests.m in Sources */,
 				CBBD5FDE1D9062710047D9F7 /* HLMultilineLabelNodeTests.m in Sources */,
 				CBBD5FDA1D9062710047D9F7 /* HLMathTests.m in Sources */,
 				CBBD5FE01D9062720047D9F7 /* HLTableLayoutManagerTests.m in Sources */,
