@@ -29,7 +29,7 @@ typedef NS_ENUM(NSInteger, HLErrorLevel) {
 /**
  Logs a non-critical error.
 */
-static void
+static inline void
 HLError(HLErrorLevel level, NSString *message)
 {
   // TODO: This is a placeholder for a better mechanism for non-critical error logging,
