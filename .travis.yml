@@ -5,6 +5,5 @@ before_install:
 branches:
   only:
     - master
-podfile: Example/Podfile
 script:
   - ./test.sh
