@@ -6,4 +6,4 @@ branches:
   only:
     - master
 script:
-  - ./test.sh
+  - ./test.sh travis
