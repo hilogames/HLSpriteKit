@@ -3,6 +3,8 @@
 
 ## Master
 
+## 1.2.0 [2016-09-21]
+
 ## Breaking
 
 - Rename `HLMenuNode` property `menu` to `topMenu`. The old name
@@ -11,10 +13,10 @@
 
 ## Added
 
-- Add support for OS X / MacOS.  
+- Conditional compilation for OS X / MacOS.  
   [Karl Voskuil](https://github.com/karlvoskuil)
 
-## 1.1.1  2016-09-13
+## 1.1.1 [2016-09-13]
 
 ### Fixed
 
