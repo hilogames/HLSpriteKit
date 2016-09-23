@@ -8,6 +8,8 @@
 
 #import "HLCatalogScene.h"
 
+#import <TargetConditionals.h>
+
 #import "HLSpriteKit.h"
 
 @implementation HLCatalogScene
@@ -80,6 +82,7 @@
   [self addChild:_catalogScrollNode];
 
 #if HLGESTURETARGET_AVAILABLE
+
   [multilineLabelNode hlSetGestureTarget:[HLTapGestureTarget tapGestureTargetWithHandleGestureBlock:^(UIGestureRecognizer *gestureRecognizer){
     [self HL_showMessage:@"Tapped HLMultilineLabelNode."];
   }]];
@@ -96,6 +99,8 @@
     [self HL_showMessage:[NSString stringWithFormat:@"Tapped tool '%@' on HLToolbarNode.", toolTag]];
   };
   [self registerDescendant:toolbarNode withOptions:[NSSet setWithObject:HLSceneChildGestureTarget]];
+  // Alternately, use UIResponder interface with toolTappedBlock:
+  //   toolbarNode.userInteractionEnabled = YES;
   
   [labelButtonNode hlSetGestureTarget:[HLTapGestureTarget tapGestureTargetWithHandleGestureBlock:^(UIGestureRecognizer *gestureRecognizer){
     [self HL_showMessage:@"Tapped HLLabelButtonNode."];
@@ -109,7 +114,18 @@
   
   [_catalogScrollNode hlSetGestureTarget:_catalogScrollNode];
   [self registerDescendant:_catalogScrollNode withOptions:[NSSet setWithObjects:HLSceneChildResizeWithScene, HLSceneChildGestureTarget, nil]];
+
 #endif
+
+#if ! TARGET_OS_IPHONE
+
+  toolbarNode.userInteractionEnabled = YES;
+  toolbarNode.toolClickedBlock = ^(NSString *toolTag){
+    [self HL_showMessage:[NSString stringWithFormat:@"Clicked tool '%@' on HLToolbarNode.", toolTag]];
+  };
+
+#endif
+
 }
 
 - (HLGridNode *)HL_createContentGridNode

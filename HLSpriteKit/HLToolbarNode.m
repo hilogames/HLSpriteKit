@@ -8,8 +8,6 @@
 
 #import "HLToolbarNode.h"
 
-#import <TargetConditionals.h>
-
 #import "HLMath.h"
 #import "HLItemNode.h"
 #import "HLItemsNode.h"
@@ -525,6 +523,71 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
   id <HLToolbarNodeDelegate> delegate = _delegate;
   if (delegate) {
     [delegate toolbarNode:self didTapTool:toolTag];
+  }
+}
+
+#endif
+
+#pragma mark -
+#pragma mark UIResponder
+
+#if TARGET_OS_IPHONE
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)NSEvent
+{
+  if ([touches count] > 1) {
+    return;
+  }
+
+  UITouch *touch = [touches anyObject];
+  if (touch.tapCount > 1) {
+    return;
+  }
+
+  CGPoint viewLocation = [touch locationInView:self.scene.view];
+  CGPoint sceneLocation = [self.scene convertPointFromView:viewLocation];
+  CGPoint location = [self convertPoint:sceneLocation fromNode:self.scene];
+  
+  NSString *toolTag = [self toolAtLocation:location];
+  if (!toolTag) {
+    return;
+  }
+  
+  if (_toolTappedBlock) {
+    _toolTappedBlock(toolTag);
+  }
+  
+  id <HLToolbarNodeDelegate> delegate = _delegate;
+  if (delegate) {
+    [delegate toolbarNode:self didTapTool:toolTag];
+  }
+}
+
+#else
+
+#pragma mark -
+#pragma mark NSResponder
+
+- (void)mouseUp:(NSEvent *)event
+{
+  if (event.clickCount > 1) {
+    return;
+  }
+
+  CGPoint location = [event locationInNode:self];
+  
+  NSString *toolTag = [self toolAtLocation:location];
+  if (!toolTag) {
+    return;
+  }
+  
+  if (_toolClickedBlock) {
+    _toolClickedBlock(toolTag);
+  }
+  
+  id <HLToolbarNodeDelegate> delegate = _delegate;
+  if (delegate) {
+    [delegate toolbarNode:self didClickTool:toolTag];
   }
 }
 

@@ -7,6 +7,7 @@
 //
 
 #import <SpriteKit/SpriteKit.h>
+#import <TargetConditionals.h>
 
 #import "HLComponentNode.h"
 #import "HLGestureTarget.h"
@@ -44,7 +45,9 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
  state information about tools (like enabled and highlight), and provides some simple
  animation for paging or setting tools in the toolbar.
 
- ## Common Gesture Handling Configurations
+ ## Common User Interaction Configurations
+
+ As a gesture target:
 
  - Set this node as its own gesture target (using `[SKNode+HLGestureTarget
    hlSetGestureTarget]`) to get simple delegation and/or a callback for taps.  See
@@ -55,6 +58,18 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
    locations to this node's coordinate system and call `toolAtLocation` as desired.)
 
  - Leave the gesture target unset for no gesture handling.
+
+ As a `UIResponder`:
+ 
+ - Set this node's `userInteractionEnabled` property to true to get simple delegation and/or
+   a callback for taps.  See `HLToolbarNodeDelegate` for delegation and `toolTappedBlock`
+   property for setting a callback block.
+
+ As a `NSResponder`:
+
+ - Set this node's `userInteractionEnabled` property to true to get simple delegation and/or
+   a callback for left-clicks.  See `HLToolbarNodeDelegate` for delegation and `toolClickedBlock`
+   property for setting a callback block.
 */
 #if HLGESTURETARGET_AVAILABLE
 @interface HLToolbarNode : HLComponentNode <NSCoding, HLGestureTarget>
@@ -72,25 +87,45 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 /// @name Managing Interaction
 
 /**
- The delegate invoked on interaction (when this node is its own gesture handler).
+ The delegate invoked on interaction (through `HLGestureTarget`, `UIResponder`, or `NSResponder`
+ interfaces).
 
- Unless this toolbar node is its own gesture handler, this delegate will not be called.
- See "Common Gesture Handling Configurations".
+ Unless this toolbar node is configured for user interaction, this delegate will not be called.
+ See "Common User Interaction Configurations".
 */
 @property (nonatomic, weak) id <HLToolbarNodeDelegate> delegate;
 
+#if TARGET_OS_IPHONE
+
 /**
- A callback invoked when a tool is tapped (when this node is its own gesture handler).
+ A callback invoked when a tool is tapped.
 
  The tag of the tapped tool is passed as an argument to the callback.
 
- Unless this toolbar node is its own gesture handler, this callback will not be invoked.
- See "Common Gesture Handling Configurations".
+ Relevant to `HLGestureTarget` and `UIResponder` user interaction.
+ See "Common User Interaction Configurations".
 
  Beware retain cycles when using the callback to invoke a method in the owner.  As a safer
  alternative, use the toolbar node's delegation interface; see `setDelegate:`.
 */
 @property (nonatomic, copy) void (^toolTappedBlock)(NSString *toolTag);
+
+#else
+
+/**
+ A callback invoked when a tool is clicked.
+ 
+ The tag of the tapped tool is passed as an argument to the callback.
+ 
+ Relevant to `NSResponder` user interaction.
+ See "Common User Interaction Configurations".
+ 
+ Beware retain cycles when using the callback to invoke a method in the owner.  As a safer
+ alternative, use the toolbar node's delegation interface; see `setDelegate:`.
+ */
+@property (nonatomic, copy) void (^toolClickedBlock)(NSString *toolTag);
+
+#endif
 
 /// @name Getting and Setting Tools
 
@@ -455,18 +490,34 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 /**
  A delegate for `HLToolbarNode`.
 
- The delegate is (currently) concerned mostly with handling user interaction.  It's worth
- noting that the `HLToolbarNode` only receives gestures if it is configured as its own
- gesture target (using `[SKNode+HLGestureTarget hlSetGestureTarget]`).
+ The delegate is (currently) concerned mostly with handling user interaction.
+ See "Common User Interaction Configurations".
 */
 @protocol HLToolbarNodeDelegate <NSObject>
 
 /// @name Handling User Interaction
 
+#if TARGET_OS_IPHONE
+
 /**
  Called when the user taps a tool.
+
+ Relevant to `HLGestureTarget` and `UIResponder` user interaction.
+ See "Common User Interaction Configurations".
 */
 - (void)toolbarNode:(HLToolbarNode *)toolbarNode didTapTool:(NSString *)toolTag;
+
+#else
+
+/**
+ Called when the user clicks a tool.
+ 
+ Relevant to `NSResponder` user interaction.
+ See "Common User Interaction Configurations".
+ */
+- (void)toolbarNode:(HLToolbarNode *)toolbarNode didClickTool:(NSString *)toolTag;
+
+#endif
 
 @end
 
