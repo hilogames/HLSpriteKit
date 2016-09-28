@@ -3,6 +3,12 @@
 
 ## Master
 
+## Added
+
+- Implemented basic `UIResponder` and `NSResponder` user interaction
+  for major components.  
+  [Karl Voskuil](https://github.com/karlvoskuil)
+
 ## 1.2.0 [2016-09-21]
 
 ## Breaking

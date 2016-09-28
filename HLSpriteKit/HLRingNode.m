@@ -310,6 +310,71 @@ enum {
 
 #endif
 
+#if TARGET_OS_IPHONE
+
+#pragma mark -
+#pragma mark UIResponder
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
+  if ([touches count] > 1) {
+    return;
+  }
+
+  UITouch *touch = [touches anyObject];
+  if (touch.tapCount > 1) {
+    return;
+  }
+
+  CGPoint viewLocation = [touch locationInView:self.scene.view];
+  CGPoint sceneLocation = [self.scene convertPointFromView:viewLocation];
+  CGPoint location = [self convertPoint:sceneLocation fromNode:self.scene];
+
+  int itemIndex = [self itemAtPoint:location];
+  if (itemIndex < 0) {
+    return;
+  }
+
+  if (_itemTappedBlock) {
+    _itemTappedBlock(itemIndex);
+  }
+
+  id <HLRingNodeDelegate> delegate = _delegate;
+  if (delegate) {
+    [delegate ringNode:self didTapItem:itemIndex];
+  }
+}
+
+#else
+
+#pragma mark -
+#pragma mark NSResponder
+
+- (void)mouseUp:(NSEvent *)event
+{
+  if (event.clickCount > 1) {
+    return;
+  }
+
+  CGPoint location = [event locationInNode:self];
+
+  int itemIndex = [self itemAtPoint:location];
+  if (itemIndex < 0) {
+    return;
+  }
+
+  if (_itemClickedBlock) {
+    _itemClickedBlock(itemIndex);
+  }
+
+  id <HLRingNodeDelegate> delegate = _delegate;
+  if (delegate) {
+    [delegate ringNode:self didClickItem:itemIndex];
+  }
+}
+
+#endif
+
 #pragma mark -
 #pragma mark Private
 

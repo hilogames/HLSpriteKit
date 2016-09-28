@@ -16,7 +16,22 @@
  intentionally mimics an `SKLabelNode` on top of a `SKSpriteNode`, but has extra sizing
  and alignment options.
 
- ## Common Gesture Handling Configurations
+ ## Common User Interaction Configurations
+
+ You might think this node, as a so-called "button", would have more options for handling
+ user interaction (whether as a gesture target, a `UIResponder`, or an `NSResponder`).
+ However, it does not, because the handling code would be so basic that it would seem
+ ridiculous.  For instance, should every button in the scene keep a pointer to a delegate,
+ and invoke delegate callbacks for interaction?  Seems unnecessary.  Instead, the button
+ is mostly used in composing more-complicated components.  For instance, `HLMenuNode`
+ keeps a collection of `HLLabelButtonNode` objects, and handles the interaction for all of
+ them.
+
+ That said, under the gesture target system, any node can be configured as a gesture
+ target.  `HLLabelButtonNode` just doesn't have a self-as-target implementation as, for
+ instance, `HLGridNode` does.
+
+ As a gesture target:
 
  * Leave the gesture target unset for no gesture handling.
 
@@ -25,15 +40,6 @@
 
  * For double-tap, long press, or other gestures, set a custom `HLGestureTarget`
    instead.
-
- @bug There is no current self-as-target option for `HLLabelButtonNode` (as there is in,
-      for example, `HLGridNode` and `HLMenuNode`).  It would be pretty easy to make one: A
-      callback block for taps, probably.  But of course that functionality is pretty
-      easily specified by instantiating a tap delegate.  Other components have
-      more-complex interactions (e.g. for `HLGridNode`, not just that a tap occurred, but
-      *which* square it occurred on) (and e.g. for `HLMenuNode`, both `shouldTap` and
-      `didTap` delegate methods).  The button might be too generic and simple to have a
-      natural self-as-target built-in behavior.
 */
 
 @interface HLLabelButtonNode : HLComponentNode <NSCopying, NSCoding>

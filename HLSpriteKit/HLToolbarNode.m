@@ -528,12 +528,12 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
 
 #endif
 
+#if TARGET_OS_IPHONE
+
 #pragma mark -
 #pragma mark UIResponder
 
-#if TARGET_OS_IPHONE
-
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)NSEvent
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
   if ([touches count] > 1) {
     return;
@@ -547,16 +547,16 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
   CGPoint viewLocation = [touch locationInView:self.scene.view];
   CGPoint sceneLocation = [self.scene convertPointFromView:viewLocation];
   CGPoint location = [self convertPoint:sceneLocation fromNode:self.scene];
-  
+
   NSString *toolTag = [self toolAtLocation:location];
   if (!toolTag) {
     return;
   }
-  
+
   if (_toolTappedBlock) {
     _toolTappedBlock(toolTag);
   }
-  
+
   id <HLToolbarNodeDelegate> delegate = _delegate;
   if (delegate) {
     [delegate toolbarNode:self didTapTool:toolTag];
@@ -575,16 +575,16 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
   }
 
   CGPoint location = [event locationInNode:self];
-  
+
   NSString *toolTag = [self toolAtLocation:location];
   if (!toolTag) {
     return;
   }
-  
+
   if (_toolClickedBlock) {
     _toolClickedBlock(toolTag);
   }
-  
+
   id <HLToolbarNodeDelegate> delegate = _delegate;
   if (delegate) {
     [delegate toolbarNode:self didClickTool:toolTag];

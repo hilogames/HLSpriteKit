@@ -7,6 +7,7 @@
 //
 
 #import <SpriteKit/SpriteKit.h>
+#import <TargetConditionals.h>
 
 #import "HLComponentNode.h"
 #import "HLGestureTarget.h"
@@ -36,10 +37,12 @@ typedef NS_ENUM(NSInteger, HLGridNodeLayoutMode) {
  states for the squares (like highlight, enabled, and selection), and also provides some
  simple animations for state changes.
 
- ## Common Gesture Handling Configurations
+ ## Common User Interaction Configurations
+
+ As a gesture target:
 
  - Set this node as its own gesture target (using `[SKNode+HLGestureTarget
-   hlSetGestureTarget]`) to get simple delegation and/or a callbacks for taps.  See
+   hlSetGestureTarget]`) to get simple delegation and/or a callback for taps.  See
    `HLGridNodeDelegate` for delegation and the `squareTappedBlock` property for setting a
    callback block.
 
@@ -47,6 +50,18 @@ typedef NS_ENUM(NSInteger, HLGridNodeLayoutMode) {
    locations to this node's coordinate system and call `squareAtLocation` as desired.)
 
  - Leave the gesture target unset for no gesture handling.
+
+ As a `UIResponder`:
+
+ - Set this node's `userInteractionEnabled` property to true to get simple delegation
+   and/or a callback for taps.  See `HLGridNodeDelegate` for delegation and the
+   `squareTappedBlock` property for setting a callback block.
+
+ As an `NSResponder`:
+
+ - Set this node's `userInteractionEnabled` property to true to get simple delegation
+   and/or a callback for left-clicks.  See `HLGridNodeDelegate` for delegation and the
+   `squareClickedBlock` property for setting a callback block.
 */
 
 #if HLGESTURETARGET_AVAILABLE
@@ -94,31 +109,48 @@ typedef NS_ENUM(NSInteger, HLGridNodeLayoutMode) {
              backgroundBorderSize:(CGFloat)backgroundBorderSize
               squareSeparatorSize:(CGFloat)squareSeparatorSize;
 
-/// @name Managing Interaction
+/// @name Setting the Delegate
 
 /**
- The delegate invoked on interaction (when this node is its own gesture handler).
-
- Unless this grid node is its own gesture handler, this delegate will not be called.  See
- "Common Gesture Handling Configurations".
+ The grid node delegate.
 */
 @property (nonatomic, weak) id <HLGridNodeDelegate> delegate;
 
+/// @name Managing Interaction
+
+#if TARGET_OS_IPHONE
+
 /**
- A callback invoked when a square in the grid is tapped (when this node is its own gesture
- handler).
+ A callback invoked when a square in the grid is tapped.
 
  The index of the tapped square is passed as an argument to the callback.  (Square indexes
  start at zero for the top-left square in the grid, and then increase to the right row by
  row.)
 
- Unless this grid node is its own gesture handler, this callback will not be invoked.  See
- "Common Gesture Handling Configurations".
+ Relevant to `HLGestureTarget` and `UIResponder` user interaction.
+ See "Common User Interaction Configurations".
 
  Beware retain cycles when using the callback to invoke a method in the owner.  As a safer
  alternative, use the grid node's delegation interface; see `setDelegate:`.
 */
 @property (nonatomic, copy) void (^squareTappedBlock)(int squareIndex);
+
+#else
+
+/**
+ A callback invoked when a square in the grid is clicked.
+
+ The tag of the clicked tool is passed as an argument to the callback.
+
+ Relevant to `NSResponder` user interaction.
+ See "Common User Interaction Configurations".
+
+ Beware retain cycles when using the callback to invoke a method in the owner.  As a safer
+ alternative, use the toolbar node's delegation interface; see `setDelegate:`.
+ */
+@property (nonatomic, copy) void (^squareClickedBlock)(int squareIndex);
+
+#endif
 
 /// @name Configuring Layout and Geometry
 
@@ -367,18 +399,31 @@ typedef NS_ENUM(NSInteger, HLGridNodeLayoutMode) {
 
 /**
  A delegate for `HLGridNode`.
-
- The delegate is (currently) concerned mostly with handling user interaction.  It's worth
- noting that the `HLGridNode` only receives gestures if it is configured as its own
- gesture target (using `[SKNode+HLGestureTarget hlSetGestureTarget]`).
 */
 @protocol HLGridNodeDelegate <NSObject>
 
 /// @name Handling User Interaction
 
+#if TARGET_OS_IPHONE
+
 /**
  Called when the user taps on a square in the grid.
+
+ Relevant to `HLGestureTarget` and `UIResponder` user interaction.
+ See "Common User Interaction Configurations".
 */
 - (void)gridNode:(HLGridNode *)gridNode didTapSquare:(int)squareIndex;
+
+#else
+
+/**
+ Called when the user clicks on a square in the grid.
+
+ Relevant to `NSResponder` user interaction.
+ See "Common User Interaction Configurations".
+ */
+- (void)gridNode:(HLGridNode *)gridNode didClickSquare:(int)squareIndex;
+
+#endif
 
 @end

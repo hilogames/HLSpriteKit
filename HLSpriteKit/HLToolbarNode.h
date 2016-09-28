@@ -60,16 +60,16 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
  - Leave the gesture target unset for no gesture handling.
 
  As a `UIResponder`:
- 
- - Set this node's `userInteractionEnabled` property to true to get simple delegation and/or
-   a callback for taps.  See `HLToolbarNodeDelegate` for delegation and `toolTappedBlock`
-   property for setting a callback block.
 
- As a `NSResponder`:
+ - Set this node's `userInteractionEnabled` property to true to get simple delegation
+   and/or a callback for taps.  See `HLToolbarNodeDelegate` for delegation and
+   `toolTappedBlock` property for setting a callback block.
 
- - Set this node's `userInteractionEnabled` property to true to get simple delegation and/or
-   a callback for left-clicks.  See `HLToolbarNodeDelegate` for delegation and `toolClickedBlock`
-   property for setting a callback block.
+ As an `NSResponder`:
+
+ - Set this node's `userInteractionEnabled` property to true to get simple delegation
+   and/or a callback for left-clicks.  See `HLToolbarNodeDelegate` for delegation and
+   `toolClickedBlock` property for setting a callback block.
 */
 #if HLGESTURETARGET_AVAILABLE
 @interface HLToolbarNode : HLComponentNode <NSCoding, HLGestureTarget>
@@ -84,16 +84,14 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 */
 - (instancetype)init;
 
-/// @name Managing Interaction
+/// @name Setting the Delegate
 
 /**
- The delegate invoked on interaction (through `HLGestureTarget`, `UIResponder`, or `NSResponder`
- interfaces).
-
- Unless this toolbar node is configured for user interaction, this delegate will not be called.
- See "Common User Interaction Configurations".
+ The toolbar node delegate.
 */
 @property (nonatomic, weak) id <HLToolbarNodeDelegate> delegate;
+
+/// @name Managing Interaction
 
 #if TARGET_OS_IPHONE
 
@@ -114,12 +112,12 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 
 /**
  A callback invoked when a tool is clicked.
- 
- The tag of the tapped tool is passed as an argument to the callback.
- 
+
+ The tag of the clicked tool is passed as an argument to the callback.
+
  Relevant to `NSResponder` user interaction.
  See "Common User Interaction Configurations".
- 
+
  Beware retain cycles when using the callback to invoke a method in the owner.  As a safer
  alternative, use the toolbar node's delegation interface; see `setDelegate:`.
  */
@@ -489,9 +487,6 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 
 /**
  A delegate for `HLToolbarNode`.
-
- The delegate is (currently) concerned mostly with handling user interaction.
- See "Common User Interaction Configurations".
 */
 @protocol HLToolbarNodeDelegate <NSObject>
 
@@ -511,7 +506,7 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 
 /**
  Called when the user clicks a tool.
- 
+
  Relevant to `NSResponder` user interaction.
  See "Common User Interaction Configurations".
  */

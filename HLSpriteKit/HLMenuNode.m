@@ -8,11 +8,11 @@
 
 #import "HLMenuNode.h"
 
-#import <TargetConditionals.h>
-
 #import "HLError.h"
 #import "HLLabelButtonNode.h"
 #import "SKNode+HLGestureTarget.h"
+
+static const NSTimeInterval HLMenuNodeLongSelectedDuration = 0.5;
 
 enum {
   HLMenuNodeZPositionLayerButtons = 0,
@@ -45,6 +45,12 @@ HLMenuNodeValidateButtonPrototype(SKNode *buttonPrototype, NSString *label)
 {
   SKNode *_buttonsNode;
   HLMenu *_currentMenu;
+
+#if TARGET_OS_IPHONE
+  NSTimeInterval _touchesBeganTimestamp;
+#else
+  NSTimeInterval _mouseDownTimestamp;
+#endif
 }
 
 - (instancetype)init
@@ -247,7 +253,7 @@ HLMenuNodeValidateButtonPrototype(SKNode *buttonPrototype, NSString *label)
   NSUInteger i = 0;
   for (SKNode *buttonNode in _buttonsNode.children) {
     if ([buttonNode containsPoint:menuLocation]) {
-      [self HL_tappedItem:i];
+      [self HL_selectedItem:i];
       return;
     }
     ++i;
@@ -260,22 +266,93 @@ HLMenuNodeValidateButtonPrototype(SKNode *buttonPrototype, NSString *label)
     return;
   }
 
-  id <HLMenuNodeDelegate> delegate = _delegate;
-  if (!delegate || ![delegate respondsToSelector:@selector(menuNode:didLongPressMenuItem:itemIndex:)]) {
-    return;
-  }
-
   // note: Clearly, could retain state from addToGesture if it improved performance
   // significantly.
   CGPoint viewLocation = [gestureRecognizer locationInView:self.scene.view];
   CGPoint sceneLocation = [self.scene convertPointFromView:viewLocation];
   CGPoint menuLocation = [self convertPoint:sceneLocation fromNode:self.scene];
-  
+
   NSUInteger i = 0;
   for (SKNode *buttonNode in _buttonsNode.children) {
     if ([buttonNode containsPoint:menuLocation]) {
-      HLMenuItem *menuItem = [_currentMenu itemAtIndex:i];
-      [delegate menuNode:self didLongPressMenuItem:menuItem itemIndex:i];
+      [self HL_longSelectedItem:i];
+      return;
+    }
+    ++i;
+  }
+}
+
+#endif
+
+#if TARGET_OS_IPHONE
+
+#pragma mark -
+#pragma mark UIResponder
+
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+{
+  _touchesBeganTimestamp = event.timestamp;
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
+  if ([touches count] > 1) {
+    return;
+  }
+
+  UITouch *touch = [touches anyObject];
+  if (touch.tapCount > 1) {
+    return;
+  }
+
+  CGPoint viewLocation = [touch locationInView:self.scene.view];
+  CGPoint sceneLocation = [self.scene convertPointFromView:viewLocation];
+  CGPoint menuLocation = [self convertPoint:sceneLocation fromNode:self.scene];
+
+  NSTimeInterval touchDuration = event.timestamp - _touchesBeganTimestamp;
+
+  NSUInteger i = 0;
+  for (SKNode *buttonNode in _buttonsNode.children) {
+    if ([buttonNode containsPoint:menuLocation]) {
+      if (touchDuration < HLMenuNodeLongSelectedDuration) {
+        [self HL_selectedItem:i];
+      } else {
+        [self HL_longSelectedItem:i];
+      }
+      return;
+    }
+    ++i;
+  }
+}
+
+#else
+
+#pragma mark -
+#pragma mark NSResponder
+
+- (void)mouseDown:(NSEvent *)event
+{
+  _mouseDownTimestamp = event.timestamp;
+}
+
+- (void)mouseUp:(NSEvent *)event
+{
+  if (event.clickCount > 1) {
+    return;
+  }
+
+  CGPoint menuLocation = [event locationInNode:self];
+
+  NSTimeInterval mouseDuration = event.timestamp - _mouseDownTimestamp;
+
+  NSUInteger i = 0;
+  for (SKNode *buttonNode in _buttonsNode.children) {
+    if ([buttonNode containsPoint:menuLocation]) {
+      if (mouseDuration < HLMenuNodeLongSelectedDuration) {
+        [self HL_selectedItem:i];
+      } else {
+        [self HL_longSelectedItem:i];
+      }
       return;
     }
     ++i;
@@ -418,7 +495,7 @@ HLMenuNodeValidateButtonPrototype(SKNode *buttonPrototype, NSString *label)
   }
 }
 
-- (void)HL_tappedItem:(NSUInteger)itemIndex
+- (void)HL_selectedItem:(NSUInteger)itemIndex
 {
   HLMenuItem *item = [_currentMenu itemAtIndex:itemIndex];
 
@@ -440,10 +517,17 @@ HLMenuNodeValidateButtonPrototype(SKNode *buttonPrototype, NSString *label)
 
   id <HLMenuNodeDelegate> delegate = self.delegate;
   if (delegate) {
+#if TARGET_OS_IPHONE
     if ([delegate respondsToSelector:@selector(menuNode:shouldTapMenuItem:itemIndex:)]
         && ![delegate menuNode:self shouldTapMenuItem:item itemIndex:itemIndex]) {
       return;
     }
+#else
+    if ([delegate respondsToSelector:@selector(menuNode:shouldClickMenuItem:itemIndex:)]
+        && ![delegate menuNode:self shouldClickMenuItem:item itemIndex:itemIndex]) {
+      return;
+    }
+#endif
   }
 
   if ([item isKindOfClass:[HLMenu class]]) {
@@ -458,9 +542,33 @@ HLMenuNodeValidateButtonPrototype(SKNode *buttonPrototype, NSString *label)
   }
 
   if (delegate) {
+#if TARGET_OS_IPHONE
     if ([delegate respondsToSelector:@selector(menuNode:didTapMenuItem:itemIndex:)]) {
       [delegate menuNode:self didTapMenuItem:item itemIndex:itemIndex];
     }
+#else
+    if ([delegate respondsToSelector:@selector(menuNode:didClickMenuItem:itemIndex:)]) {
+      [delegate menuNode:self didClickMenuItem:item itemIndex:itemIndex];
+    }
+#endif
+  }
+}
+
+- (void)HL_longSelectedItem:(NSUInteger)itemIndex
+{
+  HLMenuItem *item = [_currentMenu itemAtIndex:itemIndex];
+
+  id <HLMenuNodeDelegate> delegate = self.delegate;
+  if (delegate) {
+#if TARGET_OS_IPHONE
+    if ([delegate respondsToSelector:@selector(menuNode:didLongPressMenuItem:itemIndex:)]) {
+      [delegate menuNode:self didLongPressMenuItem:item itemIndex:itemIndex];
+    }
+#else
+    if ([delegate respondsToSelector:@selector(menuNode:didLongClickMenuItem:itemIndex:)]) {
+      [delegate menuNode:self didLongClickMenuItem:item itemIndex:itemIndex];
+    }
+#endif
   }
 }
 
@@ -568,6 +676,9 @@ HLMenuNodeValidateButtonPrototype(SKNode *buttonPrototype, NSString *label)
   if (self) {
     if (items) {
       _items = [NSMutableArray arrayWithArray:items];
+      [_items enumerateObjectsUsingBlock:^(HLMenuItem *item, NSUInteger index, BOOL *stop){
+        item.parent = self;
+      }];
     } else {
       _items = [NSMutableArray array];
     }

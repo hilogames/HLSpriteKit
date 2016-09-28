@@ -12,6 +12,17 @@
 
 #import "HLSpriteKit.h"
 
+#if ! TARGET_OS_IPHONE
+// note: Under macOS, hack into the SKView to forward scroll wheel events
+// in order to demonstrate scaling interaction in the HLScrollNode.
+@implementation SKView(ScrollWheelForwarding)
+- (void)scrollWheel:(NSEvent *)event
+{
+  [self.scene scrollWheel:event];
+}
+@end
+#endif
+
 @implementation HLCatalogScene
 {
   BOOL _contentCreated;
@@ -25,8 +36,12 @@
     [self HL_createContent];
     _contentCreated = YES;
   }
-  
+
+#if TARGET_OS_IPHONE
   [self HL_showMessage:@"Scroll and zoom catalog using pan and pinch."];
+#else
+  [self HL_showMessage:@"Scroll and zoom catalog using left-click and scroll-wheel."];
+#endif
 }
 
 - (void)HL_createContent
@@ -52,7 +67,7 @@
                                                                             size:multilineLabelNode.size];
   [multilineLabelBackgroundNode addChild:multilineLabelNode];
   [catalogNode addChild:multilineLabelBackgroundNode];
-  
+
   HLGridNode *gridNode = [self HL_createContentGridNode];
   [catalogNode addChild:gridNode];
 
@@ -61,10 +76,10 @@
 
   HLTiledNode *tiledNode = [self HL_createContentTiledNode];
   [catalogNode addChild:tiledNode];
-  
+
   HLLabelButtonNode *labelButtonNode = [self HL_createContentLabelButtonNode];
   [catalogNode addChild:labelButtonNode];
-  
+
   [catalogNode hlLayoutChildren];
   catalogNode.size = catalogLayoutManager.size;
 
@@ -76,7 +91,7 @@
 #endif
   _catalogScrollNode.contentScaleMinimum = 0.0f;
   _catalogScrollNode.contentScaleMinimumMode = HLScrollNodeContentScaleMinimumFitLoose;
-  _catalogScrollNode.contentScaleMaximum = 2.0f;
+  _catalogScrollNode.contentScaleMaximum = 3.0f;
   _catalogScrollNode.contentScale = 0.0f;
   _catalogScrollNode.contentNode = catalogNode;
   [self addChild:_catalogScrollNode];
@@ -87,13 +102,15 @@
     [self HL_showMessage:@"Tapped HLMultilineLabelNode."];
   }]];
   [self registerDescendant:multilineLabelNode withOptions:[NSSet setWithObject:HLSceneChildGestureTarget]];
-  
+
   [gridNode hlSetGestureTarget:gridNode];
   gridNode.squareTappedBlock = ^(int squareIndex){
     [self HL_showMessage:[NSString stringWithFormat:@"Tapped HLGridNode squareIndex %d.", squareIndex]];
   };
   [self registerDescendant:gridNode withOptions:[NSSet setWithObject:HLSceneChildGestureTarget]];
-  
+  // Alternately, use UIResponder interface with squareTappedBlock:
+  //   gridNode.userInteractionEnabled = YES;
+
   [toolbarNode hlSetGestureTarget:toolbarNode];
   toolbarNode.toolTappedBlock = ^(NSString *toolTag){
     [self HL_showMessage:[NSString stringWithFormat:@"Tapped tool '%@' on HLToolbarNode.", toolTag]];
@@ -101,32 +118,52 @@
   [self registerDescendant:toolbarNode withOptions:[NSSet setWithObject:HLSceneChildGestureTarget]];
   // Alternately, use UIResponder interface with toolTappedBlock:
   //   toolbarNode.userInteractionEnabled = YES;
-  
+
   [labelButtonNode hlSetGestureTarget:[HLTapGestureTarget tapGestureTargetWithHandleGestureBlock:^(UIGestureRecognizer *gestureRecognizer){
     [self HL_showMessage:@"Tapped HLLabelButtonNode."];
   }]];
   [self registerDescendant:labelButtonNode withOptions:[NSSet setWithObject:HLSceneChildGestureTarget]];
-  
+
   [tiledNode hlSetGestureTarget:[HLTapGestureTarget tapGestureTargetWithHandleGestureBlock:^(UIGestureRecognizer *gestureRecognizer){
     [self HL_showMessage:@"Tapped HLTiledNode."];
   }]];
   [self registerDescendant:tiledNode withOptions:[NSSet setWithObject:HLSceneChildGestureTarget]];
-  
+
   [_catalogScrollNode hlSetGestureTarget:_catalogScrollNode];
   [self registerDescendant:_catalogScrollNode withOptions:[NSSet setWithObjects:HLSceneChildResizeWithScene, HLSceneChildGestureTarget, nil]];
+  // Alternately, use UIResponder interface:
+  //   _catalogScrollNode.userInteractionEnabled = YES;
+  //   self.view.multipleTouchEnabled = YES;
 
 #endif
 
 #if ! TARGET_OS_IPHONE
+
+  gridNode.userInteractionEnabled = YES;
+  gridNode.squareClickedBlock= ^(int squareIndex){
+    [self HL_showMessage:[NSString stringWithFormat:@"Tapped HLGridNode squareIndex %d.", squareIndex]];
+  };
 
   toolbarNode.userInteractionEnabled = YES;
   toolbarNode.toolClickedBlock = ^(NSString *toolTag){
     [self HL_showMessage:[NSString stringWithFormat:@"Clicked tool '%@' on HLToolbarNode.", toolTag]];
   };
 
-#endif
+  _catalogScrollNode.userInteractionEnabled = YES;
 
+#endif
 }
+
+#if ! TARGET_OS_IPHONE
+
+- (void)scrollWheel:(NSEvent *)event
+{
+  NSPoint contentLocation = [event locationInNode:_catalogScrollNode.contentNode];
+  CGFloat newContentScale = _catalogScrollNode.contentScale * (1.0f + event.deltaY * 0.02f);
+  [_catalogScrollNode pinContentLocation:contentLocation andSetContentScale:newContentScale];
+}
+
+#endif
 
 - (HLGridNode *)HL_createContentGridNode
 {

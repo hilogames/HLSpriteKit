@@ -191,7 +191,7 @@ BOOL HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIG
 */
 + (instancetype)tapGestureTargetWithHandleGestureBlock:(void(^)(UIGestureRecognizer *))handleGestureBlock;
 
-/// @name Setting a Delegate or Handler
+/// @name Setting the Delegate or Handler
 
 /**
  A delegate that will be called when the gesture target is tapped.

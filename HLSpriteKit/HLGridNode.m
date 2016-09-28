@@ -8,8 +8,6 @@
 
 #import "HLGridNode.h"
 
-#import <TargetConditionals.h>
-
 #import "HLItemNode.h"
 #import "HLItemsNode.h"
 
@@ -96,7 +94,7 @@ enum {
     _delegate = [aDecoder decodeObjectForKey:@"delegate"];
 
     // note: Cannot decode squareTappedBlock.  Assume it will be reset on decode.
-    
+
     _backgroundNode = [aDecoder decodeObjectForKey:@"backgroundNode"];
     _squaresNode = [aDecoder decodeObjectForKey:@"squaresNode"];
 
@@ -122,7 +120,7 @@ enum {
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
   [super encodeWithCoder:aCoder];
-  
+
   [aCoder encodeConditionalObject:_delegate forKey:@"delegate"];
 
   // note: Cannot encode squareTappedBlock.  Assume it will be reset on decode.
@@ -140,7 +138,7 @@ enum {
 #endif
   [aCoder encodeDouble:_backgroundBorderSize forKey:@"backgroundBorderSize"];
   [aCoder encodeDouble:_squareSeparatorSize forKey:@"squareSeparatorSize"];
-  
+
   [aCoder encodeObject:_squareColor forKey:@"squareColor"];
   [aCoder encodeObject:_highlightColor forKey:@"highlightColor"];
   [aCoder encodeDouble:_enabledAlpha forKey:@"enabledAlpha"];
@@ -439,6 +437,71 @@ enum {
   id <HLGridNodeDelegate> delegate = _delegate;
   if (delegate) {
     [delegate gridNode:self didTapSquare:squareIndex];
+  }
+}
+
+#endif
+
+#if TARGET_OS_IPHONE
+
+#pragma mark -
+#pragma mark UIResponder
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
+  if ([touches count] > 1) {
+    return;
+  }
+
+  UITouch *touch = [touches anyObject];
+  if (touch.tapCount > 1) {
+    return;
+  }
+
+  CGPoint viewLocation = [touch locationInView:self.scene.view];
+  CGPoint sceneLocation = [self.scene convertPointFromView:viewLocation];
+  CGPoint location = [self convertPoint:sceneLocation fromNode:self.scene];
+
+  int squareIndex = [self squareAtPoint:location];
+  if (squareIndex < 0) {
+    return;
+  }
+
+  if (_squareTappedBlock) {
+    _squareTappedBlock(squareIndex);
+  }
+
+  id <HLGridNodeDelegate> delegate = _delegate;
+  if (delegate) {
+    [delegate gridNode:self didTapSquare:squareIndex];
+  }
+}
+
+#else
+
+#pragma mark -
+#pragma mark NSResponder
+
+- (void)mouseUp:(NSEvent *)event
+{
+  if (event.clickCount > 1) {
+    return;
+  }
+
+  CGPoint location = [event locationInNode:self];
+
+  int squareIndex = [self squareAtPoint:location];
+  if (squareIndex < 0) {
+    return;
+  }
+
+  if (_squareClickedBlock) {
+    _squareClickedBlock(squareIndex);
+  }
+
+  id <HLGridNodeDelegate> delegate = _delegate;
+  if (delegate) {
+    [delegate gridNode:self didClickSquare:squareIndex];
   }
 }
 

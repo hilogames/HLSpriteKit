@@ -381,12 +381,11 @@ is cleared and a new one set.
 `HLGestureTarget` is lightweight, and optional, and should not
 introduce overhead for the `HLSpriteKit` components.
 
-That said, I haven't bothered to write `UIResponder` implementations
-for the components yet, or even good public interfaces for controlling
-the interaction externally.
-
-I would be happy to do so, or to accept pull requests for such
-implementations. Let me know what you need!
+I have written very simple `UIResponder` and `NSResponder` user
+interaction implemenations for some of the components, as a
+proof-of-concept, but I haven't used them much myself. I would be
+happy to work on these more, or accept pull requests. Let me know what
+you need!
 
 ## Development
 
