@@ -36,7 +36,7 @@
  * Leave the gesture target unset for no gesture handling.
 
  * Allocate a `HLTapGestureTarget`, initialize it with a block for execution on tap, and
-   set it as gesture target (via `[SKNode+HLGestureTarget hlSetGestureTarget]`).
+   set it as gesture target (using `[SKNode+HLGestureTarget hlSetGestureTarget]`).
 
  * For double-tap, long press, or other gestures, set a custom `HLGestureTarget`
    instead.

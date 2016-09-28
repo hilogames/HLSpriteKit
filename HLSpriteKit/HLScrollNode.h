@@ -39,7 +39,7 @@ typedef NS_ENUM(NSInteger, HLScrollNodeContentScaleMinimumMode)
 };
 
 /**
- An `HLScrollNode` provides support for scrolling and zooming its content (set via the
+ An `HLScrollNode` provides support for scrolling and zooming its content (set by the
  `contentNode` property).
 
  The `HLScrollNode` is not completely analogous to `UIScrollView`, but the similarity is
@@ -51,7 +51,7 @@ typedef NS_ENUM(NSInteger, HLScrollNodeContentScaleMinimumMode)
 
  As a gesture target:
 
- - Set this node as its own gesture target (via `[SKNode+HLGestureTarget
+ - Set this node as its own gesture target (using `[SKNode+HLGestureTarget
    hlSetGestureTarget]`) to get one-finger scrolling and two-finger pinch zooming
    behavior.
 

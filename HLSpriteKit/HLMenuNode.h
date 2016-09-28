@@ -48,17 +48,17 @@ typedef NS_ENUM(NSInteger, HLMenuNodeAnimation) {
 
  As a gesture target:
 
- - Set this node as its own gesture target (via `[SKNode+HLGestureTarget
-   hlSetGestureTarget]`) to get a callbacks via the `HLMenuNodeDelegate` interface.
+ - Set this node as its own gesture target (using `[SKNode+HLGestureTarget
+   hlSetGestureTarget]`) to get callbacks through the `HLMenuNodeDelegate` interface.
 
  As a `UIResponder`:
 
- - Set this node's `userInteractionEnabled` property to true to get callbacks via the
+ - Set this node's `userInteractionEnabled` property to true to get callbacks through the
   `HLMenuNodeDelegate` interface.
 
  As an `NSResponder`:
 
- - Set this node's `userInteractionEnabled` property to true to get callbacks via the
+ - Set this node's `userInteractionEnabled` property to true to get callbacks through the
   `HLMenuNodeDelegate` interface.
 */
 #if HLGESTURETARGET_AVAILABLE

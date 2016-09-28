@@ -90,7 +90,7 @@ FOUNDATION_EXPORT NSString * const HLSceneChildNoCoding;
 FOUNDATION_EXPORT NSString * const HLSceneChildResizeWithScene;
 /**
  Option for `registerDescendant:withOptions:`: Considers this child node's gesture target
- (via `[SKNode+HLGestureTarget hlGestureTarget]`) when processing gestures with the
+ (using `[SKNode+HLGestureTarget hlGestureTarget]`) when processing gestures with the
  default `HLScene` gesture recognition system; see `HLGestureTarget`.
 */
 #if HLGESTURETARGET_AVAILABLE
