@@ -17,6 +17,7 @@
 - (void)loadView
 {
   SKView *skView = [[SKView alloc] init];
+  skView.ignoresSiblingOrder = YES;
   self.view = skView;
 }
 
@@ -26,6 +27,8 @@
   HLCatalogScene *catalogScene = [[HLCatalogScene alloc] initWithSize:self.view.bounds.size];
   catalogScene.scaleMode = SKSceneScaleModeResizeFill;
   catalogScene.anchorPoint = CGPointMake(0.5f, 0.5f);
+  // note: "Z-position then parent" works well with "ignores sibling order."
+  catalogScene.gestureTargetHitTestMode = HLSceneGestureTargetHitTestModeZPositionThenParent;
   [(SKView *)self.view presentScene:catalogScene];
 }
 
