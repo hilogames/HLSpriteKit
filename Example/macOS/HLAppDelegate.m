@@ -12,10 +12,6 @@
 
 @implementation HLAppDelegate
 
-- (void)applicationDidFinishLaunching:(NSNotification *)aNotification
-{
-}
-
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender
 {
   return YES;

@@ -11,6 +11,7 @@
 #import <SpriteKit/SpriteKit.h>
 
 #import "HLCatalogScene.h"
+#import "HLScene.h"
 
 @implementation HLViewController
 
@@ -25,9 +26,7 @@
   catalogScene.anchorPoint = CGPointMake(0.5f, 0.5f);
   [skView presentScene:catalogScene];
 
-  skView.showsFPS = YES;
-  skView.showsNodeCount = YES;
-  skView.showsDrawCount = YES;
+  skView.ignoresSiblingOrder = YES;
 }
 
 @end

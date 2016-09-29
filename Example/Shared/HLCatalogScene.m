@@ -38,10 +38,19 @@
   }
 
 #if TARGET_OS_IPHONE
-  [self HL_showMessage:@"Scroll and zoom catalog using pan and pinch."];
+  NSString *message = @"Scroll and zoom catalog using pan and pinch.";
 #else
-  [self HL_showMessage:@"Scroll and zoom catalog using left-click and scroll-wheel."];
+  NSString *message = @"Scroll and zoom catalog using left-click and scroll-wheel.";
 #endif
+  [self runAction:[SKAction sequence:@[ [SKAction waitForDuration:1.0],
+                                        [SKAction runBlock:^{
+    [self HL_showMessage:message];
+  }] ]]];
+}
+
+- (void)didChangeSize:(CGSize)oldSize
+{
+  _catalogScrollNode.size = self.size;
 }
 
 - (void)HL_createContent
@@ -295,7 +304,7 @@
     _messageNode.messageLingerDuration = 5.0;
   }
   _messageNode.size = CGSizeMake(self.size.width, 20.0f);
-  _messageNode.position = CGPointMake(0.0f, (_messageNode.size.height - self.size.height) / 2.0f + 30.0f);
+  _messageNode.position = CGPointMake(0.0f, (_messageNode.size.height - self.size.height) / 2.0f + 5.0f);
   [_messageNode showMessage:message parent:self];
 }
 

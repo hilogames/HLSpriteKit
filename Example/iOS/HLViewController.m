@@ -17,9 +17,6 @@
 - (void)loadView
 {
   SKView *skView = [[SKView alloc] init];
-  skView.showsFPS = YES;
-  skView.showsNodeCount = YES;
-  skView.showsDrawCount = YES;
   self.view = skView;
 }
 
