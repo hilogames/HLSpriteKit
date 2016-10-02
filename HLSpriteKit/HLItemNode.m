@@ -88,6 +88,16 @@
 - (void)setContent:(SKNode *)contentNode contentDidSetEnabled:(BOOL *)contentDidSetEnabled contentDidSetHighlight:(BOOL *)contentDidSetHighlight
 {
   SKNode *oldContentNode = [self childNodeWithName:@"content"];
+  *contentDidSetEnabled = NO;
+  *contentDidSetHighlight = NO;
+  // note: Doing an isEqual check seems like too much overhead for not much benefit;
+  // there's not really that much code below that we'd be short-circuiting.  But doing
+  // a quick pointer check seems nice to support the use-case where the owner has 100
+  // content nodes in an array and keeps setting-content on all of them whenever any
+  // of them change.
+  if (oldContentNode == contentNode) {
+    return;
+  }
   if (oldContentNode) {
     [oldContentNode removeFromParent];
   }
@@ -97,8 +107,6 @@
     if ([contentNode isKindOfClass:[HLComponentNode class]]) {
       ((HLComponentNode *)contentNode).zPositionScale = self.zPositionScale;
     }
-    *contentDidSetEnabled = NO;
-    *contentDidSetHighlight = NO;
     if ([contentNode conformsToProtocol:@protocol(HLItemContentNode)]) {
       if ([contentNode respondsToSelector:@selector(hlItemContentSetEnabled:)]) {
         [(SKNode <HLItemContentNode> *)contentNode hlItemContentSetEnabled:_enabled];
