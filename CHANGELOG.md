@@ -5,6 +5,16 @@
 
 ## Breaking
 
+- To register a node to receive gestures from the scene, call
+  `needsSharedGestureRecognizersForNode:` rather than
+  `registerDescendant:withOptions:`.  (Option
+  `HLSceneChildGestureTarget` has been removed.)  This is because
+  gesture-aware nodes can be automatically detected by the scene; the
+  only thing the scene needs to do is to make sure it has the proper
+  gesture recognizers added to the view.  Hence, we're not
+  *registering*; we're *needing gesture recognizers*.  
+  [Karl Voskuil](https://github.com/karlvoskuil)
+
 - Remove `HLToolbarNode` show and hide functionality. Such code blongs
   in the controller, not in the node.  
   [Karl Voskuil](https://github.com/karlvoskuil)

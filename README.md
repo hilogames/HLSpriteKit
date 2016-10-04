@@ -180,18 +180,18 @@ toolbarNode.delegate = self;
 [self addChild:toolbarNode];
 ```
 
-Finally, set the toolbar’s gesture target to itself, and register it
-with the scene as a gesture target:
+Finally, set the toolbar’s gesture target to itself, and notify the
+scene that it needs to create some appropriate gesture recognizers:
 
 ```obj-c
 [toolbarNode hlSetGestureTarget:toolbarNode];
-[self registerDescendant:toolbarNode withOptions:[NSSet setWithObject:HLSceneChildGestureTarget]];
+[self needsSharedGestureRecognizersForNode:toolbarNode];
 ```
 
 This will give you delegate callbacks for taps on toolbar tools.
 
 See the Example project (`HLSpriteKit/Example/HLSpriteKit/HLCatalogScene.m` in project or
-[on GitHub](https://github.com/hilogames/HLSpriteKit/blob/master/Example/HLSpriteKit/HLCatalogScene.m))
+[on GitHub](https://github.com/hilogames/HLSpriteKit/blob/master/Example/Shared/HLCatalogScene.m))
 for a working example of a scene using multiple gesture targets.
 
 ### I want to make my own gesture-target nodes in my scene.
@@ -249,18 +249,7 @@ tapGestureTarget.handleGestureBlock = ^(UIGestureRecognizer *gestureRecognizer){
   // wiggle red square node
 };
 [redSquareNode hlSetGestureTarget:tapGestureTarget];
-[self registerDescendant:redSquareNode withOptions:[NSSet setWithObject:HLSceneChildGestureTarget]];
-```
-
-If you're into the whole brevity thing, you can combine some of the
-lines:
-
-```obj-c
-SKSpriteNode *redSquareNode = [SKSpriteNode spriteNodeWithColor:[SKColor redColor] size:CGSizeMake(20.0f, 20.0f)];
-[redSquareNode hlSetGestureTarget:[HLTapGestureTarget tapGestureTargetWithHandleGestureBlock:^(UIGestureRecognizer *gestureRecognizer){
-  // wiggle red square node
-}]];
-[self addChild:redSquareNode withOptions:[NSSet setWithObject:HLSceneChildGestureTarget]];
+[self needsSharedGestureRecognizersForNode:redSquareNode];
 ```
 
 The `HLTapGestureTarget` is a simple implementation of a gesture
@@ -277,10 +266,11 @@ labelButtonNode.automaticHeight = YES;
 labelButtonNode.text = @"Tap to dismiss";
 [self addChild:labelButtonNode];
 
+__weak HLLabelButtonNode *labelButtonNodeWeak = labelButtonNode;
 [labelButtonNode hlSetGestureTarget:[HLTapGestureTarget tapGestureTargetWithHandleGestureBlock:^(UIGestureRecognizer *gestureRecognizer){
-  [labelButtonNode removeFromParent];
+  [labelButtonNodeWeak removeFromParent];
 }]];
-[self registerDescendant:labelButtonNode withOptions:[NSSet setWithObject:HLSceneChildGestureTarget]];
+[self needsSharedGestureRecognizersForNode:labelButtonNode];
 ```
 
 `HLLabelButtonNode` doesn't even implement its own gesture target,
@@ -309,7 +299,7 @@ toolbarNode.delegate = self;
 HLToolbarNodeMultiGestureTarget *multiGestureTarget = [[HLToolbarNodeMultiGestureTarget alloc] initWithToolbarNode:toolbarNode];
 multiGestureTarget.delegate = self;
 [toolbarNode hlSetGestureTarget:multiGestureTarget];
-[self registerDescendant:toolbarNode withOptions:[NSSet setWithObject:HLSceneChildGestureTarget]];
+[self needsSharedGestureRecognizersForNode:toolbarNode];
 ```
 
 You can use the `HLToolbarNodeMultiGestureTarget` class as a pattern

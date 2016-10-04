@@ -13,18 +13,12 @@
 
 NSString * const HLSceneChildNoCoding = @"HLSceneChildNoCoding";
 NSString * const HLSceneChildResizeWithScene = @"HLSceneChildResizeWithScene";
-#if HLGESTURETARGET_AVAILABLE
-NSString * const HLSceneChildGestureTarget = @"HLSceneChildGestureTarget";
-#endif
 
 static NSString * const HLSceneChildUserDataKey = @"HLScene";
 
 typedef NS_OPTIONS(NSUInteger, HLSceneChildOptionBits) {
   HLSceneChildBitNoCoding = (1 << 0),
   HLSceneChildBitResizeWithScene = (1 << 1),
-#if HLGESTURETARGET_AVAILABLE
-  HLSceneChildBitGestureTarget = (1 << 2),
-#endif
 };
 
 static const NSTimeInterval HLScenePresentationAnimationFadeDuration = 0.2f;
@@ -35,11 +29,10 @@ static BOOL _sceneAssetsLoaded = NO;
 {
   NSMutableDictionary *_childNoCoding;
   NSMutableDictionary *_childResizeWithScene;
-#if HLGESTURETARGET_AVAILABLE
-  BOOL _childGestureTargetsExisted;
-#endif
 
   SKNode *_modalPresentationNode;
+
+  NSMutableArray *_sharedGestureRecognizers;
 }
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder
@@ -51,9 +44,6 @@ static BOOL _sceneAssetsLoaded = NO;
     _gestureTargetHitTestMode = (HLSceneGestureTargetHitTestMode)[aDecoder decodeIntegerForKey:@"gestureTargetHitTestMode"];
 #endif
 
-#if HLGESTURETARGET_AVAILABLE
-    _childGestureTargetsExisted = NO;
-#endif
     NSMutableArray *childrenArrayQueue = [NSMutableArray arrayWithObject:self.children];
     NSUInteger a = 0;
     while (a < [childrenArrayQueue count]) {
@@ -63,9 +53,11 @@ static BOOL _sceneAssetsLoaded = NO;
         if ([node.children count] > 0) {
           [childrenArrayQueue addObject:node.children];
         }
+
         if (!node.userData) {
           continue;
         }
+
         NSNumber *optionBitsNumber = node.userData[HLSceneChildUserDataKey];
         if (!optionBitsNumber) {
           continue;
@@ -85,14 +77,11 @@ static BOOL _sceneAssetsLoaded = NO;
             _childResizeWithScene[[NSValue valueWithNonretainedObject:node]] = node;
           }
         }
+
 #if HLGESTURETARGET_AVAILABLE
-        if ((optionBits & HLSceneChildBitGestureTarget) != 0) {
-          id <HLGestureTarget> target = [node hlGestureTarget];
-          if (!target) {
-            [NSException raise:@"HLSceneBadRegistration" format:@"Node registered for 'HLSceneChildGestureTarget' decoded without a gesture target: %@", target];
-          }
-          _childGestureTargetsExisted = YES;
-          [self needSharedGestureRecognizers:[target addsToGestureRecognizers]];
+        id <HLGestureTarget> target = [node hlGestureTarget];
+        if (target) {
+          [self HL_needSharedGestureRecognizers:[target addsToGestureRecognizers]];
         }
 #endif
       }
@@ -103,21 +92,19 @@ static BOOL _sceneAssetsLoaded = NO;
 
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
-  // note: All _child* registration references are re-created from node information
-  // during initWithCoder, rather than explicitly encoded as references.  This is
-  // good because it's otherwise quite hard to figure out whether a certain node
-  // will be encoded or not -- and if the node won't be encoded, then we don't
-  // want to encode our reference.
+  // note: All _child* registration references are re-created from node information during
+  // initWithCoder, rather than explicitly encoded as references.  This is good because
+  // it's otherwise quite hard to figure out whether a certain node will be encoded or not
+  // -- and if the node won't be encoded, then we don't want to encode our reference.
 
-  // note: The shortcoming is this, though: If a node is registered to the scene
-  // but then encoded separately from the scene's node hierarchy, it will have
-  // the lingering userData flags attached to it, but this object won't have it
-  // in its _child* lists.  Which may cause hijinks.  Let us hope in that case
-  // the caller sees fit to call addChild:withOptions: for that node again,
-  // when it is re-added.  It seems sensible.  (Otherwise we could check during
-  // addNode:, but that again means going down the path of implicit registration,
-  // which would involve a recursive check of all added nodes, which doesn't seem
-  // lightweight or unintrusive.)
+  // note: The shortcoming is this, though: If a node is registered to the scene but then
+  // encoded separately from the scene's node hierarchy, it will have the lingering
+  // userData flags attached to it, but this object won't have it in its _child* lists.
+  // Which may cause hijinks.  Let us hope in that case the caller sees fit to call
+  // addChild:withOptions: for that node again, when it is re-added.  It seems sensible.
+  // (Otherwise we could check during addNode:, but that again means going down the path
+  // of implicit registration, which would involve a recursive check of all added nodes,
+  // which seems neither lightweight nor unintrusive.)
 
   NSMutableDictionary *removedChildren = [NSMutableDictionary dictionary];
   if (_childNoCoding) {
@@ -199,7 +186,22 @@ static BOOL _sceneAssetsLoaded = NO;
 #pragma mark -
 #pragma mark Shared Gesture Recognizers
 
+- (void)needSharedGestureRecognizersForNode:(SKNode *)node
+{
+  id <HLGestureTarget> target = [node hlGestureTarget];
+  if (!target) {
+    [NSException raise:@"HLSceneMissingGestureTarget"
+                format:@"Node must have a gesture target set (by `hlSetGestureTarget`) in order to need shared gesture recognizers."];
+  }
+  [self HL_needSharedGestureRecognizers:[target addsToGestureRecognizers]];
+}
+
 - (void)needSharedGestureRecognizers:(NSArray *)gestureRecognizers
+{
+  [self HL_needSharedGestureRecognizers:gestureRecognizers];
+}
+
+- (void)HL_needSharedGestureRecognizers:(NSArray *)gestureRecognizers
 {
   if (!_sharedGestureRecognizers) {
     _sharedGestureRecognizers = [NSMutableArray array];
@@ -227,19 +229,20 @@ static BOOL _sceneAssetsLoaded = NO;
   }
 }
 
+- (void)removeAllSharedGestureRecognizers
+{
+  _sharedGestureRecognizers = nil;
+}
+
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
 {
-  // If no nodes are registered for our gesture recognition system, then don't try
-  // to do any of our own processing.  This will prevent us from accidentally hijacking
-  // gestures from a subclass which isn't interested in this provided system.  (We could
-  // make our gesture handler delegate private as a way to handle the issue, but on the
-  // other hand, we might have subclasses which want to cooperate with our system by doing
-  // some selective overriding.)
-  //
-  // note: Current implementation makes it easy to check whether gesture targets were
-  // ever registered, but not easy to check whether gesture targets are currently registered.
-  // That seems good enough.
-  if (!_childGestureTargetsExisted) {
+  // If no shared gesture recognizers have been needed (by
+  // `needSharedGestureRecognizer*`), then a scene subclass must have created a
+  // `UIGestureRecognizer`, set its delegate to the scene, and then not overridden this
+  // delegate method.  Interpret the situation as follows: The scene subclass wants to use
+  // features of `HLScene` but not the shared gesture recognizer system.  We should do
+  // nothing.
+  if (!_sharedGestureRecognizers) {
     return YES;
   }
 
@@ -262,7 +265,7 @@ static BOOL _sceneAssetsLoaded = NO;
   //     checking.  (Keep in mind that is-inside checking is often repeated in the
   //     addToGesture: routine, so separating them would introduce a little redundancy
   //     in some cases.)
-  
+
   [gestureRecognizer removeTarget:nil action:NULL];
   CGPoint sceneLocation = [touch locationInNode:self];
 
@@ -293,16 +296,13 @@ static BOOL _sceneAssetsLoaded = NO;
     // target's addsToGestureRecognizers.  Because, of course, the target usually wants to
     // block gestures of all types if they are "inside" the target.
 
-    NSNumber *optionBits = (node.userData)[HLSceneChildUserDataKey];
-    if (optionBits && ([optionBits unsignedIntegerValue] & HLSceneChildBitGestureTarget) != 0) {
-      id <HLGestureTarget> target = [node hlGestureTarget];
-      if (target) {
-        BOOL isInside = NO;
-        if ([target addToGesture:gestureRecognizer firstTouch:touch isInside:&isInside]) {
-          return YES;
-        } else if (isInside) {
-          return NO;
-        }
+    id <HLGestureTarget> target = [node hlGestureTarget];
+    if (target) {
+      BOOL isInside = NO;
+      if ([target addToGesture:gestureRecognizer firstTouch:touch isInside:&isInside]) {
+        return YES;
+      } else if (isInside) {
+        return NO;
       }
     }
     node = node.parent;
@@ -360,18 +360,6 @@ static BOOL _sceneAssetsLoaded = NO;
       _childResizeWithScene[[NSValue valueWithNonretainedObject:node]] = node;
     }
   }
-
-#if HLGESTURETARGET_AVAILABLE
-  if ([options containsObject:HLSceneChildGestureTarget]) {
-    id <HLGestureTarget> target = [node hlGestureTarget];
-    if (!target) {
-      [NSException raise:@"HLSceneBadRegistration" format:@"Node registered for 'HLSceneChildGestureTarget' must have a gesture target set by SKNode+HLGestureTarget's hlSetGestureTarget."];
-    }
-    optionBits |= HLSceneChildBitGestureTarget;
-    _childGestureTargetsExisted = YES;
-    [self needSharedGestureRecognizers:[target addsToGestureRecognizers]];
-  }
-#endif
 
   if (!node.userData) {
     node.userData = [NSMutableDictionary dictionaryWithObject:@(optionBits) forKey:HLSceneChildUserDataKey];

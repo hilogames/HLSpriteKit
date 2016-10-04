@@ -50,6 +50,7 @@
 
 - (void)didChangeSize:(CGSize)oldSize
 {
+  [super didChangeSize:oldSize];
   _catalogScrollNode.size = self.size;
 }
 
@@ -110,36 +111,36 @@
   [multilineLabelNode hlSetGestureTarget:[HLTapGestureTarget tapGestureTargetWithHandleGestureBlock:^(UIGestureRecognizer *gestureRecognizer){
     [self HL_showMessage:@"Tapped HLMultilineLabelNode."];
   }]];
-  [self registerDescendant:multilineLabelNode withOptions:[NSSet setWithObject:HLSceneChildGestureTarget]];
+  [self needSharedGestureRecognizersForNode:multilineLabelNode];
 
-  [gridNode hlSetGestureTarget:gridNode];
   gridNode.squareTappedBlock = ^(int squareIndex){
     [self HL_showMessage:[NSString stringWithFormat:@"Tapped HLGridNode squareIndex %d.", squareIndex]];
   };
-  [self registerDescendant:gridNode withOptions:[NSSet setWithObject:HLSceneChildGestureTarget]];
+  [gridNode hlSetGestureTarget:gridNode];
+  [self needSharedGestureRecognizersForNode:gridNode];
   // Alternately, use UIResponder interface with squareTappedBlock:
   //   gridNode.userInteractionEnabled = YES;
 
-  [toolbarNode hlSetGestureTarget:toolbarNode];
   toolbarNode.toolTappedBlock = ^(NSString *toolTag){
     [self HL_showMessage:[NSString stringWithFormat:@"Tapped tool '%@' on HLToolbarNode.", toolTag]];
   };
-  [self registerDescendant:toolbarNode withOptions:[NSSet setWithObject:HLSceneChildGestureTarget]];
+  [toolbarNode hlSetGestureTarget:toolbarNode];
+  [self needSharedGestureRecognizersForNode:toolbarNode];
   // Alternately, use UIResponder interface with toolTappedBlock:
   //   toolbarNode.userInteractionEnabled = YES;
 
   [labelButtonNode hlSetGestureTarget:[HLTapGestureTarget tapGestureTargetWithHandleGestureBlock:^(UIGestureRecognizer *gestureRecognizer){
     [self HL_showMessage:@"Tapped HLLabelButtonNode."];
   }]];
-  [self registerDescendant:labelButtonNode withOptions:[NSSet setWithObject:HLSceneChildGestureTarget]];
+  [self needSharedGestureRecognizersForNode:labelButtonNode];
 
   [tiledNode hlSetGestureTarget:[HLTapGestureTarget tapGestureTargetWithHandleGestureBlock:^(UIGestureRecognizer *gestureRecognizer){
     [self HL_showMessage:@"Tapped HLTiledNode."];
   }]];
-  [self registerDescendant:tiledNode withOptions:[NSSet setWithObject:HLSceneChildGestureTarget]];
+  [self needSharedGestureRecognizersForNode:tiledNode];
 
   [_catalogScrollNode hlSetGestureTarget:_catalogScrollNode];
-  [self registerDescendant:_catalogScrollNode withOptions:[NSSet setWithObjects:HLSceneChildResizeWithScene, HLSceneChildGestureTarget, nil]];
+  [self needSharedGestureRecognizersForNode:_catalogScrollNode];
   // Alternately, use UIResponder interface:
   //   _catalogScrollNode.userInteractionEnabled = YES;
   //   self.view.multipleTouchEnabled = YES;

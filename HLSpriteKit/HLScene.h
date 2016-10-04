@@ -11,6 +11,7 @@
 #import "HLGestureTarget.h"
 
 #if HLGESTURETARGET_AVAILABLE
+
 /**
  A mode specifying how hit-testing should work in a gesture recognition system.
 
@@ -53,8 +54,9 @@ typedef NS_ENUM(NSInteger, HLSceneGestureTargetHitTestMode) {
    hit-test finds the top target in render order.
   */
   HLSceneGestureTargetHitTestModeZPositionThenParent,
-//  HLSceneGestureTargetHitTestModeZPosition,
+  //HLSceneGestureTargetHitTestModeZPosition,
 };
+
 #endif
 
 /**
@@ -88,14 +90,6 @@ FOUNDATION_EXPORT NSString * const HLSceneChildNoCoding;
  of the scene when the scene size changes.
 */
 FOUNDATION_EXPORT NSString * const HLSceneChildResizeWithScene;
-/**
- Option for `registerDescendant:withOptions:`: Considers this child node's gesture target
- (using `[SKNode+HLGestureTarget hlGestureTarget]`) when processing gestures with the
- default `HLScene` gesture recognition system; see `HLGestureTarget`.
-*/
-#if HLGESTURETARGET_AVAILABLE
-FOUNDATION_EXPORT NSString * const HLSceneChildGestureTarget;
-#endif
 
 /**
  `HLScene` contains functionality useful to many scenes, including but not limited to:
@@ -112,13 +106,10 @@ FOUNDATION_EXPORT NSString * const HLSceneChildGestureTarget;
 
  ## Shared Gesture Recognition System
 
- `HLScene` implements a gesture recognition system that can forward gestures to
- HLGestureTarget nodes registered with the appropriate option (`HLSceneChildGestureTarget`
- in `registerDescendant:withOptions:`).  The system implementation works by magic and does
+ `HLScene` includes a gesture recognition system that can forward `UIGestureRecognizer`
+ gestures to `HLGestureTarget` nodes.  The system implementation works by magic and does
  exactly what you want it to without configuration.  If, however, you do not want to
- partake in the mysteries, do not register any nodes with the gesture target option, and
- feel free not to call `super` on any of the `UIGestureRecognizerDelegate` methods (though
- they will try not to do anything surprising if called).
+ partake in the mysteries, do not call `needSharedGestureRecognizers*`.
 
  ### Subclassing Notes for the Shared Gesture Recognition System
 
@@ -136,17 +127,16 @@ FOUNDATION_EXPORT NSString * const HLSceneChildGestureTarget;
    them.  (Gesture recognizers created in between will add themselves to the scene's view
    automatically.)
 
- @bug Composition would be better than inheritance.  Consider grouping functionality into
-      modules or functions.
+ - The entry point for the shared gesture recognition system in action is
+   `gestureRecognizer:shouldReceiveTouch:`.  Subclasses overriding that method should call
+   `super` in order to allow the shared gesture recognition system to find targets and
+   forward gestures.
 */
 #if HLGESTURETARGET_AVAILABLE
 @interface HLScene : SKScene <NSCoding, UIGestureRecognizerDelegate>
 #else
 @interface HLScene : SKScene <NSCoding>
 #endif
-{
-  NSMutableArray *_sharedGestureRecognizers;
-}
 
 /// @name Loading Scene Assets
 
@@ -207,19 +197,7 @@ FOUNDATION_EXPORT NSString * const HLSceneChildGestureTarget;
       with addChild:, or else discovered lazily (by scanning the node tree) when needed.
       The main drawback seems to be an invisible performance impact (no matter how small)
       for the `HLScene` subclass.  With explicit registration, the subclasser can be
-      relatively confident that nothing is going on that wasn't requested.  Also with
-      explicit registration, the caller is able to override node information, for example
-      not registering a child for gesture recognition even though it has an
-      `HLGestureTarget`.
-
- @bug Okay, one more note: I waffle a bit on gesture targets.  They are easily discovered
-      implicitly (by `[SKNode+HLGestureTarget hlGestureTarget]` method); the use case for
-      adding a gesture target to a scene but not wanting it to receive gestures is small
-      (and could be addressed by registering a node to *not* be a target if needed); and
-      it's somewhat surprising when you add some kind of interactive node to a scene and
-      it doesn't interact.  But, on the other hand: It's really nice having the `HLScene`
-      manage the shared gesture recognizer objects during registration (by asking the
-      target what recognizers it needs).  So, waffle.
+      relatively confident that nothing is going on that wasn't requested.
 */
 - (void)registerDescendant:(SKNode *)node withOptions:(NSSet *)options;
 
@@ -239,7 +217,7 @@ FOUNDATION_EXPORT NSString * const HLSceneChildGestureTarget;
  The mode used for hit-testing in the `HLScene` implementation of
  `[UIGestureRecognizerDelegate gestureRecognizer:shouldReceiveTouch:]`.
 
- `HLScene` implements `gestureRecognizer:shouldReceiveTouch`: to look for
+ `HLScene` which implements `gestureRecognizer:shouldReceiveTouch`: to look for
  `HLGestureTarget` nodes which intersect the touch and see if any of them want to handle
  the gesture.  The `HLSceneGestureTargetHitTestMode` determines the way that the method
  finds targets: Should it start with the node deepest in the tree, or with the highest
@@ -248,13 +226,14 @@ FOUNDATION_EXPORT NSString * const HLSceneChildGestureTarget;
 
  See `HLSceneGestureTargetHitTestMode` for the options.
 
- Default value is `HLSceneGestureTargetHitTestModeDeepestThenParent`.
+ Default value is `HLSceneGestureTargetHitTestModeDeepestThenParent`, which corresponds to
+ the default false value for `SKView ignoresSiblingOrder`.
 */
 @property (nonatomic, assign) HLSceneGestureTargetHitTestMode gestureTargetHitTestMode;
 
 /**
- Instructs the scene that certain gesture recognizers should be added to the shared
- gesturer recognizer system.
+ Instructs the scene that certain gesture recognizers, needed by a particular node, should
+ be added to the shared gesture recognizer system.
 
  Before adding, each passed gesture recognizer is checked to see if it is equivalent to a
  gesture recognizer already added to the shared gesture recognizer system.  Equivalent
@@ -267,12 +246,30 @@ FOUNDATION_EXPORT NSString * const HLSceneChildGestureTarget;
  - sets the `HLScene` as delegate;
  - and removes any existing target/action pairs.
 
- For gesture recognizers that already have an equivalent added, this method does nothing.
+ This method does nothing if the gesture recognizer is equivalent to one already added.
 
  Recognizers added before the scene's view exists will be added to the view by `[HLScene
  didMoveToView]`.
 */
+- (void)needSharedGestureRecognizersForNode:(SKNode *)node;
+
+/**
+ Instructs the scene that certain specific gesture recognizers should be added to the
+ shared gesture recognizer system.
+
+ See `needSharedGestureRecognizersForNode:` for details.  Needing gesture recognizers for
+ a node is the common use pattern; this method is used instead when building improvised
+ gesture recognition directly into a scene (without a gesture target).
+*/
 - (void)needSharedGestureRecognizers:(NSArray *)gestureRecognizer;
+
+/**
+ Removes all shared gesture recognizers from the scene.
+
+ This effectively disables the gesture target system of `HLScene`, as if
+ `needSharedGestureRecognizers*` had never been called.
+*/
+- (void)removeAllSharedGestureRecognizers;
 
 #endif
 
@@ -293,10 +290,7 @@ FOUNDATION_EXPORT NSString * const HLSceneChildGestureTarget;
  not needed, `presentModalNode:animation:` may be called instead.
 
  @param node The node to present modally.  The scene will not automatically dismiss the
-             presented node.  (As with all `HLScene` nodes, if the node or any of its
-             children have `HLGestureTargets` registered with the scene as
-             `HLSceneChildGestureTarget` then it will have gestures forwarded to it by the
-             `HLScene`'s gesture handling code.)
+             presented node.
 
  @param animation Optional animation for the presentation.  See
                   `HLScenePresentationAnimation`.
