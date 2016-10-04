@@ -61,11 +61,7 @@ typedef NS_ENUM(NSInteger, HLMenuNodeAnimation) {
  - Set this node's `userInteractionEnabled` property to true to get callbacks through the
   `HLMenuNodeDelegate` interface.
 */
-#if HLGESTURETARGET_AVAILABLE
 @interface HLMenuNode : HLComponentNode <NSCoding, HLGestureTarget>
-#else
-@interface HLMenuNode : HLComponentNode <NSCoding>
-#endif
 
 /// @name Creating a Menu Node
 

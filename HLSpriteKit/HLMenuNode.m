@@ -28,7 +28,6 @@ HLMenuNodeValidateButtonPrototype(SKNode *buttonPrototype, NSString *label)
   if (![buttonPrototype respondsToSelector:@selector(setAnchorPoint:)]) {
     [NSException raise:@"HLMenuNodeInvalidButtonPrototype" format:@"Button prototype for \"%@\" must respond to selector \"setAnchorPoint:\".", label];
   }
-#if HLGESTURETARGET_AVAILABLE
   if ([buttonPrototype respondsToSelector:@selector(hlGestureTarget)]) {
     if ([buttonPrototype hlGestureTarget]) {
       // This might be okay, but it seems like it will cause confusion if the button is
@@ -38,7 +37,6 @@ HLMenuNodeValidateButtonPrototype(SKNode *buttonPrototype, NSString *label)
       [buttonPrototype hlSetGestureTarget:nil];
     }
   }
-#endif
 }
 
 @implementation HLMenuNode
@@ -207,25 +205,29 @@ HLMenuNodeValidateButtonPrototype(SKNode *buttonPrototype, NSString *label)
   [self HL_showCurrentMenuAnimation:animation];
 }
 
-#if HLGESTURETARGET_AVAILABLE
-
 #pragma mark -
 #pragma mark HLGestureTarget
 
 - (NSArray *)addsToGestureRecognizers
 {
+#if TARGET_OS_IPHONE
   return @[ [[UITapGestureRecognizer alloc] init],
             [[UILongPressGestureRecognizer alloc] init] ];
+#else
+  return @[ [[NSClickGestureRecognizer alloc] init],
+            [[NSPressGestureRecognizer alloc] init] ];
+#endif
 }
 
-- (BOOL)addToGesture:(UIGestureRecognizer *)gestureRecognizer firstTouch:(UITouch *)touch isInside:(BOOL *)isInside
+- (BOOL)addToGesture:(HLGestureRecognizer *)gestureRecognizer firstLocation:(CGPoint)sceneLocation isInside:(BOOL *)isInside
 {
-  CGPoint location = [touch locationInNode:self];
+  CGPoint location = [self convertPoint:sceneLocation fromNode:self.scene];
 
   *isInside = NO;
   for (SKNode *buttonNode in _buttonsNode.children) {
     if ([buttonNode containsPoint:location]) {
       *isInside = YES;
+#if TARGET_OS_IPHONE
       if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
         // note: Require only one tap and one touch, same as our gesture recognizer
         // returned from addsToGestureRecognizers?  I think it's okay to be non-strict.
@@ -236,20 +238,34 @@ HLMenuNodeValidateButtonPrototype(SKNode *buttonPrototype, NSString *label)
         [gestureRecognizer addTarget:self action:@selector(handleLongPress:)];
         return YES;
       }
+#else
+      if ([gestureRecognizer isKindOfClass:[NSClickGestureRecognizer class]]) {
+        [gestureRecognizer addTarget:self action:@selector(handleClick:)];
+        return YES;
+      }
+      if ([gestureRecognizer isKindOfClass:[NSPressGestureRecognizer class]]) {
+        [gestureRecognizer addTarget:self action:@selector(handleLongPress:)];
+        return YES;
+      }
+#endif
       break;
     }
   }
   return NO;
 }
 
-- (void)handleTap:(UIGestureRecognizer *)gestureRecognizer
+#if TARGET_OS_IPHONE
+- (void)handleTap:(HLGestureRecognizer *)gestureRecognizer
+#else
+- (void)handleClick:(HLGestureRecognizer *)gestureRecognizer
+#endif
 {
-  // note: Clearly, could retain state from addToGesture if it improved performance
-  // significantly.
   CGPoint viewLocation = [gestureRecognizer locationInView:self.scene.view];
   CGPoint sceneLocation = [self.scene convertPointFromView:viewLocation];
   CGPoint menuLocation = [self convertPoint:sceneLocation fromNode:self.scene];
 
+  // note: This search was just done in addToGesture; if it made a difference,
+  // we could retain state from there.
   NSUInteger i = 0;
   for (SKNode *buttonNode in _buttonsNode.children) {
     if ([buttonNode containsPoint:menuLocation]) {
@@ -260,14 +276,18 @@ HLMenuNodeValidateButtonPrototype(SKNode *buttonPrototype, NSString *label)
   }
 }
 
-- (void)handleLongPress:(UIGestureRecognizer *)gestureRecognizer
+- (void)handleLongPress:(HLGestureRecognizer *)gestureRecognizer
 {
+#if TARGET_OS_IPHONE
   if (gestureRecognizer.state != UIGestureRecognizerStateBegan) {
     return;
   }
+#else
+  if (gestureRecognizer.state != NSGestureRecognizerStateBegan) {
+    return;
+  }
+#endif
 
-  // note: Clearly, could retain state from addToGesture if it improved performance
-  // significantly.
   CGPoint viewLocation = [gestureRecognizer locationInView:self.scene.view];
   CGPoint sceneLocation = [self.scene convertPointFromView:viewLocation];
   CGPoint menuLocation = [self convertPoint:sceneLocation fromNode:self.scene];
@@ -281,8 +301,6 @@ HLMenuNodeValidateButtonPrototype(SKNode *buttonPrototype, NSString *label)
     ++i;
   }
 }
-
-#endif
 
 #if TARGET_OS_IPHONE
 

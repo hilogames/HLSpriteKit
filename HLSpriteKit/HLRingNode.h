@@ -34,12 +34,12 @@
  As a gesture target:
 
  - Set this node as its own gesture target (using `[SKNode+HLGestureTarget
-   hlSetGestureTarget]`) to get simple delegation and/or a callback for taps.  See
-   `HLRingNodeDelegate` for delegation and the `itemTappedBlock` property for setting a
-   callback block.
+   hlSetGestureTarget]`) to get simple delegation and/or a callback for taps or clicks.
+   See `HLRingNodeDelegate` for delegation and the `itemTappedBlock` or `itemClickedBlock`
+   properties for setting a callback block.
 
- - Set a custom gesture target to recognize and respond to other gestures.  (Convert touch
-   locations to this node's coordinate system and call `itemAtPoint` as desired.)
+ - Set a custom gesture target to recognize and respond to other gestures.  (Convert
+   gesture locations to this node's coordinate system and call `itemAtPoint` as desired.)
 
  - Leave the gesture target unset for no gesture handling.
 
@@ -55,11 +55,7 @@
    and/or a callback for clicks.  See `HLRingNodeDelegate` for delegation and the
    `itemClickedBlock` property for setting a callback block.
 */
-#if HLGESTURETARGET_AVAILABLE
 @interface HLRingNode : HLComponentNode <NSCopying, NSCoding, HLGestureTarget>
-#else
-@interface HLRingNode : HLComponentNode <NSCopying, NSCoding>
-#endif
 
 /// @name Creating a Ring Node
 

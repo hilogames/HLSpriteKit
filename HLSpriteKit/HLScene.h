@@ -10,8 +10,6 @@
 
 #import "HLGestureTarget.h"
 
-#if HLGESTURETARGET_AVAILABLE
-
 /**
  A mode specifying how hit-testing should work in a gesture recognition system.
 
@@ -56,8 +54,6 @@ typedef NS_ENUM(NSInteger, HLSceneGestureTargetHitTestMode) {
   HLSceneGestureTargetHitTestModeZPositionThenParent,
   //HLSceneGestureTargetHitTestModeZPosition,
 };
-
-#endif
 
 /**
  A style of animation for presentation or dismissal of modal nodes.
@@ -132,10 +128,10 @@ FOUNDATION_EXPORT NSString * const HLSceneChildResizeWithScene;
    `super` in order to allow the shared gesture recognition system to find targets and
    forward gestures.
 */
-#if HLGESTURETARGET_AVAILABLE
+#if TARGET_OS_IPHONE
 @interface HLScene : SKScene <NSCoding, UIGestureRecognizerDelegate>
 #else
-@interface HLScene : SKScene <NSCoding>
+@interface HLScene : SKScene <NSCoding, NSGestureRecognizerDelegate>
 #endif
 
 /// @name Loading Scene Assets
@@ -209,8 +205,6 @@ FOUNDATION_EXPORT NSString * const HLSceneChildResizeWithScene;
 */
 - (void)unregisterDescendant:(SKNode *)node;
 
-#if HLGESTURETARGET_AVAILABLE
-
 /// @name Configuring the Shared Gesture Recognizer System
 
 /**
@@ -270,8 +264,6 @@ FOUNDATION_EXPORT NSString * const HLSceneChildResizeWithScene;
  `needSharedGestureRecognizers*` had never been called.
 */
 - (void)removeAllSharedGestureRecognizers;
-
-#endif
 
 /// @name Presenting a Modal Node
 

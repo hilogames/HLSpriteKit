@@ -12,21 +12,22 @@ SpriteKit scene and node subclasses, plus various utilities.
 
 ### HLGestureTarget
 
-A gesture target handles gestures from `UIGestureRecognizer`s. It can
-be attached to any `SKNode` using the class category
+A gesture target handles gestures from gesture recognizers (either
+`UIGestureRecognizer` under iOS or `NSGestureRecognizer` under
+macOS). It can be attached to any `SKNode` using the class category
 `SKNode+HLGestureTarget`.
 
 The use pattern is this: The `SKScene` knows about its view, and so
-the scene is the `UIGestureRecognizerDelegate`. It manages a
-collection of shared gesture recognizers, which it attaches to and
-detaches from its view as appropriate. When a certain gesture is
-recognized by a gesture recognizer, the scene figures out which node
-or nodes are the target of the gesture, and it forwards the gestures
-to those nodes using the `HLGestureTarget` interface.
+the scene is the gesture recognizer delegate. It manages a collection
+of shared gesture recognizers, which it attaches to and detaches from
+its view as appropriate. When a certain gesture is recognized by a
+gesture recognizer, the scene figures out which node or nodes are the
+target of the gesture, and it forwards the gestures to those nodes
+using the `HLGestureTarget` interface.
 
-Here’s the point: The scene can effectively use `UIGestureRecognizer`s
-rather than the `UIResponder` interface (`touchesBegan:withEvent:` and
-the rest), and the gesture handling code can be encapsulated within
+Here’s the point: The scene can effectively use gesture recognizers
+(rather than responder interface `touchesBegan:withEvent:` or
+`mouseUp:`), and the gesture handling code can be encapsulated within
 node subclasses (rather than dumped into a bloated scene).
 
 ### HLLayoutManager
@@ -120,7 +121,7 @@ code blocks.
 
 ## Gesture Recognition FAQ and Examples
 
-### I want to use `UIGestureRecognizer` in my scene to recognize gestures.
+### I want to use `UIGestureRecognizer` or `NSGestureRecognizer` in my scene to recognize gestures.
 
 Here is the pattern used in `HLSpriteKit`:
 
@@ -129,13 +130,12 @@ Here is the pattern used in `HLSpriteKit`:
    recognizers to the view.
 
  * Your scene is the delegate of the gesture recognizers; that is, the
-   `UIGestureRecognizerDelegate`.
+   `UIGestureRecognizerDelegate` or `NSGestureRecognizerDelegate`.
 
- * Right before a gesture recognizer starts recognizing, in
-   `gestureRecognizer:shouldReceiveTouch:`, your scene sets the
-   gesture recognizer’s target (object and selector) to the most
-   relevant receiver node. As the gesture is recognized, that node
-   will get the calls.
+ * Right before a gesture recognizer starts recognizing, your scene
+   sets the gesture recognizer’s target (object and selector) to the
+   most relevant receiver node. As the gesture is recognized, that
+   node will get the calls.
 
 Consider some alternate designs. In particular, say your scene
 contains a number of button nodes that should respond to tap
@@ -155,7 +155,7 @@ used in `HLSpriteKit`:
    each target would decide whether it was being tapped, and execute
    appropriate code if so.
 
-### I want to use `UIGestureRecognizer` in my scene the `HLSpriteKit` way.
+### I want to use gesture recognizers in my scene the `HLSpriteKit` way.
 
 Create your scene as a subclass of `HLScene`.
 
@@ -188,7 +188,7 @@ scene that it needs to create some appropriate gesture recognizers:
 [self needsSharedGestureRecognizersForNode:toolbarNode];
 ```
 
-This will give you delegate callbacks for taps on toolbar tools.
+This will give you delegate callbacks for taps or clicks on toolbar tools.
 
 See the Example project (`HLSpriteKit/Example/HLSpriteKit/HLCatalogScene.m` in project or
 [on GitHub](https://github.com/hilogames/HLSpriteKit/blob/master/Example/Shared/HLCatalogScene.m))
@@ -213,7 +213,7 @@ Here are your options:
 Follow the pattern of components in `HLSpriteKit`, and conform to the
 `HLGestureTarget` protocol in your custom node class. Through the
 `HLGestureTarget` interface, your node will tell its scene what
-`UIGestureRecognizer`s it expects, and what to do when those gesture
+gesture recognizers it expects, and what to do when those gesture
 recognizers trigger.
 
 You can then include your node in your scene the same way you included

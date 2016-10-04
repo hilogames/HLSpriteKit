@@ -50,12 +50,13 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
  As a gesture target:
 
  - Set this node as its own gesture target (using `[SKNode+HLGestureTarget
-   hlSetGestureTarget]`) to get simple delegation and/or a callback for taps.  See
-   `HLToolbarNodeDelegate` for delegation and the `toolTappedBlock` property for setting a
-   callback block.
+   hlSetGestureTarget]`) to get simple delegation and/or a callback for taps or clicks.
+   See `HLToolbarNodeDelegate` for delegation and the `toolTappedBlock` or
+   `toolClickedBlock` properties for setting a callback block.
 
- - Set a custom gesture target to recognize and respond to other gestures.  (Convert touch
-   locations to this node's coordinate system and call `toolAtLocation` as desired.)
+ - Set a custom gesture target to recognize and respond to other gestures.  (Convert
+   gesture locations to this node's coordinate system and call `toolAtLocation` as
+   desired.)
 
  - Leave the gesture target unset for no gesture handling.
 
@@ -71,11 +72,7 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
    and/or a callback for left-clicks.  See `HLToolbarNodeDelegate` for delegation and
    `toolClickedBlock` property for setting a callback block.
 */
-#if HLGESTURETARGET_AVAILABLE
 @interface HLToolbarNode : HLComponentNode <NSCoding, HLGestureTarget>
-#else
-@interface HLToolbarNode : HLComponentNode <NSCoding>
-#endif
 
 /// @name Creating a Toolbar Node
 
@@ -475,7 +472,7 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 
 @end
 
-#if HLGESTURETARGET_AVAILABLE
+#if TARGET_OS_IPHONE
 
 @protocol HLToolbarNodeMultiGestureTargetDelegate;
 

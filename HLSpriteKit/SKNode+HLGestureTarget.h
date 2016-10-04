@@ -10,8 +10,6 @@
 
 #import "HLGestureTarget.h"
 
-#if HLGESTURETARGET_AVAILABLE
-
 @interface SKNode (HLGestureTarget)
 
 /// @name Getting and Setting the Gesture Target
@@ -35,5 +33,3 @@
 - (void)hlSetGestureTarget:(id <HLGestureTarget>)gestureTarget;
 
 @end
-
-#endif

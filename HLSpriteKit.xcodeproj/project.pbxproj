@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		84662B471DA33093006B1812 /* NSGestureRecognizer+MultipleActions.h in Headers */ = {isa = PBXBuildFile; fileRef = 84662B451DA33093006B1812 /* NSGestureRecognizer+MultipleActions.h */; };
+		84662B481DA33093006B1812 /* NSGestureRecognizer+MultipleActions.m in Sources */ = {isa = PBXBuildFile; fileRef = 84662B461DA33093006B1812 /* NSGestureRecognizer+MultipleActions.m */; };
 		847D627D1D8499AF006E287F /* HLAction.h in Headers */ = {isa = PBXBuildFile; fileRef = 847D62451D8499AF006E287F /* HLAction.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		847D627E1D8499AF006E287F /* HLAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 847D62461D8499AF006E287F /* HLAction.m */; };
 		847D627F1D8499AF006E287F /* HLComponentNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 847D62471D8499AF006E287F /* HLComponentNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -66,6 +68,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		84662B451DA33093006B1812 /* NSGestureRecognizer+MultipleActions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSGestureRecognizer+MultipleActions.h"; sourceTree = "<group>"; };
+		84662B461DA33093006B1812 /* NSGestureRecognizer+MultipleActions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSGestureRecognizer+MultipleActions.m"; sourceTree = "<group>"; };
 		847D61CA1D8498E6006E287F /* HLSpriteKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HLSpriteKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		847D61CE1D8498E6006E287F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		847D62451D8499AF006E287F /* HLAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLAction.h; sourceTree = "<group>"; };
@@ -203,6 +207,8 @@
 				847D62701D8499AF006E287F /* HLTiledNode.m */,
 				847D62711D8499AF006E287F /* HLToolbarNode.h */,
 				847D62721D8499AF006E287F /* HLToolbarNode.m */,
+				84662B451DA33093006B1812 /* NSGestureRecognizer+MultipleActions.h */,
+				84662B461DA33093006B1812 /* NSGestureRecognizer+MultipleActions.m */,
 				847D62731D8499AF006E287F /* SKLabelNode+HLLabelNodeAdditions.h */,
 				847D62741D8499AF006E287F /* SKLabelNode+HLLabelNodeAdditions.m */,
 				847D62751D8499AF006E287F /* SKNode+HLGestureTarget.h */,
@@ -235,6 +241,7 @@
 				847D62A41D8499AF006E287F /* HLSpriteKit.h in Headers */,
 				847D62961D8499AF006E287F /* HLMessageNode.h in Headers */,
 				847D62981D8499AF006E287F /* HLMultilineLabelNode.h in Headers */,
+				84662B471DA33093006B1812 /* NSGestureRecognizer+MultipleActions.h in Headers */,
 				847D628C1D8499AF006E287F /* HLItemsNode.h in Headers */,
 				847D62921D8499AF006E287F /* HLMath.h in Headers */,
 				847D62A21D8499AF006E287F /* HLScrollNode.h in Headers */,
@@ -339,6 +346,7 @@
 				847D62911D8499AF006E287F /* HLLayoutManager.m in Sources */,
 				847D62B21D8499AF006E287F /* SKNode+HLNodeVisuals.m in Sources */,
 				847D628D1D8499AF006E287F /* HLItemsNode.m in Sources */,
+				84662B481DA33093006B1812 /* NSGestureRecognizer+MultipleActions.m in Sources */,
 				847D62931D8499AF006E287F /* HLMath.m in Sources */,
 				847D62891D8499AF006E287F /* HLItemContentNode.m in Sources */,
 				847D62871D8499AF006E287F /* HLGridNode.m in Sources */,

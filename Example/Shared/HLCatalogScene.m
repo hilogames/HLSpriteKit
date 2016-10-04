@@ -106,62 +106,72 @@
   _catalogScrollNode.contentNode = catalogNode;
   [self addChild:_catalogScrollNode];
 
-#if HLGESTURETARGET_AVAILABLE
-
+#if TARGET_OS_IPHONE
   [multilineLabelNode hlSetGestureTarget:[HLTapGestureTarget tapGestureTargetWithHandleGestureBlock:^(UIGestureRecognizer *gestureRecognizer){
     [self HL_showMessage:@"Tapped HLMultilineLabelNode."];
   }]];
+#else
+  [multilineLabelNode hlSetGestureTarget:[HLClickGestureTarget clickGestureTargetWithHandleGestureBlock:^(NSGestureRecognizer *gestureRecognizer){
+    [self HL_showMessage:@"Clicked HLMultilineLabelNode."];
+  }]];
+#endif
   [self needSharedGestureRecognizersForNode:multilineLabelNode];
 
+#if TARGET_OS_IPHONE
   gridNode.squareTappedBlock = ^(int squareIndex){
     [self HL_showMessage:[NSString stringWithFormat:@"Tapped HLGridNode squareIndex %d.", squareIndex]];
   };
+#else
+  gridNode.squareClickedBlock = ^(int squareIndex){
+    [self HL_showMessage:[NSString stringWithFormat:@"Clicked HLGridNode squareIndex %d.", squareIndex]];
+  };
+#endif
   [gridNode hlSetGestureTarget:gridNode];
   [self needSharedGestureRecognizersForNode:gridNode];
-  // Alternately, use UIResponder interface with squareTappedBlock:
+  // Alternately, use UIResponder/NSResponder interface with squareTappedBlock/squareClickedBlock:
   //   gridNode.userInteractionEnabled = YES;
 
+#if TARGET_OS_IPHONE
   toolbarNode.toolTappedBlock = ^(NSString *toolTag){
     [self HL_showMessage:[NSString stringWithFormat:@"Tapped tool '%@' on HLToolbarNode.", toolTag]];
   };
+#else
+  toolbarNode.toolClickedBlock = ^(NSString *toolTag){
+    [self HL_showMessage:[NSString stringWithFormat:@"Clicked tool '%@' on HLToolbarNode.", toolTag]];
+  };
+#endif
   [toolbarNode hlSetGestureTarget:toolbarNode];
   [self needSharedGestureRecognizersForNode:toolbarNode];
-  // Alternately, use UIResponder interface with toolTappedBlock:
+  // Alternately, use UIResponder/NSResponder interface with toolTappedBlock/toolClickedBlock:
   //   toolbarNode.userInteractionEnabled = YES;
 
+#if TARGET_OS_IPHONE
   [labelButtonNode hlSetGestureTarget:[HLTapGestureTarget tapGestureTargetWithHandleGestureBlock:^(UIGestureRecognizer *gestureRecognizer){
     [self HL_showMessage:@"Tapped HLLabelButtonNode."];
   }]];
+#else
+  [labelButtonNode hlSetGestureTarget:[HLClickGestureTarget clickGestureTargetWithHandleGestureBlock:^(NSGestureRecognizer *gestureRecognizer){
+    [self HL_showMessage:@"Clicked HLLabelButtonNode."];
+  }]];
+#endif
   [self needSharedGestureRecognizersForNode:labelButtonNode];
 
+#if TARGET_OS_IPHONE
   [tiledNode hlSetGestureTarget:[HLTapGestureTarget tapGestureTargetWithHandleGestureBlock:^(UIGestureRecognizer *gestureRecognizer){
     [self HL_showMessage:@"Tapped HLTiledNode."];
   }]];
+#else
+  [tiledNode hlSetGestureTarget:[HLClickGestureTarget clickGestureTargetWithHandleGestureBlock:^(NSGestureRecognizer *gestureRecognizer){
+    [self HL_showMessage:@"Clicked HLTiledNode."];
+  }]];
+#endif
   [self needSharedGestureRecognizersForNode:tiledNode];
 
   [_catalogScrollNode hlSetGestureTarget:_catalogScrollNode];
   [self needSharedGestureRecognizersForNode:_catalogScrollNode];
-  // Alternately, use UIResponder interface:
+  // Alternately, use UIResponder/NSResponder interface:
   //   _catalogScrollNode.userInteractionEnabled = YES;
   //   self.view.multipleTouchEnabled = YES;
-
-#endif
-
-#if ! TARGET_OS_IPHONE
-
-  gridNode.userInteractionEnabled = YES;
-  gridNode.squareClickedBlock= ^(int squareIndex){
-    [self HL_showMessage:[NSString stringWithFormat:@"Tapped HLGridNode squareIndex %d.", squareIndex]];
-  };
-
-  toolbarNode.userInteractionEnabled = YES;
-  toolbarNode.toolClickedBlock = ^(NSString *toolTag){
-    [self HL_showMessage:[NSString stringWithFormat:@"Clicked tool '%@' on HLToolbarNode.", toolTag]];
-  };
-
-  _catalogScrollNode.userInteractionEnabled = YES;
-
-#endif
 }
 
 #if ! TARGET_OS_IPHONE

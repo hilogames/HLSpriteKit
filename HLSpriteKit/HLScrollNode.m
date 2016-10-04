@@ -685,24 +685,28 @@ enum {
   }];
 }
 
-#if HLGESTURETARGET_AVAILABLE
-
 #pragma mark -
 #pragma mark HLGestureTarget
 
 - (NSArray *)addsToGestureRecognizers
 {
+#if TARGET_OS_IPHONE
   return @[ [[UIPanGestureRecognizer alloc] init],
             [[UIPinchGestureRecognizer alloc] init] ];
+#else
+  // note: macOS doesn't have a pinch gesture recognizer, and SKView doesn't forward
+  // scroll wheel events to the scene.
+  return @[ [[NSPanGestureRecognizer alloc] init] ];
+#endif
 }
 
-- (BOOL)addToGesture:(UIGestureRecognizer *)gestureRecognizer firstTouch:(UITouch *)touch isInside:(BOOL *)isInside
+- (BOOL)addToGesture:(HLGestureRecognizer *)gestureRecognizer firstLocation:(CGPoint)sceneLocation isInside:(BOOL *)isInside
 {
   // note: The content might extend beyond the boundaries of the scroll node.  If a gesture
   // starts in this extended area, a gesture handler like HLScene might ask us if we'd like
   // to be the target for the gesture.  Whether we're clipping content or not, it seems like
   // the answer should be "no".
-  CGPoint locationInSelf = [touch locationInNode:self];
+  CGPoint locationInSelf = [self convertPoint:sceneLocation fromNode:self.scene];
   if (locationInSelf.x < _size.width * -_anchorPoint.x
       || locationInSelf.x > _size.width * (1.0f - _anchorPoint.x)
       || locationInSelf.y < _size.height * -_anchorPoint.y
@@ -711,32 +715,47 @@ enum {
     return NO;
   }
 
+#if TARGET_OS_IPHONE
   if (HLGestureTarget_areEquivalentGestureRecognizers(gestureRecognizer, [[UIPanGestureRecognizer alloc] init])) {
     [gestureRecognizer addTarget:self action:@selector(handlePan:)];
     *isInside = YES;
-    CGPoint nodeLocation = [touch locationInNode:self];
-    [self HL_scrollStart:nodeLocation];
+    [self HL_scrollStart:locationInSelf];
     return YES;
   } else if (HLGestureTarget_areEquivalentGestureRecognizers(gestureRecognizer, [[UIPinchGestureRecognizer alloc] init])) {
     [gestureRecognizer addTarget:self action:@selector(handlePinch:)];
     *isInside = YES;
     return YES;
   }
+#else
+  if (HLGestureTarget_areEquivalentGestureRecognizers(gestureRecognizer, [[NSPanGestureRecognizer alloc] init])) {
+    [gestureRecognizer addTarget:self action:@selector(handlePan:)];
+    *isInside = YES;
+    [self HL_scrollStart:locationInSelf];
+    return YES;
+  }
+#endif
 
   *isInside = NO;
   return NO;
 }
 
-- (void)handlePan:(UIPanGestureRecognizer *)gestureRecognizer
+- (void)handlePan:(HLGestureRecognizer *)gestureRecognizer
 {
   if (!_contentNode) {
     return;
   }
 
+#if TARGET_OS_IPHONE
   if (gestureRecognizer.state == UIGestureRecognizerStateEnded
       || gestureRecognizer.state == UIGestureRecognizerStateCancelled) {
     return;
   }
+#else
+  if (gestureRecognizer.state == NSGestureRecognizerStateEnded
+      || gestureRecognizer.state == NSGestureRecognizerStateCancelled) {
+    return;
+  }
+#endif
 
   // note: The pan doesn't begin (UIGestureRecgonizerStateBegan) until there is already
   // movement from the original touch location.  I think translationInView accounts for
@@ -750,6 +769,8 @@ enum {
   CGPoint nodeLocation = [self convertPoint:sceneLocation fromNode:self.scene];
   [self HL_scrollUpdate:nodeLocation];
 }
+
+#if TARGET_OS_IPHONE
 
 - (void)handlePinch:(UIPinchGestureRecognizer *)gestureRecognizer
 {

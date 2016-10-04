@@ -25,6 +25,9 @@
   for major components.  
   [Karl Voskuil](https://github.com/karlvoskuil)
 
+- Ported gesture target forwarding to macOS and `NSGestureHandler`.  
+  [Brent Traut](https://github.com/btraut)
+
 ## 1.2.0 [2016-09-21]
 
 ## Breaking

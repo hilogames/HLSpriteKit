@@ -42,12 +42,13 @@ typedef NS_ENUM(NSInteger, HLGridNodeLayoutMode) {
  As a gesture target:
 
  - Set this node as its own gesture target (using `[SKNode+HLGestureTarget
-   hlSetGestureTarget]`) to get simple delegation and/or a callback for taps.  See
-   `HLGridNodeDelegate` for delegation and the `squareTappedBlock` property for setting a
-   callback block.
+   hlSetGestureTarget]`) to get simple delegation and/or a callback for taps or clicks.
+   See `HLGridNodeDelegate` for delegation and the `squareTappedBlock` or
+   `squareClickedBlock` properties for setting a callback block.
 
- - Set a custom gesture target to recognize and respond to other gestures.  (Convert touch
-   locations to this node's coordinate system and call `squareAtLocation` as desired.)
+ - Set a custom gesture target to recognize and respond to other gestures.  (Convert
+   gesture locations to this node's coordinate system and call `squareAtLocation` as
+   desired.)
 
  - Leave the gesture target unset for no gesture handling.
 
@@ -64,11 +65,7 @@ typedef NS_ENUM(NSInteger, HLGridNodeLayoutMode) {
    `squareClickedBlock` property for setting a callback block.
 */
 
-#if HLGESTURETARGET_AVAILABLE
 @interface HLGridNode : HLComponentNode <NSCoding, HLGestureTarget>
-#else
-@interface HLGridNode : HLComponentNode <NSCoding>
-#endif
 
 /// @name Creating a Grid Node
 
@@ -387,7 +384,8 @@ typedef NS_ENUM(NSInteger, HLGridNodeLayoutMode) {
 - (void)clearSelection;
 
 /**
- Convenience method for clearing the highlight state of the last selected square with animation.
+ Convenience method for clearing the highlight state of the last selected square with
+ animation.
 
  Clears the highlight of the last-selected square, if any, with animation.
 */
@@ -407,7 +405,7 @@ typedef NS_ENUM(NSInteger, HLGridNodeLayoutMode) {
 #if TARGET_OS_IPHONE
 
 /**
- Called when the user taps on a square in the grid.
+ Called when the user taps a square in the grid.
 
  Relevant to `HLGestureTarget` and `UIResponder` user interaction.
  See "Common User Interaction Configurations".
@@ -417,9 +415,9 @@ typedef NS_ENUM(NSInteger, HLGridNodeLayoutMode) {
 #else
 
 /**
- Called when the user clicks on a square in the grid.
+ Called when the user clicks a square in the grid.
 
- Relevant to `NSResponder` user interaction.
+ Relevant to `HLGestureTarget` and `NSResponder` user interaction.
  See "Common User Interaction Configurations".
  */
 - (void)gridNode:(HLGridNode *)gridNode didClickSquare:(int)squareIndex;

@@ -40,9 +40,7 @@ static BOOL _sceneAssetsLoaded = NO;
   self = [super initWithCoder:aDecoder];
   if (self) {
 
-#if HLGESTURETARGET_AVAILABLE
     _gestureTargetHitTestMode = (HLSceneGestureTargetHitTestMode)[aDecoder decodeIntegerForKey:@"gestureTargetHitTestMode"];
-#endif
 
     NSMutableArray *childrenArrayQueue = [NSMutableArray arrayWithObject:self.children];
     NSUInteger a = 0;
@@ -78,12 +76,10 @@ static BOOL _sceneAssetsLoaded = NO;
           }
         }
 
-#if HLGESTURETARGET_AVAILABLE
         id <HLGestureTarget> target = [node hlGestureTarget];
         if (target) {
           [self HL_needSharedGestureRecognizers:[target addsToGestureRecognizers]];
         }
-#endif
       }
     }
   }
@@ -119,9 +115,7 @@ static BOOL _sceneAssetsLoaded = NO;
 
   [super encodeWithCoder:aCoder];
 
-#if HLGESTURETARGET_AVAILABLE
   [aCoder encodeInteger:_gestureTargetHitTestMode forKey:@"gestureTargetHitTestMode"];
-#endif
 
   [removedChildren enumerateKeysAndObjectsUsingBlock:^(id key, id object, BOOL *stop){
     SKNode *child = [key nonretainedObjectValue];
@@ -139,25 +133,21 @@ static BOOL _sceneAssetsLoaded = NO;
 - (void)didMoveToView:(SKView *)view
 {
   [super didMoveToView:view];
-#if HLGESTURETARGET_AVAILABLE
   if (_sharedGestureRecognizers) {
-    for (UIGestureRecognizer *sharedGestureRecognizer in _sharedGestureRecognizers) {
+    for (HLGestureRecognizer *sharedGestureRecognizer in _sharedGestureRecognizers) {
       [view addGestureRecognizer:sharedGestureRecognizer];
     }
   }
-#endif
 }
 
 - (void)willMoveFromView:(SKView *)view
 {
   [super willMoveFromView:view];
-#if HLGESTURETARGET_AVAILABLE
   if (_sharedGestureRecognizers) {
-    for (UIGestureRecognizer *sharedGestureRecognizer in _sharedGestureRecognizers) {
+    for (HLGestureRecognizer *sharedGestureRecognizer in _sharedGestureRecognizers) {
       [view removeGestureRecognizer:sharedGestureRecognizer];
     }
   }
-#endif
 }
 
 - (void)didChangeSize:(CGSize)oldSize
@@ -180,8 +170,6 @@ static BOOL _sceneAssetsLoaded = NO;
     }];
   }
 }
-
-#if HLGESTURETARGET_AVAILABLE
 
 #pragma mark -
 #pragma mark Shared Gesture Recognizers
@@ -209,19 +197,38 @@ static BOOL _sceneAssetsLoaded = NO;
   // note: Uses an n*m search rather than something indexed, because it is assumed the
   // number of gesture recognizers is kept reasonably small.  For adding a large number
   // of targets to the scene, this might be problematic.
-  for (UIGestureRecognizer *neededGestureRecognizer in gestureRecognizers) {
+  for (HLGestureRecognizer *neededGestureRecognizer in gestureRecognizers) {
+
     BOOL foundShared = NO;
-    for (UIGestureRecognizer *sharedGestureRecognizer in _sharedGestureRecognizers) {
+    for (HLGestureRecognizer *sharedGestureRecognizer in _sharedGestureRecognizers) {
       if (HLGestureTarget_areEquivalentGestureRecognizers(neededGestureRecognizer, sharedGestureRecognizer)) {
         foundShared = YES;
         break;
       }
     }
+
     if (!foundShared) {
+
       [neededGestureRecognizer removeTarget:nil action:NULL];
       neededGestureRecognizer.delegate = self;
+
+#if ! TARGET_OS_IPHONE
+      // NSGestureRecognizers only allow for a single target/action out of the box. The
+      // NSGestureRecognizer+MultipleActions category allows for multiple targets+actions
+      // to be registered, but in order to trigger them, we must set the main
+      // target+action to be the NSGestureRecognizer's handleGesture: method as provided
+      // by the category.
+      neededGestureRecognizer.target = neededGestureRecognizer;
+      neededGestureRecognizer.action = @selector(handleGesture:);
+#endif
+
       [_sharedGestureRecognizers addObject:neededGestureRecognizer];
+
+#if TARGET_OS_IPHONE
       UIView *view = self.view;
+#else
+      NSView *view = self.view;
+#endif
       if (view) {
         [view addGestureRecognizer:neededGestureRecognizer];
       }
@@ -234,7 +241,11 @@ static BOOL _sceneAssetsLoaded = NO;
   _sharedGestureRecognizers = nil;
 }
 
+#if TARGET_OS_IPHONE
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
+#else
+- (BOOL)gestureRecognizer:(NSGestureRecognizer *)gestureRecognizer shouldAttemptToRecognizeWithEvent:(nonnull NSEvent *)event
+#endif
 {
   // If no shared gesture recognizers have been needed (by
   // `needSharedGestureRecognizer*`), then a scene subclass must have created a
@@ -267,7 +278,14 @@ static BOOL _sceneAssetsLoaded = NO;
   //     in some cases.)
 
   [gestureRecognizer removeTarget:nil action:NULL];
+#if TARGET_OS_IPHONE
   CGPoint sceneLocation = [touch locationInNode:self];
+#else
+  // note: Assume the event must have a valid location, or else it wouldn't be the kind of
+  // event to trigger a gesture recognizer.  I'm not sure if that's true.  Either way, the
+  // gesture recognizer does not yet have a location, so we can't use [locationInView].
+  CGPoint sceneLocation = [event locationInNode:self];
+#endif
 
   SKNode *node = self;
   if (_gestureTargetHitTestMode == HLSceneGestureTargetHitTestModeDeepestThenParent) {
@@ -299,7 +317,7 @@ static BOOL _sceneAssetsLoaded = NO;
     id <HLGestureTarget> target = [node hlGestureTarget];
     if (target) {
       BOOL isInside = NO;
-      if ([target addToGesture:gestureRecognizer firstTouch:touch isInside:&isInside]) {
+      if ([target addToGesture:gestureRecognizer firstLocation:sceneLocation isInside:&isInside]) {
         return YES;
       } else if (isInside) {
         return NO;
@@ -311,13 +329,11 @@ static BOOL _sceneAssetsLoaded = NO;
   return NO;
 }
 
-- (void)HLScene_handleGesture:(UIGestureRecognizer *)gestureRecognizer
+- (void)HLScene_handleGesture:(HLGestureRecognizer *)gestureRecognizer
 {
   // All gestures are handled by HLGestureTargets; this method is a no-op used a default
   // target action for the gesture recognizer at initialization.
 }
-
-#endif
 
 #pragma mark -
 #pragma mark Child Behavior Registration

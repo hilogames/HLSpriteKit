@@ -52,8 +52,9 @@ typedef NS_ENUM(NSInteger, HLScrollNodeContentScaleMinimumMode)
  As a gesture target:
 
  - Set this node as its own gesture target (using `[SKNode+HLGestureTarget
-   hlSetGestureTarget]`) to get one-finger scrolling and two-finger pinch zooming
-   behavior.
+   hlSetGestureTarget]`) to get scrolling on pan (under iOS) or left-click (under macOS),
+   and zooming on pinch (under iOS).  (Mouse scroll wheel would be good for zooming under
+   macOS, but scroll wheel events are not forwarded to the scene by `SKView`.)
 
  Often the content node will want to handle taps (and the like) while letting pan and
  pinch gestures fall through to the scroll node.  It depends a little on the scene
@@ -74,11 +75,7 @@ typedef NS_ENUM(NSInteger, HLScrollNodeContentScaleMinimumMode)
    button drag.  (Mouse scroll wheel would be a good candidate for zooming interaction, but
    scroll wheel events are not forwarded to the scene by `SKView`.)
 */
-#if HLGESTURETARGET_AVAILABLE
 @interface HLScrollNode : HLComponentNode <NSCoding, HLGestureTarget>
-#else
-@interface HLScrollNode : HLComponentNode <NSCoding>
-#endif
 
 /// @name Creating a Scroll Node
 

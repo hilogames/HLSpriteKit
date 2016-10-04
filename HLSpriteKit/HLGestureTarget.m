@@ -8,15 +8,18 @@
 
 #import "HLGestureTarget.h"
 
-#if HLGESTURETARGET_AVAILABLE
-
 BOOL
-HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIGestureRecognizer *b)
+HLGestureTarget_areEquivalentGestureRecognizers(HLGestureRecognizer *a, HLGestureRecognizer *b)
 {
+  const CFTimeInterval HLGestureTargetLongPressMinimumPressDurationEpsilon = 0.01;
+  const CGFloat HLGestureTargetLongPressAllowableMovementEpsilon = 0.1f;
+
   Class classA = [a class];
   if (classA != [b class]) {
     return NO;
   }
+
+#if TARGET_OS_IPHONE
 
   if (classA == [UITapGestureRecognizer class]) {
     UITapGestureRecognizer *tapA = (UITapGestureRecognizer *)a;
@@ -72,18 +75,44 @@ HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIGestur
     if (longPressA.numberOfTouchesRequired != longPressB.numberOfTouchesRequired) {
       return NO;
     }
-    const CFTimeInterval HLGestureTargetLongPressMinimumPressDurationEpsilon = 0.01;
     if (fabs(longPressA.minimumPressDuration - longPressB.minimumPressDuration) > HLGestureTargetLongPressMinimumPressDurationEpsilon) {
       return NO;
     }
-    const CGFloat HLGestureTargetLongPressAllowableMovementEpsilon = 0.1f;
     if (fabs(longPressA.allowableMovement - longPressB.allowableMovement) > HLGestureTargetLongPressAllowableMovementEpsilon) {
       return NO;
     }
     return YES;
   }
+
+#else
+
+  if (classA == [NSClickGestureRecognizer class]) {
+    NSClickGestureRecognizer *clickA = (NSClickGestureRecognizer *)a;
+    NSClickGestureRecognizer *clickB = (NSClickGestureRecognizer *)b;
+    if (clickA.numberOfClicksRequired != clickB.numberOfClicksRequired) {
+      return NO;
+    }
+    return YES;
+  }
+
+  if (classA == [NSPressGestureRecognizer class]) {
+    NSPressGestureRecognizer *pressA = (NSPressGestureRecognizer *)a;
+    NSPressGestureRecognizer *pressB = (NSPressGestureRecognizer *)b;
+    if (fabs(pressA.minimumPressDuration - pressB.minimumPressDuration) > HLGestureTargetLongPressMinimumPressDurationEpsilon) {
+      return NO;
+    }
+    if (fabs(pressA.allowableMovement - pressB.allowableMovement) > HLGestureTargetLongPressAllowableMovementEpsilon) {
+      return NO;
+    }
+    return YES;
+  }
+
+#endif
+
   return YES;
 }
+
+#if TARGET_OS_IPHONE
 
 @implementation HLTapGestureTarget
 
@@ -92,7 +121,7 @@ HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIGestur
   return [[HLTapGestureTarget alloc] initWithDelegate:delegate];
 }
 
-+ (instancetype)tapGestureTargetWithHandleGestureBlock:(void (^)(UIGestureRecognizer *))handleGestureBlock
++ (instancetype)tapGestureTargetWithHandleGestureBlock:(void (^)(HLGestureRecognizer *))handleGestureBlock
 {
   return [[HLTapGestureTarget alloc] initWithHandleGestureBlock:handleGestureBlock];
 }
@@ -107,7 +136,7 @@ HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIGestur
   return self;
 }
 
-- (instancetype)initWithHandleGestureBlock:(void (^)(UIGestureRecognizer *))handleGestureBlock
+- (instancetype)initWithHandleGestureBlock:(void (^)(HLGestureRecognizer *))handleGestureBlock
 {
   self = [super init];
   if (self) {
@@ -155,7 +184,9 @@ HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIGestur
   return self;
 }
 
-- (BOOL)addToGesture:(UIGestureRecognizer *)gestureRecognizer firstTouch:(UITouch *)touch isInside:(BOOL *)isInside
+- (BOOL)addToGesture:(HLGestureRecognizer *)gestureRecognizer
+       firstLocation:(CGPoint)sceneLocation
+            isInside:(BOOL *)isInside
 {
   BOOL handleGesture = NO;
 
@@ -179,11 +210,122 @@ HLGestureTarget_areEquivalentGestureRecognizers(UIGestureRecognizer *a, UIGestur
   return @[ [[UITapGestureRecognizer alloc] init] ];
 }
 
-- (void)HLTapGestureTarget_handleGesture:(UIGestureRecognizer *)gestureRecognizer
+- (void)HLTapGestureTarget_handleGesture:(HLGestureRecognizer *)gestureRecognizer
 {
   id <HLTapGestureTargetDelegate> delegate = _delegate;
   if (delegate) {
     [delegate tapGestureTarget:self didTap:gestureRecognizer];
+  }
+  if (_handleGestureBlock) {
+    _handleGestureBlock(gestureRecognizer);
+  }
+}
+
+@end
+
+#else
+
+@implementation HLClickGestureTarget
+
++ (instancetype)clickGestureTargetWithDelegate:(id<HLClickGestureTargetDelegate>)delegate
+{
+  return [[HLClickGestureTarget alloc] initWithDelegate:delegate];
+}
+
++ (instancetype)clickGestureTargetWithHandleGestureBlock:(void (^)(HLGestureRecognizer *))handleGestureBlock
+{
+  return [[HLClickGestureTarget alloc] initWithHandleGestureBlock:handleGestureBlock];
+}
+
+- (instancetype)initWithDelegate:(id<HLClickGestureTargetDelegate>)delegate
+{
+  self = [super init];
+  if (self) {
+    _delegate = delegate;
+    _gestureTransparent = NO;
+  }
+  return self;
+}
+
+- (instancetype)initWithHandleGestureBlock:(void (^)(HLGestureRecognizer *))handleGestureBlock
+{
+  self = [super init];
+  if (self) {
+    _handleGestureBlock = handleGestureBlock;
+    _gestureTransparent = NO;
+  }
+  return self;
+}
+
+- (instancetype)init
+{
+  self = [super init];
+  if (self) {
+    _gestureTransparent = NO;
+  }
+  return self;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+  self = [super init];
+  if (self) {
+    _delegate = [aDecoder decodeObjectForKey:@"delegate"];
+    // note: Cannot decode _handleGestureBlock.
+    _gestureTransparent = [aDecoder decodeBoolForKey:@"gestureTransparent"];
+  }
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+  [aCoder encodeConditionalObject:_delegate forKey:@"delegate"];
+  // note: Cannot encode _handleGestureBlock.
+  [aCoder encodeBool:_gestureTransparent forKey:@"gestureTransparent"];
+}
+
+- (instancetype)copyWithZone:(NSZone *)zone
+{
+  HLClickGestureTarget *copy = [[[self class] allocWithZone:zone] init];
+  if (copy) {
+    copy->_delegate = _delegate;
+    copy->_handleGestureBlock = _handleGestureBlock;
+    copy->_gestureTransparent = _gestureTransparent;
+  }
+  return self;
+}
+
+- (BOOL)addToGesture:(HLGestureRecognizer *)gestureRecognizer
+       firstLocation:(CGPoint)sceneLocation
+            isInside:(BOOL *)isInside
+{
+  BOOL handleGesture = NO;
+
+  if ([gestureRecognizer isKindOfClass:[NSClickGestureRecognizer class]]) {
+    NSClickGestureRecognizer *clickGestureRecognizer = (NSClickGestureRecognizer *)gestureRecognizer;
+    if (clickGestureRecognizer.numberOfClicksRequired == 1) {
+      *isInside = YES;
+      handleGesture = YES;
+    }
+  }
+
+  *isInside = !_gestureTransparent;
+  if (handleGesture) {
+    [gestureRecognizer addTarget:self action:@selector(HLClickGestureTarget_handleGesture:)];
+  }
+  return handleGesture;
+}
+
+- (NSArray *)addsToGestureRecognizers
+{
+  return @[ [[NSClickGestureRecognizer alloc] init] ];
+}
+
+- (void)HLClickGestureTarget_handleGesture:(HLGestureRecognizer *)gestureRecognizer
+{
+  id <HLClickGestureTargetDelegate> delegate = _delegate;
+  if (delegate) {
+    [delegate clickGestureTarget:self didClick:gestureRecognizer];
   }
   if (_handleGestureBlock) {
     _handleGestureBlock(gestureRecognizer);
