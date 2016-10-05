@@ -3,9 +3,15 @@
 
 ## Master
 
+## Breaking
+
+- Remove `HLToolbarNode` show and hide functionality. Such code blongs
+  in the controller, not in the node.  
+  [Karl Voskuil](https://github.com/karlvoskuil)
+
 ## Added
 
-- Implemented basic `UIResponder` and `NSResponder` user interaction
+- Implement basic `UIResponder` and `NSResponder` user interaction
   for major components.  
   [Karl Voskuil](https://github.com/karlvoskuil)
 

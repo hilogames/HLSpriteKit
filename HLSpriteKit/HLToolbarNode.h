@@ -442,47 +442,6 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 */
 - (void)setEnabled:(BOOL)enabled forTool:(NSString *)toolTag;
 
-/// @name Showing or Hiding Toolbar in Parent
-
-/**
- Shows the toolbar at a given position and scale.
-
- When showing is animated, the toolbar will grow from a point to the passed `fullScale`,
- moving from `origin` to `finalPosition`.  (When not animated, the toolbar merely sets its
- position and scale.)
-
- The origin is remembered and is used by the next animated `hideAnimated:`.  To update the
- remembered last origin (for example, after changing the scene's layout), call
- `showUpdateOrigin:`.
-*/
-- (void)showWithOrigin:(CGPoint)origin finalPosition:(CGPoint)finalPosition fullScale:(CGFloat)fullScale animated:(BOOL)animated;
-
-/**
- Updates the remembered origin from the last call to
- `showWithOrigin:finalPosition:fullScale:animated:`.  The origin will be used by the next
- `hideAnimated:`.
-
- Showing a toolbar animated grows it from a point origin to a final position; hiding it
- animated shrinks it back down to that original origin.  It's considered a feature that
- the origin used for showing is remembered by the toolbar, and doesn't have to be passed
- back into the hide method, but of course such a system introduces difficulty if the
- origin needs to be changed between the show call and the hide call.  If so, then call
- this method to update the origin before calling `hideAnimated:`.
-*/
-- (void)showUpdateOrigin:(CGPoint)origin;
-
-/**
- Hides the toolbar by removing it from parent.
-
- When hiding is animated, the toolbar will scale down and move to its last origin (passed
- during `[showWithOrigin:finalPosition:fullScale:animated:]`).  For consistency, the
- position of the toolbar is set likewise even when not animating.  This means that any
- explicit changes to toolbar position will be discarded during the call to
- `[hideAnimated:]`.  The caller might consider calling `[showUpdateOrigin:]`, to change
- the stored origin.
-*/
-- (void)hideAnimated:(BOOL)animated;
-
 @end
 
 /**

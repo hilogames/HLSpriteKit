@@ -26,7 +26,6 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
   SKSpriteNode *_backgroundNode;
   SKCropNode *_cropNode;
   HLItemsNode *_squaresNode;
-  CGPoint _lastOrigin;
 }
 
 - (instancetype)init
@@ -85,12 +84,6 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
     _backgroundBorderSize = (CGFloat)[aDecoder decodeDoubleForKey:@"backgroundBorderSize"];
     _squareSeparatorSize = (CGFloat)[aDecoder decodeDoubleForKey:@"squareSeparatorSize"];
     _toolPad = (CGFloat)[aDecoder decodeDoubleForKey:@"toolPad"];
-
-#if TARGET_OS_IPHONE
-    _lastOrigin = [aDecoder decodeCGPointForKey:@"lastOrigin"];
-#else
-    _lastOrigin = [aDecoder decodePointForKey:@"lastOrigin"];
-#endif
   }
   return self;
 }
@@ -126,12 +119,6 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
   [aCoder encodeDouble:_backgroundBorderSize forKey:@"backgroundBorderSize"];
   [aCoder encodeDouble:_squareSeparatorSize forKey:@"squareSeparatorSize"];
   [aCoder encodeDouble:_toolPad forKey:@"toolPad"];
-
-#if TARGET_OS_IPHONE
-  [aCoder encodeCGPoint:_lastOrigin forKey:@"lastOrigin"];
-#else
-  [aCoder encodePoint:_lastOrigin forKey:@"lastOrigin"];
-#endif
 }
 
 - (instancetype)copyWithZone:(NSZone *)zone
@@ -420,66 +407,6 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
       squareNode.enabled = enabled;
       break;
     }
-  }
-}
-
-- (void)showWithOrigin:(CGPoint)origin
-         finalPosition:(CGPoint)finalPosition
-             fullScale:(CGFloat)fullScale
-              animated:(BOOL)animated
-{
-  // noob: I'm encapsulating this animation within the toolbar, since the toolbar knows cool ways to make itself
-  // appear, and can track some useful state.  But the owner of this toolbar knows the anchor, position, size, and
-  // scale of this toolbar, which then all needs to be communicated to this animation method.  Kind of a pain.
-
-  // noob: I assume this will always take effect before we are removed from parent (at the end of the hide).
-  [self removeActionForKey:@"hide"];
-
-  if (animated) {
-    const NSTimeInterval HLToolbarNodeShowDuration = 0.15;
-    self.xScale = 0.0f;
-    self.yScale = 0.0f;
-    SKAction *grow = [SKAction scaleTo:fullScale duration:HLToolbarNodeShowDuration];
-    self.position = origin;
-    SKAction *move = [SKAction moveTo:finalPosition duration:HLToolbarNodeShowDuration];
-    SKAction *showGroup = [SKAction group:@[ grow, move ]];
-    showGroup.timingMode = SKActionTimingEaseOut;
-    [self runAction:showGroup];
-  } else {
-    self.position = finalPosition;
-    self.xScale = fullScale;
-    self.yScale = fullScale;
-  }
-  _lastOrigin = origin;
-}
-
-- (void)showUpdateOrigin:(CGPoint)origin
-{
-  _lastOrigin = origin;
-}
-
-- (void)hideAnimated:(BOOL)animated
-{
-  if (animated) {
-    const NSTimeInterval HLToolbarNodeHideDuration = 0.15;
-    SKAction *shrink = [SKAction scaleTo:0.0f duration:HLToolbarNodeHideDuration];
-    SKAction *move = [SKAction moveTo:_lastOrigin duration:HLToolbarNodeHideDuration];
-    SKAction *hideGroup = [SKAction group:@[ shrink, move]];
-    hideGroup.timingMode = SKActionTimingEaseIn;
-    // note: Avoiding [SKAction removeFromParent]; see
-    //   http://stackoverflow.com/questions/26131591/exc-bad-access-sprite-kit/26188747
-    SKAction *remove = [SKAction performSelector:@selector(removeFromParent) onTarget:self];
-    SKAction *hideSequence = [SKAction sequence:@[ hideGroup, remove ]];
-    [self runAction:hideSequence withKey:@"hide"];
-  } else {
-    // note: It's a little perverse to set position back to _lastOrigin, but we do it for
-    // consistency between animated and non-animated.  The caller might be confused to find
-    // that any changes to position while the toolbar is showing will be discarded once the
-    // toolbar is hidden again; on the other hand, showUpdateOrigin is provided for the
-    // purpose, and the caller will be forced to explicitly pass position again when calling
-    // showWithOrigin.
-    self.position = _lastOrigin;
-    [self removeFromParent];
   }
 }
 
