@@ -694,9 +694,8 @@ enum {
   return @[ [[UIPanGestureRecognizer alloc] init],
             [[UIPinchGestureRecognizer alloc] init] ];
 #else
-  // note: macOS doesn't have a pinch gesture recognizer, and SKView doesn't forward
-  // scroll wheel events to the scene.
-  return @[ [[NSPanGestureRecognizer alloc] init] ];
+  return @[ [[NSPanGestureRecognizer alloc] init],
+            [[NSMagnificationGestureRecognizer alloc] init] ];
 #endif
 }
 
@@ -731,6 +730,11 @@ enum {
     [gestureRecognizer addTarget:self action:@selector(handlePan:)];
     *isInside = YES;
     [self HL_scrollStart:locationInSelf];
+    return YES;
+  }
+  if (HLGestureTarget_areEquivalentGestureRecognizers(gestureRecognizer, [[NSMagnificationGestureRecognizer alloc] init])) {
+    [gestureRecognizer addTarget:self action:@selector(handlePinch:)];
+    *isInside = YES;
     return YES;
   }
 #endif
@@ -770,29 +774,38 @@ enum {
   [self HL_scrollUpdate:nodeLocation];
 }
 
-#if TARGET_OS_IPHONE
-
-- (void)handlePinch:(UIPinchGestureRecognizer *)gestureRecognizer
+- (void)handlePinch:(HLGestureRecognizer *)gestureRecognizer
 {
   if (!_contentNode) {
     return;
   }
 
-  if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
+#if TARGET_OS_IPHONE
 
+  if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
     CGPoint viewLocation = [gestureRecognizer locationInView:self.scene.view];
     CGPoint sceneLocation = [self.scene convertPointFromView:viewLocation];
     CGPoint nodeLocation = [self convertPoint:sceneLocation fromNode:self.scene];
-
     [self HL_zoomStart:nodeLocation];
-
   } else if (gestureRecognizer.state == UIGestureRecognizerStateChanged) {
-
-    [self HL_zoomUpdate:gestureRecognizer.scale];
+    CGFloat scale = ((UIPinchGestureRecognizer *)gestureRecognizer).scale;
+    [self HL_zoomUpdate:scale];
   }
-}
+
+#else
+
+  if (gestureRecognizer.state == NSGestureRecognizerStateBegan) {
+    CGPoint viewLocation = [gestureRecognizer locationInView:self.scene.view];
+    CGPoint sceneLocation = [self.scene convertPointFromView:viewLocation];
+    CGPoint nodeLocation = [self convertPoint:sceneLocation fromNode:self.scene];
+    [self HL_zoomStart:nodeLocation];
+  } else if (gestureRecognizer.state == NSGestureRecognizerStateChanged) {
+    CGFloat scale = 1.0f + ((NSMagnificationGestureRecognizer *)gestureRecognizer).magnification;
+    [self HL_zoomUpdate:scale];
+  }
 
 #endif
+}
 
 #if TARGET_OS_IPHONE
 

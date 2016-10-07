@@ -40,7 +40,7 @@
 #if TARGET_OS_IPHONE
   NSString *message = @"Scroll and zoom catalog using pan and pinch.";
 #else
-  NSString *message = @"Scroll and zoom catalog using left-click and scroll-wheel.";
+  NSString *message = @"Scroll catalog using left-click; zoom with scroll-wheel or trackpad pinch.";
 #endif
   [self runAction:[SKAction sequence:@[ [SKAction waitForDuration:1.0],
                                         [SKAction runBlock:^{
