@@ -16,29 +16,29 @@
   [Karl Voskuil](https://github.com/karlvoskuil)
 
 - Remove `HLToolbarNode` show and hide functionality. Such code blongs
-  in the controller, not in the node.  
+  in the controller, not in the node. You heard me, that's where it blongs.  
   [Karl Voskuil](https://github.com/karlvoskuil)
 
 ## Added
 
+- Port gesture target forwarding to macOS and `NSGestureRecognizer`.  
+  [Brent Traut](https://github.com/btraut)
+
 - Implement basic `UIResponder` and `NSResponder` user interaction
   for major components.  
   [Karl Voskuil](https://github.com/karlvoskuil)
-
-- Ported gesture target forwarding to macOS and `NSGestureRecognizer`.  
-  [Brent Traut](https://github.com/btraut)
 
 ## 1.2.0 [2016-09-21]
 
 ## Breaking
 
 - Rename `HLMenuNode` property `menu` to `topMenu`. The old name
-  conflicts under OS X with an inherited `NSResponder` property.  
+  conflicts under macOS with an inherited `NSResponder` property.  
   [Karl Voskuil](https://github.com/karlvoskuil)
 
 ## Added
 
-- Conditional compilation for OS X / MacOS.  
+- Conditional compilation for macOS / OS X.  
   [Karl Voskuil](https://github.com/karlvoskuil)
 
 ## 1.1.1 [2016-09-13]
