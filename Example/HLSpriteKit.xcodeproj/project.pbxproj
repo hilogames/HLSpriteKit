@@ -28,6 +28,8 @@
 		CBBD5FE01D9062720047D9F7 /* HLTableLayoutManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CBBD5FD81D9062710047D9F7 /* HLTableLayoutManagerTests.m */; };
 		CBBD5FE21D9063730047D9F7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CBBD5FE11D9063730047D9F7 /* Images.xcassets */; };
 		CBBD602C1D9075630047D9F7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CBBD602A1D9075630047D9F7 /* Main.storyboard */; };
+		CBF9D2C01DAD5863008F9C92 /* HLGridLayoutManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CBF9D2BF1DAD5863008F9C92 /* HLGridLayoutManagerTests.m */; };
+		CBF9D2C11DAD5863008F9C92 /* HLGridLayoutManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CBF9D2BF1DAD5863008F9C92 /* HLGridLayoutManagerTests.m */; };
 		E1CCE9DE3C9E309A181468BF /* libPods-iOS-Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 17977715464537EE1B12E66F /* libPods-iOS-Tests.a */; };
 		EE7AEE3A33F2D21C474953F2 /* libPods-macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6684AA263365BA4A341C6E64 /* libPods-macOS.a */; };
 /* End PBXBuildFile section */
@@ -86,6 +88,7 @@
 		CBBD5FD81D9062710047D9F7 /* HLTableLayoutManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HLTableLayoutManagerTests.m; path = "Shared-Tests/HLTableLayoutManagerTests.m"; sourceTree = "<group>"; };
 		CBBD5FE11D9063730047D9F7 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		CBBD602B1D9075630047D9F7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		CBF9D2BF1DAD5863008F9C92 /* HLGridLayoutManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLGridLayoutManagerTests.m; sourceTree = "<group>"; };
 		D9FE9069A265CEE0EEF6DDDF /* Pods-iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOS/Pods-iOS.release.xcconfig"; sourceTree = "<group>"; };
 		EA31AA1B38E6963986E7C890 /* Pods-macOS-Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-macOS-Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-macOS-Tests/Pods-macOS-Tests.release.xcconfig"; sourceTree = "<group>"; };
 		FFB60996B23AE852926DE287 /* libPods-macOS-Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-macOS-Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -237,6 +240,7 @@
 		CBBD5FD41D9062460047D9F7 /* Shared-Tests */ = {
 			isa = PBXGroup;
 			children = (
+				CBF9D2BF1DAD5863008F9C92 /* HLGridLayoutManagerTests.m */,
 				CBBD5FD51D9062710047D9F7 /* HLMathTests.m */,
 				CBBD5FD61D9062710047D9F7 /* HLMenuNodeTests.m */,
 				CBBD5FD71D9062710047D9F7 /* HLMultilineLabelNodeTests.m */,
@@ -640,6 +644,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CBBD5FDD1D9062710047D9F7 /* HLMultilineLabelNodeTests.m in Sources */,
+				CBF9D2C01DAD5863008F9C92 /* HLGridLayoutManagerTests.m in Sources */,
 				CBBD5FDB1D9062710047D9F7 /* HLMenuNodeTests.m in Sources */,
 				CBBD5FD91D9062710047D9F7 /* HLMathTests.m in Sources */,
 				CBBD5FDF1D9062720047D9F7 /* HLTableLayoutManagerTests.m in Sources */,
@@ -651,6 +656,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CBBD5FDC1D9062710047D9F7 /* HLMenuNodeTests.m in Sources */,
+				CBF9D2C11DAD5863008F9C92 /* HLGridLayoutManagerTests.m in Sources */,
 				CBBD5FDE1D9062710047D9F7 /* HLMultilineLabelNodeTests.m in Sources */,
 				CBBD5FDA1D9062710047D9F7 /* HLMathTests.m in Sources */,
 				CBBD5FE01D9062720047D9F7 /* HLTableLayoutManagerTests.m in Sources */,

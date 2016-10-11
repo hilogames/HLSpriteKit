@@ -19,7 +19,6 @@ const CGFloat HLTableLayoutManagerEpsilon = 0.001f;
   self = [super init];
   if (self) {
     _anchorPoint = CGPointMake(0.5f, 0.5f);
-    _tableOffset = CGPointZero;
   }
   return self;
 }
@@ -32,7 +31,6 @@ const CGFloat HLTableLayoutManagerEpsilon = 0.001f;
   self = [super init];
   if (self) {
     _anchorPoint = CGPointMake(0.5f, 0.5f);
-    _tableOffset = CGPointZero;
     _columnCount = columnCount;
     _columnWidths = columnWidths;
     _columnAnchorPoints = columnAnchorPoints;
@@ -120,6 +118,7 @@ const CGFloat HLTableLayoutManagerEpsilon = 0.001f;
     copy->_tableBorder = _tableBorder;
     copy->_columnSeparator = _columnSeparator;
     copy->_rowSeparator = _rowSeparator;
+    copy->_size = _size;
   }
   return copy;
 }
@@ -284,7 +283,7 @@ const CGFloat HLTableLayoutManagerEpsilon = 0.001f;
   for (NSUInteger row = 0; row < _rowCount; ++row) {
 
     CGFloat heightCell = rowHeights[row];
-    
+
     CGFloat xCell = startXCell;
     CGPoint anchorPointCell = CGPointZero;
     for (NSUInteger column = 0; column < _columnCount; ++column) {
@@ -309,10 +308,10 @@ const CGFloat HLTableLayoutManagerEpsilon = 0.001f;
         [(SKNode *)node setPosition:CGPointMake(xCell + widthCell * anchorPointCell.x,
                                                 yCell - heightCell * (1.0f - anchorPointCell.y))];
       }
-    
+
       xCell = xCell + widthCell + _columnSeparator;
     }
-    
+
     if (!node) {
       break;
     }

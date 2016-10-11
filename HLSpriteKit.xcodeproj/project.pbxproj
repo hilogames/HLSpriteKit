@@ -65,6 +65,8 @@
 		847D62B21D8499AF006E287F /* SKNode+HLNodeVisuals.m in Sources */ = {isa = PBXBuildFile; fileRef = 847D627A1D8499AF006E287F /* SKNode+HLNodeVisuals.m */; };
 		847D62B31D8499AF006E287F /* UIImage+HLImageAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 847D627B1D8499AF006E287F /* UIImage+HLImageAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		847D62B41D8499AF006E287F /* UIImage+HLImageAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 847D627C1D8499AF006E287F /* UIImage+HLImageAdditions.m */; };
+		CBF9D2BD1DAD3450008F9C92 /* HLGridLayoutManager.h in Headers */ = {isa = PBXBuildFile; fileRef = CBF9D2BB1DAD3450008F9C92 /* HLGridLayoutManager.h */; };
+		CBF9D2BE1DAD3450008F9C92 /* HLGridLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = CBF9D2BC1DAD3450008F9C92 /* HLGridLayoutManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -128,6 +130,8 @@
 		847D627A1D8499AF006E287F /* SKNode+HLNodeVisuals.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SKNode+HLNodeVisuals.m"; sourceTree = "<group>"; };
 		847D627B1D8499AF006E287F /* UIImage+HLImageAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+HLImageAdditions.h"; sourceTree = "<group>"; };
 		847D627C1D8499AF006E287F /* UIImage+HLImageAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+HLImageAdditions.m"; sourceTree = "<group>"; };
+		CBF9D2BB1DAD3450008F9C92 /* HLGridLayoutManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLGridLayoutManager.h; sourceTree = "<group>"; };
+		CBF9D2BC1DAD3450008F9C92 /* HLGridLayoutManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLGridLayoutManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -170,6 +174,8 @@
 				847D624B1D8499AF006E287F /* HLError.h */,
 				847D624C1D8499AF006E287F /* HLGestureTarget.h */,
 				847D624D1D8499AF006E287F /* HLGestureTarget.m */,
+				CBF9D2BB1DAD3450008F9C92 /* HLGridLayoutManager.h */,
+				CBF9D2BC1DAD3450008F9C92 /* HLGridLayoutManager.m */,
 				847D624E1D8499AF006E287F /* HLGridNode.h */,
 				847D624F1D8499AF006E287F /* HLGridNode.m */,
 				847D62501D8499AF006E287F /* HLItemContentNode.h */,
@@ -255,6 +261,7 @@
 				847D62AF1D8499AF006E287F /* SKNode+HLLayoutManager.h in Headers */,
 				847D62AD1D8499AF006E287F /* SKNode+HLGestureTarget.h in Headers */,
 				847D62AB1D8499AF006E287F /* SKLabelNode+HLLabelNodeAdditions.h in Headers */,
+				CBF9D2BD1DAD3450008F9C92 /* HLGridLayoutManager.h in Headers */,
 				847D627D1D8499AF006E287F /* HLAction.h in Headers */,
 				847D62811D8499AF006E287F /* HLEmitterStore.h in Headers */,
 				847D628E1D8499AF006E287F /* HLLabelButtonNode.h in Headers */,
@@ -345,6 +352,7 @@
 				847D62801D8499AF006E287F /* HLComponentNode.m in Sources */,
 				847D62911D8499AF006E287F /* HLLayoutManager.m in Sources */,
 				847D62B21D8499AF006E287F /* SKNode+HLNodeVisuals.m in Sources */,
+				CBF9D2BE1DAD3450008F9C92 /* HLGridLayoutManager.m in Sources */,
 				847D628D1D8499AF006E287F /* HLItemsNode.m in Sources */,
 				84662B481DA33093006B1812 /* NSGestureRecognizer+MultipleActions.m in Sources */,
 				847D62931D8499AF006E287F /* HLMath.m in Sources */,

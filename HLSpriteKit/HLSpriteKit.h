@@ -12,6 +12,7 @@
 #import "HLError.h"
 #import "HLGestureTarget.h"
 #import "HLGridNode.h"
+#import "HLGridLayoutManager.h"
 #import "HLItemContentNode.h"
 #import "HLItemNode.h"
 #import "HLItemsNode.h"

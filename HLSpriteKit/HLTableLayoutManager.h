@@ -62,7 +62,7 @@ FOUNDATION_EXPORT const CGFloat HLTableLayoutManagerEpsilon;
  Layout and (optionally) return calculated final column widths and row heights.
 
  See `layout:` for details.
- 
+
  Also see "Accessing Last-Layout State" notes in this class and in `HLLayoutManager`.
 */
 - (void)layout:(NSArray *)nodes getColumnWidths:(NSArray * __strong *)columnWidths rowHeights:(NSArray * __strong *)rowHeights;
@@ -92,14 +92,6 @@ FOUNDATION_EXPORT const CGFloat HLTableLayoutManagerEpsilon;
  purposes.
 */
 @property (nonatomic, assign) NSUInteger columnCount;
-
-/**
- Returns the number of rows in the table at the last layout.
-
- The row count is derived from the `columnCount` and the number of nodes laid out at the
- last `layout:`.
-*/
-@property (nonatomic, readonly) NSUInteger rowCount;
 
 /**
  Specifies the total width and height of the table when it contains expanding columns and
@@ -177,16 +169,22 @@ FOUNDATION_EXPORT const CGFloat HLTableLayoutManagerEpsilon;
 /**
  The distance (reserved by `layout:`) between each edge of the table and the nearest cell
  edge.
+
+ Default value is `0.0`.
 */
 @property (nonatomic, assign) CGFloat tableBorder;
 
 /**
  The distance (reserved by `layout:`) between adjacent columns.
+
+ Default value is `0.0`.
 */
 @property (nonatomic, assign) CGFloat columnSeparator;
 
 /**
  The distance (reserved by `layout:`) between adjacent rows.
+
+ Default value is `0.0`.
 */
 @property (nonatomic, assign) CGFloat rowSeparator;
 
@@ -198,5 +196,13 @@ FOUNDATION_EXPORT const CGFloat HLTableLayoutManagerEpsilon;
  The size is derived from the layout-affecting parameters and last-laid-out nodes.
 */
 @property (nonatomic, readonly) CGSize size;
+
+/**
+ Returns the number of rows in the table at the last layout.
+
+ The row count is derived from the `columnCount` and the number of nodes laid out at the
+ last `layout:`.
+*/
+@property (nonatomic, readonly) NSUInteger rowCount;
 
 @end
