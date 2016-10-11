@@ -51,6 +51,18 @@
   return self;
 }
 
+- (instancetype)initWithSquareSize:(CGSize)squareSize
+{
+  self = [super init];
+  if (self) {
+    _squareSize = squareSize;
+    _anchorPoint = CGPointMake(0.5f, 0.5f);
+    _squareAnchorPoint = CGPointMake(0.5f, 0.5f);
+    _fillMode = HLGridLayoutManagerFillRightThenDown;
+  }
+  return self;
+}
+
 - (instancetype)initWithCoder:(NSCoder *)aDecoder
 {
   self = [super init];
@@ -306,10 +318,362 @@
   }
 }
 
-NSUInteger
-HLGridLayoutManagerNodeContainingPoint(CGPoint location)
+- (void)layoutWith2DArray:(NSArray *)nodeArrays
 {
-  return 0;
+  NSUInteger subarraysCount = [nodeArrays count];
+  if (subarraysCount == 0) {
+    _size = CGSizeZero;
+    return;
+  }
+  NSUInteger maxNodeCount = 0;
+  for (NSArray *subarray in nodeArrays) {
+    NSUInteger nodeCount = [subarray count];
+    if (nodeCount > maxNodeCount) {
+      maxNodeCount = nodeCount;
+    }
+  }
+  if (maxNodeCount == 0) {
+    _size = CGSizeZero;
+    return;
+  }
+
+  switch (_fillMode) {
+    case HLGridLayoutManagerFillRightThenDown:
+      _columnCount = maxNodeCount;
+      _rowCount = subarraysCount;
+      break;
+    case HLGridLayoutManagerFillRightThenUp:
+      _columnCount = maxNodeCount;
+      _rowCount = subarraysCount;
+      break;
+    case HLGridLayoutManagerFillLeftThenDown:
+      _columnCount = maxNodeCount;
+      _rowCount = subarraysCount;
+      break;
+    case HLGridLayoutManagerFillLeftThenUp:
+      _columnCount = maxNodeCount;
+      _rowCount = subarraysCount;
+      break;
+    case HLGridLayoutManagerFillDownThenRight:
+      _columnCount = subarraysCount;
+      _rowCount = maxNodeCount;
+      break;
+    case HLGridLayoutManagerFillDownThenLeft:
+      _columnCount = subarraysCount;
+      _rowCount = maxNodeCount;
+      break;
+    case HLGridLayoutManagerFillUpThenRight:
+      _columnCount = subarraysCount;
+      _rowCount = maxNodeCount;
+      break;
+    case HLGridLayoutManagerFillUpThenLeft:
+      _columnCount = subarraysCount;
+      _rowCount = maxNodeCount;
+      break;
+  }
+
+  _size = CGSizeMake(_squareSize.width * _columnCount + _squareSeparator * (_columnCount - 1) + _gridBorder * 2.0f,
+                     _squareSize.height * _rowCount + _squareSeparator * (_rowCount - 1) + _gridBorder * 2.0f);
+
+  // note: Calculate row and column indexes so that the origin is in the lower left,
+  // corresponding to the origin used in the SpriteKit coordinate system.
+
+  CGFloat lowerLeftSquareX = _size.width * -1.0f * _anchorPoint.x
+    + _gridBorder + _gridOffset.x
+    + _squareSize.width * _squareAnchorPoint.x;
+  CGFloat lowerLeftSquareY = _size.height * -1.0f * _anchorPoint.y
+    + _gridBorder + _gridOffset.y
+    + _squareSize.height * _squareAnchorPoint.y;
+  CGFloat squareOffsetX = _squareSize.width + _squareSeparator;
+  CGFloat squareOffsetY = _squareSize.height + _squareSeparator;
+
+  switch (_fillMode) {
+    case HLGridLayoutManagerFillRightThenDown: {
+      NSEnumerator *subarraysEnumerator = [nodeArrays objectEnumerator];
+      for (int row = (int)_rowCount - 1; row >= 0; --row) {
+        NSArray *subarray = [subarraysEnumerator nextObject];
+        if (!subarray) {
+          break;
+        }
+        NSEnumerator *nodesEnumerator = [subarray objectEnumerator];
+        for (int column = 0; column < (int)_columnCount; ++column) {
+          id node = [nodesEnumerator nextObject];
+          if (!node) {
+            break;
+          }
+          if ([node isKindOfClass:[SKNode class]]) {
+            [(SKNode *)node setPosition:CGPointMake(lowerLeftSquareX + column * squareOffsetX,
+                                                    lowerLeftSquareY + row * squareOffsetY)];
+          }
+        }
+      }
+      break;
+    }
+    case HLGridLayoutManagerFillRightThenUp: {
+      NSEnumerator *subarraysEnumerator = [nodeArrays objectEnumerator];
+      for (int row = 0; row < (int)_rowCount; ++row) {
+        NSArray *subarray = [subarraysEnumerator nextObject];
+        if (!subarray) {
+          break;
+        }
+        NSEnumerator *nodesEnumerator = [subarray objectEnumerator];
+        for (int column = 0; column < (int)_columnCount; ++column) {
+          id node = [nodesEnumerator nextObject];
+          if (!node) {
+            break;
+          }
+          if ([node isKindOfClass:[SKNode class]]) {
+            [(SKNode *)node setPosition:CGPointMake(lowerLeftSquareX + column * squareOffsetX,
+                                                    lowerLeftSquareY + row * squareOffsetY)];
+          }
+        }
+      }
+      break;
+    }
+    case HLGridLayoutManagerFillLeftThenDown: {
+      NSEnumerator *subarraysEnumerator = [nodeArrays objectEnumerator];
+      for (int row = (int)_rowCount - 1; row >= 0; --row) {
+        NSArray *subarray = [subarraysEnumerator nextObject];
+        if (!subarray) {
+          break;
+        }
+        NSEnumerator *nodesEnumerator = [subarray objectEnumerator];
+        for (int column = (int)_columnCount - 1; column >= 0; --column) {
+          id node = [nodesEnumerator nextObject];
+          if (!node) {
+            break;
+          }
+          if ([node isKindOfClass:[SKNode class]]) {
+            [(SKNode *)node setPosition:CGPointMake(lowerLeftSquareX + column * squareOffsetX,
+                                                    lowerLeftSquareY + row * squareOffsetY)];
+          }
+        }
+      }
+      break;
+    }
+    case HLGridLayoutManagerFillLeftThenUp: {
+      NSEnumerator *subarraysEnumerator = [nodeArrays objectEnumerator];
+      for (int row = 0; row < (int)_rowCount; ++row) {
+        NSArray *subarray = [subarraysEnumerator nextObject];
+        if (!subarray) {
+          break;
+        }
+        NSEnumerator *nodesEnumerator = [subarray objectEnumerator];
+        for (int column = (int)_columnCount - 1; column >= 0; --column) {
+          id node = [nodesEnumerator nextObject];
+          if (!node) {
+            break;
+          }
+          if ([node isKindOfClass:[SKNode class]]) {
+            [(SKNode *)node setPosition:CGPointMake(lowerLeftSquareX + column * squareOffsetX,
+                                                    lowerLeftSquareY + row * squareOffsetY)];
+          }
+        }
+      }
+      break;
+    }
+    case HLGridLayoutManagerFillDownThenRight: {
+      NSEnumerator *subarraysEnumerator = [nodeArrays objectEnumerator];
+      for (int column = 0; column < (int)_columnCount; ++column) {
+        NSArray *subarray = [subarraysEnumerator nextObject];
+        if (!subarray) {
+          break;
+        }
+        NSEnumerator *nodesEnumerator = [subarray objectEnumerator];
+        for (int row = (int)_rowCount - 1; row >= 0; --row) {
+          id node = [nodesEnumerator nextObject];
+          if (!node) {
+            break;
+          }
+          if ([node isKindOfClass:[SKNode class]]) {
+            [(SKNode *)node setPosition:CGPointMake(lowerLeftSquareX + column * squareOffsetX,
+                                                    lowerLeftSquareY + row * squareOffsetY)];
+          }
+        }
+      }
+      break;
+    }
+    case HLGridLayoutManagerFillDownThenLeft: {
+      NSEnumerator *subarraysEnumerator = [nodeArrays objectEnumerator];
+      for (int column = (int)_columnCount - 1; column >= 0; --column) {
+        NSArray *subarray = [subarraysEnumerator nextObject];
+        if (!subarray) {
+          break;
+        }
+        NSEnumerator *nodesEnumerator = [subarray objectEnumerator];
+        for (int row = (int)_rowCount - 1; row >= 0; --row) {
+          id node = [nodesEnumerator nextObject];
+          if (!node) {
+            break;
+          }
+          if ([node isKindOfClass:[SKNode class]]) {
+            [(SKNode *)node setPosition:CGPointMake(lowerLeftSquareX + column * squareOffsetX,
+                                                    lowerLeftSquareY + row * squareOffsetY)];
+          }
+        }
+      }
+      break;
+    }
+    case HLGridLayoutManagerFillUpThenRight: {
+      NSEnumerator *subarraysEnumerator = [nodeArrays objectEnumerator];
+      for (int column = 0; column < (int)_columnCount; ++column) {
+        NSArray *subarray = [subarraysEnumerator nextObject];
+        if (!subarray) {
+          break;
+        }
+        NSEnumerator *nodesEnumerator = [subarray objectEnumerator];
+        for (int row = 0; row < (int)_rowCount; ++row) {
+          id node = [nodesEnumerator nextObject];
+          if (!node) {
+            break;
+          }
+          if ([node isKindOfClass:[SKNode class]]) {
+            [(SKNode *)node setPosition:CGPointMake(lowerLeftSquareX + column * squareOffsetX,
+                                                    lowerLeftSquareY + row * squareOffsetY)];
+          }
+        }
+      }
+      break;
+    }
+  case HLGridLayoutManagerFillUpThenLeft: {
+      NSEnumerator *subarraysEnumerator = [nodeArrays objectEnumerator];
+      for (int column = (int)_columnCount - 1; column >= 0; --column) {
+        NSArray *subarray = [subarraysEnumerator nextObject];
+        if (!subarray) {
+          break;
+        }
+        NSEnumerator *nodesEnumerator = [subarray objectEnumerator];
+        for (int row = 0; row < (int)_rowCount; ++row) {
+          id node = [nodesEnumerator nextObject];
+          if (!node) {
+            break;
+          }
+          if ([node isKindOfClass:[SKNode class]]) {
+            [(SKNode *)node setPosition:CGPointMake(lowerLeftSquareX + column * squareOffsetX,
+                                                    lowerLeftSquareY + row * squareOffsetY)];
+          }
+        }
+      }
+      break;
+    }
+  }
+}
+
+- (NSUInteger)nodeContainingPoint:(CGPoint)location
+{
+  // note: Row and column indexes have origin in lower left.
+  int row;
+  int column;
+  if (![self HL_getRowAndColumnForLocation:location row:&row column:&column]) {
+    return NSNotFound;
+  }
+
+  switch (_fillMode) {
+    case HLGridLayoutManagerFillRightThenDown:
+      return (_rowCount - 1 - row) * _columnCount + column;
+    case HLGridLayoutManagerFillRightThenUp:
+      return row * _columnCount + column;
+    case HLGridLayoutManagerFillLeftThenDown:
+      return (_rowCount - 1 - row) * _columnCount + (_columnCount - 1 - column);
+    case HLGridLayoutManagerFillLeftThenUp:
+      return row * _columnCount + (_columnCount - 1 - column);
+    case HLGridLayoutManagerFillDownThenRight:
+      return column * _rowCount + (_rowCount - 1 - row);
+    case HLGridLayoutManagerFillDownThenLeft:
+      return (_columnCount - 1 - column) * _rowCount + (_rowCount - 1 - row);
+    case HLGridLayoutManagerFillUpThenRight:
+      return column * _rowCount + row;
+    case HLGridLayoutManagerFillUpThenLeft:
+      return (_columnCount - 1 - column) * _rowCount + row;
+  }
+
+  return NSNotFound;
+}
+
+- (BOOL)nodeContainingPoint:(CGPoint)location
+               primaryIndex:(NSUInteger *)primaryIndex
+             secondaryIndex:(NSUInteger *)secondaryIndex
+{
+  *primaryIndex = NSNotFound;
+  *secondaryIndex = NSNotFound;
+
+  // note: Row and column indexes have origin in lower left.
+  int row;
+  int column;
+  if (![self HL_getRowAndColumnForLocation:location row:&row column:&column]) {
+    return NO;
+  }
+  
+  switch (_fillMode) {
+    case HLGridLayoutManagerFillRightThenDown:
+      *primaryIndex = (_rowCount - 1 - row);
+      *secondaryIndex = column;
+      break;
+    case HLGridLayoutManagerFillRightThenUp:
+      *primaryIndex = row;
+      *secondaryIndex = column;
+      break;
+    case HLGridLayoutManagerFillLeftThenDown:
+      *primaryIndex = (_rowCount - 1 - row);
+      *secondaryIndex = (_columnCount - 1 - column);
+      break;
+    case HLGridLayoutManagerFillLeftThenUp:
+      *primaryIndex = row;
+      *secondaryIndex = (_columnCount - 1 - column);
+      break;
+    case HLGridLayoutManagerFillDownThenRight:
+      *primaryIndex = column;
+      *secondaryIndex = (_rowCount - 1 - row);
+      break;
+    case HLGridLayoutManagerFillDownThenLeft:
+      *primaryIndex = (_columnCount - 1 - column);
+      *secondaryIndex = (_rowCount - 1 - row);
+      break;
+    case HLGridLayoutManagerFillUpThenRight:
+      *primaryIndex = column;
+      *secondaryIndex = row;
+      break;
+    case HLGridLayoutManagerFillUpThenLeft:
+      *primaryIndex = (_columnCount - 1 - column);
+      *secondaryIndex = row;
+      break;
+  }
+  
+  return YES;
+}
+
+- (BOOL)HL_getRowAndColumnForLocation:(CGPoint)location row:(int *)row column:(int *)column
+{
+  // note: Calculate row and column indexes so that the origin is in the lower left,
+  // corresponding to the origin used in the SpriteKit coordinate system.
+
+  CGFloat lowerLeftSquareLeftX = _size.width * -1.0f * _anchorPoint.x + _gridBorder + _gridOffset.x;
+  CGFloat lowerLeftSquareBottomY = _size.height * -1.0f * _anchorPoint.y + _gridBorder + _gridOffset.y;
+  CGFloat squareOffsetX = _squareSize.width + _squareSeparator;
+  CGFloat squareOffsetY = _squareSize.height + _squareSeparator;
+  
+  CGFloat lowerLeftSquareLocationX = location.x - lowerLeftSquareLeftX;
+
+  int c = (int)floor(lowerLeftSquareLocationX / squareOffsetX);
+  if (c < 0 || c >= _columnCount) {
+    return NO;
+  }
+  if (lowerLeftSquareLocationX - c * squareOffsetX > _squareSize.width) {
+    return NO;
+  }
+  CGFloat lowerLeftSquareLocationY = location.y - lowerLeftSquareBottomY;
+
+  int r = (int)floor(lowerLeftSquareLocationY / squareOffsetY);
+  if (r < 0 || r >= _rowCount) {
+    return NO;
+  }
+  if (lowerLeftSquareLocationY - r * squareOffsetY > _squareSize.height) {
+    return NO;
+  }
+
+  *column = c;
+  *row = r;
+  return YES;
 }
 
 @end

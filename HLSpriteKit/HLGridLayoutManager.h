@@ -73,17 +73,23 @@ typedef NS_ENUM(NSInteger, HLGridLayoutManagerFillMode) {
 
 /**
  Initializes the object with all parameters necessary for a grid layout of nodes limited
- by the number of columns in the grid.
+ by the number of columns in the grid (suitable for the `layout:` method).
 */
 - (instancetype)initWithColumnCount:(NSUInteger)columnCount
                          squareSize:(CGSize)squareSize;
 
 /**
  Initializes the object with all parameters necessary for a grid layout of nodes limited
- by the number of rows in the grid.
+ by the number of rows in the grid (suitable for the `layout:` method).
 */
 - (instancetype)initWithRowCount:(NSUInteger)rowCount
                       squareSize:(CGSize)squareSize;
+
+/**
+ Initializes the object with all parameters necessary for a grid layout of nodes without
+ column or row counts specified (suitable for the `layoutWith2DArray:` method).
+*/
+- (instancetype)initWithSquareSize:(CGSize)squareSize;
 
 /// @name Performing a Layout
 
@@ -92,7 +98,7 @@ typedef NS_ENUM(NSInteger, HLGridLayoutManagerFillMode) {
 
  For layout to have an effect: Either `columnCount` or `rowCount` must have been set
  non-zero.  Grid layout is limited either by the number of columns or the number of rows;
- whichever property was most recently set determines the limiting dimension.
+ the limiting dimension is determined by whichever property was most recently set.
 
  The order of the passed nodes determines position in the grid, according to the
  `fillMode` of the grid.  A square is skipped if the corresponding element in the array is
@@ -105,6 +111,35 @@ typedef NS_ENUM(NSInteger, HLGridLayoutManagerFillMode) {
  `squareSeparator`, etc) and re-layout only exactly once.
 */
 - (void)layout:(NSArray *)nodes;
+
+/**
+ Sets the positions of the passed nodes according to the layout-affecting parameters.
+
+ Compare `layout:`.  The important difference is that this method takes a 2-dimensional
+ array of nodes rather than a 1-dimensional array of nodes.  The nodes are filled into the
+ grid according to the `fillMode` of the grid, such that each subarray is expected to
+ match with a corresponding row or column.  For example:
+
+ - If the `fillMode` is `HLGridLayoutManagerFillRightThenDown`, the first subarray of
+   nodes will be used to fill in the uppermost row, left-to-right.
+
+ - If the `fillMode` is `HLGridLayoutManagerFillUpThenLeft`, the first subarray of
+   nodes will be used to fill in the rightmost column, bottom-to-top.
+
+ Also, when using this kind of layout, `columnCount` and `rowCount` do not limit the
+ number of nodes laid out.  Instead, after layout, they can be read to determine the
+ (maximum) number of rows or columns.
+
+ As in `layout:`, a square is skipped if the corresponding element in the array is not a
+ kind of `SKNode` class.  (It is suggested to pass `[NSNull null]` to intentionally leave
+ squares empty.)
+
+ This method must always be called explicitly to realize layout changes.  On one hand,
+ it's annoying to have to remember to call it; on the other hand, it allows the owner
+ efficiently to make multiple changes (e.g. remove a node, insert another node, change the
+ `squareSeparator`, etc) and re-layout only exactly once.
+*/
+- (void)layoutWith2DArray:(NSArray *)nodeArrays;
 
 /// @name Getting and Setting Grid Geometry
 
@@ -133,15 +168,17 @@ typedef NS_ENUM(NSInteger, HLGridLayoutManagerFillMode) {
 
  Default value is `0`.
 
- The grid is constrained either by the number of columns or by the number of rows in the
- grid.  There is therefore an important distinction between setting and getting this
- property:
+ When using `layout:`, the grid is constrained either by the number of columns or by the
+ number of rows in the grid.  There is therefore an important distinction between setting
+ and getting this property:
 
  - Setting the column count affects the next layout, limiting the number of columns in the
    grid and removing any row limitation (from `rowCount`).
 
  - Getting the column count returns the number of columns used by the nodes laid out at
    the last layout.
+
+ When using `layoutWith2DArray:`, setting this property does not affect layout.
 */
 @property (nonatomic, assign) NSUInteger columnCount;
 
@@ -159,6 +196,8 @@ typedef NS_ENUM(NSInteger, HLGridLayoutManagerFillMode) {
 
  - Getting the row count returns the number of rows used by the nodes laid out at the last
    layout.
+
+ When using `layoutWith2DArray:`, setting this property does not affect layout.
 */
 @property (nonatomic, assign) NSUInteger rowCount;
 
@@ -218,13 +257,31 @@ typedef NS_ENUM(NSInteger, HLGridLayoutManagerFillMode) {
 @property (nonatomic, readonly) CGSize size;
 
 /**
- Convenience method for finding the index of the node containing the passed location, for
- nodes that have been laid out by this `HLGridLayoutManager`.
+ Returns the index of the node containing the passed location, for nodes that have been
+ laid out by this `HLGridLayoutManager` using `layout:` with a 1-dimensional array of
+ nodes.
 
- Returns `NSNotFound` if no such node is found.
+ Returns `NSNotFound` if the location is not within the grid, or if the location falls on
+ the grid border or a square separator.
 
- Grid border and square separator are not considered to be contained by any node.
+ The returned index might not refer to a real node if not enough nodes were passed to the
+ layout method to fill the grid.
 */
-NSUInteger HLGridLayoutManagerNodeContainingPoint(CGPoint location);
+- (NSUInteger)nodeContainingPoint:(CGPoint)location;
+
+/**
+ Returns the primary and secondary indexes of the node containing the passed location, for
+ nodes that have been laid out by this `HLGridLayoutManager` using `layoutWith2DArray:`
+ with a 2-dimensional array of nodes.
+
+ Returns false (and sets indexes to `NSNotFound`) if the location is not within the grid,
+ or if the location falls on the grid border or a square separator.
+
+ The returned indexes might not refer to a real node if not enough nodes were passed to
+ the layout method to fill the grid.
+*/
+- (BOOL)nodeContainingPoint:(CGPoint)location
+               primaryIndex:(NSUInteger *)primaryIndex
+             secondaryIndex:(NSUInteger *)secondaryIndex;
 
 @end

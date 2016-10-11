@@ -82,6 +82,10 @@
    certain point).  In this case, though, the necessary state is already present on the
    laid-out nodes themselves, and so the function takes the last-laid-out nodes (and a
    few key manager properties) as input, and needs no other persistent state.
+ 
+ . `HLGridLayoutManager` does a similar kind of calculation, but it needs almost all of
+   the manager properties, and none of the nodes, and so it implements its helper
+   as an object method.
 
  . `HLTableLayoutManager` can optionally return from the `layout` method certain derived
    last-layout properties (namely, column widths and row heights).
