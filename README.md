@@ -40,6 +40,8 @@ Layout managers currently provided:
 
  * `HLTableLayoutManager`, for table-like layouts;
 
+ * `HLGridLayoutManager`, for grid-like layouts;
+
  * `HLRingLayoutManager`, for ring-like polar-coordinate layouts;
 
  * `HLOutlineLayoutManager`, for vertical lists (especially of text)
