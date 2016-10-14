@@ -13,11 +13,13 @@
 CGSize
 HLLayoutManagerGetNodeSize(id node)
 {
-  if ([node respondsToSelector:@selector(size)]) {
-    return [node size];
-  }
+  // note: As of iOS 10, SKNode exposes an undocumented `size` selector.  For SKLabelNode
+  // it returns zero.
   if ([node isKindOfClass:[SKLabelNode class]]) {
     return [(SKLabelNode *)node frame].size;
+  }
+  if ([node respondsToSelector:@selector(size)]) {
+    return [node size];
   }
   return CGSizeZero;
 }
@@ -25,11 +27,13 @@ HLLayoutManagerGetNodeSize(id node)
 CGFloat
 HLLayoutManagerGetNodeWidth(id node)
 {
-  if ([node respondsToSelector:@selector(size)]) {
-    return [node size].width;
-  }
+  // note: As of iOS 10, SKNode exposes an undocumented `size` selector.  For SKLabelNode
+  // it returns zero.
   if ([node isKindOfClass:[SKLabelNode class]]) {
     return [(SKLabelNode *)node frame].size.width;
+  }
+  if ([node respondsToSelector:@selector(size)]) {
+    return [node size].width;
   }
   return 0.0f;
 }
@@ -37,11 +41,13 @@ HLLayoutManagerGetNodeWidth(id node)
 CGFloat
 HLLayoutManagerGetNodeHeight(id node)
 {
-  if ([node respondsToSelector:@selector(size)]) {
-    return [node size].height;
-  }
+  // note: As of iOS 10, SKNode exposes an undocumented `size` selector.  For SKLabelNode
+  // it returns zero.
   if ([node isKindOfClass:[SKLabelNode class]]) {
     return [(SKLabelNode *)node frame].size.height;
+  }
+  if ([node respondsToSelector:@selector(size)]) {
+    return [node size].height;
   }
   return 0.0f;
 }
