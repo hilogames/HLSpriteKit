@@ -58,3 +58,12 @@ xcodebuild clean build test \
            -destination 'platform=iOS Simulator,OS=latest,name=iPhone 6' \
            ONLY_ACTIVE_ARCH=NO \
     | xcpretty
+
+# note: Framework project (for Carthage) not currently configured for testing;
+# just build.
+xcodebuild clean build \
+           -project HLSpriteKit.xcodeproj \
+           -scheme HLSpriteKit \
+           -sdk iphonesimulator10.0 \
+           ONLY_ACTIVE_ARCH=NO \
+    | xcpretty
