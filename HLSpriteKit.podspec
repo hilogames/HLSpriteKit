@@ -1,13 +1,13 @@
 
 Pod::Spec.new do |s|
   s.name         = "HLSpriteKit"
-  s.version      = "1.2.0"
+  s.version      = "1.3.0"
   s.summary      = "SpriteKit scene and node subclasses, plus various utilities."
   s.description  = <<-DESC
                    `HLSpriteKit` is yet another companion library to Apple's `SpriteKit` with the goal of abstracting reusable code.
                    `HLSpriteKit`, in its current form, should probably be used in one of two ways:
                    - Non-committally: As a supply of useful custom `SKNode` subclasses, for example `HLScrollNode` (a node equivalent of `UIScrollView`) or `HLToolbarNode` (a simple button toolbar).
-                   - Full committment: As a system for designing an interactive scene, inheriting from `HLScene` and using `UIGestureRecognizers` via `HLGestureTarget`.
+                   - Full committment: As a system for designing an interactive scene, inheriting from `HLScene` and using gesture recognizers via `HLGestureTarget`.
                    DESC
   s.homepage     = "https://github.com/hilogames/HLSpriteKit"
   s.license      = { :type => "MIT", :file => "LICENSE" }

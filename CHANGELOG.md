@@ -28,6 +28,9 @@
   for major components.  
   [Karl Voskuil](https://github.com/karlvoskuil)
 
+- New `HLGridLayoutManager` for fixed-space grid layouts.  
+  [Karl Voskuil](https://github.com/karlvoskuil)
+
 ## 1.2.0 [2016-09-21]
 
 ## Breaking
