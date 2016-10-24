@@ -37,22 +37,22 @@ typedef NS_ENUM(NSInteger, HLGridLayoutManagerFillMode) {
   HLGridLayoutManagerFillLeftThenUp,
   /**
    Starting at the upper left of the grid, nodes fill the first column downwards before
-   going right to the next row.
+   going right to the next column.
   */
   HLGridLayoutManagerFillDownThenRight,
   /**
    Starting at the upper right of the grid, nodes fill the first column downwards before
-   going left to the next row.
+   going left to the next column.
    */
   HLGridLayoutManagerFillDownThenLeft,
   /**
    Starting at the lower left of the grid, nodes fill the first column upwards before
-   going right to the next row.
+   going right to the next column.
   */
   HLGridLayoutManagerFillUpThenRight,
   /**
    Starting at the lower right of the grid, nodes fill the first column upwards before
-   going left to the next row.
+   going left to the next column.
    */
   HLGridLayoutManagerFillUpThenLeft,
 };
