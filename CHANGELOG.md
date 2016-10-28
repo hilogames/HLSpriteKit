@@ -1,7 +1,14 @@
 
 # Change Log
 
-## Master
+## 1.4.0 [2016-10-28]
+
+## Added
+
+- Lower deployment target minimum for iOS to 8.0.  
+  [Karl Voskuil](https://github.com/karlvoskuil)
+
+## 1.3.0 [2016-10-18]
 
 ## Breaking
 
