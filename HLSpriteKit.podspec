@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   s.source_files = "HLSpriteKit/*"
   s.requires_arc = true
 
-  s.ios.deployment_target = "8.4"
+  s.ios.deployment_target = "8.0"
   s.ios.frameworks        = "Foundation", "UIKit", "SpriteKit"
 
   s.osx.deployment_target = "10.11"

@@ -2,7 +2,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 
 target 'iOS' do
 
-  platform :ios, '8.4'
+  platform :ios, '8.0'
 
   pod 'HLSpriteKit', :path => '../'
 
