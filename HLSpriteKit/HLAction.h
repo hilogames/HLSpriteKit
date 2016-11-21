@@ -9,15 +9,106 @@
 #import <SpriteKit/SpriteKit.h>
 
 /**
- A lightweight encodable object that, when triggered, can perform a selector on a
- weakly-retained target with a single argument.
+ A collection of convenience methods for creating HLSpriteKit action objects.
 
- Intended as a replacement for `SKAction runBlock:`, which is more versatile, but which
- cannot be encoded.
+ The interface is intended to be similar to the `SKAction` class method interface for
+ creating action objects.
+*/
+@interface HLAction : NSObject
+
+/**
+ Convenience method to create a weak-target perform-selector object and return an
+ `SKAction` to trigger it.
+*/
++ (SKAction *)performSelector:(SEL)selector
+                 onWeakTarget:(id)weakTarget;
+
+/**
+ Convenience method to create a weak-target, single argument perform-selector object and
+ returns an `SKAction` to trigger it.
+*/
++ (SKAction *)performSelector:(SEL)selector
+                 onWeakTarget:(id)weakTarget
+                 withArgument:(id)argument;
+
+/**
+ Convenience method to create a weak-target, double argument perform-selector object and
+ return an `SKAction` to trigger it.
+*/
++ (SKAction *)performSelector:(SEL)selector
+                 onWeakTarget:(id)weakTarget
+                withArgument1:(id)argument1
+                    argument2:(id)argument2;
+
+/**
+ Convenience method to create a strong-target, single argument perform-selector object and
+ return an `SKAction` to trigger it.
+*/
++ (SKAction *)performSelector:(SEL)selector
+               onStrongTarget:(id)strongTarget
+                 withArgument:(id)argument;
+
+/**
+ Convenience method to create a strong-target, double argument perform-selector object and
+ return an `SKAction` to trigger it.
+*/
++ (SKAction *)performSelector:(SEL)selector
+               onStrongTarget:(id)strongTarget
+                withArgument1:(id)argument1
+                    argument2:(id)argument2;
+
+/**
+ Convenience method to create a custom action object and return an `SKAction` to trigger
+ it.
+*/
++ (SKAction *)customActionWithDuration:(NSTimeInterval)duration
+                              selector:(SEL)selector
+                            weakTarget:(id)weakTarget
+                                  node:(SKNode *)node
+                              userData:(id)userData;
+
+/**
+ Convenience method to create a sequence action object and return an `SKAction` to trigger
+ it.
+*/
++ (SKAction *)sequence:(NSArray *)actions onNode:(SKNode *)node;
+
+@end
+
+/**
+ A lightweight encodable object that, when triggered, can perform a selector on a
+ weakly-retained target.
+
+ This perform-selector object has two main purposes:
+
+   - to avoid retain cycles caused by `SKAction performSelector:onTarget:`
+
+   - to be an encodable replacement for `SKAction runBlock:`
+
+ ## Avoid Retain Cycles in `SKAction performSelector:onTarget:`
+
+ The perform-selector provided by SpriteKit retains its target strongly, which can lead to
+ a retain cycle when the target is the node running the action.  For example, a sequence
+ like is problematic:
+
+     SKAction *delayedPing = [SKAction sequence:@[ [SKAction waitForDuration:1.0],
+                                                   [SKAction performSelector:@selector(ping) onTarget:self] ]];
+     [self runAction:delayedPing];
+
+ If, during the one-second wait, this node is removed from parent, then its actions will
+ be paused (not released!), and the node and action will retain each other strongly.
+
+ To address this, `HLPerformSelectorWeak` (and its variants) retain their target weakly.
+
+ This module contains "strong" variants of HLPerformSelector which correspond more closely
+ to the behavior of `performSelector:onTarget:`.  They are not recommended.
+
+ ## Encodable Replacement for `SKAction runBlock:`
+
+ This perform-selector and its variants are certainly not as versatile as `SKAction
+ runBlock:`, and yet they can be encoded, which might be useful.
 
  See http://stackoverflow.com/q/35249269/1332415 for context.
-
- ## Details
 
  When the node hierarchy is encoded, as is common during application state preservation or
  a "game save", nodes running `SKAction` actions with code blocks must be handled
@@ -69,16 +160,28 @@
      perform-selector object, and so both will be encoded along with the node running the
      actions.
 
- ## Weak or Strong Perform-Selector Object?
+ Using convenience methods, the new code would look like this:
 
- Most often it is not appropriate to use the "strong" variants of HLPerformSelector.  In
- all variants the node running the triggering action retains its `SKAction` strongly,
- which retains the perform-selector object strongly.  So then in "strong" variants, the
- target of the perform-selector object is retained strongly, also; this target is
- typically the node itself, or the scene that owns it, and so a retain cycle is created
- and won't be broken until the node has completed its running actions.  In particular, if
- the node is removed from its parent, then its running actions will be stopped (not
- destroyed!), and the retain cycle won't be broken.
+     [orcNode runAction:[SKAction sequence:@[ [SKAction fadeOutWithDuration:3.0],
+                                              [SKAction removeFromParent],
+                                              [HLAction performSelector:@selector(orcDidFinishDying:)
+                                                           onWeakTarget:self
+                                                           withArgument:orcNode] ]]];
+
+ This code sample shows all the steps explicitly, with manual creation of triggering `SKAction`:
+
+     SKAction *fadeAction = [SKAction fadeOutWithDuration:3.0];
+     SKAction *removeAction = [SKAction removeFromParent];
+     HLPerformSelectorWeakSingle *cleanupCaller = [[HLPerformSelectorWeakSingle alloc] initWithWeakTarget:self selector:@selector(orcDidFinishDying:) argument:orcNode];
+     SKAction *cleanupAction = [SKAction performSelector:@selector(execute) onTarget:cleanupCaller];
+     [orcNode runAction:[SKAction sequence:@[ fadeAction, removeAction, cleanupAction ]]];
+
+ And finally a third variant which is mostly explicit, but using the `action` method shorthand:
+
+     SKAction *fadeAction = [SKAction fadeOutWithDuration:3.0];
+     SKAction *removeAction = [SKAction removeFromParent];
+     HLPerformSelectorWeakSingle *cleanupCaller = [[HLPerformSelectorWeakSingle alloc] initWithWeakTarget:self selector:@selector(orcDidFinishDying:) argument:orcNode];
+     [orcNode runAction:[SKAction sequence:@[ fadeAction, removeAction, cleanupCaller.action ]]];
 
  ## Special Considerations
 
@@ -93,22 +196,95 @@
  See `HLSequence` for an alternative; upon decoding, it will not re-run parts of the
  sequence that have already completed.
 
- ## Examples
+ ## Example
 
- Example with manual creation of triggering `SKAction`.
+     [orcNode runAction:[SKAction sequence:@[ [SKAction fadeOutWithDuration:3.0],
+                                              [SKAction removeFromParent],
+                                              [HLAction performSelector:@selector(orcDidFinishDying:) onWeakTarget:self] ]]];
 
-     SKAction *fadeAction = [SKAction fadeOutWithDuration:3.0];
-     SKAction *removeAction = [SKAction removeFromParent];
-     HLPerformSelectorWeakSingle *cleanupCaller = [[HLPerformSelectorWeakSingle alloc] initWithWeakTarget:self selector:@selector(orcDidFinishDying:) argument:orcNode];
-     SKAction *cleanupAction = [SKAction performSelector:@selector(execute) onTarget:cleanupCaller];
-     [orcNode runAction:[SKAction sequence:@[ fadeAction, removeAction, cleanupAction ]]];
+*/
+@interface HLPerformSelectorWeak : NSObject <NSCoding>
 
- Example using `action` method shorthand.
+/// @name Creating a Perform-Selector Object
 
-     SKAction *fadeAction = [SKAction fadeOutWithDuration:3.0];
-     SKAction *removeAction = [SKAction removeFromParent];
-     HLPerformSelectorWeakSingle *cleanupCaller = [[HLPerformSelectorWeakSingle alloc] initWithWeakTarget:self selector:@selector(orcDidFinishDying:) argument:orcNode];
-     [orcNode runAction:[SKAction sequence:@[ fadeAction, removeAction, cleanupCaller.action ]]];
+/**
+ Initializes a perform-selector object with all properties.
+*/
+- (instancetype)initWithWeakTarget:(id)weakTarget selector:(SEL)selector;
+
+/**
+ The target the selector will be performed on, when triggered.
+
+ When the perform-selector object is triggered by the `execute` method, it will invoke its
+ selector on the target.
+
+ The target is retained weakly:
+
+ - Typically, the target is a controller that is also the parent node of the child
+   running the animation sequence.
+
+ - The target, therefore, retains the child; the child retains its running `SKActions`;
+   and the no-argument triggering `performSelector:onTarget:` retains this
+   perform-selector object.
+
+ - This perform-selector object retains the target only weakly, to avoid a retain cycle.
+*/
+@property (nonatomic, weak) id weakTarget;
+
+/// @name Configuring the Selector to be Performed
+
+/**
+ The selector to be performed when triggered.
+
+ When the perform-selector object is triggered by the `execute` method, it will invoke its
+ selector on the target.
+*/
+@property (nonatomic, assign) SEL selector;
+
+/// @name Triggering the Selector
+
+/**
+ The triggering method for the perform-selector object.
+
+ When the perform-selector object is triggered by the `execute` method, it will invoke its
+ selector on the target.
+*/
+- (void)execute;
+
+/**
+ Returns an `SKAction` to trigger this perform-selector object.
+
+ The action returned by
+
+     [thisObject action]
+
+ is equivalent to
+
+     [SKAction performSelector:@selector(execute) onTarget:thisObject]
+*/
+- (SKAction *)action;
+
+@end
+
+/**
+ A lightweight encodable object that, when triggered, can perform a selector on a
+ weakly-retained target with a single argument.
+
+ This perform-selector object has two main purposes:
+
+   - to avoid retain cycles caused by `SKAction performSelector:onTarget:`
+
+   - to be an encodable replacement for `SKAction runBlock:`
+
+ See `HLPerformSelectorWeak` for documentation.
+
+ Example using `HLAction` convenience method:
+
+     [orcNode runAction:[SKAction sequence:@[ [SKAction fadeOutWithDuration:3.0],
+                                              [SKAction removeFromParent],
+                                              [HLAction performSelector:@selector(orcDidFinishDying:)
+                                                           onWeakTarget:self
+                                                          withArgument:orcNode] ]]];
 */
 @interface HLPerformSelectorWeakSingle : NSObject <NSCoding>
 
@@ -185,10 +361,22 @@
  A lightweight encodable object that, when triggered, can perform a selector on a
  weakly-retained target with two arguments.
 
- Intended as a replacement for `SKAction runBlock:`, which is more versatile, but which
- cannot be encoded.
+ This perform-selector object has two main purposes:
 
- See `HLPerformSelectorWeakSingle` for documentation.
+   - to avoid retain cycles caused by `SKAction performSelector:onTarget:`
+
+   - to be an encodable replacement for `SKAction runBlock:`
+
+ See `HLPerformSelectorWeak` for documentation.
+
+ Example using `HLAction` convenience method:
+
+     [orcNode runAction:[SKAction sequence:@[ [SKAction fadeOutWithDuration:3.0],
+                                              [SKAction removeFromParent],
+                                              [HLAction performSelector:@selector(orcDidFinishDying:)
+                                                           onWeakTarget:self
+                                                          withArgument1:orcNode
+                                                              argument2:elfAttacker] ]]];
 */
 @interface HLPerformSelectorWeakDouble : NSObject <NSCoding>
 
@@ -276,7 +464,15 @@
  Intended as a replacement for `SKAction runBlock:`, which is more versatile, but which
  cannot be encoded.
 
- See `HLPerformSelectorWeakSingle` for documentation.
+ See `HLPerformSelectorWeak` for documentation.
+
+ Example using `HLAction` convenience method:
+
+     [orcNode runAction:[SKAction sequence:@[ [SKAction fadeOutWithDuration:3.0],
+                                              [SKAction removeFromParent],
+                                              [HLAction performSelector:@selector(orcDidFinishDying:)
+                                                         onStrongTarget:self
+                                                           withArgument:orcNode] ]]];
 */
 @interface HLPerformSelectorStrongSingle : NSObject <NSCoding>
 
@@ -363,7 +559,16 @@
  Intended as a replacement for `SKAction runBlock:`, which is more versatile, but which
  cannot be encoded.
 
- See `HLPerformSelectorWeakSingle` for documentation.
+ See `HLPerformSelectorWeak` for documentation.
+
+ Example using `HLAction` convenience method:
+
+     [orcNode runAction:[SKAction sequence:@[ [SKAction fadeOutWithDuration:3.0],
+                                              [SKAction removeFromParent],
+                                              [HLAction performSelector:@selector(orcDidFinishDying:)
+                                                         onStrongTarget:self
+                                                          withArgument1:orcNode
+                                                              argument2:elfAttacker] ]]];
 */
 @interface HLPerformSelectorStrongDouble : NSObject <NSCoding>
 
@@ -517,10 +722,10 @@ FOUNDATION_EXPORT NSString * const HLCustomActionSceneDidUpdateNotification;
      [SKAction group:@[ [SKAction performSelector:@selector(execute) onTarget:aCustomAction],
                         [SKAction waitForDuration:thisObject.duration] ]]
 
- Use the method `action` for convience.
+ Use the method `action` for convience, or the `HLAction` methods for more convenience.
 
- ## Examples
-
+ ## Example
+ 
  A tweening example using the non-encodable `customActionWithDuration:actionBlock:`.
 
        SKSpriteNode *redNode = [SKSpriteNode spriteNodeWithColor:[SKColor redColor] size:CGSizeMake(100.0f, 100.0f)];
@@ -531,7 +736,7 @@ FOUNDATION_EXPORT NSString * const HLCustomActionSceneDidUpdateNotification;
        }];
        [redNode runAction:flashInAction];
 
- The same effect achieved in an encodable way:
+ The same effect achieved in an encodable way (using `HLAction` convenience method).
 
         - (void)HL_flashInWithNode:(SKNode *)node elapsedTime:(CGFloat)elapsedTime duration:(NSTimeInterval)duration {
           CGFloat normalTime = (CGFloat)(elapsedTime / duration);
@@ -541,12 +746,10 @@ FOUNDATION_EXPORT NSString * const HLCustomActionSceneDidUpdateNotification;
 
         - (void)HL_showFlashingRedNode {
           SKSpriteNode *redNode = [SKSpriteNode spriteNodeWithColor:[SKColor redColor] size:CGSizeMake(100.0f, 100.0f)];
-          HLCustomAction *flashInAction = [[HLCustomAction alloc] initWithWeakTarget:self
-                                                                            selector:@selector(HL_flashInWithNode:elapsedTime:duration:userData:)
-                                                                                node:redNode
-                                                                            duration:3.0
-                                                                            userData:nil];
-          [redNode runAction:flashInAction.action];
+          [redNode runAction:[HLAction customActionWithDuration:3.0
+                                                       selector:@selector(HL_flashInWithNode:elapsedTime:duration:userData:)
+                                                           node:redNode
+                                                       userData:nil]];
         }
 
  ## Limitations
@@ -582,7 +785,7 @@ FOUNDATION_EXPORT NSString * const HLCustomActionSceneDidUpdateNotification;
 
 /**
  Initializes a custom action object with all properties.
- */
+*/
 - (instancetype)initWithWeakTarget:(id)weakTarget
                           selector:(SEL)selector
                               node:(SKNode *)node
@@ -828,6 +1031,19 @@ FOUNDATION_EXPORT NSString * const HLCustomActionSceneDidUpdateNotification;
  will restart, but once it completes, it is done.
 
  `HLSequence` is an abstracted version of the described concept.
+
+ Use the method `action` for convience, or the `HLAction` methods for more convenience.
+
+ ## Example
+
+ Example using `HLAction` convenience method:
+
+     [self runAction:[HLAction sequence:@[ [SKAction performSelector:@selector(doX) onTarget:self],
+                                           [SKAction waitForDuration:10.0],
+                                           [SKAction performSelector:@selector(doY) onTarget:self],
+                                           [SKAction waitForDuration:1.0],
+                                           [SKAction performSelector:@selector(doZ) onTarget:self] ]
+                                 onNode:self]];
 
  ## Special Considerations
 

@@ -104,22 +104,26 @@ not limited to:
 
 ### HLAction
 
-`HLAction` provides encodable alternatives to block-running `SKAction`
-actions.
+`HLAction` provides `SKAction` alternatives for various purposes.
 
-The problem: When the `SKScene` node hierarchy is encoded, as is
-common during application state preservation or a “game save”, nodes
-running `SKAction` actions with code blocks must be handled specially,
-since the code blocks cannot be encoded. In particular, attempting to
-encode either `runBlock:` or `customActionWithDuration:actionBlock:`
-leads to a runtime warning message:
+For instance, `[HLAction performSelector:onWeakTarget:]` retains its
+target weakly, which can avoid retain cycles caused by
+`[SKAction performSelector:onTarget:]`.
+
+`HLAction` also provides encodable alternatives to block-running
+`SKAction` actions.  The problem is this: When the `SKScene` node
+hierarchy is encoded, as is common during application state
+preservation or a “game save”, nodes running `SKAction` actions with
+code blocks must be handled specially, since the code blocks cannot be
+encoded. In particular, attempting to encode either `runBlock:` or
+`customActionWithDuration:actionBlock:` leads to a runtime warning
+message:
 
   > SKAction: Run block actions can not be properly encoded, Objective-C
   > blocks do not support NSCoding.
 
-The `HLAction` file provides a few encodable alternatives. The basic
-idea is to use selector callbacks (with extra features) rather than
-code blocks.
+The solution provided by `HLAction` actions is to use selector
+callbacks (with extra features) rather than code blocks.
 
 ## Gesture Recognition FAQ and Examples
 

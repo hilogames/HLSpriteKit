@@ -1,6 +1,18 @@
 
 # Change Log
 
+## Master
+
+## Added
+
+- Improved HLAction interface and expanded its use-cases.  The old
+  thing was to provide encodable actions; the new thing is to provide
+  perform-selector actions that don't retain their target strongly.
+  At the same time I finally realized that the correct interface for
+  these things is an HLAction class method interface parallel to the
+  SKAction class method interface (for creating actions).  
+  [Karl Voskuil](https://github.com/karlvoskuil)
+
 ## 1.4.0 [2016-10-28]
 
 ## Added

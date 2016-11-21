@@ -10,6 +10,70 @@
 
 #import <TargetConditionals.h>
 
+@implementation HLAction
+
++ (SKAction *)performSelector:(SEL)selector onStrongTarget:(id)strongTarget withArgument:(id)argument
+{
+  HLPerformSelectorStrongSingle *performSelector = [[HLPerformSelectorStrongSingle alloc] initWithStrongTarget:strongTarget
+                                                                                                      selector:selector
+                                                                                                      argument:argument];
+  return performSelector.action;
+}
+
++ (SKAction *)performSelector:(SEL)selector onStrongTarget:(id)strongTarget withArgument1:(id)argument1 argument2:(id)argument2
+{
+  HLPerformSelectorStrongDouble *performSelector = [[HLPerformSelectorStrongDouble alloc] initWithStrongTarget:strongTarget
+                                                                                                      selector:selector
+                                                                                                     argument1:argument1
+                                                                                                     argument2:argument2];
+  return performSelector.action;
+}
+
++ (SKAction *)performSelector:(SEL)selector onWeakTarget:(id)weakTarget
+{
+  HLPerformSelectorWeak *performSelector = [[HLPerformSelectorWeak alloc] initWithWeakTarget:weakTarget selector:selector];
+  return performSelector.action;
+}
+
++ (SKAction *)performSelector:(SEL)selector onWeakTarget:(id)weakTarget withArgument:(id)argument
+{
+  HLPerformSelectorWeakSingle *performSelector = [[HLPerformSelectorWeakSingle alloc] initWithWeakTarget:weakTarget
+                                                                                                selector:selector
+                                                                                                argument:argument];
+  return performSelector.action;
+}
+
++ (SKAction *)performSelector:(SEL)selector onWeakTarget:(id)weakTarget withArgument1:(id)argument1 argument2:(id)argument2
+{
+  HLPerformSelectorWeakDouble *performSelector = [[HLPerformSelectorWeakDouble alloc] initWithWeakTarget:weakTarget
+                                                                                                selector:selector
+                                                                                               argument1:argument1
+                                                                                               argument2:argument2];
+  return performSelector.action;
+}
+
++ (SKAction *)customActionWithDuration:(NSTimeInterval)duration
+                              selector:(SEL)selector
+                            weakTarget:(id)weakTarget
+                                  node:(SKNode *)node
+                              userData:(id)userData
+{
+  HLCustomAction *customAction = [[HLCustomAction alloc] initWithWeakTarget:weakTarget
+                                                                   selector:selector
+                                                                       node:node
+                                                                       duration:duration
+                                                                   userData:userData];
+  return customAction.action;
+}
+
++ (SKAction *)sequence:(NSArray *)actions onNode:(SKNode *)node
+{
+  HLSequence *sequence = [[HLSequence alloc] initWithNode:node actions:actions];
+  return sequence.action;
+}
+
+@end
+
 @implementation HLPerformSelectorStrongSingle
 
 - (instancetype)initWithStrongTarget:(id)strongTarget selector:(SEL)selector argument:(id)argument
@@ -100,6 +164,52 @@
   IMP imp = [_strongTarget methodForSelector:_selector];
   void (*func)(id, SEL, id, id) = (void (*)(id, SEL, id, id))imp;
   func(_strongTarget, _selector, _argument1, _argument2);
+}
+
+- (SKAction *)action
+{
+  return [SKAction performSelector:@selector(execute) onTarget:self];
+}
+
+@end
+
+@implementation HLPerformSelectorWeak
+
+- (instancetype)initWithWeakTarget:(id)weakTarget selector:(SEL)selector
+{
+  self = [super init];
+  if (self) {
+    _weakTarget = weakTarget;
+    _selector = selector;
+  }
+  return self;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+  self = [super init];
+  if (self) {
+    _weakTarget = [aDecoder decodeObjectForKey:@"weakTarget"];
+    _selector = NSSelectorFromString([aDecoder decodeObjectForKey:@"selector"]);
+  }
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+  [aCoder encodeConditionalObject:_weakTarget forKey:@"weakTarget"];
+  [aCoder encodeObject:NSStringFromSelector(_selector) forKey:@"selector"];
+}
+
+- (void)execute
+{
+  id target = _weakTarget;
+  if (!target) {
+    return;
+  }
+  IMP imp = [target methodForSelector:_selector];
+  void (*func)(id, SEL) = (void (*)(id, SEL))imp;
+  func(target, _selector);
 }
 
 - (SKAction *)action
