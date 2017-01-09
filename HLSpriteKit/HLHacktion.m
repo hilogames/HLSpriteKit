@@ -14,41 +14,41 @@
 
 + (SKAction *)performSelector:(SEL)selector onStrongTarget:(id)strongTarget withArgument:(id)argument
 {
-  HLPerformSelectorStrongSingle *performSelector = [[HLPerformSelectorStrongSingle alloc] initWithStrongTarget:strongTarget
-                                                                                                      selector:selector
-                                                                                                      argument:argument];
+  HLPerformSelectorStrongSingleHacktion *performSelector = [[HLPerformSelectorStrongSingleHacktion alloc] initWithStrongTarget:strongTarget
+                                                                                                                      selector:selector
+                                                                                                                      argument:argument];
   return performSelector.action;
 }
 
 + (SKAction *)performSelector:(SEL)selector onStrongTarget:(id)strongTarget withArgument1:(id)argument1 argument2:(id)argument2
 {
-  HLPerformSelectorStrongDouble *performSelector = [[HLPerformSelectorStrongDouble alloc] initWithStrongTarget:strongTarget
-                                                                                                      selector:selector
-                                                                                                     argument1:argument1
-                                                                                                     argument2:argument2];
+  HLPerformSelectorStrongDoubleHacktion *performSelector = [[HLPerformSelectorStrongDoubleHacktion alloc] initWithStrongTarget:strongTarget
+                                                                                                                      selector:selector
+                                                                                                                     argument1:argument1
+                                                                                                                     argument2:argument2];
   return performSelector.action;
 }
 
 + (SKAction *)performSelector:(SEL)selector onWeakTarget:(id)weakTarget
 {
-  HLPerformSelectorWeak *performSelector = [[HLPerformSelectorWeak alloc] initWithWeakTarget:weakTarget selector:selector];
+  HLPerformSelectorWeakHacktion *performSelector = [[HLPerformSelectorWeakHacktion alloc] initWithWeakTarget:weakTarget selector:selector];
   return performSelector.action;
 }
 
 + (SKAction *)performSelector:(SEL)selector onWeakTarget:(id)weakTarget withArgument:(id)argument
 {
-  HLPerformSelectorWeakSingle *performSelector = [[HLPerformSelectorWeakSingle alloc] initWithWeakTarget:weakTarget
-                                                                                                selector:selector
-                                                                                                argument:argument];
+  HLPerformSelectorWeakSingleHacktion *performSelector = [[HLPerformSelectorWeakSingleHacktion alloc] initWithWeakTarget:weakTarget
+                                                                                                                selector:selector
+                                                                                                                argument:argument];
   return performSelector.action;
 }
 
 + (SKAction *)performSelector:(SEL)selector onWeakTarget:(id)weakTarget withArgument1:(id)argument1 argument2:(id)argument2
 {
-  HLPerformSelectorWeakDouble *performSelector = [[HLPerformSelectorWeakDouble alloc] initWithWeakTarget:weakTarget
-                                                                                                selector:selector
-                                                                                               argument1:argument1
-                                                                                               argument2:argument2];
+  HLPerformSelectorWeakDoubleHacktion *performSelector = [[HLPerformSelectorWeakDoubleHacktion alloc] initWithWeakTarget:weakTarget
+                                                                                                                selector:selector
+                                                                                                               argument1:argument1
+                                                                                                               argument2:argument2];
   return performSelector.action;
 }
 
@@ -58,23 +58,23 @@
                                   node:(SKNode *)node
                               userData:(id)userData
 {
-  HLCustomAction *customAction = [[HLCustomAction alloc] initWithWeakTarget:weakTarget
-                                                                   selector:selector
-                                                                       node:node
+  HLCustomHacktion *customAction = [[HLCustomHacktion alloc] initWithWeakTarget:weakTarget
+                                                                       selector:selector
+                                                                           node:node
                                                                        duration:duration
-                                                                   userData:userData];
+                                                                       userData:userData];
   return customAction.action;
 }
 
 + (SKAction *)sequence:(NSArray *)actions onNode:(SKNode *)node
 {
-  HLSequence *sequence = [[HLSequence alloc] initWithNode:node actions:actions];
+  HLSequenceHacktion *sequence = [[HLSequenceHacktion alloc] initWithNode:node actions:actions];
   return sequence.action;
 }
 
 @end
 
-@implementation HLPerformSelectorStrongSingle
+@implementation HLPerformSelectorStrongSingleHacktion
 
 - (instancetype)initWithStrongTarget:(id)strongTarget selector:(SEL)selector argument:(id)argument
 {
@@ -122,7 +122,7 @@
 
 @end
 
-@implementation HLPerformSelectorStrongDouble
+@implementation HLPerformSelectorStrongDoubleHacktion
 
 - (instancetype)initWithStrongTarget:(id)strongTarget selector:(SEL)selector argument1:(id)argument1 argument2:(id)argument2
 {
@@ -173,7 +173,7 @@
 
 @end
 
-@implementation HLPerformSelectorWeak
+@implementation HLPerformSelectorWeakHacktion
 
 - (instancetype)initWithWeakTarget:(id)weakTarget selector:(SEL)selector
 {
@@ -219,7 +219,7 @@
 
 @end
 
-@implementation HLPerformSelectorWeakSingle
+@implementation HLPerformSelectorWeakSingleHacktion
 
 - (instancetype)initWithWeakTarget:(id)weakTarget selector:(SEL)selector argument:(id)argument
 {
@@ -268,7 +268,7 @@
 
 @end
 
-@implementation HLPerformSelectorWeakDouble
+@implementation HLPerformSelectorWeakDoubleHacktion
 
 - (instancetype)initWithWeakTarget:(id)weakTarget selector:(SEL)selector argument1:(id)argument1 argument2:(id)argument2
 {
@@ -320,9 +320,9 @@
 
 @end
 
-NSString * const HLCustomActionSceneDidUpdateNotification = @"HLCustomActionSceneDidUpdateNotification";
+NSString * const HLCustomHacktionSceneDidUpdateNotification = @"HLCustomHacktionSceneDidUpdateNotification";
 
-@implementation HLCustomAction
+@implementation HLCustomHacktion
 {
   NSTimeInterval _lastUpdateTime;
   NSTimeInterval _elapsedTime;
@@ -386,7 +386,7 @@ NSString * const HLCustomActionSceneDidUpdateNotification = @"HLCustomActionScen
 
 + (void)notifySceneDidUpdate
 {
-  [[NSNotificationCenter defaultCenter] postNotificationName:HLCustomActionSceneDidUpdateNotification
+  [[NSNotificationCenter defaultCenter] postNotificationName:HLCustomHacktionSceneDidUpdateNotification
                                                       object:self
                                                     userInfo:nil];
 }
@@ -400,7 +400,7 @@ NSString * const HLCustomActionSceneDidUpdateNotification = @"HLCustomActionScen
 
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(HL_sceneDidUpdate:)
-                                               name:HLCustomActionSceneDidUpdateNotification
+                                               name:HLCustomHacktionSceneDidUpdateNotification
                                              object:nil];
 
   // TODO: As documented in the header: When decoded, an SKAction sequence running on a
@@ -485,57 +485,7 @@ NSString * const HLCustomActionSceneDidUpdateNotification = @"HLCustomActionScen
 
 @end
 
-@implementation HLCustomActionTwoValues
-
-- (instancetype)initWithCoder:(NSCoder *)aDecoder
-{
-  self = [super init];
-  if (self) {
-    _start = (CGFloat)[aDecoder decodeDoubleForKey:@"start"];
-    _finish = (CGFloat)[aDecoder decodeDoubleForKey:@"finish"];
-  }
-  return self;
-}
-
-- (void)encodeWithCoder:(NSCoder *)aCoder
-{
-  [aCoder encodeDouble:_start forKey:@"start"];
-  [aCoder encodeDouble:_finish forKey:@"finish"];
-}
-
-@end
-
-@implementation HLCustomActionTwoPoints
-
-- (instancetype)initWithCoder:(NSCoder *)aDecoder
-{
-  self = [super init];
-  if (self) {
-#if TARGET_OS_IPHONE
-    _start = [aDecoder decodeCGPointForKey:@"start"];
-    _finish = [aDecoder decodeCGPointForKey:@"finish"];
-#else
-    _start = [aDecoder decodePointForKey:@"start"];
-    _finish = [aDecoder decodePointForKey:@"finish"];
-#endif
-  }
-  return self;
-}
-
-- (void)encodeWithCoder:(NSCoder *)aCoder
-{
-#if TARGET_OS_IPHONE
-  [aCoder encodeCGPoint:_start forKey:@"start"];
-  [aCoder encodeCGPoint:_finish forKey:@"finish"];
-#else
-  [aCoder encodePoint:_start forKey:@"start"];
-  [aCoder encodePoint:_finish forKey:@"finish"];
-#endif
-}
-
-@end
-
-@implementation HLSequence
+@implementation HLSequenceHacktion
 {
   NSUInteger _actionIndex;
 }

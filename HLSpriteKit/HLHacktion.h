@@ -98,10 +98,10 @@
  If, during the one-second wait, this node is removed from parent, then its actions will
  be paused (not released!), and the node and action will retain each other strongly.
 
- To address this, `HLPerformSelectorWeak` (and its variants) retain their target weakly.
+ To address this, `HLPerformSelectorWeakHacktion` (and its variants) retain their target weakly.
 
- This module contains "strong" variants of HLPerformSelector which correspond more closely
- to the behavior of `performSelector:onTarget:`.  They are not recommended.
+ This module contains "strong" variants of the perform-selector which correspond more
+ closely to the behavior of `performSelector:onTarget:`.  They are not recommended.
 
  ## Encodable Replacement for `SKAction runBlock:`
 
@@ -143,7 +143,7 @@
  After decoding, the orc will fade and be removed from parent, but the cleanup method
  `orcDidFinishDying:` will not be called.
 
- Instead, use `HLPerformSelectorWeakSingle` (or another variant).
+ Instead, use `HLPerformSelectorWeakSingleHacktion` (or another variant).
 
    - The caller instantiates the perform-selector object and sets its properties: target,
      selector, and arguments.
@@ -172,7 +172,7 @@
 
      SKAction *fadeAction = [SKAction fadeOutWithDuration:3.0];
      SKAction *removeAction = [SKAction removeFromParent];
-     HLPerformSelectorWeakSingle *cleanupCaller = [[HLPerformSelectorWeakSingle alloc] initWithWeakTarget:self selector:@selector(orcDidFinishDying:) argument:orcNode];
+     HLPerformSelectorWeakSingleHacktion *cleanupCaller = [[HLPerformSelectorWeakSingleHacktion alloc] initWithWeakTarget:self selector:@selector(orcDidFinishDying:) argument:orcNode];
      SKAction *cleanupAction = [SKAction performSelector:@selector(execute) onTarget:cleanupCaller];
      [orcNode runAction:[SKAction sequence:@[ fadeAction, removeAction, cleanupAction ]]];
 
@@ -180,7 +180,7 @@
 
      SKAction *fadeAction = [SKAction fadeOutWithDuration:3.0];
      SKAction *removeAction = [SKAction removeFromParent];
-     HLPerformSelectorWeakSingle *cleanupCaller = [[HLPerformSelectorWeakSingle alloc] initWithWeakTarget:self selector:@selector(orcDidFinishDying:) argument:orcNode];
+     HLPerformSelectorWeakSingleHacktion *cleanupCaller = [[HLPerformSelectorWeakSingleHacktion alloc] initWithWeakTarget:self selector:@selector(orcDidFinishDying:) argument:orcNode];
      [orcNode runAction:[SKAction sequence:@[ fadeAction, removeAction, cleanupCaller.action ]]];
 
  ## Special Considerations
@@ -193,8 +193,8 @@
  from the beginning, and even if this perform-selector object was performed before
  preservation, it will perform again after restoration.
 
- See `HLSequence` for an alternative; upon decoding, it will not re-run parts of the
- sequence that have already completed.
+ See `HLSequenceHacktion` for an alternative; upon decoding, it will not re-run parts of
+ the sequence that have already completed.
 
  ## Example
 
@@ -203,7 +203,7 @@
                                               [HLHacktion performSelector:@selector(orcDidFinishDying:) onWeakTarget:self] ]]];
 
 */
-@interface HLPerformSelectorWeak : NSObject <NSCoding>
+@interface HLPerformSelectorWeakHacktion : NSObject <NSCoding>
 
 /// @name Creating a Perform-Selector Object
 
@@ -276,7 +276,7 @@
 
    - to be an encodable replacement for `SKAction runBlock:`
 
- See `HLPerformSelectorWeak` for documentation.
+ See `HLPerformSelectorWeakHacktion` for documentation.
 
  Example using `HLHacktion` convenience method:
 
@@ -286,7 +286,7 @@
                                                              onWeakTarget:self
                                                              withArgument:orcNode] ]]];
 */
-@interface HLPerformSelectorWeakSingle : NSObject <NSCoding>
+@interface HLPerformSelectorWeakSingleHacktion : NSObject <NSCoding>
 
 /// @name Creating a Perform-Selector Object
 
@@ -367,7 +367,7 @@
 
    - to be an encodable replacement for `SKAction runBlock:`
 
- See `HLPerformSelectorWeak` for documentation.
+ See `HLPerformSelectorWeakHacktion` for documentation.
 
  Example using `HLHacktion` convenience method:
 
@@ -378,7 +378,7 @@
                                                             withArgument1:orcNode
                                                                 argument2:elfAttacker] ]]];
 */
-@interface HLPerformSelectorWeakDouble : NSObject <NSCoding>
+@interface HLPerformSelectorWeakDoubleHacktion : NSObject <NSCoding>
 
 /// @name Creating a Perform-Selector Object
 
@@ -464,7 +464,7 @@
  Intended as a replacement for `SKAction runBlock:`, which is more versatile, but which
  cannot be encoded.
 
- See `HLPerformSelectorWeak` for documentation.
+ See `HLPerformSelectorWeakHacktion` for documentation.
 
  Example using `HLHacktion` convenience method:
 
@@ -474,7 +474,7 @@
                                                            onStrongTarget:self
                                                              withArgument:orcNode] ]]];
 */
-@interface HLPerformSelectorStrongSingle : NSObject <NSCoding>
+@interface HLPerformSelectorStrongSingleHacktion : NSObject <NSCoding>
 
 /// @name Creating a Perform-Selector Object
 
@@ -559,7 +559,7 @@
  Intended as a replacement for `SKAction runBlock:`, which is more versatile, but which
  cannot be encoded.
 
- See `HLPerformSelectorWeak` for documentation.
+ See `HLPerformSelectorWeakHacktion` for documentation.
 
  Example using `HLHacktion` convenience method:
 
@@ -570,7 +570,7 @@
                                                             withArgument1:orcNode
                                                                 argument2:elfAttacker] ]]];
 */
-@interface HLPerformSelectorStrongDouble : NSObject <NSCoding>
+@interface HLPerformSelectorStrongDoubleHacktion : NSObject <NSCoding>
 
 /// @name Creating a Perform-Selector Object
 
@@ -662,7 +662,7 @@
  As a consequence, all running custom actions will perform their configured selectors.
  See class method `notifySceneDidUpdate` for a shorthand way to post this notification.
 */
-FOUNDATION_EXPORT NSString * const HLCustomActionSceneDidUpdateNotification;
+FOUNDATION_EXPORT NSString * const HLCustomHacktionSceneDidUpdateNotification;
 
 /**
  A lightweight encodable object that, when triggered, repeatedly performs a selector on a
@@ -673,7 +673,7 @@ FOUNDATION_EXPORT NSString * const HLCustomActionSceneDidUpdateNotification;
 
  The owner must post notification `HLCustomActionSceneDidUpdateNotification` from her
  `SKScene update:` method (on the default notification center) so that all
- currently-running `HLCustomAction` objects will update.  This keeps custom actions
+ currently-running `HLCustomHacktion` objects will update.  This keeps custom actions
  synchronized with the application's frame rate.  Like this:
 
      [[NSNotificationCenter defaultCenter] postNotificationName:HLCustomActionSceneDidUpdateNotification
@@ -690,23 +690,23 @@ FOUNDATION_EXPORT NSString * const HLCustomActionSceneDidUpdateNotification;
  a "game save", nodes running `SKAction` actions with code blocks must be handled
  specially, since the code blocks cannot be encoded.
 
- Use `HLCustomAction` rather than `customActionWithDuration:actionBlock:`.
+ Use `HLCustomHacktion` rather than `customActionWithDuration:actionBlock:`.
 
-   - The `HLCustomAction` is triggered by a companion `[SKAction
+   - The `HLCustomHacktion` is triggered by a companion `[SKAction
      performSelector:onTarget:]`, invoking a designated `execute` method.
 
-   - When it is triggered, the `HLCustomAction` tracks its own elapsed time and, when
+   - When it is triggered, the `HLCustomHacktion` tracks its own elapsed time and, when
      notified of a new frame in the `SKScene`, periodically performs the selector on the
      target, passing it the node, the elapsed time, and the duration.
 
-   - `HLCustomAction` conforms to `NSCoding`.  When running on a node, it will be encoded
-     along with the node.  On decoding, it will continue running.  (The way it runs is
-     determined by `SKNode runAction:`.  As noted below in "Limitations", decoded
+   - `HLCustomHacktion` conforms to `NSCoding`.  When running on a node, it will be
+     encoded along with the node.  On decoding, it will continue running.  (The way it
+     runs is determined by `SKNode runAction:`.  As noted below in "Limitations", decoded
      `SKAction` sequences are restarted by `runAction:`, so the custom action will restart
      from the beginning after decoding.)
 
  Duration is a problem.  A `customActionWithDuration:actionBlock:` has a duration, but the
- triggering `SKAction` for the `HLCustomAction` does not.  There are at least two
+ triggering `SKAction` for the `HLCustomHacktion` does not.  There are at least two
  considerations here:
 
    - If the triggering action is running in a sequence, any actions sequenced after the
@@ -776,10 +776,10 @@ FOUNDATION_EXPORT NSString * const HLCustomActionSceneDidUpdateNotification;
  from the beginning, and even if this perform-selector object was performed before
  preservation, it will perform again after restoration.
 
- See `HLSequence` for an alternative; upon decoding, it will not re-run parts of the
- sequence that have already completed.
+ See `HLSequenceHacktion` for an alternative; upon decoding, it will not re-run parts of
+ the sequence that have already completed.
 */
-@interface HLCustomAction : NSObject <NSCoding>
+@interface HLCustomHacktion : NSObject <NSCoding>
 
 /// @name Creating a Custom Action Object
 
@@ -801,7 +801,7 @@ FOUNDATION_EXPORT NSString * const HLCustomActionSceneDidUpdateNotification;
 
  Equivalent to calling:
 
-     [[NSNotificationCenter defaultCenter] postNotificationName:HLCustomActionSceneDidUpdateNotification
+     [[NSNotificationCenter defaultCenter] postNotificationName:HLCustomHacktionSceneDidUpdateNotification
                                                          object:self
                                                        userInfo:nil];
 
@@ -886,60 +886,6 @@ FOUNDATION_EXPORT NSString * const HLCustomActionSceneDidUpdateNotification;
                         [SKAction waitForDuration:thisObject.duration] ]]
 */
 - (SKAction *)action;
-
-@end
-
-/**
- A commonly-useful encodable user data object to use with `HLCustomAction`.
-
- A common use case for `HLCustomAction` is tweening between two values (whether position,
- alpha, scale, or something else), which can be tracked by this user data object.  In the
- following example, a user data object is provided to the custom action in order to track
- a start and finish value for an overshooting slide.
-
-     - (void)slideUpdate:(SKNode *)node
-             elapsedTime:(CGFloat)elapsedTime
-                duration:(NSTimeInterval)duration
-                userData:(HLCustomActionEndPoints *)userData
-     {
-       CGFloat normalTime = (CGFloat)(elapsedTime / duration);
-       CGFloat normalValue = BackStandardEaseInOut(normalTime);
-       node.position = CGPointMake(userData.start * (1.0f - normalValue) + userData.finish * normalValue, 0.0f);
-     }
-
-     - (void)slideNode:(SKNode *)node
-     {
-       HLCustomActionTwoValues *slideUserData = [[HLCustomActionTwoValues alloc] init];
-       slideUserData.start = node.position.x;
-       slideUserData.finish = self.size.width / 2.0f;
-
-       HLCustomAction *slideAction = [[HLCustomAction alloc] initWithWeakTarget:self
-                                                                       selector:@selector(slideUpdate:elapsedTime:duration:userData:)
-                                                                           node:node
-                                                                       duration:2.0
-                                                                       userData:slideUserData];
-       [node runAction:slideAction.action];
-     }
-*/
-@interface HLCustomActionTwoValues : NSObject <NSCoding>
-
-@property (nonatomic, assign) CGFloat start;
-
-@property (nonatomic, assign) CGFloat finish;
-
-@end
-
-/**
- A commonly-useful encodable user data object to use with `HLCustomAction`.
-
- See notes for `HLCustomActionTwoValues`.  This is the same idea, but offering a start
- and finish `CGPoint` rather than `CGFloat`.
-*/
-@interface HLCustomActionTwoPoints : NSObject <NSCoding>
-
-@property (nonatomic, assign) CGPoint start;
-
-@property (nonatomic, assign) CGPoint finish;
 
 @end
 
@@ -1030,7 +976,7 @@ FOUNDATION_EXPORT NSString * const HLCustomActionSceneDidUpdateNotification;
  understandable: Whatever action in the sequence was in progress at the time of encoding
  will restart, but once it completes, it is done.
 
- `HLSequence` is an abstracted version of the described concept.
+ `HLSequenceHacktion` is an abstracted version of the described concept.
 
  Use the method `action` for convience, or the `HLHacktion` methods for more convenience.
 
@@ -1051,15 +997,15 @@ FOUNDATION_EXPORT NSString * const HLCustomActionSceneDidUpdateNotification;
  no reason to, except perhaps that this object is trying to imitate `SKAction sequence`,
  which **does** retain them for the lifetime of the sequence.  And users might be
  accustomed to such behavior; for instance, `HLCustomAction` depends on it.  So, for now,
- actions in the sequence will be retained for the lifetime of the `HLSequence`.
+ actions in the sequence will be retained for the lifetime of the `HLSequenceHacktion`.
 
  Another consideration: Nesting this sequence with other groups and sequences will be
  problematic.  The timing will be probably be off: The triggering action for the
- `HLSequence` has no duration, and anyway, if this `HLSequence` is running in parallel to
- a `SKAction sequence` (or a `SKAction waitForDuration:`), and both are encoded, they will
- be out of sync on decoding.
+ `HLSequenceHacktion` has no duration, and anyway, if this `HLSequenceHacktion` is running
+ in parallel to a `SKAction sequence` (or a `SKAction waitForDuration:`), and both are
+ encoded, they will be out of sync on decoding.
 */
-@interface HLSequence : NSObject <NSCoding>
+@interface HLSequenceHacktion : NSObject <NSCoding>
 
 /// @name Creating a Sequence
 
@@ -1113,9 +1059,9 @@ FOUNDATION_EXPORT NSString * const HLCustomActionSceneDidUpdateNotification;
 
      [SKAction performSelector:@selector(execute) onTarget:thisObject]
 
- Note that, as in `HLCustomAction`, this triggering action has no duration, even though
- the triggered sequence of actions (probably) does.  For `HLSequence`, unlike
- `HLCustomAction`, the owner probably doesn't care and won't notice.  If the caller does
+ Note that, as in `HLCustomHacktion`, this triggering action has no duration, even though
+ the triggered sequence of actions (probably) does.  For `HLSequenceHacktion`, unlike
+ `HLCustomHacktion`, the owner probably doesn't care and won't notice.  If the caller does
  care, she's on her own to pad out the triggering action with a corresponding wait.  See
  header notes ("Special Considerations") for a discussion of related problems.
 */

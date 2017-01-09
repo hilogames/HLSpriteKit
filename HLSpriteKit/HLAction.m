@@ -73,15 +73,6 @@ HLActionApplyTiming(HLActionTimingMode timingMode, CGFloat normalTime)
   // short, an action must be allowed a final update call regardless of its elapsed time
   // and duration; it's only completed when its update returns NO.
 
-  // TODO: Could keep a reference to the node on the runner, but that seems a little
-  // backward, since in SKAction the node owns the action-runner and not vice-versa; also
-  // it's a little confusing for encoding, since generally we want to encode the runner
-  // but we don't want to encode the node.  Could put the runner on node.userData and make
-  // a class category (hlActionRunAction: and hlActionUpdate:) like we do for
-  // layout-manager and gesture-target, but that doesn't seem quite right either.  For
-  // now, just keep the two objects separate, and pass the node into the update method as
-  // needed.
-
   NSMutableArray *removeKeys = nil;
   for (NSString *key in _actions) {
     HLAction *action = _actions[key];
@@ -577,6 +568,56 @@ HLActionApplyTiming(HLActionTimingMode timingMode, CGFloat normalTime)
   }
 
   return notYetCompleted;
+}
+
+@end
+
+@implementation HLCustomActionTwoValues
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+  self = [super init];
+  if (self) {
+    _start = (CGFloat)[aDecoder decodeDoubleForKey:@"start"];
+    _finish = (CGFloat)[aDecoder decodeDoubleForKey:@"finish"];
+  }
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+  [aCoder encodeDouble:_start forKey:@"start"];
+  [aCoder encodeDouble:_finish forKey:@"finish"];
+}
+
+@end
+
+@implementation HLCustomActionTwoPoints
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+  self = [super init];
+  if (self) {
+#if TARGET_OS_IPHONE
+    _start = [aDecoder decodeCGPointForKey:@"start"];
+    _finish = [aDecoder decodeCGPointForKey:@"finish"];
+#else
+    _start = [aDecoder decodePointForKey:@"start"];
+    _finish = [aDecoder decodePointForKey:@"finish"];
+#endif
+  }
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+#if TARGET_OS_IPHONE
+  [aCoder encodeCGPoint:_start forKey:@"start"];
+  [aCoder encodeCGPoint:_finish forKey:@"finish"];
+#else
+  [aCoder encodePoint:_start forKey:@"start"];
+  [aCoder encodePoint:_finish forKey:@"finish"];
+#endif
 }
 
 @end
