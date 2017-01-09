@@ -8,9 +8,9 @@
 
 #import "HLAction.h"
 
+#if TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
-
-#import "AHEasing/easing.h"
+#endif
 
 CGFloat
 HLActionApplyTiming(HLActionTimingMode timingMode, CGFloat normalTime)
@@ -19,11 +19,18 @@ HLActionApplyTiming(HLActionTimingMode timingMode, CGFloat normalTime)
     case HLActionTimingModeLinear:
       return normalTime;
     case HLActionTimingModeEaseIn:
-      return CubicEaseIn(normalTime);
-    case HLActionTimingModeEaseOut:
-      return CubicEaseOut(normalTime);
+      return normalTime * normalTime * normalTime;
+    case HLActionTimingModeEaseOut: {
+      CGFloat t = (1.0f - normalTime);
+      return t * t * t + 1.0f;
+    }
     case HLActionTimingModeEaseInEaseOut:
-      return CubicEaseIn(normalTime);
+      if (normalTime < 0.5f) {
+        return normalTime * normalTime * normalTime * 4.0f;
+      } else {
+        CGFloat t = normalTime * 2.0f - 2.0f;
+        return t * t * t / 2.0f + 1.0f;
+      }
   }
 }
 
@@ -441,8 +448,13 @@ HLActionApplyTiming(HLActionTimingMode timingMode, CGFloat normalTime)
 {
   self = [super initWithCoder:aDecoder];
   if (self) {
+#if TARGET_OS_IPHONE
     _origin = [aDecoder decodeCGPointForKey:@"origin"];
     _destination = [aDecoder decodeCGPointForKey:@"destination"];
+#else
+    _origin = [aDecoder decodePointForKey:@"origin"];
+    _destination = [aDecoder decodePointForKey:@"destination"];
+#endif
   }
   return self;
 }
@@ -450,8 +462,13 @@ HLActionApplyTiming(HLActionTimingMode timingMode, CGFloat normalTime)
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
   [super encodeWithCoder:aCoder];
+#if TARGET_OS_IPHONE
   [aCoder encodeCGPoint:_origin forKey:@"origin"];
   [aCoder encodeCGPoint:_destination forKey:@"destination"];
+#else
+  [aCoder encodePoint:_origin forKey:@"origin"];
+  [aCoder encodePoint:_destination forKey:@"destination"];
+#endif
 }
 
 - (BOOL)update:(NSTimeInterval)elapsedTime node:(SKNode *)node
