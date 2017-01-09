@@ -104,13 +104,26 @@ not limited to:
 
 ### HLAction
 
-`HLAction` provides `SKAction` alternatives for various purposes.
+`HLAction` provides an alternative to the `SKAction` system with the
+primary goal of statefulness.  In particular, `HLAction` actions are
+designed to allow their state to be encoded and resumed upon decoding.
 
-For instance, `[HLAction performSelector:onWeakTarget:]` retains its
+More details coming soon.
+
+### HLHacktion
+
+`HLHacktion` provides `SKAction` alternatives for various purposes.
+
+The _hack_ in the name avoids a name conflict with `HLAction`, and
+also acknowledges that these solutions piggyback into the existing
+`SKAction` system.  See `HLAction` for a more independent alternative
+to `SKAction`.
+
+For instance, `[HLHacktion performSelector:onWeakTarget:]` retains its
 target weakly, which can avoid retain cycles caused by
 `[SKAction performSelector:onTarget:]`.
 
-`HLAction` also provides encodable alternatives to block-running
+`HLHacktion` also provides encodable alternatives to block-running
 `SKAction` actions.  The problem is this: When the `SKScene` node
 hierarchy is encoded, as is common during application state
 preservation or a “game save”, nodes running `SKAction` actions with
@@ -122,7 +135,7 @@ message:
   > SKAction: Run block actions can not be properly encoded, Objective-C
   > blocks do not support NSCoding.
 
-The solution provided by `HLAction` actions is to use selector
+The solution provided by `HLHacktion` actions is to use selector
 callbacks (with extra features) rather than code blocks.
 
 ## Gesture Recognition FAQ and Examples

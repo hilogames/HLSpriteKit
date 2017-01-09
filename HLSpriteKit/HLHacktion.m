@@ -1,16 +1,16 @@
 //
-//  HLAction.m
+//  HLHacktion.m
 //  HLSpriteKit
 //
 //  Created by Karl Voskuil on 2/4/16.
 //  Copyright (c) 2016 Hilo Games. All rights reserved.
 //
 
-#import "HLAction.h"
+#import "HLHacktion.h"
 
 #import <TargetConditionals.h>
 
-@implementation HLAction
+@implementation HLHacktion
 
 + (SKAction *)performSelector:(SEL)selector onStrongTarget:(id)strongTarget withArgument:(id)argument
 {
@@ -432,7 +432,7 @@ NSString * const HLCustomActionSceneDidUpdateNotification = @"HLCustomActionScen
 
 - (void)HL_sceneDidUpdate:(NSNotification *)notification
 {
-  const NSTimeInterval HLActionUpdateTimeEpsilon = 0.00001;
+  const NSTimeInterval HLHacktionUpdateTimeEpsilon = 0.00001;
 
   assert(_elapsedTime < _duration);
 
@@ -461,7 +461,7 @@ NSString * const HLCustomActionSceneDidUpdateNotification = @"HLCustomActionScen
   _lastUpdateTime = currentTime;
 
   _elapsedTime += elapsedTimeSinceLastUpdate;
-  if (_elapsedTime >= _duration - HLActionUpdateTimeEpsilon) {
+  if (_elapsedTime >= _duration - HLHacktionUpdateTimeEpsilon) {
     // note: We guarantee this final call with elapsedTime == _duration, even though we
     // can't guarantee that it actually happens exactly at _duration seconds.
     [[NSNotificationCenter defaultCenter] removeObserver:self];

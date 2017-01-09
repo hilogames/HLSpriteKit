@@ -3,14 +3,23 @@
 
 ## Master
 
+## Breaking
+
+- Came to the painful realization that I'm developing two separate
+  `SKAction` alternatives, and I need to name them differently.  I
+  think the new system deserves the name `HLAction`, and so I'm naming
+  the old one `HLHacktion`, possibly the worst name I've ever given something.  
+  [Karl Voskuil](https://github.com/karlvoskuil)
+
 ## Added
 
-- Improved HLAction interface and expanded its use-cases.  The old
-  thing was to provide encodable actions; the new thing is to provide
-  perform-selector actions that don't retain their target strongly.
-  At the same time I finally realized that the correct interface for
-  these things is an HLAction class method interface parallel to the
-  SKAction class method interface (for creating actions).  
+- Improved `HLHacktion` (formerly `HLAction`) interface and expanded
+  its use-cases.  The old thing was to provide encodable actions; the
+  new thing is to provide perform-selector actions that don't retain
+  their target strongly.  At the same time I finally realized that the
+  correct interface for these things is an class method interface
+  parallel to the
+  `SKAction` class method interface (for creating actions).  
   [Karl Voskuil](https://github.com/karlvoskuil)
 
 ## 1.4.0 [2016-10-28]

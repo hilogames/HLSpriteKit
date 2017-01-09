@@ -40,12 +40,17 @@ else
 
 fi
 
+sdk_iphonesimulator=iphonesimulator10.1
+if (( $travis )); then
+    sdk_iphonesimulator=iphonesimulator10.0
+fi
+
 # note: Would like to do test of iOS8, but xcodebuild hangs after simulator launch.
 # Just build it.
 xcodebuild clean build \
            -workspace Example/HLSpriteKit.xcworkspace \
            -scheme iOS \
-           -sdk iphonesimulator10.0 \
+           -sdk $sdk_iphonesimulator \
            -destination 'platform=iOS Simulator,OS=8.4,name=iPhone 5s' \
            ONLY_ACTIVE_ARCH=NO \
     | xcpretty
@@ -53,7 +58,7 @@ xcodebuild clean build \
 xcodebuild clean build test \
            -workspace Example/HLSpriteKit.xcworkspace \
            -scheme iOS \
-           -sdk iphonesimulator10.0 \
+           -sdk $sdk_iphonesimulator \
            -destination 'platform=iOS Simulator,OS=9.3,name=iPad 2' \
            -destination 'platform=iOS Simulator,OS=latest,name=iPhone 6' \
            ONLY_ACTIVE_ARCH=NO \
@@ -64,6 +69,6 @@ xcodebuild clean build test \
 xcodebuild clean build \
            -project HLSpriteKit.xcodeproj \
            -scheme HLSpriteKit \
-           -sdk iphonesimulator10.0 \
+           -sdk $sdk_iphonesimulator \
            ONLY_ACTIVE_ARCH=NO \
     | xcpretty

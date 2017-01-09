@@ -1,5 +1,5 @@
 //
-//  HLAction.h
+//  HLHacktion.h
 //  HLSpriteKit
 //
 //  Created by Karl Voskuil on 2/4/16.
@@ -14,7 +14,7 @@
  The interface is intended to be similar to the `SKAction` class method interface for
  creating action objects.
 */
-@interface HLAction : NSObject
+@interface HLHacktion : NSObject
 
 /**
  Convenience method to create a weak-target perform-selector object and return an
@@ -164,9 +164,9 @@
 
      [orcNode runAction:[SKAction sequence:@[ [SKAction fadeOutWithDuration:3.0],
                                               [SKAction removeFromParent],
-                                              [HLAction performSelector:@selector(orcDidFinishDying:)
-                                                           onWeakTarget:self
-                                                           withArgument:orcNode] ]]];
+                                              [HLHacktion performSelector:@selector(orcDidFinishDying:)
+                                                             onWeakTarget:self
+                                                             withArgument:orcNode] ]]];
 
  This code sample shows all the steps explicitly, with manual creation of triggering `SKAction`:
 
@@ -200,7 +200,7 @@
 
      [orcNode runAction:[SKAction sequence:@[ [SKAction fadeOutWithDuration:3.0],
                                               [SKAction removeFromParent],
-                                              [HLAction performSelector:@selector(orcDidFinishDying:) onWeakTarget:self] ]]];
+                                              [HLHacktion performSelector:@selector(orcDidFinishDying:) onWeakTarget:self] ]]];
 
 */
 @interface HLPerformSelectorWeak : NSObject <NSCoding>
@@ -278,13 +278,13 @@
 
  See `HLPerformSelectorWeak` for documentation.
 
- Example using `HLAction` convenience method:
+ Example using `HLHacktion` convenience method:
 
      [orcNode runAction:[SKAction sequence:@[ [SKAction fadeOutWithDuration:3.0],
                                               [SKAction removeFromParent],
-                                              [HLAction performSelector:@selector(orcDidFinishDying:)
-                                                           onWeakTarget:self
-                                                          withArgument:orcNode] ]]];
+                                              [HLHacktion performSelector:@selector(orcDidFinishDying:)
+                                                             onWeakTarget:self
+                                                             withArgument:orcNode] ]]];
 */
 @interface HLPerformSelectorWeakSingle : NSObject <NSCoding>
 
@@ -369,14 +369,14 @@
 
  See `HLPerformSelectorWeak` for documentation.
 
- Example using `HLAction` convenience method:
+ Example using `HLHacktion` convenience method:
 
      [orcNode runAction:[SKAction sequence:@[ [SKAction fadeOutWithDuration:3.0],
                                               [SKAction removeFromParent],
-                                              [HLAction performSelector:@selector(orcDidFinishDying:)
-                                                           onWeakTarget:self
-                                                          withArgument1:orcNode
-                                                              argument2:elfAttacker] ]]];
+                                              [HLHacktion performSelector:@selector(orcDidFinishDying:)
+                                                             onWeakTarget:self
+                                                            withArgument1:orcNode
+                                                                argument2:elfAttacker] ]]];
 */
 @interface HLPerformSelectorWeakDouble : NSObject <NSCoding>
 
@@ -466,13 +466,13 @@
 
  See `HLPerformSelectorWeak` for documentation.
 
- Example using `HLAction` convenience method:
+ Example using `HLHacktion` convenience method:
 
      [orcNode runAction:[SKAction sequence:@[ [SKAction fadeOutWithDuration:3.0],
                                               [SKAction removeFromParent],
-                                              [HLAction performSelector:@selector(orcDidFinishDying:)
-                                                         onStrongTarget:self
-                                                           withArgument:orcNode] ]]];
+                                              [HLHacktion performSelector:@selector(orcDidFinishDying:)
+                                                           onStrongTarget:self
+                                                             withArgument:orcNode] ]]];
 */
 @interface HLPerformSelectorStrongSingle : NSObject <NSCoding>
 
@@ -561,14 +561,14 @@
 
  See `HLPerformSelectorWeak` for documentation.
 
- Example using `HLAction` convenience method:
+ Example using `HLHacktion` convenience method:
 
      [orcNode runAction:[SKAction sequence:@[ [SKAction fadeOutWithDuration:3.0],
                                               [SKAction removeFromParent],
-                                              [HLAction performSelector:@selector(orcDidFinishDying:)
-                                                         onStrongTarget:self
-                                                          withArgument1:orcNode
-                                                              argument2:elfAttacker] ]]];
+                                              [HLHacktion performSelector:@selector(orcDidFinishDying:)
+                                                           onStrongTarget:self
+                                                            withArgument1:orcNode
+                                                                argument2:elfAttacker] ]]];
 */
 @interface HLPerformSelectorStrongDouble : NSObject <NSCoding>
 
@@ -657,7 +657,7 @@
 @end
 
 /**
- Notifies all running custom actions that the a scene frame is updating.
+ Notifies all running custom actions that a scene frame is updating.
 
  As a consequence, all running custom actions will perform their configured selectors.
  See class method `notifySceneDidUpdate` for a shorthand way to post this notification.
@@ -722,10 +722,10 @@ FOUNDATION_EXPORT NSString * const HLCustomActionSceneDidUpdateNotification;
      [SKAction group:@[ [SKAction performSelector:@selector(execute) onTarget:aCustomAction],
                         [SKAction waitForDuration:thisObject.duration] ]]
 
- Use the method `action` for convience, or the `HLAction` methods for more convenience.
+ Use the method `action` for convience, or the `HLHacktion` methods for more convenience.
 
  ## Example
- 
+
  A tweening example using the non-encodable `customActionWithDuration:actionBlock:`.
 
        SKSpriteNode *redNode = [SKSpriteNode spriteNodeWithColor:[SKColor redColor] size:CGSizeMake(100.0f, 100.0f)];
@@ -736,7 +736,7 @@ FOUNDATION_EXPORT NSString * const HLCustomActionSceneDidUpdateNotification;
        }];
        [redNode runAction:flashInAction];
 
- The same effect achieved in an encodable way (using `HLAction` convenience method).
+ The same effect achieved in an encodable way (using `HLHacktion` convenience method).
 
         - (void)HL_flashInWithNode:(SKNode *)node elapsedTime:(CGFloat)elapsedTime duration:(NSTimeInterval)duration {
           CGFloat normalTime = (CGFloat)(elapsedTime / duration);
@@ -746,10 +746,10 @@ FOUNDATION_EXPORT NSString * const HLCustomActionSceneDidUpdateNotification;
 
         - (void)HL_showFlashingRedNode {
           SKSpriteNode *redNode = [SKSpriteNode spriteNodeWithColor:[SKColor redColor] size:CGSizeMake(100.0f, 100.0f)];
-          [redNode runAction:[HLAction customActionWithDuration:3.0
-                                                       selector:@selector(HL_flashInWithNode:elapsedTime:duration:userData:)
-                                                           node:redNode
-                                                       userData:nil]];
+          [redNode runAction:[HLHacktion customActionWithDuration:3.0
+                                                         selector:@selector(HL_flashInWithNode:elapsedTime:duration:userData:)
+                                                             node:redNode
+                                                         userData:nil]];
         }
 
  ## Limitations
@@ -1032,17 +1032,17 @@ FOUNDATION_EXPORT NSString * const HLCustomActionSceneDidUpdateNotification;
 
  `HLSequence` is an abstracted version of the described concept.
 
- Use the method `action` for convience, or the `HLAction` methods for more convenience.
+ Use the method `action` for convience, or the `HLHacktion` methods for more convenience.
 
  ## Example
 
- Example using `HLAction` convenience method:
+ Example using `HLHacktion` convenience method:
 
-     [self runAction:[HLAction sequence:@[ [SKAction performSelector:@selector(doX) onTarget:self],
-                                           [SKAction waitForDuration:10.0],
-                                           [SKAction performSelector:@selector(doY) onTarget:self],
-                                           [SKAction waitForDuration:1.0],
-                                           [SKAction performSelector:@selector(doZ) onTarget:self] ]
+     [self runAction:[HLHacktion sequence:@[ [SKAction performSelector:@selector(doX) onTarget:self],
+                                             [SKAction waitForDuration:10.0],
+                                             [SKAction performSelector:@selector(doY) onTarget:self],
+                                             [SKAction waitForDuration:1.0],
+                                             [SKAction performSelector:@selector(doZ) onTarget:self] ]
                                  onNode:self]];
 
  ## Special Considerations
