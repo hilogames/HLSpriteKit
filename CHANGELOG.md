@@ -8,7 +8,8 @@
 - Came to the painful realization that I'm developing two separate
   `SKAction` alternatives, and I need to name them differently.  I
   think the new system deserves the name `HLAction`, and so I'm naming
-  the old one `HLHacktion`, possibly the worst name I've ever given something.  
+  the old one `HLHacktion`.  This is possibly the worst name I've ever
+  given anything.  
   [Karl Voskuil](https://github.com/karlvoskuil)
 
 ## Added
@@ -18,8 +19,13 @@
   new thing is to provide perform-selector actions that don't retain
   their target strongly.  At the same time I finally realized that the
   correct interface for these things is an class method interface
-  parallel to the
-  `SKAction` class method interface (for creating actions).  
+  parallel to the `SKAction` class method interface (for creating
+  actions).  
+  [Karl Voskuil](https://github.com/karlvoskuil)
+
+- Added new `HLAction` system as a stateful alternative to `SKAction`.
+  The main goals are statefulness during encoding, loose coupling with
+  the node, and extensibility.  
   [Karl Voskuil](https://github.com/karlvoskuil)
 
 ## 1.4.0 [2016-10-28]
@@ -44,7 +50,8 @@
   [Karl Voskuil](https://github.com/karlvoskuil)
 
 - Remove `HLToolbarNode` show and hide functionality. Such code blongs
-  in the controller, not in the node. You heard me, that's where it blongs.  
+  in the controller, not in the node. You heard me, that's where it
+  blongs.  
   [Karl Voskuil](https://github.com/karlvoskuil)
 
 ## Added
@@ -76,8 +83,8 @@
 
 ### Fixed
 
-- Ensure umbrella header file contains all project headers. (This silences
-  a warning from Carthage, which makes everyone happy.)  
+- Ensure umbrella header file contains all project headers. (This
+  silences a warning from Carthage, which makes everyone happy.)  
   [Brent Traut](https://github.com/btraut)
 
 ## 1.1.0

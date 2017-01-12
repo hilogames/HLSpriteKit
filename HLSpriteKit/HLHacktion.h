@@ -89,7 +89,7 @@
 
  The perform-selector provided by SpriteKit retains its target strongly, which can lead to
  a retain cycle when the target is the node running the action.  For example, a sequence
- like is problematic:
+ like this is problematic:
 
      SKAction *delayedPing = [SKAction sequence:@[ [SKAction waitForDuration:1.0],
                                                    [SKAction performSelector:@selector(ping) onTarget:self] ]];
@@ -738,7 +738,7 @@ FOUNDATION_EXPORT NSString * const HLCustomHacktionSceneDidUpdateNotification;
 
  The same effect achieved in an encodable way (using `HLHacktion` convenience method).
 
-        - (void)HL_flashInWithNode:(SKNode *)node elapsedTime:(CGFloat)elapsedTime duration:(NSTimeInterval)duration {
+        - (void)HL_flashInWithNode:(SKNode *)node elapsedTime:(CGFloat)elapsedTime duration:(NSTimeInterval)duration userData:(id)userData {
           CGFloat normalTime = (CGFloat)(elapsedTime / duration);
           CGFloat normalValue = BounceEaseOut(normalTime);
           node.alpha = (1.0f - normalValue);
@@ -748,6 +748,7 @@ FOUNDATION_EXPORT NSString * const HLCustomHacktionSceneDidUpdateNotification;
           SKSpriteNode *redNode = [SKSpriteNode spriteNodeWithColor:[SKColor redColor] size:CGSizeMake(100.0f, 100.0f)];
           [redNode runAction:[HLHacktion customActionWithDuration:3.0
                                                          selector:@selector(HL_flashInWithNode:elapsedTime:duration:userData:)
+                                                       weakTarget:self
                                                              node:redNode
                                                          userData:nil]];
         }

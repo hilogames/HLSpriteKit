@@ -32,6 +32,7 @@
 #import "HLTiledNode.h"
 #import "HLToolbarNode.h"
 #import "SKLabelNode+HLLabelNodeAdditions.h"
+#import "SKNode+HLAction.h"
 #import "SKNode+HLLayoutManager.h"
 #import "SKNode+HLGestureTarget.h"
 #import "SKNode+HLNodeVisuals.h"

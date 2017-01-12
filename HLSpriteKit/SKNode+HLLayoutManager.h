@@ -10,6 +10,9 @@
 
 #import "HLLayoutManager.h"
 
+/**
+ A class category for attaching a layout manager to a node.
+*/
 @interface SKNode (HLLayoutManager)
 
 /// @name Getting and Setting the Layout Manager

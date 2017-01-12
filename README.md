@@ -104,11 +104,52 @@ not limited to:
 
 ### HLAction
 
-`HLAction` provides an alternative to the `SKAction` system with the
-primary goal of statefulness.  In particular, `HLAction` actions are
-designed to allow their state to be encoded and resumed upon decoding.
+`HLAction` provides a stateful alternative to the `SKAction` system.
+The motivating use-case for `HLAction` is to persist animation state
+during encoding and resume it on decoding.
 
-More details coming soon.
+An example illustrates the motivation.
+
+Suppose that whenever an orc is killed in a game, an `SKAction`
+sequence runs: first, the orc node staggers and falls by means of a
+texture animation; then, the orc node fades out slowly over three
+seconds; then, the orc node is removed from the scene.
+
+Suppose, in the middle of that death fade, the user backgrounds the
+app (or saves the game), encoding it.
+
+When the game is resumed (and decoded), it would be nice if the orc
+corpse continued fading.  Even better would be if it matched
+pixel-perfect with the screenshot taken by iOS during application
+state preservation.
+
+Such fidelity is difficult using the `SKAction` system.  Here are the
+common possibilities:
+
+ * If the entire orc node is encoded using `NSCoding`, then the
+   ongoing animation sequence will successfully encode, decode, and
+   resume.  Unfortunately, though, it does not encode its progress or
+   its original state, and so it starts over from the beginning of the
+   sequence without resetting alpha.  In the example, this means that
+   the partly-faded orc will hop back on its ghostly feet in order to
+   stagger and fall once again.
+
+ * If the orc node is not encoded, but instead recreated on
+   restoration, then no `SKAction` animation sequence will resume.
+   Either the orc node will disappear, or it will stay around
+   indefinitely, or the app must figure out how to preserve and
+   restore the state of the animation sequence.
+
+`HLAction` solves this problem by representing the state of all
+animations in encodable objects only loosely coupled to a particular
+node.
+
+The main drawbacks of `HLAction` are that you can no longer use the
+`SKAction` runloop in `SKNode` and that the actions provided are not
+as fully-featured.
+
+New actions are being added as needed.  Please let me know if you
+could use one that hasn't yet been added.
 
 ### HLHacktion
 
@@ -116,12 +157,13 @@ More details coming soon.
 
 The _hack_ in the name avoids a name conflict with `HLAction`, and
 also acknowledges that these solutions piggyback into the existing
-`SKAction` system.  See `HLAction` for a more independent alternative
-to `SKAction`.
+`SKAction` system.  See `HLAction` for an independent alternative
+system to `SKAction`.
 
-For instance, `[HLHacktion performSelector:onWeakTarget:]` retains its
-target weakly, which can avoid retain cycles caused by
-`[SKAction performSelector:onTarget:]`.
+One example of an `HLHacktion`:
+`[HLHacktion performSelector:onWeakTarget:]` returns an `SKAction`
+which retains its target weakly, which can avoid retain cycles caused
+by `[SKAction performSelector:onTarget:]`.
 
 `HLHacktion` also provides encodable alternatives to block-running
 `SKAction` actions.  The problem is this: When the `SKScene` node

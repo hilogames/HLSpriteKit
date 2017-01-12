@@ -64,7 +64,6 @@ typedef NS_ENUM(NSInteger, HLGridNodeLayoutMode) {
    and/or a callback for left-clicks.  See `HLGridNodeDelegate` for delegation and the
    `squareClickedBlock` property for setting a callback block.
 */
-
 @interface HLGridNode : HLComponentNode <NSCoding, HLGestureTarget>
 
 /// @name Creating a Grid Node

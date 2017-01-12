@@ -65,6 +65,10 @@
 		847D62B21D8499AF006E287F /* SKNode+HLNodeVisuals.m in Sources */ = {isa = PBXBuildFile; fileRef = 847D627A1D8499AF006E287F /* SKNode+HLNodeVisuals.m */; };
 		847D62B31D8499AF006E287F /* UIImage+HLImageAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 847D627B1D8499AF006E287F /* UIImage+HLImageAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		847D62B41D8499AF006E287F /* UIImage+HLImageAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 847D627C1D8499AF006E287F /* UIImage+HLImageAdditions.m */; };
+		CB9E8CCF1E23FFC700F410B0 /* HLAction.h in Headers */ = {isa = PBXBuildFile; fileRef = CB9E8CCB1E23FFC700F410B0 /* HLAction.h */; };
+		CB9E8CD01E23FFC700F410B0 /* HLAction.m in Sources */ = {isa = PBXBuildFile; fileRef = CB9E8CCC1E23FFC700F410B0 /* HLAction.m */; };
+		CB9E8CD11E23FFC700F410B0 /* SKNode+HLAction.h in Headers */ = {isa = PBXBuildFile; fileRef = CB9E8CCD1E23FFC700F410B0 /* SKNode+HLAction.h */; };
+		CB9E8CD21E23FFC700F410B0 /* SKNode+HLAction.m in Sources */ = {isa = PBXBuildFile; fileRef = CB9E8CCE1E23FFC700F410B0 /* SKNode+HLAction.m */; };
 		CBF9D2BD1DAD3450008F9C92 /* HLGridLayoutManager.h in Headers */ = {isa = PBXBuildFile; fileRef = CBF9D2BB1DAD3450008F9C92 /* HLGridLayoutManager.h */; };
 		CBF9D2BE1DAD3450008F9C92 /* HLGridLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = CBF9D2BC1DAD3450008F9C92 /* HLGridLayoutManager.m */; };
 /* End PBXBuildFile section */
@@ -130,6 +134,10 @@
 		847D627A1D8499AF006E287F /* SKNode+HLNodeVisuals.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SKNode+HLNodeVisuals.m"; sourceTree = "<group>"; };
 		847D627B1D8499AF006E287F /* UIImage+HLImageAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+HLImageAdditions.h"; sourceTree = "<group>"; };
 		847D627C1D8499AF006E287F /* UIImage+HLImageAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+HLImageAdditions.m"; sourceTree = "<group>"; };
+		CB9E8CCB1E23FFC700F410B0 /* HLAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLAction.h; sourceTree = "<group>"; };
+		CB9E8CCC1E23FFC700F410B0 /* HLAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLAction.m; sourceTree = "<group>"; };
+		CB9E8CCD1E23FFC700F410B0 /* SKNode+HLAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SKNode+HLAction.h"; sourceTree = "<group>"; };
+		CB9E8CCE1E23FFC700F410B0 /* SKNode+HLAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SKNode+HLAction.m"; sourceTree = "<group>"; };
 		CBF9D2BB1DAD3450008F9C92 /* HLGridLayoutManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLGridLayoutManager.h; sourceTree = "<group>"; };
 		CBF9D2BC1DAD3450008F9C92 /* HLGridLayoutManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLGridLayoutManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -165,6 +173,8 @@
 		847D61CC1D8498E6006E287F /* HLSpriteKit */ = {
 			isa = PBXGroup;
 			children = (
+				CB9E8CCB1E23FFC700F410B0 /* HLAction.h */,
+				CB9E8CCC1E23FFC700F410B0 /* HLAction.m */,
 				847D62471D8499AF006E287F /* HLComponentNode.h */,
 				847D62481D8499AF006E287F /* HLComponentNode.m */,
 				847D62491D8499AF006E287F /* HLEmitterStore.h */,
@@ -217,6 +227,8 @@
 				84662B461DA33093006B1812 /* NSGestureRecognizer+MultipleActions.m */,
 				847D62731D8499AF006E287F /* SKLabelNode+HLLabelNodeAdditions.h */,
 				847D62741D8499AF006E287F /* SKLabelNode+HLLabelNodeAdditions.m */,
+				CB9E8CCD1E23FFC700F410B0 /* SKNode+HLAction.h */,
+				CB9E8CCE1E23FFC700F410B0 /* SKNode+HLAction.m */,
 				847D62751D8499AF006E287F /* SKNode+HLGestureTarget.h */,
 				847D62761D8499AF006E287F /* SKNode+HLGestureTarget.m */,
 				847D62771D8499AF006E287F /* SKNode+HLLayoutManager.h */,
@@ -254,6 +266,7 @@
 				847D628A1D8499AF006E287F /* HLItemNode.h in Headers */,
 				847D62831D8499AF006E287F /* HLError.h in Headers */,
 				847D62A51D8499AF006E287F /* HLTableLayoutManager.h in Headers */,
+				CB9E8CCF1E23FFC700F410B0 /* HLAction.h in Headers */,
 				847D62881D8499AF006E287F /* HLItemContentNode.h in Headers */,
 				847D629A1D8499AF006E287F /* HLOutlineLayoutManager.h in Headers */,
 				847D629E1D8499AF006E287F /* HLRingNode.h in Headers */,
@@ -267,6 +280,7 @@
 				847D628E1D8499AF006E287F /* HLLabelButtonNode.h in Headers */,
 				847D62901D8499AF006E287F /* HLLayoutManager.h in Headers */,
 				847D629C1D8499AF006E287F /* HLRingLayoutManager.h in Headers */,
+				CB9E8CD11E23FFC700F410B0 /* SKNode+HLAction.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -365,8 +379,10 @@
 				847D62B41D8499AF006E287F /* UIImage+HLImageAdditions.m in Sources */,
 				847D62AE1D8499AF006E287F /* SKNode+HLGestureTarget.m in Sources */,
 				847D62991D8499AF006E287F /* HLMultilineLabelNode.m in Sources */,
+				CB9E8CD01E23FFC700F410B0 /* HLAction.m in Sources */,
 				847D62A61D8499AF006E287F /* HLTableLayoutManager.m in Sources */,
 				847D628B1D8499AF006E287F /* HLItemNode.m in Sources */,
+				CB9E8CD21E23FFC700F410B0 /* SKNode+HLAction.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

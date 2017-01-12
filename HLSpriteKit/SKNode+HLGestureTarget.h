@@ -10,6 +10,9 @@
 
 #import "HLGestureTarget.h"
 
+/**
+ A class category for attaching a gesture target to a node.
+*/
 @interface SKNode (HLGestureTarget)
 
 /// @name Getting and Setting the Gesture Target
