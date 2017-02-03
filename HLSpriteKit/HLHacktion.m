@@ -55,12 +55,12 @@
 + (SKAction *)customActionWithDuration:(NSTimeInterval)duration
                               selector:(SEL)selector
                             weakTarget:(id)weakTarget
-                                  node:(SKNode *)node
+                              weakNode:(SKNode *)weakNode
                               userData:(id)userData
 {
   HLCustomHacktion *customAction = [[HLCustomHacktion alloc] initWithWeakTarget:weakTarget
                                                                        selector:selector
-                                                                           node:node
+                                                                       weakNode:weakNode
                                                                        duration:duration
                                                                        userData:userData];
   return customAction.action;
@@ -331,7 +331,7 @@ NSString * const HLCustomHacktionSceneDidUpdateNotification = @"HLCustomHacktion
 
 - (instancetype)initWithWeakTarget:(id)weakTarget
                           selector:(SEL)selector
-                              node:(SKNode *)node
+                          weakNode:(SKNode *)weakNode
                           duration:(NSTimeInterval)duration
                           userData:(id)userData
 {
@@ -339,7 +339,7 @@ NSString * const HLCustomHacktionSceneDidUpdateNotification = @"HLCustomHacktion
   if (self) {
     _weakTarget = weakTarget;
     _selector = selector;
-    _node = node;
+    _weakNode = weakNode;
     _duration = duration;
     _userData = userData;
   }
@@ -352,7 +352,7 @@ NSString * const HLCustomHacktionSceneDidUpdateNotification = @"HLCustomHacktion
   if (self) {
     _weakTarget = [aDecoder decodeObjectForKey:@"weakTarget"];
     _selector = NSSelectorFromString([aDecoder decodeObjectForKey:@"selector"]);
-    _node = [aDecoder decodeObjectForKey:@"node"];
+    _weakNode = [aDecoder decodeObjectForKey:@"weakNode"];
     _duration = [aDecoder decodeDoubleForKey:@"duration"];
     _userData = [aDecoder decodeObjectForKey:@"userData"];
     // note: At some point after decoding, we'll get our first notification that SKScene
@@ -372,7 +372,7 @@ NSString * const HLCustomHacktionSceneDidUpdateNotification = @"HLCustomHacktion
 {
   [aCoder encodeConditionalObject:_weakTarget forKey:@"weakTarget"];
   [aCoder encodeObject:NSStringFromSelector(_selector) forKey:@"selector"];
-  [aCoder encodeObject:_node forKey:@"node"];
+  [aCoder encodeConditionalObject:_weakNode forKey:@"weakNode"];
   [aCoder encodeDouble:_duration forKey:@"duration"];
   [aCoder encodeObject:_userData forKey:@"userData"];
   // note: Don't bother encoding _lastUpdateTime.  See note in initWithCoder.
@@ -480,7 +480,7 @@ NSString * const HLCustomHacktionSceneDidUpdateNotification = @"HLCustomHacktion
   }
   IMP imp = [target methodForSelector:_selector];
   void (*func)(id, SEL, SKNode *, CGFloat, NSTimeInterval, id) = (void (*)(id, SEL, SKNode *, CGFloat, NSTimeInterval, id))imp;
-  func(target, _selector, _node, (CGFloat)elapsedTime, _duration, _userData);
+  func(target, _selector, _weakNode, (CGFloat)elapsedTime, _duration, _userData);
 }
 
 @end

@@ -64,7 +64,7 @@
 + (SKAction *)customActionWithDuration:(NSTimeInterval)duration
                               selector:(SEL)selector
                             weakTarget:(id)weakTarget
-                                  node:(SKNode *)node
+                              weakNode:(SKNode *)weakNode
                               userData:(id)userData;
 
 /**
@@ -788,7 +788,7 @@ FOUNDATION_EXPORT NSString * const HLCustomHacktionSceneDidUpdateNotification;
 */
 - (instancetype)initWithWeakTarget:(id)weakTarget
                           selector:(SEL)selector
-                              node:(SKNode *)node
+                          weakNode:(SKNode *)weakNode
                           duration:(NSTimeInterval)duration
                           userData:(id)userData;
 
@@ -846,8 +846,11 @@ FOUNDATION_EXPORT NSString * const HLCustomHacktionSceneDidUpdateNotification;
 
 /**
  The node that will be passed to the selector invoked repeatedly by the custom action.
+
+ The node is retained weakly, in order to avoid retain cycles caused when the custom
+ action is run on this same node (which is customary).
 */
-@property (nonatomic, strong) SKNode *node;
+@property (nonatomic, weak) SKNode *weakNode;
 
 /**
  The duration for the custom action.
