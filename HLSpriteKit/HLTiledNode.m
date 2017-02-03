@@ -118,8 +118,20 @@
 
 - (void)setTexture:(SKTexture *)texture
 {
-  for (SKSpriteNode *child in self.children) {
-    child.texture = texture;
+  if (!texture) {
+    for (SKSpriteNode *child in self.children) {
+      child.texture = nil;
+    }
+    return;
+  }
+  
+  SKSpriteNode *firstChild = (SKSpriteNode *)[self.children firstObject];
+  if (firstChild.texture && CGSizeEqualToSize(firstChild.texture.size, texture.size)) {
+    for (SKSpriteNode *child in self.children) {
+      child.texture = texture;
+    }
+  } else {
+    [self HL_createTileNodesWithTexture:texture color:firstChild.color];
   }
 }
 
