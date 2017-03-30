@@ -9,16 +9,17 @@ set -e -o pipefail
 
 if (( $travis )); then
 
-    # note: Couldn't get this to run on TravisCI, but builds fine locally.
+    # note: Couldn't get this to run on TravisCI, but builds fine
+    # locally.
     #
     #  Assertion failed: (*shader), function xglCompileShader, file /BuildRoot/Library/Caches/com.apple.xbs/Sources/Jet/Jet-2.6.1/Jet/xgl_utils.mm, line 24.
     #  2016-09-21 17:13:00.353 xcodebuild[1406:4641] Error Domain=IDETestOperationsObserverErrorDomain Code=5 "Early unexpected exit, operation never finished bootstrapping - no restart will be attempted" UserInfo={NSLocalizedDescription=Early unexpected exit, operation never finished bootstrapping - no restart will be attempted}
     #  Test target macOS-Tests encountered an error (Early unexpected exit, operation never finished bootstrapping - no restart will be attempted)
     #  The command "./test.sh" exited with 65.
     #
-    # The failed assertion seems to have something to do with trying to run SpriteKit on
-    # a virtual machine.  This makes me hope it's a problem that will be fixed in the next
-    # release of the SDK.
+    # The failed assertion seems to have something to do with trying
+    # to run SpriteKit on a virtual machine.  This makes me hope it's
+    # a problem that will be fixed in the next release of the SDK.
     #
     # Here are some things I tried before giving up:
     #
@@ -40,13 +41,17 @@ else
 
 fi
 
-sdk_iphonesimulator=iphonesimulator10.1
-if (( $travis )); then
-    sdk_iphonesimulator=iphonesimulator10.0
-fi
+sdk_iphonesimulator=iphonesimulator
+# note: For now, use latest simulator SDK both locally and on
+# TravisCI.  Otherwise can specify specific SDK with version numbers,
+# but local and Travis tend to be different (depending on TravisCI's
+# osx_image).
+#if (( $travis )); then
+#    sdk_iphonesimulator=iphonesimulator10.0
+#fi
 
-# note: Would like to do test of iOS8, but xcodebuild hangs after simulator launch.
-# Just build it.
+# note: Would like to do test of iOS8, but xcodebuild hangs after
+# simulator launch.  Just build it.
 xcodebuild clean build \
            -workspace Example/HLSpriteKit.xcworkspace \
            -scheme iOS \
@@ -64,8 +69,8 @@ xcodebuild clean build test \
            ONLY_ACTIVE_ARCH=NO \
     | xcpretty
 
-# note: Framework project (for Carthage) not currently configured for testing;
-# just build.
+# note: Framework project (for Carthage) not currently configured for
+# testing; just build.
 xcodebuild clean build \
            -project HLSpriteKit.xcodeproj \
            -scheme HLSpriteKit \

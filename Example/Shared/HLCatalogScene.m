@@ -28,6 +28,7 @@
   BOOL _contentCreated;
   HLScrollNode *_catalogScrollNode;
   HLMessageNode *_messageNode;
+  HLTiledNode *_tiledNode;
 }
 
 - (void)didMoveToView:(SKView *)view
@@ -52,6 +53,16 @@
 {
   [super didChangeSize:oldSize];
   _catalogScrollNode.size = self.size;
+}
+
+- (void)update:(NSTimeInterval)currentTime
+{
+  static NSTimeInterval lastTime = 0.0;
+  if (lastTime > 0.0) {
+    NSTimeInterval incrementalTime = currentTime - lastTime;
+    [_tiledNode hlActionRunnerUpdate:incrementalTime];
+  }
+  lastTime = currentTime;
 }
 
 - (void)HL_createContent
@@ -120,18 +131,20 @@
   //   toolbarNode.userInteractionEnabled = YES;
   [catalogNode addChild:toolbarNode];
 
-  HLTiledNode *tiledNode = [self HL_createContentTiledNode];
+  _tiledNode = [self HL_createContentTiledNode];
 #if TARGET_OS_IPHONE
-  [tiledNode hlSetGestureTarget:[HLTapGestureTarget tapGestureTargetWithHandleGestureBlock:^(UIGestureRecognizer *gestureRecognizer){
+  [_tiledNode hlSetGestureTarget:[HLTapGestureTarget tapGestureTargetWithHandleGestureBlock:^(UIGestureRecognizer *gestureRecognizer){
     [self HL_showMessage:@"Tapped HLTiledNode."];
   }]];
 #else
-  [tiledNode hlSetGestureTarget:[HLClickGestureTarget clickGestureTargetWithHandleGestureBlock:^(NSGestureRecognizer *gestureRecognizer){
+  [_tiledNode hlSetGestureTarget:[HLClickGestureTarget clickGestureTargetWithHandleGestureBlock:^(NSGestureRecognizer *gestureRecognizer){
     [self HL_showMessage:@"Clicked HLTiledNode."];
   }]];
 #endif
-  [self needSharedGestureRecognizersForNode:tiledNode];
-  [catalogNode addChild:tiledNode];
+  [self needSharedGestureRecognizersForNode:_tiledNode];
+  [catalogNode addChild:_tiledNode];
+  // Animation depends on hlUpdateActionRunner code in update method.
+  [_tiledNode hlRunAction:[HLAction rotateFromAngle:0.0 to:M_PI duration:3.0] withKey:@"rotate"];
 
   HLLabelButtonNode *labelButtonNode = [self HL_createContentLabelButtonNode];
 #if TARGET_OS_IPHONE

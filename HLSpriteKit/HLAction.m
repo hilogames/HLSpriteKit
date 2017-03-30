@@ -2377,7 +2377,7 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
     if ([aDecoder containsValueForKey:@"restore"]) {
       _restore = [aDecoder decodeBoolForKey:@"restore"];
       _restoreTexture = [aDecoder decodeObjectForKey:@"restoreTexture"];
-      _isRestoreTextureSpecified = [aDecoder decodeObjectForKey:@"isRestoreTextureSpecified"];
+      _isRestoreTextureSpecified = [aDecoder decodeBoolForKey:@"isRestoreTextureSpecified"];
     } else {
       _restore = NO;
       _restoreTexture = nil;
