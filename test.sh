@@ -42,13 +42,12 @@ else
 fi
 
 sdk_iphonesimulator=iphonesimulator
-# note: For now, use latest simulator SDK both locally and on
-# TravisCI.  Otherwise can specify specific SDK with version numbers,
-# but local and Travis tend to be different (depending on TravisCI's
-# osx_image).
-#if (( $travis )); then
-#    sdk_iphonesimulator=iphonesimulator10.0
-#fi
+# note: TravisCI seems to need a verison-specified SDK.  Match it to
+# the osx_image in .travis.yml.  Reference:
+#   https://docs.travis-ci.com/user/osx-ci-environment
+if (( $travis )); then
+    sdk_iphonesimulator=iphonesimulator10.3
+fi
 
 # note: Would like to do test of iOS8, but xcodebuild hangs after
 # simulator launch.  Just build it.
