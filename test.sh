@@ -45,6 +45,9 @@ sdk_iphonesimulator=iphonesimulator
 # note: TravisCI seems to need a verison-specified SDK.  Match it to
 # the osx_image in .travis.yml.  Reference:
 #   https://docs.travis-ci.com/user/osx-ci-environment
+# But the TravisCI failure was just the generic "Test target iOS-Tests
+# encountered an error", on a day with operational troubles, so it
+# might be a transient thing.  For now, specify.
 if (( $travis )); then
     sdk_iphonesimulator=iphonesimulator10.3
 fi
