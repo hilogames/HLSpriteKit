@@ -681,6 +681,8 @@ When complete, `elapsedTime` won't necessarily match the action's `duration`:
 
 /**
  Creates a rotate-by action.
+
+ Angle values are measured in radians.
 */
 - (instancetype)initWithAngle:(CGFloat)angleDelta duration:(NSTimeInterval)duration;
 
@@ -690,6 +692,8 @@ When complete, `elapsedTime` won't necessarily match the action's `duration`:
  The instantaneous change in rotation of the rotate-by action (caused by the last update).
 
  If a node was passed to the update method, this value was added to its zRotation.
+
+ Angle values are measured in radians.
 */
 @property (nonatomic, readonly) CGFloat instantaneousDelta;
 
@@ -711,10 +715,10 @@ When complete, `elapsedTime` won't necessarily match the action's `duration`:
  This is accomplished numerically by normalizing the initial rotation into the range of the
  "angle to" value.
 
- If `shortestUnitArc` is `NO`, the action will change from its initial value to its final value
- by numerical interpolation between the values.  For example, rotating from 0 to 4PI will
- rotate two complete revolutions in a counter-clockwise direction, whereas rotating from 0 to
- -PI/2 will rotate a quarter turn clockwise.
+ If `shortestUnitArc` is `NO`, the action will change from its initial value to its final
+ value by numerical interpolation between the values.  For example, rotating from 0 to 4PI
+ will rotate two complete revolutions in a counter-clockwise direction, whereas rotating
+ from 0 to -PI/2 will rotate a quarter turn clockwise.
 
  When the action is first updated, it will set its "angle from" (initial rotation) based on
  the position of the passed node.  For this reason, the node parameter passed to the first
@@ -733,21 +737,21 @@ When complete, `elapsedTime` won't necessarily match the action's `duration`:
  This is accomplished numerically by normalizing the initial rotation into the range of the
  "angle to" value.
 
- If `shortestUnitArc` is `NO`, the action will change from its initial value to its final value
- by numerical interpolation between the values.  For example, rotating from 0 to 4PI will
- rotate two complete revolutions in a counter-clockwise direction, whereas rotating from 0 to
- -PI/2 will rotate a quarter turn clockwise.
+ If `shortestUnitArc` is `NO`, the action will change from its initial value to its final
+ value by numerical interpolation between the values.  For example, rotating from 0 to 4PI
+ will rotate two complete revolutions in a counter-clockwise direction, whereas rotating
+ from 0 to -PI/2 will rotate a quarter turn clockwise.
 */
 - (instancetype)initWithAngleFrom:(CGFloat)angleFrom to:(CGFloat)angleTo duration:(NSTimeInterval)duration shortestUnitArc:(BOOL)shortestUnitArc;
 
 /// @name Accessing Action State
 
 /**
- The current rotation of the rotate-to action.
+ The current rotation of the rotate-to action, in radians.
 
  If a node was passed to the update method, its `zPosition` was set to this value.
 */
-@property (nonatomic, readonly) CGFloat scaleX;
+@property (nonatomic, readonly) CGFloat angle;
 
 @end
 
@@ -813,7 +817,7 @@ When complete, `elapsedTime` won't necessarily match the action's `duration`:
 @end
 
 /**
- An action that scales from one value to another over a duration.
+ An action that changes x and y scales to new values over a duration.
 */
 @interface HLScaleToAction : HLAction <NSCoding, NSCopying>
 
@@ -1473,69 +1477,488 @@ When complete, `elapsedTime` won't necessarily match the action's `duration`:
 */
 @interface HLAction (HLActions)
 
+/**
+ Creates an action that updates a collection of actions in parallel.
+
+ @param actions An array of `HLAction` actions.
+
+ @return An initialized group action.
+*/
 + (HLGroupAction *)group:(NSArray *)actions;
 
+/**
+ Creates an action that updates a collection of actions in sequence.
+
+ @param actions An array of `HLAction` actions.
+
+ @return An initialized sequence action.
+*/
 + (HLSequenceAction *)sequence:(NSArray *)actions;
 
+/**
+ Creates an action that repeats another action forever.
+
+ The action to be repeated is retained strongly, and copied on each iteration immediately
+ before it is run.
+*/
 + (HLRepeatAction *)repeatAction:(HLAction *)action count:(NSUInteger)count;
+
+/**
+ Creates an action that repeats another action the passed number of times.
+
+ The action to be repeated is retained strongly, and copied on each iteration immediately
+ before it is run.
+
+ If count is passed 0, the action will be repeated forever.
+*/
 + (HLRepeatAction *)repeatActionForever:(HLAction *)action;
 
+/**
+ Creates an action that idles for a duration.
+*/
 + (HLWaitAction *)waitForDuration:(NSTimeInterval)duration;
 
+/**
+ Creates an action that tracks a relative change in position over a duration.
+*/
 + (HLMoveByAction *)moveByX:(CGFloat)deltaX y:(CGFloat)deltaX duration:(NSTimeInterval)duration;
+
+/**
+ Creates an action that tracks a relative change in position over a duration.
+*/
 + (HLMoveByAction *)moveBy:(CGPoint)delta duration:(NSTimeInterval)duration;
+
+/**
+ Creates an action that moves from one point to another over a duration.
+
+ When the action is first updated, it will set its origin based on the position of the
+ passed node.  For this reason, the node parameter passed to the first update must be
+ non-nil.  (To set the origin without a node, use `moveFrom:to:destination:duration:`.)
+*/
 + (HLMoveToAction *)moveTo:(CGPoint)destination duration:(NSTimeInterval)duration;
+
+/**
+ Creates an action that moves from one point to another over a duration, with a designated
+ origin.
+*/
 + (HLMoveToAction *)moveFrom:(CGPoint)origin to:(CGPoint)destination duration:(NSTimeInterval)duration;
+
 //+ (HLMoveToXAction *)moveToX:(CGFloat)xTo duration:(NSTimeInterval)duration;
 //+ (HLMoveToXAction *)moveFromX:(CGFloat)xFrom to:(CGFloat)xTo duration:(NSTimeInterval)duration;
 //+ (HLMoveToYAction *)moveToY:(CGFloat)yTo duration:(NSTimeInterval)duration;
 //+ (HLMoveToYAction *)moveFromY:(CGFloat)yFrom to:(CGFloat)yTo duration:(NSTimeInterval)duration;
 
+/**
+ Creates an action that tracks a relative change in rotation over a duration.
+
+ Angle values are measured in radians.
+*/
 + (HLRotateByAction *)rotateByAngle:(CGFloat)angleDelta duration:(NSTimeInterval)duration;
+
+/**
+ Creates an action that rotates from one value to another over a duration.
+
+ Angle values are measured in radians.
+
+ The action will change from its initial value to its final value by numerical
+ interpolation between the values.  For example, rotating from 0 to 4PI will rotate two
+ complete revolutions in a counter-clockwise direction, whereas rotating from 0 to -PI/2
+ will rotate a quarter turn clockwise.
+
+ When the action is first updated, it will set its "angle from" (initial rotation) based
+ on the position of the passed node.  For this reason, the node parameter passed to the
+ first update must be non-nil.  (To set the initial rotation angle without a node, use
+ `rotateFromAngle:to:duration:`.)
+*/
 + (HLRotateToAction *)rotateToAngle:(CGFloat)angleTo duration:(NSTimeInterval)duration;
+
+/**
+ Creates an action that rotates from one value to another over a duration, with a
+ designated "angle from" (initial rotation).
+
+ Angle values are measured in radians.
+
+ The action will change from its initial value to its final value by numerical
+ interpolation between the values.  For example, rotating from 0 to 4PI will rotate two
+ complete revolutions in a counter-clockwise direction, whereas rotating from 0 to -PI/2
+ will rotate a quarter turn clockwise.
+*/
 + (HLRotateToAction *)rotateFromAngle:(CGFloat)angleFrom to:(CGFloat)angleTo duration:(NSTimeInterval)duration;
+
+/**
+ Creates an action that rotates from one value to another over a duration, with optional
+ automatic direction.
+
+ Angle values are measured in radians.
+
+ If `shortestUnitArc` is `YES`, the action will rotate in the direction of smallest
+ rotation.  This is accomplished numerically by normalizing the initial rotation into the
+ range of the "angle to" value.
+
+ If `shortestUnitArc` is `NO`, the action will change from its initial value to its final
+ value by numerical interpolation between the values.  For example, rotating from 0 to 4PI
+ will rotate two complete revolutions in a counter-clockwise direction, whereas rotating
+ from 0 to -PI/2 will rotate a quarter turn clockwise.
+
+ When the action is first updated, it will set its "angle from" (initial rotation) based
+ on the position of the passed node.  For this reason, the node parameter passed to the
+ first update must be non-nil.  (To set the initial rotation angle without a node, use
+ `rotateFromAngle:to:duration:shortestUnitArc:`.)
+*/
 + (HLRotateToAction *)rotateToAngle:(CGFloat)angleTo duration:(NSTimeInterval)duration shortestUnitArc:(BOOL)shortestUnitArc;
+
+/**
+ Creates an action that rotates from one value to another over a duration, with optional
+ automatic direction and a designated "angle from" (initial rotation).
+
+ Angle values are measured in radians.
+
+ If `shortestUnitArc` is `YES`, the action will rotate in the direction of smallest
+ rotation.  This is accomplished numerically by normalizing the initial rotation into the
+ range of the "angle to" value.
+
+ If `shortestUnitArc` is `NO`, the action will change from its initial value to its final
+ value by numerical interpolation between the values.  For example, rotating from 0 to 4PI
+ will rotate two complete revolutions in a counter-clockwise direction, whereas rotating
+ from 0 to -PI/2 will rotate a quarter turn clockwise.
+*/
 + (HLRotateToAction *)rotateFromAngle:(CGFloat)angleFrom to:(CGFloat)angleTo duration:(NSTimeInterval)duration shortestUnitArc:(BOOL)shortestUnitArc;
 
+/**
+ Creates an action that tracks a relative change in scale over a duration.
+*/
 + (HLScaleByAction *)scaleBy:(CGFloat)scaleDelta duration:(NSTimeInterval)duration;
+
+/**
+ Creates an action that tracks a relative change in scale over a duration, with
+ individually-specified scale changes for x and y.
+*/
 + (HLScaleXYByAction *)scaleXBy:(CGFloat)scaleDeltaX y:(CGFloat)scaleDeltaY duration:(NSTimeInterval)duration;
+
+/**
+ Creates an action that changes x and y scales to the same new scale value over a
+ duration.
+
+ When the action is first updated, it will set its initial x and y scale values based on
+ the passed node.  For this reason, the node parameter passed to the first update must be
+ non-nil.  (To set the initial scale values without a node, use
+ `scaleXFrom:y:to:duration:`.)
+*/
 + (HLScaleToAction *)scaleTo:(CGFloat)scaleTo duration:(NSTimeInterval)duration;
+
+/**
+ Creates an action that changes x and y scales the same new scale value over a duration,
+ with designated initial scale values.
+*/
 + (HLScaleToAction *)scaleXFrom:(CGFloat)scaleXFrom y:(CGFloat)scaleYFrom to:(CGFloat)scaleTo duration:(NSTimeInterval)duration;
+
+/**
+ Creates an that changes x and y scales to two new scale values over a duration.
+
+ When the action is first updated, it will set its initial x and y scale values based on
+ the passed node.  For this reason, the node parameter passed to the first update must be
+ non-nil.  (To set the initial scale values without a node, use
+ `scaleXFrom:y:xTo:y:duration:`.)
+*/
 + (HLScaleToAction *)scaleXTo:(CGFloat)scaleXTo y:(CGFloat)scaleYTo duration:(NSTimeInterval)duration;
+
+/**
+ Creates an that changes x and y scales to two new scale values over a duration, with
+ designated initial scale vlaues.
+*/
 + (HLScaleToAction *)scaleXFrom:(CGFloat)scaleXFrom y:(CGFloat)scaleYFrom xTo:(CGFloat)scaleXTo y:(CGFloat)scaleYTo duration:(NSTimeInterval)duration;
+
 //+ (HLScaleXToAction *)scaleXTo:(CGFloat)scaleXTo duration:(NSTimeInterval)duration;
 //+ (HLScaleXToAction *)scaleXFrom:(CGFloat)scaleXFrom to:(CGFloat)scaleXTo duration:(NSTimeInterval)duration;
 //+ (HLScaleYToAction *)scaleYTo:(CGFloat)scaleYTo duration:(NSTimeInterval)duration;
 //+ (HLScaleYToAction *)scaleYFrom:(CGFloat)scaleYFrom to:(CGFloat)scaleYTo duration:(NSTimeInterval)duration;
 
+/**
+ Creates an action that fades alpha to `1.0` over a duration.
+
+ When the action is first updated, it will set its "alpha from" (initial alpha) based on
+ the current alpha of the passed node.  For this reason, the node parameter passed to the
+ first update must be non-nil.  (To set the initial alpha without a node, use
+ `fadeInFrom:duration:`.)
+*/
 + (HLFadeAlphaToAction *)fadeInWithDuration:(NSTimeInterval)duration;
+
+/**
+ Creates an action that fades alpha to `1.0` over a duration, with a designated initial
+ alpha value.
+*/
 + (HLFadeAlphaToAction *)fadeInFrom:(CGFloat)alphaFrom duration:(NSTimeInterval)duration;
+
+/**
+ Creates an action that fades alpha to `0.0` over a duration.
+
+ When the action is first updated, it will set its "alpha from" (initial alpha) based on
+ the current alpha of the passed node.  For this reason, the node parameter passed to the
+ first update must be non-nil.  (To set the initial alpha without a node, use
+ `fadeOutFrom:duration:`.)
+*/
 + (HLFadeAlphaToAction *)fadeOutWithDuration:(NSTimeInterval)duration;
+
+/**
+ Creates an action that fades alpha to `0.0` over a duration, with a designated initial
+ alpha value.
+*/
 + (HLFadeAlphaToAction *)fadeOutFrom:(CGFloat)alphaFrom duration:(NSTimeInterval)duration;
+
+/**
+ Creates an action that fades alpha from one value to another.
+
+ When the action is first updated, it will set its "alpha from" (initial alpha) based on
+ the current alpha of the passed node.  For this reason, the node parameter passed to the
+ first update must be non-nil.  (To set the initial alpha without a node, use
+ `fadeAlphaFrom:to:duration:`.)
+*/
 + (HLFadeAlphaToAction *)fadeAlphaTo:(CGFloat)alphaTo duration:(NSTimeInterval)duration;
+
+/**
+ Creates an action that fades alpha from one value to another, with a designated initial
+ alpha value.
+*/
 + (HLFadeAlphaToAction *)fadeAlphaFrom:(CGFloat)alphaFrom to:(CGFloat)alphaTo duration:(NSTimeInterval)duration;
 
+/**
+ Creates an action that blends color and changes color blend factor (for a spite node)
+ from one set of values to another.
+
+ When the action is first updated, it will set its initial color and blend factor based on
+ the passed sprite node.  For this reason, the node parameter passed to the first update
+ must be a non-nil sprite node.  (To set the initial values without a sprite node, use
+ `colorizeWithColorFrom:to:colorBlendFactorFrom:to:duration:`.)
+*/
 + (HLColorizeAction *)colorizeWithColor:(SKColor *)colorTo colorBlendFactor:(CGFloat)colorBlendFactorTo duration:(NSTimeInterval)duration;
+
+/**
+ Creates an action that blends color and changes color blend factor (for a spite node)
+ from one set of values to another, with designated initial color and blend factor.
+*/
 + (HLColorizeAction *)colorizeWithColorFrom:(SKColor *)colorFrom to:(SKColor *)colorTo colorBlendFactorFrom:(CGFloat)colorBlendFactorFrom to:(CGFloat)colorBlendFactorTo duration:(NSTimeInterval)duration;
+
+/**
+ Creates an action that changes color blend factor (for a sprite node) from one value to
+ another.
+
+ When the action is first updated, it will set its initial blend factor based on the
+ passed sprite node.  For this reason, the node parameter passed to the first update must
+ be a non-nil sprite node.  (To set the initial value without a sprite node, use
+ `colorizeWithColorBlendFactorFrom:to:duration:`.)
+*/
 + (HLColorizeAction *)colorizeWithColorBlendFactor:(CGFloat)colorBlendFactorTo duration:(NSTimeInterval)duration;
+
+/**
+ Creates an action that changes color blend factor (for a sprite node) from one value to
+ another, with designated color blend factor.
+*/
 + (HLColorizeAction *)colorizeWithColorBlendFactorFrom:(CGFloat)colorBlendFactorFrom to:(CGFloat)colorBlendFactorTo duration:(NSTimeInterval)duration;
 
+/**
+ Creates an action that progresses through an array of textures, considered as frames of
+ an animation.
+
+ If this action is being repeated, consider using `HLLoopTexturesAction` as an
+ alternative; see `HLAnimateTexturesAction` documentation for details.
+*/
 + (HLAnimateTexturesAction *)animateWithTextures:(NSArray *)textures timePerFrame:(NSTimeInterval)timePerFrame;
+
+/**
+ Creates an action that progresses through an array of textures, considered as frames of
+ an animation.
+
+ If this action is being repeated, consider using `HLLoopTexturesAction` as an
+ alternative; see `HLAnimateTexturesAction` documentation for details.
+
+ If `restore` is `YES`, then a node must be passed non-nil to the first update of this
+ action (so that this action can record the original texture).  To specify the restore
+ texture without a node, use `animateWithTextures:timePerFrame:resize:restoreTexture:`.)
+
+ @param textures The frames of the animation.
+
+ @param timePerFrame The time per frame, in seconds.
+
+ @param resize If `YES`, then a node passed to `update:node:` will have its size changed
+               to the size of the current texture.
+
+ @param restore Whether or not to restore an original texture to the node on the final
+                update (when the animation is complete).
+
+ @return A configured animate-textures action.
+*/
 + (HLAnimateTexturesAction *)animateWithTextures:(NSArray *)textures timePerFrame:(NSTimeInterval)timePerFrame resize:(BOOL)resize restore:(BOOL)restore;
+
+/**
+ Creates an action that progresses through an array of textures, considered as frames of
+ an animation.
+
+ If this action is being repeated, consider using `HLLoopTexturesAction` as an
+ alternative; see `HLAnimateTexturesAction` documentation for details.
+
+ @param textures The frames of the animation.
+
+ @param timePerFrame The time per frame, in seconds.
+
+ @param resize If `YES`, then a node passed to `update:node:` will have its size changed
+               to the size of the current texture.
+
+ @param restoreTexture The texture to restore to the node on the final update (when the
+                       animation is complete).
+
+ @return A configured animate-textures action.
+*/
 + (HLAnimateTexturesAction *)animateWithTextures:(NSArray *)textures timePerFrame:(NSTimeInterval)timePerFrame resize:(BOOL)resize restoreTexture:(SKTexture *)restoreTexture;
 
+/**
+ Creates an action that repeatedly cycles through an array of textures, considered as
+ frames of an animation.
+*/
 + (HLLoopTexturesAction *)loopTextures:(NSArray *)textures timePerFrame:(NSTimeInterval)timePerFrame;
+
+/**
+ Creates an action that repeatedly cycles through an array of textures, considered as
+ frames of an animation.
+
+ @param textures The frames of the loop.
+
+ @param timePerFrame The time per frame, in seconds.
+
+ @param resize If `YES`, then a node passed to `update:node:` will have its size changed
+               to the size of the current texture.
+
+ @param startingTextureIndex The starting frame for the loop.
+
+ @return A configured loop-textures action.
+*/
 + (HLLoopTexturesAction *)loopTextures:(NSArray *)textures timePerFrame:(NSTimeInterval)timePerFrame resize:(BOOL)resize startingAt:(NSUInteger)startingTextureIndex;
 
+/**
+ Creates a non-durational action that removes a node from its parent.
+*/
 + (HLRemoveFromParentAction *)removeFromParent;
 
+/**
+ Creates a non-durational action that performs a selector on a target.
+
+ This variant retains the target weakly and passes no arguments to the selector.
+
+ @param weakTarget The target, retained weakly in order to avoid retain cycles.  (One
+                   possible cycle, when the target is the parent of the child node running
+                   the action: The target retains the child node; the child node retains
+                   the action runner; the action runner retains the action; the action
+                   retains the target.)
+
+ @param selector The selector (taking two arguments) to be performed by the action.
+*/
 + (HLPerformSelectorWeakAction *)performSelector:(SEL)selector onWeakTarget:(id)weakTarget;
+
+/**
+ Creates a non-durational action that performs a selector on a target.
+
+ This variant retains the target weakly and passes a single argument to the selector.
+
+ @param weakTarget The target, retained weakly in order to avoid retain cycles.  (One
+                   possible cycle, when the target is the parent of the child node running
+                   the action: The target retains the child node; the child node retains
+                   the action runner; the action runner retains the action; the action
+                   retains the target.)
+
+ @param selector The selector (taking two arguments) to be performed by the action.
+
+ @param argument The argument to pass to the selector when it is performed.
+*/
 + (HLPerformSelectorWeakSingleAction *)performSelector:(SEL)selector onWeakTarget:(id)weakTarget withArgument:(id)argument;
+
+/**
+ Creates a non-durational action that performs a selector on a target.
+
+ This variant retains the target weakly and passes two arguments to the selector.
+
+ @param weakTarget The target, retained weakly in order to avoid retain cycles.  (One
+                   possible cycle, when the target is the parent of the child node running
+                   the action: The target retains the child node; the child node retains
+                   the action runner; the action runner retains the action; the action
+                   retains the target.)
+
+ @param selector The selector (taking two arguments) to be performed by the action.
+
+ @param argument1 The first argument to pass to the selector when it is performed.
+
+ @param argument2 The second argument to pass to the selector when it is performed.
+*/
 + (HLPerformSelectorWeakDoubleAction *)performSelector:(SEL)selector onWeakTarget:(id)weakTarget withArgument1:(id)argument1 argument2:(id)argument2;
+
+/**
+ Creates a non-durational action that performs a selector on a target.
+
+ This variant retains the target strongly and passes no arguments to the selector.
+
+ @param strongTarget The target, retained strongly.  Be careful of retain cycles.  (One
+                     possible cycle, when the target is the parent of the child node
+                     running the action: The target retains the child node; the child node
+                     retains the action runner; the action runner retains the action; the
+                     action retains the target.)
+
+ @param selector The selector (taking two arguments) to be performed by the action.
+*/
 + (HLPerformSelectorStrongAction *)performSelector:(SEL)selector onStrongTarget:(id)strongTarget;
+
+/**
+ Creates a non-durational action that performs a selector on a target.
+
+ This variant retains the target strongly and passes a single argument to the selector.
+
+ @param strongTarget The target, retained strongly.  Be careful of retain cycles.  (One
+                     possible cycle, when the target is the parent of the child node
+                     running the action: The target retains the child node; the child node
+                     retains the action runner; the action runner retains the action; the
+                     action retains the target.)
+
+ @param selector The selector (taking two arguments) to be performed by the action.
+
+ @param argument The argument to pass to the selector when it is performed.
+*/
 + (HLPerformSelectorStrongSingleAction *)performSelector:(SEL)selector onStrongTarget:(id)strongTarget withArgument:(id)argument;
+
+/**
+ Creates a non-durational action that performs a selector on a target.
+
+ This variant retains the target strongly and passes two arguments to the selector.
+
+ @param strongTarget The target, retained strongly.  Be careful of retain cycles.  (One
+                     possible cycle, when the target is the parent of the child node
+                     running the action: The target retains the child node; the child node
+                     retains the action runner; the action runner retains the action; the
+                     action retains the target.)
+
+ @param selector The selector (taking two arguments) to be performed by the action.
+
+ @param argument1 The first argument to pass to the selector when it is performed.
+
+ @param argument2 The second argument to pass to the selector when it is performed.
+*/
 + (HLPerformSelectorStrongDoubleAction *)performSelector:(SEL)selector onStrongTarget:(id)strongTarget withArgument1:(id)argument1 argument2:(id)argument2;
 
+/**
+ Creates an action that performs a selector on a target repeatedly over a duration.
+
+ @param duration The duration of the action, in seconds.
+
+ @param selector The selector that will be performed repeatedly over the duration.  It is
+                 passed four parameters: the updated node (`SKNode *`), the elapsed time
+                 (`CGFloat`), the action duration (`NSTimeInterval`), and the user data
+                 (`id`).
+
+ @param weakTarget The target, retained weakly in order to avoid retain cycles.  (One
+                   possible cycle, when the target is the parent of the child node running
+                   the action: The target retains the child node; the child node retains
+                   the action runner; the action runner retains the action; the action
+                   retains the target.)
+
+ @param userData An object which will be retained (strongly) on the custom action and
+                 passed as a parameter to the selector.
+*/
 + (HLCustomAction *)customActionWithDuration:(NSTimeInterval)duration
                                     selector:(SEL)selector
                                   weakTarget:(id)weakTarget
