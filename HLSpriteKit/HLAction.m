@@ -570,6 +570,11 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
   return [[HLScaleToAction alloc] initWithXFrom:scaleXFrom y:scaleYFrom xTo:scaleXTo y:scaleYTo duration:duration];
 }
 
++ (HLFadeAlphaByAction *)fadeAlphaBy:(CGFloat)alphaDelta duration:(NSTimeInterval)duration
+{
+  return [[HLFadeAlphaByAction alloc] initWithAlpha:alphaDelta duration:duration];
+}
+
 + (HLFadeAlphaToAction *)fadeInWithDuration:(NSTimeInterval)duration
 {
   return [[HLFadeAlphaToAction alloc] initWithAlphaTo:1.0f duration:duration];
@@ -1962,6 +1967,93 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
     *scaleX = _xFrom * (1.0f - normalTime) + _xTo * normalTime;
     *scaleY = _yFrom * (1.0f - normalTime) + _yTo * normalTime;
   }
+}
+
+@end
+
+@implementation HLFadeAlphaByAction
+{
+  CGFloat _delta;
+  CGFloat _lastCumulativeDelta;
+}
+
+- (instancetype)initWithAlpha:(CGFloat)alphaDelta duration:(NSTimeInterval)duration
+{
+  self = [super initWithDuration:duration];
+  if (self) {
+    _delta = alphaDelta;
+  }
+  return self;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+  self = [super initWithCoder:aDecoder];
+  if (self) {
+    _delta = (CGFloat)[aDecoder decodeDoubleForKey:@"delta"];
+    _lastCumulativeDelta = (CGFloat)[aDecoder decodeDoubleForKey:@"lastCumulativeDelta"];
+  }
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+  [super encodeWithCoder:aCoder];
+  [aCoder encodeDouble:_delta forKey:@"delta"];
+  [aCoder encodeDouble:_lastCumulativeDelta forKey:@"lastCumulativeDelta"];
+}
+
+- (instancetype)copyWithZone:(NSZone *)zone
+{
+  HLFadeAlphaByAction *copy = [super copyWithZone:zone];
+  if (copy) {
+    copy->_delta = _delta;
+    copy->_lastCumulativeDelta = _lastCumulativeDelta;
+  }
+  return copy;
+}
+
+- (BOOL)HL_update:(NSTimeInterval)incrementalTime node:(SKNode *)node extraTime:(NSTimeInterval *)extraTime
+{
+  // note: This mechanism chosen in order to avoid floating point drift (in the sum of instantaneous deltas
+  // applied to the node or returned by the property) and to support calculation of property .instantaneousDelta.
+
+  CGFloat lastInstantaneousDelta = [self HL_instantaneousDelta];
+  // note: Always calculate the cumulative by adding the instantaneous, so that we can compensate for the difference
+  // between "elasped delta" (normal-elapsed-time * total-delta) and "cumulative delta" (sum of a series of
+  // instantaneous-delta).
+  _lastCumulativeDelta += lastInstantaneousDelta;
+
+  BOOL notYetCompleted;
+  [self HL_advanceTime:incrementalTime extraTime:extraTime notYetCompleted:&notYetCompleted];
+
+  if (node) {
+    CGFloat instantaneousDelta = [self HL_instantaneousDelta];
+    node.alpha += instantaneousDelta;
+  }
+
+  return notYetCompleted;
+}
+
+- (CGFloat)instantaneousDelta
+{
+  CGFloat instantaneousDelta = [self HL_instantaneousDelta];
+  return instantaneousDelta;
+}
+
+- (CGFloat)HL_instantaneousDelta
+{
+  NSTimeInterval elapsedTime = self.elapsedTime;
+  NSTimeInterval duration = self.duration;
+
+  CGFloat instantaneousDelta;
+  if (elapsedTime >= duration) {
+    instantaneousDelta = _delta - _lastCumulativeDelta;
+  } else {
+    CGFloat normalTime = elapsedTime / duration;
+    instantaneousDelta = _delta * normalTime - _lastCumulativeDelta;
+  }
+  return instantaneousDelta;
 }
 
 @end

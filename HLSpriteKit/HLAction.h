@@ -865,6 +865,29 @@ When complete, `elapsedTime` won't necessarily match the action's `duration`:
 @end
 
 /**
+ An action that changes alpha by a relative value over a duration.
+*/
+@interface HLFadeAlphaByAction : HLAction <NSCoding, NSCopying>
+
+/// @name Creating the Action
+
+/**
+ Creates a alpha-by action.
+*/
+- (instancetype)initWithAlpha:(CGFloat)alphaDelta duration:(NSTimeInterval)duration;
+
+/// @name Accessing Action State
+
+/**
+ The instantaneous change in alpha of the alpha-by action (caused by the last update).
+
+ If a node was passed to the update method, this value was added to its alpha.
+*/
+@property (nonatomic, readonly) CGFloat instantaneousDelta;
+
+@end
+
+/**
  An action that fades alpha from one value to another.
 */
 @interface HLFadeAlphaToAction : HLAction <NSCoding, NSCopying>
@@ -1672,6 +1695,11 @@ When complete, `elapsedTime` won't necessarily match the action's `duration`:
 //+ (HLScaleXToAction *)scaleXFrom:(CGFloat)scaleXFrom to:(CGFloat)scaleXTo duration:(NSTimeInterval)duration;
 //+ (HLScaleYToAction *)scaleYTo:(CGFloat)scaleYTo duration:(NSTimeInterval)duration;
 //+ (HLScaleYToAction *)scaleYFrom:(CGFloat)scaleYFrom to:(CGFloat)scaleYTo duration:(NSTimeInterval)duration;
+
+/**
+ Creates an action that changes alpha by a relative value over a duration.
+*/
++ (HLFadeAlphaByAction *)fadeAlphaBy:(CGFloat)alphaDelta duration:(NSTimeInterval)duration;
 
 /**
  Creates an action that fades alpha to `1.0` over a duration.
