@@ -177,4 +177,28 @@
 */
 @property (nonatomic, assign) CGRect centerRect;
 
+/**
+ The corner radius of the button. 
+ 
+ Default value is `0.0`.
+ 
+ Note: property will only work for label buttons that don’t have a texture.
+ */
+@property (nonatomic, assign) CGFloat cornerRadius;
+
+/**
+ The boarder width of the button.
+ 
+ Default value is `0.0`.
+ Default color is [SKColor blackColor]
+ */
+@property (nonatomic, assign) CGFloat borderWidth;
+
+/**
+ The color of the border for the button.
+ 
+ Default value is [SKColor blackColor]
+ */
+@property (nonatomic, strong) SKColor *borderColor;
+
 @end
