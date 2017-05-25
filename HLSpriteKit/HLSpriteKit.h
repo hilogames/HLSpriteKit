@@ -31,6 +31,7 @@
 #import "HLTableLayoutManager.h"
 #import "HLTiledNode.h"
 #import "HLToolbarNode.h"
+#import "HLUglyShuffler.h"
 #import "SKLabelNode+HLLabelNodeAdditions.h"
 #import "SKNode+HLAction.h"
 #import "SKNode+HLLayoutManager.h"

@@ -1,9 +1,18 @@
 
 # Change Log
 
+## Master
+
+### Added
+
+- The ugly shuffler!  `HLUglyShuffler`!  It produces N different kinda
+  random seeming shuffles of N different items.  Successive items are
+  calculated in constant time using constant space.  
+  [Karl Voskuil](https://github.com/karlvoskuil)
+
 ## 1.5.0 [2017-03-30]
 
-## Breaking
+### Breaking
 
 - Came to the painful realization that I'm developing two separate
   `SKAction` alternatives, and I need to name them differently.  I
@@ -12,7 +21,7 @@
   given anything.  
   [Karl Voskuil](https://github.com/karlvoskuil)
 
-## Added
+### Added
 
 - Improved `HLHacktion` (formerly `HLAction`) interface and expanded
   its use-cases.  The old thing was to provide encodable actions; the
@@ -30,14 +39,14 @@
 
 ## 1.4.0 [2016-10-28]
 
-## Added
+### Added
 
 - Lower deployment target minimum for iOS to 8.0.  
   [Karl Voskuil](https://github.com/karlvoskuil)
 
 ## 1.3.0 [2016-10-18]
 
-## Breaking
+### Breaking
 
 - To register a node to receive gestures from the scene, call
   `needsSharedGestureRecognizersForNode:` rather than
@@ -54,7 +63,7 @@
   blongs.  
   [Karl Voskuil](https://github.com/karlvoskuil)
 
-## Added
+### Added
 
 - Port gesture target forwarding to macOS and `NSGestureRecognizer`.  
   [Brent Traut](https://github.com/btraut)
@@ -68,13 +77,13 @@
 
 ## 1.2.0 [2016-09-21]
 
-## Breaking
+### Breaking
 
 - Rename `HLMenuNode` property `menu` to `topMenu`. The old name
   conflicts under macOS with an inherited `NSResponder` property.  
   [Karl Voskuil](https://github.com/karlvoskuil)
 
-## Added
+### Added
 
 - Conditional compilation for macOS / OS X.  
   [Karl Voskuil](https://github.com/karlvoskuil)
