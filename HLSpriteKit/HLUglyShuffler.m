@@ -370,11 +370,11 @@ static const NSUInteger HLUglyShufflerLfsrFeedbackTerms[16] = { 0x0, 0x3, 0x6, 0
 - (NSUInteger)peekItem
 {
   NSUInteger shuffledItem;
-  
+
   while (true) {
-    
+
     shuffledItem = (_lfsrState + _lfsrTranslation) % (_lfsrBound - 1);
-    
+
     if (shuffledItem < _itemCount) {
       break;
     }
@@ -387,7 +387,7 @@ static const NSUInteger HLUglyShufflerLfsrFeedbackTerms[16] = { 0x0, 0x3, 0x6, 0
       _lfsrState = (_lfsrState >> 1);
     }
   }
-  
+
   return shuffledItem;
 }
 
@@ -408,27 +408,27 @@ HLUglyShufflerDumpItems(NSUInteger itemCount)
   for (NSUInteger S = 0; S < itemCount; ++S) {
     [shufflers addObject:[[HLUglyShuffler alloc] initWithItemCount:itemCount shuffle:S]];
   }
-  
+
   printf("\n");
   printf("Shuffled Items by S\n\n");
-  
+
   printf(" i  ");
   for (NSUInteger S = 0; S < itemCount; ++S) {
-    printf("%4lu", S);
+    printf("%4lu", (unsigned long)S);
   }
   printf("\n");
-  
+
   printf("----");
   for (NSUInteger S = 0; S < itemCount; ++S) {
     printf("----");
   }
   printf("\n");
-  
+
   for (NSUInteger item = 0; item < itemCount; ++item) {
-    printf("%2lu  ", item);
+    printf("%2lu  ", (unsigned long)item);
     for (HLUglyShuffler *shuffler in shufflers) {
       NSUInteger item = [shuffler nextItem];
-      printf("%4lu", item);
+      printf("%4lu", (unsigned long)item);
     }
     printf("\n");
   }
@@ -441,33 +441,33 @@ HLUglyShufflerDumpDifferences(NSUInteger itemCount)
   for (NSUInteger S = 0; S < itemCount; ++S) {
     [shufflers addObject:[[HLUglyShuffler alloc] initWithItemCount:itemCount shuffle:S]];
   }
-  
+
   printf("\n");
   printf("Differences to Next\n\n");
-  
+
   printf(" i  ");
   for (NSUInteger S = 0; S < itemCount; ++S) {
-    printf("%5lu", S);
+    printf("%5lu", (unsigned long)S);
   }
   printf("\n");
-  
+
   printf("----");
   for (NSUInteger S = 0; S < itemCount; ++S) {
     printf("-----");
   }
   printf("\n");
-  
+
   NSUInteger currentItems[itemCount];
   for (NSUInteger S = 0; S < itemCount; ++S) {
     currentItems[S] = [shufflers[S] nextItem];
   }
   for (NSUInteger i = 0; i < itemCount; ++i) {
-    printf("%2lu  ", i);
+    printf("%2lu  ", (unsigned long)i);
     for (NSUInteger S = 0; S < itemCount; ++S) {
       HLUglyShuffler *shuffler = shufflers[S];
       NSUInteger nextItem = [shuffler nextItem];
       NSInteger difference = (NSInteger)nextItem - (NSInteger)currentItems[S];
-      printf("%5ld", difference);
+      printf("%5ld", (long)difference);
       currentItems[S] = nextItem;
     }
     printf("\n");
@@ -481,33 +481,33 @@ HLUglyShufflerDumpDifferencesHistogram(NSUInteger itemCount)
   for (NSUInteger S = 0; S < itemCount; ++S) {
     [shufflers addObject:[[HLUglyShuffler alloc] initWithItemCount:itemCount shuffle:S]];
   }
-  
+
   printf("\n");
   printf("Differences Histogram Across Different Shuffles\n\n");
-  
+
   printf(" i  ");
   for (NSInteger d = -itemCount + 1; d < (NSInteger)itemCount; ++d) {
-    printf("%5ld", d);
+    printf("%5ld", (unsigned long)d);
   }
   printf("\n");
-  
+
   printf("----");
   for (NSInteger d = -itemCount + 1; d < (NSInteger)itemCount; ++d) {
     printf("-----");
   }
   printf("\n");
-  
+
   NSUInteger currentItems[itemCount];
   for (NSUInteger S = 0; S < itemCount; ++S) {
     currentItems[S] = [shufflers[S] nextItem];
   }
   for (NSUInteger i = 0; i < itemCount; ++i) {
-    
+
     NSUInteger differencesHistogram[itemCount * 2 - 1];
     for (NSInteger d = -itemCount + 1; d < (NSInteger)itemCount; ++d) {
       differencesHistogram[d + itemCount - 1] = 0;
     }
-    
+
     for (NSUInteger S = 0; S < itemCount; ++S) {
       HLUglyShuffler *shuffler = shufflers[S];
       NSUInteger nextItem = [shuffler nextItem];
@@ -516,13 +516,13 @@ HLUglyShufflerDumpDifferencesHistogram(NSUInteger itemCount)
       currentItems[S] = nextItem;
       ++S;
     }
-    
-    printf("%2lu  ", i);
+
+    printf("%2lu  ", (unsigned long)i);
     for (NSInteger d = -itemCount + 1; d < (NSInteger)itemCount; ++d) {
       if (differencesHistogram[d + itemCount - 1] == 0) {
         printf("     ");
       } else {
-        printf("%5ld", differencesHistogram[d + itemCount - 1]);
+        printf("%5ld", (long)differencesHistogram[d + itemCount - 1]);
       }
     }
     printf("\n");

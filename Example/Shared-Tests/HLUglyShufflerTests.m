@@ -49,7 +49,7 @@
       NSUInteger item = [shuffler nextItem];
       XCTAssertFalse(itemReturned[item],
                      @"Item %lu returned more than once by shuffle S=%lu for N=%lu.",
-                     item, S, itemCount);
+                     (unsigned long)item, (unsigned long)S, (unsigned long)itemCount);
       itemReturned[item] = YES;
     }
   }
@@ -73,7 +73,7 @@
     }
     XCTAssertLessThan(adjacencies, adjacenciesLimit,
                       @"Found %lu adjacent items for N=%lu in shuffle S=%lu; seems like too many.",
-                      adjacencies, itemCount, S);
+                      (unsigned long)adjacencies, (unsigned long)itemCount, (unsigned long)S);
   }
 }
 
@@ -89,7 +89,8 @@
     NSUInteger item = [shuffler nextItem];
     XCTAssertEqual(startingItemTakenBy[item], -1,
                    @"Starting item %lu of N=%lu already used by shuffle S=%lu and so cannot be used for S=%lu.",
-                   item, itemCount, startingItemTakenBy[item], S);
+                   (unsigned long)item, (unsigned long)itemCount,
+                   (unsigned long)startingItemTakenBy[item], (unsigned long)S);
     startingItemTakenBy[item] = S;
   }
 }
@@ -97,7 +98,7 @@
 - (void)HL_testItemSubsequencesForItemCount:(NSUInteger)itemCount
 {
   // Different shuffles (0 <= S < N) don't contain the same subsequences of items.
-  
+
   //   In two shuffles match one particular 3-sequence:                       1 / ( (N-1)(N-2) )
   //   In two shuffles match any of N 3-seqeunces:                            N / ( (N-1)(N-2) )
   //   Do this for all pairwise comparisons of N shuffles:  (N (N - 1) / 2) * N / ( (N-1)(N-2) )
@@ -138,10 +139,10 @@
           if (subsequenceCount >= subsequenceLimit) {
             printf("(Example: Identical subsequence");
             for (NSUInteger j = matchLength - subsequenceLength; j < matchLength; ++j) {
-              printf(" %lu", subsequence[j]);
+              printf(" %lu", (unsigned long)subsequence[j]);
             }
             printf(" found in shuffles S=%lu and S=%lu for N=%lu.)\n",
-                   S, testS, itemCount);
+                   (unsigned long)S, (unsigned long)testS, (unsigned long)itemCount);
           }
         }
         ++i;
@@ -150,7 +151,8 @@
   }
   XCTAssertLessThan(subsequenceCount, subsequenceLimit,
                     @"Identical subsequences of length %lu matched %lu times (limit %lu) in different shuffles for N=%lu.",
-                    subsequenceLength, subsequenceCount, subsequenceLimit, itemCount);
+                    (unsigned long)subsequenceLength, (unsigned long)subsequenceCount,
+                    (unsigned long)subsequenceLimit, (unsigned long)itemCount);
 }
 
 - (void)HL_testDifferenceSubsequencesForItemCount:(NSUInteger)itemCount
@@ -179,7 +181,7 @@
   NSUInteger adjacencyLimit = (NSUInteger)sqrt(itemCount) + 3;
 
   XCTAssertLessThan(adjacencyCount, adjacencyLimit,
-                    @"Too many shuffles begin with an adjacency for N=%lu.", itemCount);
+                    @"Too many shuffles begin with an adjacency for N=%lu.", (unsigned long)itemCount);
 }
 
 @end
