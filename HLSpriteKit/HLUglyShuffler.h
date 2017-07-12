@@ -69,10 +69,33 @@
 */
 @interface HLUglyShuffler : NSObject <NSCoding>
 
+/**
+ Creates an ugly shuffler for a certain count of items.
+
+ The shuffle identifier uniquely identifies the permutation that will be used by the
+ shuffler.
+*/
 - (instancetype)initWithItemCount:(NSUInteger)itemCount shuffle:(NSUInteger)shuffleIdentifier;
 
+/**
+ The number of items this shuffler was initialized to shuffle.
+*/
+@property (nonatomic, readonly) NSUInteger itemCount;
+
+/**
+ Returns a shuffled item index from `0` to `itemCount - 1`.
+
+ Successive calls will return all item indexes in a full cycle.  When all indexes have
+ been returned once, the cycle will repeat.  See `HLUglyShuffler` class notes for details.
+*/
 - (NSUInteger)nextItem;
 
+/**
+ Returns the shuffled item index that will be returned by the next call to `nextItem`.
+
+ This call does not advance the internal state of the shuffler, and so successive calls
+ will return the same item.
+*/
 - (NSUInteger)peekItem;
 
 @end

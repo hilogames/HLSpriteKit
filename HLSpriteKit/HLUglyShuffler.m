@@ -274,7 +274,6 @@ static const NSUInteger HLUglyShufflerLfsrFeedbackTerms[16] = { 0x0, 0x3, 0x6, 0
 */
 @implementation HLUglyShuffler
 {
-  NSUInteger _itemCount;
   NSUInteger _shuffleIdentifier;
   NSUInteger _lfsrBound;
   NSUInteger _lfsrTranslation;
