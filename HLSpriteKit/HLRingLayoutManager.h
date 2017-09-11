@@ -108,4 +108,21 @@ FOUNDATION_EXPORT const CGFloat HLRingLayoutManagerEpsilon;
 - (void)setThetasWithInitialTheta:(CGFloat)initialThetaRadians
                    thetaIncrement:(CGFloat)thetaIncrementRadians;
 
+/**
+ Specifies angular coordinates for laid-out nodes as follows: The nodes will be spaced out
+ incrementally around the ring in a cluster centered on a given angular coordinate
+ ("theta").
+
+ @param centerThetaRadians The angular coordinate of the center of the cluster of laid-out
+                           nodes (measured in radians, where 0 points right, and
+                           increasing counter-clockwise).
+ 
+ @param thetaIncrementRadians The angular distance between successive nodes on the ring
+                              (measured in radians, where positive values indicate the
+                              counter-clockwise direction).  (Accordingly, a negative
+                              value means the nodes will be laid out in order clockwise.)
+*/
+- (void)setThetasWithCenterTheta:(CGFloat)centerThetaRadians
+                  thetaIncrement:(CGFloat)thetaIncrementRadians;
+
 @end
