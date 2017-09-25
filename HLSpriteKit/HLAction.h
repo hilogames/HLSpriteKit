@@ -550,7 +550,7 @@ When complete, `elapsedTime` won't necessarily match the action's `duration`:
 /// @name Accessing Action State
 
 /**
- The `HLAction` members of this sequence action.
+ The non-completed `HLAction` members of this sequence action.
 
  This property is readonly; actions should not be added or removed to the sequence after
  initialization.

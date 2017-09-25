@@ -457,6 +457,9 @@ HLUglyShufflerDumpDifferences(NSUInteger itemCount)
   }
   printf("\n");
 
+  if (itemCount == 0) {
+    return;
+  }
   NSUInteger currentItems[itemCount];
   for (NSUInteger S = 0; S < itemCount; ++S) {
     currentItems[S] = [shufflers[S] nextItem];
@@ -497,6 +500,9 @@ HLUglyShufflerDumpDifferencesHistogram(NSUInteger itemCount)
   }
   printf("\n");
 
+  if (itemCount == 0) {
+    return;
+  }
   NSUInteger currentItems[itemCount];
   for (NSUInteger S = 0; S < itemCount; ++S) {
     currentItems[S] = [shufflers[S] nextItem];
