@@ -65,6 +65,9 @@
 		847D62B21D8499AF006E287F /* SKNode+HLNodeVisuals.m in Sources */ = {isa = PBXBuildFile; fileRef = 847D627A1D8499AF006E287F /* SKNode+HLNodeVisuals.m */; };
 		847D62B31D8499AF006E287F /* UIImage+HLImageAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 847D627B1D8499AF006E287F /* UIImage+HLImageAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		847D62B41D8499AF006E287F /* UIImage+HLImageAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 847D627C1D8499AF006E287F /* UIImage+HLImageAdditions.m */; };
+		CB8D943F1F881A2E00CAFA17 /* HLLog.h in Headers */ = {isa = PBXBuildFile; fileRef = CB8D943C1F881A2D00CAFA17 /* HLLog.h */; };
+		CB8D94401F881A2E00CAFA17 /* HLUglyShuffler.h in Headers */ = {isa = PBXBuildFile; fileRef = CB8D943D1F881A2E00CAFA17 /* HLUglyShuffler.h */; };
+		CB8D94411F881A2E00CAFA17 /* HLUglyShuffler.m in Sources */ = {isa = PBXBuildFile; fileRef = CB8D943E1F881A2E00CAFA17 /* HLUglyShuffler.m */; };
 		CB9E8CCF1E23FFC700F410B0 /* HLAction.h in Headers */ = {isa = PBXBuildFile; fileRef = CB9E8CCB1E23FFC700F410B0 /* HLAction.h */; };
 		CB9E8CD01E23FFC700F410B0 /* HLAction.m in Sources */ = {isa = PBXBuildFile; fileRef = CB9E8CCC1E23FFC700F410B0 /* HLAction.m */; };
 		CB9E8CD11E23FFC700F410B0 /* SKNode+HLAction.h in Headers */ = {isa = PBXBuildFile; fileRef = CB9E8CCD1E23FFC700F410B0 /* SKNode+HLAction.h */; };
@@ -134,6 +137,9 @@
 		847D627A1D8499AF006E287F /* SKNode+HLNodeVisuals.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SKNode+HLNodeVisuals.m"; sourceTree = "<group>"; };
 		847D627B1D8499AF006E287F /* UIImage+HLImageAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+HLImageAdditions.h"; sourceTree = "<group>"; };
 		847D627C1D8499AF006E287F /* UIImage+HLImageAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+HLImageAdditions.m"; sourceTree = "<group>"; };
+		CB8D943C1F881A2D00CAFA17 /* HLLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLLog.h; sourceTree = "<group>"; };
+		CB8D943D1F881A2E00CAFA17 /* HLUglyShuffler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLUglyShuffler.h; sourceTree = "<group>"; };
+		CB8D943E1F881A2E00CAFA17 /* HLUglyShuffler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLUglyShuffler.m; sourceTree = "<group>"; };
 		CB9E8CCB1E23FFC700F410B0 /* HLAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLAction.h; sourceTree = "<group>"; };
 		CB9E8CCC1E23FFC700F410B0 /* HLAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLAction.m; sourceTree = "<group>"; };
 		CB9E8CCD1E23FFC700F410B0 /* SKNode+HLAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SKNode+HLAction.h"; sourceTree = "<group>"; };
@@ -198,6 +204,7 @@
 				847D62571D8499AF006E287F /* HLLabelButtonNode.m */,
 				847D62581D8499AF006E287F /* HLLayoutManager.h */,
 				847D62591D8499AF006E287F /* HLLayoutManager.m */,
+				CB8D943C1F881A2D00CAFA17 /* HLLog.h */,
 				847D625A1D8499AF006E287F /* HLMath.h */,
 				847D625B1D8499AF006E287F /* HLMath.m */,
 				847D625C1D8499AF006E287F /* HLMenuNode.h */,
@@ -223,6 +230,8 @@
 				847D62701D8499AF006E287F /* HLTiledNode.m */,
 				847D62711D8499AF006E287F /* HLToolbarNode.h */,
 				847D62721D8499AF006E287F /* HLToolbarNode.m */,
+				CB8D943D1F881A2E00CAFA17 /* HLUglyShuffler.h */,
+				CB8D943E1F881A2E00CAFA17 /* HLUglyShuffler.m */,
 				84662B451DA33093006B1812 /* NSGestureRecognizer+MultipleActions.h */,
 				84662B461DA33093006B1812 /* NSGestureRecognizer+MultipleActions.m */,
 				847D62731D8499AF006E287F /* SKLabelNode+HLLabelNodeAdditions.h */,
@@ -249,6 +258,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				847D62B11D8499AF006E287F /* SKNode+HLNodeVisuals.h in Headers */,
+				CB8D94401F881A2E00CAFA17 /* HLUglyShuffler.h in Headers */,
 				847D62941D8499AF006E287F /* HLMenuNode.h in Headers */,
 				847D62B31D8499AF006E287F /* UIImage+HLImageAdditions.h in Headers */,
 				847D62861D8499AF006E287F /* HLGridNode.h in Headers */,
@@ -275,6 +285,7 @@
 				847D62AD1D8499AF006E287F /* SKNode+HLGestureTarget.h in Headers */,
 				847D62AB1D8499AF006E287F /* SKLabelNode+HLLabelNodeAdditions.h in Headers */,
 				CBF9D2BD1DAD3450008F9C92 /* HLGridLayoutManager.h in Headers */,
+				CB8D943F1F881A2E00CAFA17 /* HLLog.h in Headers */,
 				847D627D1D8499AF006E287F /* HLHacktion.h in Headers */,
 				847D62811D8499AF006E287F /* HLEmitterStore.h in Headers */,
 				847D628E1D8499AF006E287F /* HLLabelButtonNode.h in Headers */,
@@ -383,6 +394,7 @@
 				847D62A61D8499AF006E287F /* HLTableLayoutManager.m in Sources */,
 				847D628B1D8499AF006E287F /* HLItemNode.m in Sources */,
 				CB9E8CD21E23FFC700F410B0 /* SKNode+HLAction.m in Sources */,
+				CB8D94411F881A2E00CAFA17 /* HLUglyShuffler.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

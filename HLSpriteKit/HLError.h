@@ -10,7 +10,10 @@
 
 /**
  The error level for logging non-critical errors using `HLError()`.
+
+ @deprecated Please use HLLog() instead.
 */
+DEPRECATED_MSG_ATTRIBUTE("Please use HLLog() instead.")
 typedef NS_ENUM(NSInteger, HLErrorLevel) {
   /**
    Errors.
@@ -28,7 +31,10 @@ typedef NS_ENUM(NSInteger, HLErrorLevel) {
 
 /**
  Logs a non-critical error.
+
+ @deprecated Please use HLLog() instead.
 */
+DEPRECATED_MSG_ATTRIBUTE("Please use HLLog() instead.")
 static inline void
 HLError(HLErrorLevel level, NSString *message)
 {

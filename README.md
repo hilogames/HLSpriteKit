@@ -145,7 +145,7 @@ animations in encodable objects only loosely coupled to a particular
 node.
 
 The main drawbacks of `HLAction` are that you can no longer use the
-`SKAction` runloop in `SKNode` and that the actions provided are not
+`SKAction` runloop in `SKNode`, and that the actions provided are not
 as fully-featured.
 
 New actions are being added as needed.  Please let me know if you

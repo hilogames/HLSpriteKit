@@ -8,8 +8,8 @@
 
 #import "HLMenuNode.h"
 
-#import "HLError.h"
 #import "HLLabelButtonNode.h"
+#import "HLLog.h"
 #import "SKNode+HLGestureTarget.h"
 
 static const NSTimeInterval HLMenuNodeLongSelectedDuration = 0.5;
@@ -32,8 +32,7 @@ HLMenuNodeValidateButtonPrototype(SKNode *buttonPrototype, NSString *label)
     if ([buttonPrototype hlGestureTarget]) {
       // This might be okay, but it seems like it will cause confusion if the button is
       // trying to handle gestures separately from the menu node.  Log error and continue.
-      HLError(HLLevelWarning,
-              [NSString stringWithFormat:@"HLMenuNode: Button prototype for \"%@\" is not expected to have a gesture target; removing it.", label]);
+      HLLog(HLLogWarning, @"HLMenuNode: Button prototype for \"%@\" is not expected to have a gesture target; removing it.", label);
       [buttonPrototype hlSetGestureTarget:nil];
     }
   }

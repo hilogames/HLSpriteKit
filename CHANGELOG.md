@@ -10,6 +10,11 @@
   calculated in constant time using constant space.  
   [Karl Voskuil](https://github.com/karlvoskuil)
 
+### Deprecated
+
+- Replaced `HLError` with `HLLog`.  Bad naming.  
+  [Karl Voskuil](https://github.com/karlvoskuil)
+
 ## 1.5.0 [2017-03-30]
 
 ### Breaking
