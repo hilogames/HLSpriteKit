@@ -557,6 +557,28 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
 #pragma mark -
 #pragma mark Private
 
+- (CGSize)HL_duckSize:(SKNode *)node
+{
+#if TARGET_OS_IPHONEs
+  return [(id)node size];
+#else
+  // note: Careful handling of size selector is required when building for macOS,
+  // for which the compiler sees multiple definitions with different return types.
+  SEL selector = @selector(size);
+  NSMethodSignature *sizeMethodSignature = [node methodSignatureForSelector:selector];
+  if (sizeMethodSignature
+      && strcmp(sizeMethodSignature.methodReturnType, @encode(CGSize)) == 0) {
+    NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:sizeMethodSignature];
+    invocation.selector = selector;
+    [invocation invokeWithTarget:node];
+    CGSize nodeSize;
+    [invocation getReturnValue:&nodeSize];
+    return nodeSize;
+  }
+  return CGSizeZero;
+#endif
+}
+
 - (void)HL_layoutXYAnimation:(HLToolbarNodeAnimation)animation
 {
   // Find natural tool sizes.
@@ -567,7 +589,8 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
     // tool implement a size method.  Assume that the reported size, however, does not yet
     // account for rotation.
     SKNode *toolNode = squareNode.content;
-    CGSize naturalToolSize = HLGetBoundsForTransformation([(id)toolNode size], toolNode.zRotation);
+    CGSize basicToolSize = [self HL_duckSize:toolNode];
+    CGSize naturalToolSize = HLGetBoundsForTransformation(basicToolSize, toolNode.zRotation);
     naturalToolsSize.width += naturalToolSize.width;
     if (naturalToolSize.height > naturalToolsSize.height) {
       naturalToolsSize.height = naturalToolSize.height;
@@ -685,7 +708,8 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
   for (HLBackdropItemNode *squareNode in squareNodes) {
     SKNode *toolNode = squareNode.content;
 
-    CGSize naturalToolSize = HLGetBoundsForTransformation([(id)toolNode size], toolNode.zRotation);
+    CGSize basicToolSize = [self HL_duckSize:toolNode];
+    CGSize naturalToolSize = HLGetBoundsForTransformation(basicToolSize, toolNode.zRotation);
     // note: Can multiply toolNode.scale by finalToolsScale, directly.  But that's messing
     // with the properties of the nodes passed in to us.  Instead, set the scale of the
     // square, which will then be inherited (multiplied) automatically.

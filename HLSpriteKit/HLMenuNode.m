@@ -381,6 +381,28 @@ HLMenuNodeValidateButtonPrototype(SKNode *buttonPrototype, NSString *label)
 #pragma mark -
 #pragma mark Private
 
+- (CGSize)HL_duckSize:(SKNode *)node
+{
+#if TARGET_OS_IPHONE
+  return [(id)node size];
+#else
+  // note: Careful handling of size selector is required when building for macOS,
+  // for which the compiler sees multiple definitions with different return types.
+  SEL selector = @selector(size);
+  NSMethodSignature *sizeMethodSignature = [node methodSignatureForSelector:selector];
+  if (sizeMethodSignature
+      && strcmp(sizeMethodSignature.methodReturnType, @encode(CGSize)) == 0) {
+    NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:sizeMethodSignature];
+    invocation.selector = selector;
+    [invocation invokeWithTarget:node];
+    CGSize nodeSize;
+    [invocation getReturnValue:&nodeSize];
+    return nodeSize;
+  }
+  return CGSizeZero;
+#endif
+}
+
 - (void)HL_showCurrentMenuAnimation:(HLMenuNodeAnimation)animation
 {
   SKNode *oldButtonsNode = _buttonsNode;
@@ -422,7 +444,7 @@ HLMenuNodeValidateButtonPrototype(SKNode *buttonPrototype, NSString *label)
 
     [_buttonsNode addChild:buttonNode];
 
-    CGSize buttonSize = [(id)buttonNode size];
+    CGSize buttonSize = [self HL_duckSize:buttonNode];
     if (buttonSize.width > widthMax) {
       widthMax = buttonSize.width;
     }
@@ -438,9 +460,9 @@ HLMenuNodeValidateButtonPrototype(SKNode *buttonPrototype, NSString *label)
   CGFloat y = _size.height * (1.0f - _anchorPoint.y);
   for (SKNode *buttonNode in _buttonsNode.children) {
     [(id)buttonNode setAnchorPoint:CGPointMake(0.5f, 0.5f)];
-    CGFloat buttonHeight = [(id)buttonNode size].height;
-    buttonNode.position = CGPointMake(x, y - buttonHeight * 0.5f);
-    y = y - buttonHeight - _itemSeparatorSize;
+    CGSize buttonSize = [self HL_duckSize:buttonNode];
+    buttonNode.position = CGPointMake(x, y - buttonSize.height * 0.5f);
+    y = y - buttonSize.height - _itemSeparatorSize;
   }
   [self HL_layoutZ];
 
