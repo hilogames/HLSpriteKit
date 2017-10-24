@@ -34,6 +34,8 @@ HLLog(HLLogLevel level, NSString *format, ...)
 {
   // note: This is a placeholder for a better logging mechanism, e.g. CocoaLumberjack.
 
+#if DEBUG
+
   va_list args;
   va_start(args, format);
   NSString *message = [[NSString alloc] initWithFormat:format arguments:args];
@@ -53,4 +55,6 @@ HLLog(HLLogLevel level, NSString *format, ...)
   }
 
   NSLog(@"%@: %@", levelLabel, message);
+
+#endif
 }
