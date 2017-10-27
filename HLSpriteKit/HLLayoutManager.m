@@ -19,13 +19,6 @@ HLLayoutManagerGetNodeSize(id node)
     return [(SKLabelNode *)node frame].size;
   }
 
-#if TARGET_OS_IPHONE
-  if ([node respondsToSelector:@selector(size)]) {
-    return [node size];
-  }
-#else
-  // note: Careful handling of size selector is required when building for macOS,
-  // for which the compiler sees multiple definitions with different return types.
   SEL selector = @selector(size);
   NSMethodSignature *sizeMethodSignature = [node methodSignatureForSelector:selector];
   if (sizeMethodSignature
@@ -37,7 +30,6 @@ HLLayoutManagerGetNodeSize(id node)
     [invocation getReturnValue:&nodeSize];
     return nodeSize;
   }
-#endif
   
   return CGSizeZero;
 }
@@ -51,13 +43,6 @@ HLLayoutManagerGetNodeWidth(id node)
     return [(SKLabelNode *)node frame].size.width;
   }
 
-#if TARGET_OS_IPHONE
-  if ([node respondsToSelector:@selector(size)]) {
-    return [node size].width;
-  }
-#else
-  // note: Careful handling of size selector is required when building for macOS,
-  // for which the compiler sees multiple definitions with different return types.
   SEL selector = @selector(size);
   NSMethodSignature *sizeMethodSignature = [node methodSignatureForSelector:selector];
   if (sizeMethodSignature
@@ -69,7 +54,6 @@ HLLayoutManagerGetNodeWidth(id node)
     [invocation getReturnValue:&nodeSize];
     return nodeSize.width;
   }
-#endif
   
   return 0.0f;
 }
@@ -83,13 +67,6 @@ HLLayoutManagerGetNodeHeight(id node)
     return [(SKLabelNode *)node frame].size.height;
   }
 
-#if TARGET_OS_IPHONE
-  if ([node respondsToSelector:@selector(size)]) {
-    return [node size].height;
-  }
-#else
-  // note: Careful handling of size selector is required when building for macOS,
-  // for which the compiler sees multiple definitions with different return types.
   SEL selector = @selector(size);
   NSMethodSignature *sizeMethodSignature = [node methodSignatureForSelector:selector];
   if (sizeMethodSignature
@@ -101,7 +78,6 @@ HLLayoutManagerGetNodeHeight(id node)
     [invocation getReturnValue:&nodeSize];
     return nodeSize.height;
   }
-#endif
 
   return 0.0f;
 }

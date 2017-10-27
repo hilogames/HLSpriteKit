@@ -63,11 +63,6 @@ enum {
 - (CGSize)size
 {
   SKNode *contentNode = [self childNodeWithName:@"content"];
-#if TARGET_OS_IPHONE
-  return [(id)contentNode size];
-#else
-  // note: Careful handling of size selector is required when building for macOS,
-  // for which the compiler sees multiple definitions with different return types.
   SEL selector = @selector(size);
   NSMethodSignature *sizeMethodSignature = [contentNode methodSignatureForSelector:selector];
   if (!sizeMethodSignature
@@ -80,7 +75,6 @@ enum {
   CGSize contentNodeSize;
   [invocation getReturnValue:&contentNodeSize];
   return contentNodeSize;
-#endif
 }
 
 - (void)setZPositionScale:(CGFloat)zPositionScale
@@ -167,9 +161,6 @@ enum {
 - (CGSize)size
 {
   SKNode *contentNode = [self childNodeWithName:@"content"];
-#if TARGET_OS_IPHONE
-  return [(id)contentNode size];
-#else
   SEL selector = @selector(size);
   NSMethodSignature *sizeMethodSignature = [contentNode methodSignatureForSelector:selector];
   if (!sizeMethodSignature
@@ -182,7 +173,6 @@ enum {
   CGSize contentNodeSize;
   [invocation getReturnValue:&contentNodeSize];
   return contentNodeSize;
-#endif
 }
 
 - (void)setZPositionScale:(CGFloat)zPositionScale

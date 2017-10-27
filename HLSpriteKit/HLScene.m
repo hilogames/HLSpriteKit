@@ -157,21 +157,14 @@ static BOOL _sceneAssetsLoaded = NO;
   if (_childResizeWithScene) {
     [_childResizeWithScene enumerateKeysAndObjectsUsingBlock:^(id key, SKNode *node, BOOL *stop){
       CGSize selfSize = self.size;
-#if TARGET_OS_IPHONE
-      [(id)node setSize:selfSize];
-#else
-      // note: Careful handling of setSize selector is required when building for macOS,
-      // for which the compiler sees multiple definitions with different return types.
       SEL selector = @selector(setSize:);
       NSMethodSignature *methodSignature = [node methodSignatureForSelector:selector];
-      if (methodSignature
-          && strcmp(methodSignature.methodReturnType, @encode(CGSize)) == 0) {
+      if (methodSignature) {
         NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:methodSignature];
         invocation.selector = selector;
         [invocation setArgument:&selfSize atIndex:2];
         [invocation invokeWithTarget:node];
       }
-#endif
     }];
   }
 }

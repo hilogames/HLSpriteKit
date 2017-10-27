@@ -383,11 +383,6 @@ HLMenuNodeValidateButtonPrototype(SKNode *buttonPrototype, NSString *label)
 
 - (CGSize)HL_duckSize:(SKNode *)node
 {
-#if TARGET_OS_IPHONE
-  return [(id)node size];
-#else
-  // note: Careful handling of size selector is required when building for macOS,
-  // for which the compiler sees multiple definitions with different return types.
   SEL selector = @selector(size);
   NSMethodSignature *sizeMethodSignature = [node methodSignatureForSelector:selector];
   if (sizeMethodSignature
@@ -400,7 +395,6 @@ HLMenuNodeValidateButtonPrototype(SKNode *buttonPrototype, NSString *label)
     return nodeSize;
   }
   return CGSizeZero;
-#endif
 }
 
 - (void)HL_showCurrentMenuAnimation:(HLMenuNodeAnimation)animation
