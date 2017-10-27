@@ -60,6 +60,13 @@
 */
 - (instancetype)initWithContentNode:(SKNode *)contentNode backHighlightNode:(SKNode *)backHighlightNode;
 
+/// @name Getting the Back-Highlight Node
+
+/**
+ The back-highlight node passed to `init`.
+*/
+@property (nonatomic, readonly) SKNode *backHighlightNode;
+
 /// @name Setting Node State
 
 /**
@@ -69,6 +76,17 @@
  Here, "behind" refers to `zPosition`.
 */
 - (void)hlItemContentSetHighlight:(BOOL)highlight;
+
+/**
+ Sets the highlight of the back-highlight content node with animation.
+ 
+ A back-highlight node displays highlight by showing a second node behind its content.
+ Here, "behind" refers to `zPosition`.
+*/
+- (void)hlItemContentSetHighlight:(BOOL)finalHighlight
+                       blinkCount:(int)blinkCount
+                halfCycleDuration:(NSTimeInterval)halfCycleDuration
+                       completion:(void(^)(void))completion;
 
 @end
 
@@ -85,6 +103,13 @@
 */
 - (instancetype)initWithContentNode:(SKNode *)contentNode frontHighlightNode:(SKNode *)frontHighlightNode;
 
+/// @name Getting the Front-Highlight Node
+
+/**
+ The front-highlight node passed to `init`.
+ */
+@property (nonatomic, readonly) SKNode *frontHighlightNode;
+
 /// @name Setting Node State
 
 /**
@@ -94,5 +119,16 @@
  content.  Here, "in front of" refers to `zPosition`.
 */
 - (void)hlItemContentSetHighlight:(BOOL)highlight;
+
+/**
+ Sets the highlight of the back-highlight content node with animation.
+ 
+ A front-highlight node displays highlight by showing a second node in front of its
+ content.  Here, "in front of" refers to `zPosition`.
+*/
+- (void)hlItemContentSetHighlight:(BOOL)finalHighlight
+                       blinkCount:(int)blinkCount
+                halfCycleDuration:(NSTimeInterval)halfCycleDuration
+                       completion:(void(^)(void))completion;
 
 @end

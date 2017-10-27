@@ -360,9 +360,8 @@ contentDidSetHighlight:&contentDidSetHighlight];
   blinkOut.timingMode = (startingHighlight ? SKActionTimingEaseIn : SKActionTimingEaseOut);
 
   NSMutableArray *blinkActions = [NSMutableArray array];
-  for (int b = 0; b < blinkCount; ++b) {
-    [blinkActions addObject:blinkIn];
-    [blinkActions addObject:blinkOut];
+  if (blinkCount > 0) {
+    [blinkActions addObject:[SKAction repeatAction:[SKAction group:@[ blinkIn, blinkOut ]] count:(NSUInteger)blinkCount]];
   }
   if (startingHighlight != finalHighlight) {
     [blinkActions addObject:blinkIn];

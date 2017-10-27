@@ -83,10 +83,18 @@ enum {
   [self HL_layoutZ];
 }
 
+- (SKNode *)backHighlightNode
+{
+  return _backHighlightNode;
+}
+
 - (void)hlItemContentSetHighlight:(BOOL)highlight
 {
+  [_backHighlightNode removeActionForKey:@"setHighlight"];
+
   if (highlight) {
     if (!_backHighlightNode.parent) {
+      _backHighlightNode.alpha = 1.0f;
       [self addChild:_backHighlightNode];
     }
   } else {
@@ -94,6 +102,54 @@ enum {
       [_backHighlightNode removeFromParent];
     }
   }
+}
+
+- (void)hlItemContentSetHighlight:(BOOL)finalHighlight
+                       blinkCount:(int)blinkCount
+                halfCycleDuration:(NSTimeInterval)halfCycleDuration
+                       completion:(void (^)(void))completion
+{
+  [_backHighlightNode removeActionForKey:@"setHighlight"];
+
+  if (!_backHighlightNode.parent) {
+    [self addChild:_backHighlightNode];
+  }
+  _backHighlightNode.alpha = (finalHighlight ? 0.0f : 1.0f );
+  
+  SKAction *blinkInAction;
+  if (finalHighlight) {
+    blinkInAction = [SKAction fadeInWithDuration:halfCycleDuration];
+    blinkInAction.timingMode = SKActionTimingEaseIn;
+  } else {
+    blinkInAction = [SKAction fadeOutWithDuration:halfCycleDuration];
+    blinkInAction.timingMode = SKActionTimingEaseOut;
+  }
+  
+  NSMutableArray *blinkActions = [NSMutableArray array];
+  if (blinkCount > 0) {
+    SKAction *blinkOutAction;
+    if (finalHighlight) {
+      blinkOutAction = [SKAction fadeOutWithDuration:halfCycleDuration];
+      blinkOutAction.timingMode = SKActionTimingEaseOut;
+    } else {
+      blinkOutAction = [SKAction fadeInWithDuration:halfCycleDuration];
+      blinkOutAction.timingMode = SKActionTimingEaseIn;
+    }
+    SKAction *blinkAction = [SKAction sequence:@[ blinkInAction, blinkOutAction ]];
+    [blinkActions addObject:[SKAction repeatAction:blinkAction count:(NSUInteger)blinkCount]];
+  }
+
+  [blinkActions addObject:blinkInAction];
+  
+  if (!finalHighlight) {
+    [blinkActions addObject:[SKAction removeFromParent]];
+  }
+
+  if (completion) {
+    [blinkActions addObject:[SKAction runBlock:completion]];
+  }
+  
+  [_backHighlightNode runAction:[SKAction sequence:blinkActions] withKey:@"setHighlight"];
 }
 
 - (void)HL_layoutZ
@@ -181,10 +237,18 @@ enum {
   [self HL_layoutZ];
 }
 
+- (SKNode *)frontHighlightNode
+{
+  return _frontHighlightNode;
+}
+
 - (void)hlItemContentSetHighlight:(BOOL)highlight
 {
+  [_frontHighlightNode removeActionForKey:@"setHighlight"];
+
   if (highlight) {
     if (!_frontHighlightNode.parent) {
+      _frontHighlightNode.alpha = 1.0f;
       [self addChild:_frontHighlightNode];
     }
   } else {
@@ -192,6 +256,54 @@ enum {
       [_frontHighlightNode removeFromParent];
     }
   }
+}
+
+- (void)hlItemContentSetHighlight:(BOOL)finalHighlight
+                       blinkCount:(int)blinkCount
+                halfCycleDuration:(NSTimeInterval)halfCycleDuration
+                       completion:(void (^)(void))completion
+{
+  [_frontHighlightNode removeActionForKey:@"setHighlight"];
+  
+  if (!_frontHighlightNode.parent) {
+    [self addChild:_frontHighlightNode];
+  }
+  _frontHighlightNode.alpha = (finalHighlight ? 0.0f : 1.0f );
+  
+  SKAction *blinkInAction;
+  if (finalHighlight) {
+    blinkInAction = [SKAction fadeInWithDuration:halfCycleDuration];
+    blinkInAction.timingMode = SKActionTimingEaseIn;
+  } else {
+    blinkInAction = [SKAction fadeOutWithDuration:halfCycleDuration];
+    blinkInAction.timingMode = SKActionTimingEaseOut;
+  }
+  
+  NSMutableArray *blinkActions = [NSMutableArray array];
+  if (blinkCount > 0) {
+    SKAction *blinkOutAction;
+    if (finalHighlight) {
+      blinkOutAction = [SKAction fadeOutWithDuration:halfCycleDuration];
+      blinkOutAction.timingMode = SKActionTimingEaseOut;
+    } else {
+      blinkOutAction = [SKAction fadeInWithDuration:halfCycleDuration];
+      blinkOutAction.timingMode = SKActionTimingEaseIn;
+    }
+    SKAction *blinkAction = [SKAction sequence:@[ blinkInAction, blinkOutAction ]];
+    [blinkActions addObject:[SKAction repeatAction:blinkAction count:(NSUInteger)blinkCount]];
+  }
+  
+  [blinkActions addObject:blinkInAction];
+  
+  if (!finalHighlight) {
+    [blinkActions addObject:[SKAction removeFromParent]];
+  }
+  
+  if (completion) {
+    [blinkActions addObject:[SKAction runBlock:completion]];
+  }
+  
+  [_frontHighlightNode runAction:[SKAction sequence:blinkActions] withKey:@"setHighlight"];
 }
 
 - (void)HL_layoutZ

@@ -191,6 +191,15 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 - (NSString *)toolAtLocation:(CGPoint)location;
 
 /**
+ Returns the tool node passed to `setTools` or `setTool` for the passed tag, or `nil` for
+ none.
+
+ This is not a particularly efficient way to look up a tool node, but might be useful to
+ a caller who is not otherwise tracking them.
+*/
+- (SKNode *)toolNodeForTool:(NSString *)toolTag;
+
+/**
  Returns the square node that contains the tool node corresponding to the passed tag,
  or `nil` for none.
 

@@ -327,6 +327,17 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
   return nil;
 }
 
+- (SKNode *)toolNodeForTool:(NSString *)toolTag
+{
+  NSArray *squareNodes = _squaresNode.itemNodes;
+  for (HLBackdropItemNode *squareNode in squareNodes) {
+    if ([squareNode.name isEqualToString:toolTag]) {
+      return squareNode.content;
+    }
+  }
+  return nil;
+}
+
 - (SKNode *)squareNodeForTool:(NSString *)toolTag
 {
   NSArray *squareNodes = _squaresNode.itemNodes;
