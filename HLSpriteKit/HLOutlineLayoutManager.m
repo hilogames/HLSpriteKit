@@ -98,6 +98,16 @@ const CGFloat HLOutlineLayoutManagerEpsilon = 0.001f;
 
 - (void)layout:(NSArray *)nodes
 {
+  [self GL_layout:nodes animated:NO duration:0.0 delay:0.0];
+}
+
+- (void)layout:(NSArray *)nodes animatedDuration:(NSTimeInterval)duration delay:(NSTimeInterval)delay
+{
+  [self GL_layout:nodes animated:YES duration:duration delay:delay];
+}
+
+- (void)GL_layout:(NSArray *)nodes animated:(BOOL)animated duration:(NSTimeInterval)duration delay:(NSTimeInterval)delay
+{
   NSUInteger nodeLevelsCount = [_nodeLevels count];
   if (nodeLevelsCount == 0) {
     return;
@@ -228,8 +238,19 @@ const CGFloat HLOutlineLayoutManagerEpsilon = 0.001f;
     }
 
     y -= nodeHeight;
-    node.position = CGPointMake(_outlineOffset.x + nodeIndent,
-                                _outlineOffset.y + y + nodeHeight * nodeAnchorPointY);
+    CGPoint position = CGPointMake(_outlineOffset.x + nodeIndent,
+                                   _outlineOffset.y + y + nodeHeight * nodeAnchorPointY);
+    if (!animated) {
+      node.position = position;
+    } else {
+      SKAction *moveAction = [SKAction moveTo:position duration:duration];
+      moveAction.timingMode = SKActionTimingEaseInEaseOut;
+      if (delay > 0.0) {
+        [node runAction:[SKAction sequence:@[ [SKAction waitForDuration:delay], moveAction ]]];
+      } else {
+        [node runAction:moveAction];
+      }
+    }
 
     if (nodeIndex + 1 < layoutCount) {
       CGFloat nodeSeparatorAfter = 0.0f;

@@ -62,6 +62,13 @@ FOUNDATION_EXPORT const CGFloat HLOutlineLayoutManagerEpsilon;
 */
 - (void)layout:(NSArray *)nodes;
 
+/**
+ Layout with animation.
+
+ See `layout:` for details.
+*/
+- (void)layout:(NSArray *)nodes animatedDuration:(NSTimeInterval)duration delay:(NSTimeInterval)delay;
+
 /// @name Getting and Setting Outline Geometry
 
 /**
