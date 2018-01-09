@@ -76,6 +76,12 @@
 @end
 
 /**
+ @warning Does not currently work under iOS11!  In iOS11, the `SKAction performSelector`
+          does not retain its target strongly, despite documentation to the contrary.
+          The `HLHacktion` mechanism requires a strong reference in order to retain the
+          `HLHacktion` object, which is not retained elsewhere.  As a result, the
+          selector is not performed.
+
  A lightweight encodable object that, when triggered, can perform a selector on a
  weakly-retained target.
 
@@ -665,6 +671,12 @@
 FOUNDATION_EXPORT NSString * const HLCustomHacktionSceneDidUpdateNotification;
 
 /**
+ @warning Does not currently work under iOS11!  In iOS11, the `SKAction performSelector`
+          does not retain its target strongly, despite documentation to the contrary.
+          The `HLHacktion` mechanism requires a strong reference in order to retain the
+          `HLHacktion` object, which is not retained elsewhere.  As a result, the
+          custom action is not executed.
+
  A lightweight encodable object that, when triggered, repeatedly performs a selector on a
  target over a duration.
 
@@ -894,6 +906,12 @@ FOUNDATION_EXPORT NSString * const HLCustomHacktionSceneDidUpdateNotification;
 @end
 
 /**
+ @warning Does not currently work under iOS11!  In iOS11, the `SKAction performSelector`
+          does not retain its target strongly, despite documentation to the contrary.
+          The `HLHacktion` mechanism requires a strong reference in order to retain the
+          `HLHacktion` object, which is not retained elsewhere.  As a result, the
+          sequence actions will not be run.
+
  A lightweight encodable object that, when triggered, can run a sequence of actions on a
  node.
 
