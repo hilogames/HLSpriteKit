@@ -87,13 +87,34 @@ typedef NS_ENUM(NSInteger, HLMessageNodeAnimation) {
 
 /**
  The size of the message node background.
+
+ Default value `14.0`.
 */
 @property (nonatomic, assign) CGSize size;
 
 /**
  The anchor point of the message node background.
+
+ Default value `(0.5, 0.5)`.
 */
 @property (nonatomic, assign) CGPoint anchorPoint;
+
+/**
+ The horizontal alignment mode of the message label within the background.
+
+ Default value `SKLabelVerticalAlignmentModeCenter`.
+*/
+@property (nonatomic, assign) SKLabelHorizontalAlignmentMode horizontalAlignmentMode;
+
+/**
+ A margin used to inset the text from the edge of the background when using a left or
+ right horizontal alignment mode; see `horizontalAlignmentMode`.
+
+ Not used when the horizontal alignment mode is center.
+
+ Default value `0.0`.
+ */
+@property (nonatomic, assign) CGFloat horizontalMargin;
 
 /**
  The vertical alignment mode of the message label within the background.
