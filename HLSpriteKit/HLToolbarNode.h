@@ -42,8 +42,8 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
  `HLToolbarNode` lays out its content ("tools") in a horizontal row of squares, like a
  toolbar.  It provides various visual formatting options, and also various geometry
  options (for example, fitting the tools to a certain toolbar size).  It maintains some
- state information about tools (like enabled and highlight), and provides some simple
- animation for paging or setting tools in the toolbar.
+ state information about tools (like enabled, highlight, and selection), and provides some
+ simple animation for paging or setting tools in the toolbar.
 
  ## Common User Interaction Configurations
 
@@ -396,6 +396,20 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 /// @name Managing Tool State
 
 /**
+ Returns a boolean indicating the current enabled state of a tool.
+*/
+- (BOOL)enabledForTool:(NSString *)toolTag;
+
+/**
+ Sets the enabled state of a tool.
+
+ If the tool node conforms to `HLItemContentNode` implementing `hlItemContentSetEnabled`,
+ then that method will be called.  Otherwise, the alpha value of the square will be set
+ either to `enabledAlpha` or `disabledAlpha`.
+*/
+- (void)setEnabled:(BOOL)enabled forTool:(NSString *)toolTag;
+
+/**
  Returns a boolean indicating the current highlight state of a tool.
 */
 - (BOOL)highlightForTool:(NSString *)toolTag;
@@ -440,18 +454,47 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
           completion:(void(^)(void))completion;
 
 /**
- Returns a boolean indicating the current enabled state of a tool.
+ Convenience method for returning the tool last selected; see `setSelectionForTool:`.
+
+ Returns `nil` if no tool is currently selected.
 */
-- (BOOL)enabledForTool:(NSString *)toolTag;
+- (NSString *)selectionTool;
 
 /**
- Sets the enabled state of a tool.
+ Convenience method for setting the highlight state of a single tool.
 
- If the tool node conforms to `HLItemContentNode` implementing `hlItemContentSetEnabled`,
- then that method will be called.  Otherwise, the alpha value of the square will be set
- either to `enabledAlpha` or `disabledAlpha`.
+ Sets highlight `YES` for the passed tool, and sets highlight `NO` for the previously
+ selected tool (if any).
 */
-- (void)setEnabled:(BOOL)enabled forTool:(NSString *)toolTag;
+- (void)setSelectionForTool:(NSString *)toolTag;
+
+/**
+ Convenience method for setting the highlight state of a single tool with animation.
+
+ Animates highlight `YES` for the passed tool, and sets highlight `NO` (with no animation)
+ for the previously-selected tool (if any).
+*/
+- (void)setSelectionForTool:(NSString *)toolTag
+                 blinkCount:(int)blinkCount
+          halfCycleDuration:(NSTimeInterval)halfCycleDuration
+                 completion:(void(^)(void))completion;
+
+/**
+ Convenience method for clearing the highlight state of the last selected tool.
+
+ Clears the highlight of the last-selected tool, if any.
+*/
+- (void)clearSelection;
+
+/**
+ Convenience method for clearing the highlight state of the last selected tool with
+ animation.
+
+ Clears the highlight of the last-selected tool, if any, with animation.
+*/
+- (void)clearSelectionBlinkCount:(int)blinkCount
+               halfCycleDuration:(NSTimeInterval)halfCycleDuration
+                      completion:(void(^)(void))completion;
 
 @end
 

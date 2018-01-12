@@ -360,6 +360,28 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
   return nil;
 }
 
+- (BOOL)enabledForTool:(NSString *)toolTag
+{
+  NSArray *squareNodes = _squaresNode.itemNodes;
+  for (HLBackdropItemNode *squareNode in squareNodes) {
+    if ([squareNode.name isEqualToString:toolTag]) {
+      return squareNode.enabled;
+    }
+  }
+  return YES;
+}
+
+- (void)setEnabled:(BOOL)enabled forTool:(NSString *)toolTag
+{
+  NSArray *squareNodes = _squaresNode.itemNodes;
+  for (HLBackdropItemNode *squareNode in squareNodes) {
+    if ([squareNode.name isEqualToString:toolTag]) {
+      squareNode.enabled = enabled;
+      break;
+    }
+  }
+}
+
 - (BOOL)highlightForTool:(NSString *)toolTag
 {
   NSArray *squareNodes = _squaresNode.itemNodes;
@@ -410,26 +432,64 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
   }
 }
 
-- (BOOL)enabledForTool:(NSString *)toolTag
+- (NSString *)selectionTool
 {
-  NSArray *squareNodes = _squaresNode.itemNodes;
-  for (HLBackdropItemNode *squareNode in squareNodes) {
-    if ([squareNode.name isEqualToString:toolTag]) {
-      return squareNode.enabled;
-    }
+  int squareIndex = _squaresNode.selectionItem;
+  if (squareIndex == -1) {
+    return nil;
   }
-  return YES;
+  HLBackdropItemNode *squareNode = _squaresNode.itemNodes[squareIndex];
+  return squareNode.name;
 }
 
-- (void)setEnabled:(BOOL)enabled forTool:(NSString *)toolTag
+- (void)setSelectionForTool:(NSString *)toolTag
 {
+  int squareIndex = 0;
   NSArray *squareNodes = _squaresNode.itemNodes;
   for (HLBackdropItemNode *squareNode in squareNodes) {
     if ([squareNode.name isEqualToString:toolTag]) {
-      squareNode.enabled = enabled;
-      break;
+      [_squaresNode setSelectionForItem:squareIndex];
+      return;
     }
+    ++squareIndex;
   }
+  [_squaresNode clearSelection];
+}
+
+- (void)setSelectionForTool:(NSString *)toolTag
+                 blinkCount:(int)blinkCount
+          halfCycleDuration:(NSTimeInterval)halfCycleDuration
+                 completion:(void (^)(void))completion
+{
+  int squareIndex = 0;
+  NSArray *squareNodes = _squaresNode.itemNodes;
+  for (HLBackdropItemNode *squareNode in squareNodes) {
+    if ([squareNode.name isEqualToString:toolTag]) {
+      [_squaresNode setSelectionForItem:squareIndex
+                             blinkCount:blinkCount
+                      halfCycleDuration:halfCycleDuration
+                             completion:completion];
+      return;
+    }
+    ++squareIndex;
+  }
+  [_squaresNode clearSelectionBlinkCount:blinkCount
+                       halfCycleDuration:halfCycleDuration
+                              completion:completion];
+}
+
+- (void)clearSelection
+{
+  [_squaresNode clearSelection];
+}
+
+- (void)clearSelectionBlinkCount:(int)blinkCount
+               halfCycleDuration:(NSTimeInterval)halfCycleDuration
+                      completion:(void (^)(void))completion
+{
+  [_squaresNode clearSelectionBlinkCount:blinkCount
+                       halfCycleDuration:halfCycleDuration
+                              completion:completion];
 }
 
 #pragma mark -
