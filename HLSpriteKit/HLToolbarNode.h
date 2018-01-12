@@ -191,6 +191,11 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 - (NSString *)toolAtLocation:(CGPoint)location;
 
 /**
+ Returns the tools currently set in the toolbar by `setTools` or `setTool`.
+ */
+- (NSArray *)toolNodes;
+
+/**
  Returns the tool node passed to `setTools` or `setTool` for the passed tag, or `nil` for
  none.
 
