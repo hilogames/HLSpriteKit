@@ -9,6 +9,7 @@
 #import "HLMenuNode.h"
 
 #import "HLLabelButtonNode.h"
+#import "HLLayoutManager.h"
 #import "HLLog.h"
 #import "SKNode+HLGestureTarget.h"
 
@@ -381,22 +382,6 @@ HLMenuNodeValidateButtonPrototype(SKNode *buttonPrototype, NSString *label)
 #pragma mark -
 #pragma mark Private
 
-- (CGSize)HL_duckSize:(SKNode *)node
-{
-  SEL selector = @selector(size);
-  NSMethodSignature *sizeMethodSignature = [node methodSignatureForSelector:selector];
-  if (sizeMethodSignature
-      && strcmp(sizeMethodSignature.methodReturnType, @encode(CGSize)) == 0) {
-    NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:sizeMethodSignature];
-    invocation.selector = selector;
-    [invocation invokeWithTarget:node];
-    CGSize nodeSize;
-    [invocation getReturnValue:&nodeSize];
-    return nodeSize;
-  }
-  return CGSizeZero;
-}
-
 - (void)HL_showCurrentMenuAnimation:(HLMenuNodeAnimation)animation
 {
   SKNode *oldButtonsNode = _buttonsNode;
@@ -438,7 +423,7 @@ HLMenuNodeValidateButtonPrototype(SKNode *buttonPrototype, NSString *label)
 
     [_buttonsNode addChild:buttonNode];
 
-    CGSize buttonSize = [self HL_duckSize:buttonNode];
+    CGSize buttonSize = HLLayoutManagerGetNodeSize(buttonNode);
     if (buttonSize.width > widthMax) {
       widthMax = buttonSize.width;
     }
@@ -454,7 +439,7 @@ HLMenuNodeValidateButtonPrototype(SKNode *buttonPrototype, NSString *label)
   CGFloat y = _size.height * (1.0f - _anchorPoint.y);
   for (SKNode *buttonNode in _buttonsNode.children) {
     [(id)buttonNode setAnchorPoint:CGPointMake(0.5f, 0.5f)];
-    CGSize buttonSize = [self HL_duckSize:buttonNode];
+    CGSize buttonSize = HLLayoutManagerGetNodeSize(buttonNode);
     buttonNode.position = CGPointMake(x, y - buttonSize.height * 0.5f);
     y = y - buttonSize.height - _itemSeparatorSize;
   }
