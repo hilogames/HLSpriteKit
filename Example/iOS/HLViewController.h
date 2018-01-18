@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface HLViewController : UIViewController
+#import "HLToolbarNode.h"
+
+@interface HLViewController : UIViewController <HLToolbarNodeDelegate>
 
 @end

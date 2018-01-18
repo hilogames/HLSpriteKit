@@ -65,7 +65,7 @@ HLMenuNodeValidateButtonPrototype(SKNode *buttonPrototype, NSString *label)
     itemButtonPrototype.fontName = @"Helvetica";
     itemButtonPrototype.fontSize = 24.0f;
     itemButtonPrototype.fontColor = [SKColor whiteColor];
-    itemButtonPrototype.verticalAlignmentMode = HLLabelNodeVerticalAlignFont;
+    itemButtonPrototype.heightMode = HLLabelHeightModeFont;
     _itemButtonPrototype = itemButtonPrototype;
     _menuItemButtonPrototype = nil;
     _backItemButtonPrototype = nil;

@@ -9,44 +9,32 @@
 #import <SpriteKit/SpriteKit.h>
 
 /**
- A vertical alignment mode which can measure a label not only by its current size (based
- on its current text) but alternately by its inherent font metrics.
+ A height mode used when aligning text vertically.
 
- In particular, these alignments are helpful when aligning a label node to a background
- which must appear to frame the text in the label; and even more particularly, when the
- text might change (or be visually compared to other such labels-plus-background).  For
- example, the caller might want to leave space in the background for the font descender
- even if the current label contains no descenders.
+ See `getVerticalAlignmentForAlignmentMode:heightMode:useAlignmentMode:labelHeight:yOffset:`
+ for details.
 */
-typedef NS_ENUM(NSInteger, HLLabelNodeVerticalAlignmentMode) {
+typedef NS_ENUM(NSInteger, HLLabelHeightMode) {
   /**
    Measure the label using the exact height of the current text (for example, not
-   including the font descender if the current text has no descending characters).  Align
-   the label by the center of that height.
+   including the font descender if the current text has no descending characters).
   */
-  HLLabelNodeVerticalAlignText,
+  HLLabelHeightModeText,
   /**
    Measure the label using the full height of the font (regardless of the current text,
-   and including both ascender and descender).  Align the label by the center of that
-   height.  This means that the location of the baseline won't change depending on the
-   current text; space will be reserved for ascenders and descenders.
+   and including both ascender and descender).
   */
-  HLLabelNodeVerticalAlignFont,
+  HLLabelHeightModeFont,
   /**
    Measure the label using the full ascender of the font, but excluding the descender
-   (regardless of the current text).  Align the label by the center of that height.  This
-   means that the location of the baseline won't change depending on the current text;
-   space will be reserved for ascenders; any descenders in the current text will extend
-   down below the space reserved for the label.  (This might be useful for all-caps text.)
+   (regardless of the current text).
   */
-  HLLabelNodeVerticalAlignFontAscender,
+  HLLabelHeightModeFontAscender,
   /**
-   Partway between using the entire font height (including descender) and using only the
-   ascender.  Can be useful where you want room for the descender, for instance for
-   mixed-case text, and yet the full font height just seems to leave a little too much
-   space below the baseline.
+   Measure the label using the full ascender of the font and a portion of the descender
+   (regardless of the current text).
   */
-  HLLabelNodeVerticalAlignFontAscenderBias
+  HLLabelHeightModeFontAscenderBias,
 };
 
 @interface SKLabelNode (HLLabelNodeAdditions)
@@ -54,42 +42,122 @@ typedef NS_ENUM(NSInteger, HLLabelNodeVerticalAlignmentMode) {
 /// @name Calculating Vertical Alignment
 
 /**
- Gets alignment parameters for this `SKLabelNode` to be used when aligning vertically by
- `HLLabelNodeVerticalAlignmentMode`.
+ Gets vertical alignment parameters for this `SKLabelNode` when aligning using
+ a combination of `SKLabelVerticalAlignmentMode` and `HLLabelHeightMode`.
 
- See `HLLabelNodeVerticalAlignmentMode` for details.
+ For a passed alignment mode and height mode, this method calculates a vertical
+ alignment mode and a vertical position offset for the label.
 
- ### Example
+ This method does not change any properties of its label.  To align the label as
+ intended, use convenience method `alignVerticalWithAlignmentMode`, which sets the label's
+ `verticalAlignmentMode` and `position` properties according to the results of this
+ method.
 
- Say you have two label nodes.  The first has no descenders: its text is "bdfhklt".  The
- second has no ascenders: "gpqy".  You wisely choose a vertical alignment of
- `SKLabelVerticalAlignmentModeBaseline`.
+ ## Discussion
 
- Now the baseline of the label nodes can be set, and they will line up.  You want the
- labels to appear centered within a red background message bar.  Where should you position
- the baseline?  You try putting it in the (vertical) center of the bar.  It seems way too
- high, because for your font the ascenders are much taller than the descenders.  So you
- lower it.  But...by how much?
+ This kind of alignment is most useful when trying to align text within an enclosing box.
 
- This method can help.  Choose your alignment mode from
- `HLLableNodeVerticalAlignmentMode`, then set the position of your label according to the
- (vertical) center of where you want it.  Then add the returned `yOffset` to the
- y-position, and use the returned `skVerticalAlignmentMode` as the label's
- `verticalAlignmentMode`.
+ See the Example project included with some `HLSpriteKit` distributions for visual
+ illustration of the various vertical alignment and height modes.
+
+ `SKLabelVerticalAlignmentMode` permits baseline, top, center, or bottom alignment.  In
+ a paragraph of text, baseline alignment is the norm.  Baseline alignment is also most
+ common when text is broken up into multiple aligned labels, for example:
+
+             Object: Widget
+              Color: Blue
+               Size: 10
+
+ When positioning text in enclosing boxes, baseline alignment is still good, but there
+ is usually an additional challenge: Keeping the text more-or-less visually centered in
+ the enclosing box.  Consider trying to layout a toolbar of text buttons:
+
+         +----------+   +--------------+   +-------------+
+         |   mano   |   |   slotifab   |   |   yapgaxp   |
+         +----------+   +--------------+   +-------------+
+
+ Each text label has a different height because of its mix of descenders and ascenders.
+ Using `SKLabelVerticalAlignmentMode` does a good job with the visual centering of the
+ various heights, but of course then the baselines are unaligned, which in most
+ applications looks bad.
+
+ So again, baseline alignment is good.  But where to put the baseline?
+
+   - The center of the box?  No, too high.
+
+   - The bottom of the box?  Clearly too low.
+
+   - One-third of the way up from the bottom of the box?  Good for some fonts.  Not so
+     good for others.
+
+ This method attempts to solve the problem by using an additional parameter to do
+ vertical alignment: in addition to an `SKLabelVerticalAlignmentMode`, it requires an
+ `HLLabelHeightMode`.  Examples:
+
+   - Height mode "ascender" with alignment mode "center".  This centers only the ascender
+     portion of the font (regardless of the current text of each label).  This can look
+     good when ascenders dominate:
+
+         +----------+   +--------------+   +-------------+
+         |   MANO   |   |   SLOTIFAB   |   |   YAPGAXP   |
+         +----------+   +--------------+   +-------------+
+
+     On the other hand, fonts tend to claim more space for their ascenders than is used
+     by most glyphs, so this often looks too empty above the text.
+
+   - Height mode "font" with alignment mode "center".  This centers the full height of the
+     font (regardless of the current text of each label).  This can look good with mixed
+     ascenders and descenders:
+
+         +----------+   +--------------+   +-------------+
+         |   Mano   |   |   Slotifab   |   |   Yapgaxp   |
+         +----------+   +--------------+   +-------------+
+
+     In English, though, ascenders tend to dominate, and extra room reserved for
+     descenders is more noticeable than extra room reserved for ascenders.  So depending
+     on the font, this alignment can leave the labels looking too high in their boxes.
+
+   - Height mode "ascender-bias" with alignment mode "center".  Like "font", this centers
+     using the height of the font (regardless of label text), but when calculating the
+     height of the font, the descender is discounted.  This can look good with mixed
+     ascenders and descenders, but where the descenders are less prevalent.
+
+   - Alignment modes "top" and "bottom" don't affect how the label height is calculated,
+     but allow you to handle the labels using a different anchor point, if that's useful.
+
+ Not all combinations of vertical alignment mode and height mode are useful, but this
+ method is parameterized this way for maximum compatibility with normal SpriteKit
+ alignment.  Two examples:
+
+   - When using height mode `HLLabelHeightModeText`, all alignments are the same as
+     just setting the label's `verticalAlignmentMode` property with no offset.
+
+   - Height mode "ascender" with alignment mode "bottom" is the same as normal SpriteKit
+     baseline alignment.  (Although the returned `labelHeight` might be useful for
+     calculating a consistent enclosing box size.)
+
+ Note that most height modes cause baseline alignment of text regardless of alignment
+ mode.  But perhaps some alternate height modes will prove useful: A height halfway
+ between font height and current text height, so that baselines move a little bit based
+ on current text?
 */
-- (void)getAlignmentForHLVerticalAlignmentMode:(HLLabelNodeVerticalAlignmentMode)hlVerticalAlignmentMode
-                       skVerticalAlignmentMode:(SKLabelVerticalAlignmentMode *)skVerticalAlignmentMode
-                                   labelHeight:(CGFloat *)labelHeight
-                                       yOffset:(CGFloat *)yOffset;
+- (void)getVerticalAlignmentForAlignmentMode:(SKLabelVerticalAlignmentMode)verticalAlignmentMode
+                                  heightMode:(HLLabelHeightMode)heightMode
+                            useAlignmentMode:(SKLabelVerticalAlignmentMode *)useVerticalAlignmentMode
+                                 labelHeight:(CGFloat *)labelHeight
+                                     yOffset:(CGFloat *)yOffset;
 
 /**
- Sets alignment parameters for an `SKLabelNode`.
+ Convenience method for calculating an alignment and setting label properties according
+ to the results.
 
- Sets the label's `verticalAlignmentMode` and adds an offset to the label's y-position,
- depending on the value of the passed `HLLabelNodeVerticalAlignmentNode`.
+ In particular, this method sets the `verticalAlignmentMode` of the label, and offsets
+ the label's `position.y`.
 
- See `HLLabelNodeVerticalAlignmentMode` for details.
+ See `getVerticalAlignmentMode:heightMode:useAlignmentMode:labelHeight:yOffset` for
+ information on calculating the alignment.
 */
-- (void)alignForHLVerticalAlignmentMode:(HLLabelNodeVerticalAlignmentMode)hlVerticalAlignmentMode;
+- (void)alignVerticalWithAlignmentMode:(SKLabelVerticalAlignmentMode)verticalAlignmentMode
+                            heightMode:(HLLabelHeightMode)heightMode;
 
 @end

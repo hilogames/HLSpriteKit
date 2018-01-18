@@ -105,21 +105,30 @@
  Specifies if the button should automatically set its height based on the label height.
 
  Label height is determined by various properties including its text, font, padding, and
- vertical alignment mode.
+ height mode.  The height mode in particular is worth considering, because it can change
+ the normal meaning of SpriteKit label height (based on the current text) to other
+ useful options (for example, the inherent height of the font).  See `heightMode` for
+ more information.
 
  Default value is `NO`.
 */
 @property (nonatomic, assign) BOOL automaticHeight;
 
 /**
- Specifies how to align the label within the button frame.
+ Specifies how to calculate the label height when considering vertical alignment
+ and automatic height.
 
- See documentation for `HLLabelNodeVerticalAlignmentMode`.  This alignment mode also
- determines the calculated height used for the button when `automaticHeight` is true.
+ See `automaticHeight` for additional information.
 
- Default value is `HLLabelNodeAlignText`.
+ Default value is `HLLabelHeightModeText`.
+
+ Using the default value, the baseline of the label text will appear to jump around when
+ the text changes (for most fonts).  Furthermore, the baselines of two label buttons
+ side-by-side will probably be different.  An alternative to consider is
+ `HLLabelHeightModeAscenderBias`, which keeps the baselines consistent and does a pretty
+ good job of visually centering various text strings in most fonts.
 */
-@property (nonatomic, assign) HLLabelNodeVerticalAlignmentMode verticalAlignmentMode;
+@property (nonatomic, assign) HLLabelHeightMode heightMode;
 
 /**
  The amount of space, when using `automaticWidth`, to leave between the label and the edge

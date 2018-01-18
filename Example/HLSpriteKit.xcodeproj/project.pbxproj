@@ -19,6 +19,8 @@
 		CB33390A1D905A22008CAFE0 /* HLViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CB3339091D905A22008CAFE0 /* HLViewController.m */; };
 		CB3A8D701ECCE916006E7849 /* HLUglyShufflerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CB3A8D6F1ECCE916006E7849 /* HLUglyShufflerTests.m */; };
 		CB3A8D711ECCE916006E7849 /* HLUglyShufflerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CB3A8D6F1ECCE916006E7849 /* HLUglyShufflerTests.m */; };
+		CB8F54F020066FA400004DE0 /* HLAlignmentScene.m in Sources */ = {isa = PBXBuildFile; fileRef = CB8F54EF20066FA400004DE0 /* HLAlignmentScene.m */; };
+		CB8F54F120066FA400004DE0 /* HLAlignmentScene.m in Sources */ = {isa = PBXBuildFile; fileRef = CB8F54EF20066FA400004DE0 /* HLAlignmentScene.m */; };
 		CBBD5FC01D905F240047D9F7 /* HLAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CBBD5FBD1D905F240047D9F7 /* HLAppDelegate.m */; };
 		CBBD5FC11D905F240047D9F7 /* HLViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CBBD5FBF1D905F240047D9F7 /* HLViewController.m */; };
 		CBBD5FC41D905F510047D9F7 /* HLCatalogScene.m in Sources */ = {isa = PBXBuildFile; fileRef = CBBD5FC31D905F510047D9F7 /* HLCatalogScene.m */; };
@@ -69,6 +71,7 @@
 		7BC40BB934F6EB3A4783F5C8 /* Pods-macOS-Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-macOS-Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-macOS-Tests/Pods-macOS-Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		CB0796141E5753E40097FFF2 /* HLActionTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HLActionTests.m; path = "Shared-Tests/HLActionTests.m"; sourceTree = "<group>"; };
 		CB0F78F11F167A3B00C428A9 /* HLGridLayoutManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HLGridLayoutManagerTests.m; path = "Shared-Tests/HLGridLayoutManagerTests.m"; sourceTree = "<group>"; };
+		CB2A647620091C65009C1972 /* HLExampleScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HLExampleScene.h; sourceTree = "<group>"; };
 		CB3338E91D905A22008CAFE0 /* HLSpriteKit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HLSpriteKit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB3338ED1D905A22008CAFE0 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		CB3338FB1D905A22008CAFE0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -80,6 +83,8 @@
 		CB3339091D905A22008CAFE0 /* HLViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HLViewController.m; sourceTree = "<group>"; };
 		CB33390E1D905A22008CAFE0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CB3A8D6F1ECCE916006E7849 /* HLUglyShufflerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HLUglyShufflerTests.m; path = "Shared-Tests/HLUglyShufflerTests.m"; sourceTree = "<group>"; };
+		CB8F54EE20066FA400004DE0 /* HLAlignmentScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HLAlignmentScene.h; sourceTree = "<group>"; };
+		CB8F54EF20066FA400004DE0 /* HLAlignmentScene.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HLAlignmentScene.m; sourceTree = "<group>"; };
 		CBBD5F981D905B180047D9F7 /* iOS-Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "iOS-Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CBBD5F9C1D905B180047D9F7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CBBD5FA61D905B310047D9F7 /* macOS-Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "macOS-Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -170,6 +175,9 @@
 			children = (
 				CBBD5FC21D905F510047D9F7 /* HLCatalogScene.h */,
 				CBBD5FC31D905F510047D9F7 /* HLCatalogScene.m */,
+				CB8F54EE20066FA400004DE0 /* HLAlignmentScene.h */,
+				CB8F54EF20066FA400004DE0 /* HLAlignmentScene.m */,
+				CB2A647620091C65009C1972 /* HLExampleScene.h */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -633,6 +641,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CB8F54F020066FA400004DE0 /* HLAlignmentScene.m in Sources */,
 				CBBD5FC41D905F510047D9F7 /* HLCatalogScene.m in Sources */,
 				CBBD5FC11D905F240047D9F7 /* HLViewController.m in Sources */,
 				CBBD5FC01D905F240047D9F7 /* HLAppDelegate.m in Sources */,
@@ -644,6 +653,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CB8F54F120066FA400004DE0 /* HLAlignmentScene.m in Sources */,
 				CBBD5FC51D905F510047D9F7 /* HLCatalogScene.m in Sources */,
 				CB3339071D905A22008CAFE0 /* main.m in Sources */,
 				CB33390A1D905A22008CAFE0 /* HLViewController.m in Sources */,
@@ -814,6 +824,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-iOS";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-iOS";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = iOS/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -831,6 +842,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-iOS";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-iOS";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = iOS/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

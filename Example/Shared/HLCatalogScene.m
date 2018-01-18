@@ -26,6 +26,7 @@
 @implementation HLCatalogScene
 {
   BOOL _contentCreated;
+  HLToolbarNode *_applicationToolbarNode;
   HLScrollNode *_catalogScrollNode;
   HLMessageNode *_messageNode;
   HLTiledNode *_tiledNode;
@@ -33,6 +34,8 @@
 
 - (void)didMoveToView:(SKView *)view
 {
+  [super didMoveToView:view];
+
   if (!_contentCreated) {
     [self HL_createContent];
     _contentCreated = YES;
@@ -53,6 +56,7 @@
 {
   [super didChangeSize:oldSize];
   _catalogScrollNode.size = self.size;
+  [self HL_layoutApplicationToolbarNode];
 }
 
 - (void)update:(NSTimeInterval)currentTime
@@ -63,6 +67,29 @@
     [_tiledNode hlActionRunnerUpdate:incrementalTime];
   }
   lastTime = currentTime;
+}
+
+- (void)setApplicationToolbar:(HLToolbarNode *)applicationToolbarNode
+{
+  if (_applicationToolbarNode == applicationToolbarNode) {
+    return;
+  }
+  if (_applicationToolbarNode) {
+    [_applicationToolbarNode removeFromParent];
+  }
+  _applicationToolbarNode = applicationToolbarNode;
+  if (_applicationToolbarNode) {
+    [self addChild:_applicationToolbarNode];
+    [self HL_layoutApplicationToolbarNode];
+  }
+}
+
+- (void)HL_layoutApplicationToolbarNode
+{
+  _applicationToolbarNode.size = CGSizeMake(self.size.width, 0.0f);
+  [_applicationToolbarNode layoutToolsAnimation:HLToolbarNodeAnimationNone];
+  _applicationToolbarNode.position = CGPointMake(0.0f, (_applicationToolbarNode.size.height - self.size.height) / 2.0f + 5.0f);
+  _applicationToolbarNode.zPosition = 1.0f;
 }
 
 - (void)HL_createContent
@@ -226,7 +253,7 @@
   labelButtonNode.automaticWidth = YES;
   labelButtonNode.automaticHeight = NO;
   labelButtonNode.labelPadX = 5.0f;
-  labelButtonNode.verticalAlignmentMode = HLLabelNodeVerticalAlignFont;
+  labelButtonNode.heightMode = HLLabelHeightModeFont;
   labelButtonNode.text = @"HLLabelButtonNode";
   return labelButtonNode;
 }
@@ -318,11 +345,10 @@
     _messageNode.zPosition = 1.0f;
     _messageNode.fontName = @"Helvetica";
     _messageNode.fontSize = 12.0f;
-    _messageNode.verticalAlignmentMode = HLLabelNodeVerticalAlignFont;
     _messageNode.messageLingerDuration = 5.0;
   }
   _messageNode.size = CGSizeMake(self.size.width, 20.0f);
-  _messageNode.position = CGPointMake(0.0f, (_messageNode.size.height - self.size.height) / 2.0f + 5.0f);
+  _messageNode.position = CGPointMake(0.0f, (self.size.height - _messageNode.size.height) / 2.0f - 10.0f);
   [_messageNode showMessage:message parent:self];
 }
 

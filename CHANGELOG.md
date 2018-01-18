@@ -1,6 +1,24 @@
 
 # Change Log
 
+## Master
+
+### Breaking
+
+- Changes to the vertical alignment options provided by
+  `SKLabelNode+HLLabelNodeAdditions.h`.  I reparameterized my spiffy
+  alignment code so that in place of a single combo mode there are now
+  two separate modes: an alignment mode and a height mode.  In theory,
+  this was supposed to help me add some options to `HLToolbarNode` and
+  `HLLabelButtonNode`...but that ended up a trip for biscuits.  Still,
+  the reconceptualization makes more sense.  Sorry if it breaks your
+  stuff.  If we're lucky, all you'll have to do is change (for
+  example) `HLLabelNodeVerticalAlignFont` to `HLLabelHeightModeFont`.
+  If it's more complicated than that, please let me know!  See how to
+  use the parameterization in the brand-new "Alignment" demo scene in
+  the `Example` project.  
+  [Karl Voskuil](https://github.com/karlvoskuil)
+
 ## 1.6.0 [2018-01-18]
 
 ### Breaking

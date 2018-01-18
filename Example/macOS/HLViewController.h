@@ -8,7 +8,9 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface HLViewController : NSViewController
+#import "HLToolbarNode.h"
+
+@interface HLViewController : NSViewController <HLToolbarNodeDelegate>
 
 @end
 

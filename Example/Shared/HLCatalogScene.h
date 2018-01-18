@@ -6,8 +6,10 @@
 //  Copyright (c) 2014 Karl Voskuil. All rights reserved.
 //
 
+#import "HLExampleScene.h"
 #import "HLScene.h"
+#import "HLToolbarNode.h"
 
-@interface HLCatalogScene : HLScene
+@interface HLCatalogScene : HLScene <HLExampleScene>
 
 @end

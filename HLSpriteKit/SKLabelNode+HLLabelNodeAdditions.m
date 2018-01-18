@@ -12,113 +12,137 @@
 
 @implementation SKLabelNode (HLLabelNodeAdditions)
 
-- (void)getAlignmentForHLVerticalAlignmentMode:(HLLabelNodeVerticalAlignmentMode)hlVerticalAlignmentMode
-                       skVerticalAlignmentMode:(SKLabelVerticalAlignmentMode *)skVerticalAlignmentMode
-                                   labelHeight:(CGFloat *)labelHeight
-                                       yOffset:(CGFloat *)yOffset
+- (void)getVerticalAlignmentForAlignmentMode:(SKLabelVerticalAlignmentMode)verticalAlignmentMode
+                                  heightMode:(HLLabelHeightMode)heightMode
+                            useAlignmentMode:(SKLabelVerticalAlignmentMode *)useVerticalAlignmentMode
+                                 labelHeight:(CGFloat *)labelHeight
+                                     yOffset:(CGFloat *)yOffset
 {
   // note: For the record: I have no idea about the performance of this, especially
   // if dealing with lots of labels that may or may not share the same font name
   // and font size.
 
-  switch (hlVerticalAlignmentMode) {
-
-    case HLLabelNodeVerticalAlignText:
-      if (skVerticalAlignmentMode) {
-        *skVerticalAlignmentMode = SKLabelVerticalAlignmentModeCenter;
-      }
-      if (labelHeight) {
-        *labelHeight = self.frame.size.height;
-      }
-      if (yOffset) {
-        *yOffset = 0.0f;
-      }
-      break;
-
-    case HLLabelNodeVerticalAlignFont: {
-#if TARGET_OS_IPHONE
-      UIFont *font = [UIFont fontWithName:self.fontName size:self.fontSize];
-#else
-      NSFont *font = [NSFont fontWithName:self.fontName size:self.fontSize];
-#endif
-      if (!font) {
-        [NSException raise:@"HLLabelNodeUnknownFont" format:@"Could not find font \"%@\".", self.fontName];
-      }
-      if (skVerticalAlignmentMode) {
-        *skVerticalAlignmentMode = SKLabelVerticalAlignmentModeBaseline;
-      }
-      CGFloat lineHeight = font.ascender - font.descender;
-      if (labelHeight) {
-        *labelHeight = lineHeight;
-      }
-      if (yOffset) {
-        *yOffset = -lineHeight / 2.0f - font.descender;
-      }
-      break;
+  if (heightMode == HLLabelHeightModeText) {
+    if (useVerticalAlignmentMode) {
+      *useVerticalAlignmentMode = verticalAlignmentMode;
     }
-      
-    case HLLabelNodeVerticalAlignFontAscender: {
+    if (labelHeight) {
+      *labelHeight = self.frame.size.height;
+    }
+    if (yOffset) {
+      *yOffset = 0.0f;
+    }
+    return;
+  }
+
 #if TARGET_OS_IPHONE
-      UIFont *font = [UIFont fontWithName:self.fontName size:self.fontSize];
+  UIFont *font = [UIFont fontWithName:self.fontName size:self.fontSize];
 #else
-      NSFont *font = [NSFont fontWithName:self.fontName size:self.fontSize];
+  NSFont *font = [NSFont fontWithName:self.fontName size:self.fontSize];
 #endif
-      if (!font) {
-        [NSException raise:@"HLLabelNodeUnknownFont" format:@"Could not find font \"%@\".", self.fontName];
+  if (!font) {
+    [NSException raise:@"HLLabelNodeUnknownFont" format:@"Could not find font \"%@\".", self.fontName];
+  }
+
+  switch (heightMode) {
+
+    case HLLabelHeightModeText:
+      // note: Already handled above.
+      break;
+
+    case HLLabelHeightModeFont:
+      if (useVerticalAlignmentMode) {
+        *useVerticalAlignmentMode = SKLabelVerticalAlignmentModeBaseline;
       }
-      if (skVerticalAlignmentMode) {
-        *skVerticalAlignmentMode = SKLabelVerticalAlignmentModeBaseline;
-      }
-      CGFloat lineHeight = font.ascender;
       if (labelHeight) {
-        *labelHeight = lineHeight;
+        *labelHeight = font.ascender - font.descender;
       }
       if (yOffset) {
-        *yOffset = -lineHeight / 2.0f;
+        switch (verticalAlignmentMode) {
+          case SKLabelVerticalAlignmentModeTop:
+            *yOffset = -font.ascender;
+            break;
+          case SKLabelVerticalAlignmentModeBottom:
+            *yOffset = -font.descender;
+            break;
+          case SKLabelVerticalAlignmentModeCenter:
+            *yOffset = -font.ascender / 2.0f - font.descender / 2.0f;
+            break;
+          case SKLabelVerticalAlignmentModeBaseline:
+            *yOffset = 0.0f;
+            break;
+        }
       }
       break;
-    }
 
-    case HLLabelNodeVerticalAlignFontAscenderBias: {
-#if TARGET_OS_IPHONE
-      UIFont *font = [UIFont fontWithName:self.fontName size:self.fontSize];
-#else
-      NSFont *font = [NSFont fontWithName:self.fontName size:self.fontSize];
-#endif
-      if (!font) {
-        [NSException raise:@"HLLabelNodeUnknownFont" format:@"Could not find font \"%@\".", self.fontName];
+    case HLLabelHeightModeFontAscender:
+      if (useVerticalAlignmentMode) {
+        *useVerticalAlignmentMode = SKLabelVerticalAlignmentModeBaseline;
       }
-      if (skVerticalAlignmentMode) {
-        *skVerticalAlignmentMode = SKLabelVerticalAlignmentModeBaseline;
+      if (labelHeight) {
+        *labelHeight = font.ascender;
       }
+      if (yOffset) {
+        switch (verticalAlignmentMode) {
+          case SKLabelVerticalAlignmentModeTop:
+            *yOffset = -font.ascender;
+            break;
+          case SKLabelVerticalAlignmentModeBottom:
+            *yOffset = 0.0f;
+            break;
+          case SKLabelVerticalAlignmentModeCenter:
+            *yOffset = -font.ascender / 2.0f;
+            break;
+          case SKLabelVerticalAlignmentModeBaseline:
+            *yOffset = 0.0f;
+            break;
+        }
+      }
+      break;
+
+    case HLLabelHeightModeFontAscenderBias:
       // note: Ascender bias leaves room for the full ascender plus half of the descender
       // (keep in mind font.descender metric is a negative offset).  This is arbitrary.
-      CGFloat lineHeight = font.ascender - font.descender / 2.0f;
+      if (useVerticalAlignmentMode) {
+        *useVerticalAlignmentMode = SKLabelVerticalAlignmentModeBaseline;
+      }
       if (labelHeight) {
-        *labelHeight = lineHeight;
+        *labelHeight = font.ascender - font.descender / 2.0f;
       }
       if (yOffset) {
-        // note: Find bottom of line, then go up by half the descender.
-        // Simplifies -(a - d/2)/2 - d/2 = -a/2 - d/4 but written this way for clarity.
-        *yOffset = -lineHeight / 2.0f - font.descender / 2.0f;
+        switch (verticalAlignmentMode) {
+          case SKLabelVerticalAlignmentModeTop:
+            *yOffset = -font.ascender;
+            break;
+          case SKLabelVerticalAlignmentModeBottom:
+            *yOffset = -font.descender / 2.0f;
+            break;
+          case SKLabelVerticalAlignmentModeCenter:
+            // note: Find bottom of line, then go up by half the descender.
+            // Simplifies -(a - d/2)/2 - d/2 = -a/2 - d/4
+            *yOffset = -font.ascender / 2.0f - font.descender / 4.0f;
+            break;
+          case SKLabelVerticalAlignmentModeBaseline:
+            *yOffset = 0.0f;
+            break;
+        }
       }
       break;
-    }
-
-    default:
-      [NSException raise:@"HLLabelNodeUnknownVerticalAlignmentMode" format:@"Unknown vertical alignment mode %ld.", (long)hlVerticalAlignmentMode];
+      break;
   }
 }
 
-- (void)alignForHLVerticalAlignmentMode:(HLLabelNodeVerticalAlignmentMode)hlVerticalAlignmentMode
+- (void)alignVerticalWithAlignmentMode:(SKLabelVerticalAlignmentMode)verticalAlignmentMode
+                            heightMode:(HLLabelHeightMode)heightMode
 {
   CGFloat yOffset;
-  SKLabelVerticalAlignmentMode skVerticalAlignmentMode;
-  [self getAlignmentForHLVerticalAlignmentMode:hlVerticalAlignmentMode
-                       skVerticalAlignmentMode:&skVerticalAlignmentMode
-                                   labelHeight:nil
+  SKLabelVerticalAlignmentMode useVerticalAlignmentMode;
+  [self getVerticalAlignmentForAlignmentMode:verticalAlignmentMode
+                                  heightMode:heightMode
+                            useAlignmentMode:&useVerticalAlignmentMode
+                                 labelHeight:nil
                                      yOffset:&yOffset];
-  self.verticalAlignmentMode = skVerticalAlignmentMode;
+  self.verticalAlignmentMode = useVerticalAlignmentMode;
   CGPoint position = self.position;
   position.y += yOffset;
   self.position = position;

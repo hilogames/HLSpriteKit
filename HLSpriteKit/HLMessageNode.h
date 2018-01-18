@@ -117,11 +117,20 @@ typedef NS_ENUM(NSInteger, HLMessageNodeAnimation) {
 @property (nonatomic, assign) CGFloat horizontalMargin;
 
 /**
- The vertical alignment mode of the message label within the background.
+ Specifies how to calculate the message label height when aligning it in the center
+ of the background.
 
- See `HLLabelNodeVerticalAlignmentMode` for details.
+ In particular, messages (for most applications) should be baseline-aligned, and
+ vertically centered in the background.  A good height mode for most fonts to achieve
+ that goal is `HLLabelHeightModeFont`.  If that looks like it's leaving too much room
+ for the descender, try `HLLabelHeightModeAscenderBias`.
+
+ See `getVerticalAlignmentMode:heightMode:useAlignmentMode:labelHeight:yOffset` in
+ `SKLabelNode+HLLabelNodeAdditions.h` for way too much information.
+
+ Default value is `HLLabelHeightModeFont`.
 */
-@property (nonatomic, assign) HLLabelNodeVerticalAlignmentMode verticalAlignmentMode;
+@property (nonatomic, assign) HLLabelHeightMode heightMode;
 
 /// @name Configuring Appearance
 

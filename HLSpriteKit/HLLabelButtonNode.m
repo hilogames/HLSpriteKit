@@ -66,7 +66,7 @@ enum {
 {
   _automaticWidth = NO;
   _automaticHeight = NO;
-  _verticalAlignmentMode = HLLabelNodeVerticalAlignText;
+  _heightMode = HLLabelHeightModeText;
   _labelPadX = 0.0f;
   _labelPadY = 0.0f;
   _labelNode = [SKLabelNode labelNodeWithFontNamed:@"Helvetica"];
@@ -91,7 +91,7 @@ enum {
     _labelNode = [aDecoder decodeObjectForKey:@"labelNode"];
     _automaticWidth = [aDecoder decodeBoolForKey:@"automaticWidth"];
     _automaticHeight = [aDecoder decodeBoolForKey:@"automaticHeight"];
-    _verticalAlignmentMode = (HLLabelNodeVerticalAlignmentMode)[aDecoder decodeIntegerForKey:@"verticalAlignmentMode"];
+    _heightMode = (HLLabelHeightMode)[aDecoder decodeIntegerForKey:@"heightMode"];
     _labelPadX = (CGFloat)[aDecoder decodeDoubleForKey:@"labelPadX"];
     _labelPadY = (CGFloat)[aDecoder decodeDoubleForKey:@"labelPadY"];
   }
@@ -106,7 +106,7 @@ enum {
   [aCoder encodeObject:_labelNode forKey:@"labelNode"];
   [aCoder encodeBool:_automaticWidth forKey:@"automaticWidth"];
   [aCoder encodeBool:_automaticHeight forKey:@"automaticHeight"];
-  [aCoder encodeInteger:_verticalAlignmentMode forKey:@"verticalAlignmentMode"];
+  [aCoder encodeInteger:_heightMode forKey:@"heightMode"];
   [aCoder encodeDouble:_labelPadX forKey:@"labelPadX"];
   [aCoder encodeDouble:_labelPadY forKey:@"labelPadY"];
 }
@@ -125,7 +125,7 @@ enum {
   }
   copy->_automaticHeight = _automaticHeight;
   copy->_automaticWidth = _automaticWidth;
-  copy->_verticalAlignmentMode = _verticalAlignmentMode;
+  copy->_heightMode = _heightMode;
   copy->_labelPadX = _labelPadX;
   copy->_labelPadY = _labelPadY;
   return copy;
@@ -202,9 +202,21 @@ enum {
   [self HL_layout];
 }
 
-- (void)setVerticalAlignmentMode:(HLLabelNodeVerticalAlignmentMode)verticalAlignmentMode
+- (void)setHeightMode:(HLLabelHeightMode)heightMode
 {
-  _verticalAlignmentMode = verticalAlignmentMode;
+  _heightMode = heightMode;
+  [self HL_layout];
+}
+
+- (void)setLabelPadX:(CGFloat)labelPadX
+{
+  _labelPadX = labelPadX;
+  [self HL_layout];
+}
+
+- (void)setLabelPadY:(CGFloat)labelPadY
+{
+  _labelPadY = labelPadY;
   [self HL_layout];
 }
 
@@ -294,22 +306,24 @@ enum {
     newSize.width = _labelNode.frame.size.width + _labelPadX * 2.0f;
   }
 
-  SKLabelVerticalAlignmentMode skVerticalAlignmentMode;
+  SKLabelVerticalAlignmentMode useVerticalAlignmentMode;
   CGFloat alignedYOffset;
   if (_automaticHeight) {
     CGFloat effectiveLabelHeight;
-    [_labelNode getAlignmentForHLVerticalAlignmentMode:_verticalAlignmentMode
-                               skVerticalAlignmentMode:&skVerticalAlignmentMode
-                                           labelHeight:&effectiveLabelHeight
+    [_labelNode getVerticalAlignmentForAlignmentMode:SKLabelVerticalAlignmentModeCenter
+                                          heightMode:_heightMode
+                                    useAlignmentMode:&useVerticalAlignmentMode
+                                         labelHeight:&effectiveLabelHeight
                                              yOffset:&alignedYOffset];
     newSize.height = effectiveLabelHeight + _labelPadY * 2.0f;
   } else {
-    [_labelNode getAlignmentForHLVerticalAlignmentMode:_verticalAlignmentMode
-                               skVerticalAlignmentMode:&skVerticalAlignmentMode
-                                           labelHeight:nil
+    [_labelNode getVerticalAlignmentForAlignmentMode:SKLabelVerticalAlignmentModeCenter
+                                          heightMode:_heightMode
+                                    useAlignmentMode:&useVerticalAlignmentMode
+                                         labelHeight:nil
                                              yOffset:&alignedYOffset];
   }
-  _labelNode.verticalAlignmentMode = skVerticalAlignmentMode;
+  _labelNode.verticalAlignmentMode = useVerticalAlignmentMode;
   _labelNode.position = CGPointMake((0.5f - _backgroundNode.anchorPoint.x) * newSize.width,
                                     (0.5f - _backgroundNode.anchorPoint.y) * newSize.height + alignedYOffset);
 
