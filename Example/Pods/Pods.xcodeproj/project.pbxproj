@@ -188,9 +188,9 @@
 		0CF792F4833453B16DE0A93BB937287F /* Pods-macOS-Tests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-macOS-Tests-acknowledgements.markdown"; sourceTree = "<group>"; };
 		13954742BA087E014CD8939EB266B013 /* HLLayoutManager.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = HLLayoutManager.m; sourceTree = "<group>"; };
 		1ACB13F449797B54D7C436184BC08743 /* HLRingLayoutManager.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = HLRingLayoutManager.m; sourceTree = "<group>"; };
-		1C26C328B77B48D221B1BD336BB471D2 /* libPods-iOS-Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "libPods-iOS-Tests.a"; path = "libPods-iOS-Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1C26C328B77B48D221B1BD336BB471D2 /* libPods-iOS-Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-iOS-Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		23734A36F23EA76856EC2D0A73BFDCAC /* Pods-macOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-macOS.release.xcconfig"; sourceTree = "<group>"; };
-		243951340EA87A6983D65BFD6BB5B941 /* libPods-macOS-Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "libPods-macOS-Tests.a"; path = "libPods-macOS-Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		243951340EA87A6983D65BFD6BB5B941 /* libPods-macOS-Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-macOS-Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2630F3152DF5B071C884CD2BEC24BFA6 /* HLMessageNode.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = HLMessageNode.h; sourceTree = "<group>"; };
 		2918E1AD0853E4FF7CF05F60F5CA06A8 /* HLScrollNode.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = HLScrollNode.m; sourceTree = "<group>"; };
 		29711D39D39B71004DE6F71C7B244F1E /* HLScene.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = HLScene.m; sourceTree = "<group>"; };
@@ -209,7 +209,7 @@
 		5A5D64D259BF8673F1F97F5196BAB900 /* HLScrollNode.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = HLScrollNode.h; sourceTree = "<group>"; };
 		5A7BDEFB1CF65FA832BD95F2CB4EC89C /* HLComponentNode.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = HLComponentNode.m; sourceTree = "<group>"; };
 		5A8F215A37710F405F75AA391BD2E476 /* HLTiledNode.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = HLTiledNode.m; sourceTree = "<group>"; };
-		619FFE31AC0C34BC3E3FCE21A722293E /* libPods-macOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "libPods-macOS.a"; path = "libPods-macOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		619FFE31AC0C34BC3E3FCE21A722293E /* libPods-macOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-macOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		640F868C3A21CF803717E6D977765FC0 /* HLAction.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = HLAction.m; sourceTree = "<group>"; };
 		65BA0CE81EFFB2EAA6A4BB836E0360B2 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk/System/Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
 		6682CE9DC19313A72F56ED1F36B30F76 /* HLToolbarNode.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = HLToolbarNode.h; sourceTree = "<group>"; };
@@ -225,7 +225,7 @@
 		7CEC782DD8C59B5BEC021DC334589D05 /* HLItemNode.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = HLItemNode.h; sourceTree = "<group>"; };
 		7EF661CFE733E3597F3BBC3A99A510DE /* Pods-iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-iOS.debug.xcconfig"; sourceTree = "<group>"; };
 		7F134046A216816B9D28BA298277E0E3 /* NSGestureRecognizer+MultipleActions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "NSGestureRecognizer+MultipleActions.h"; sourceTree = "<group>"; };
-		819E2B20D3B5830249142CDB9798C26F /* libPods-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "libPods-iOS.a"; path = "libPods-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		819E2B20D3B5830249142CDB9798C26F /* libPods-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		892F918C405AF9B6C2F7082C2E016B38 /* HLGridNode.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = HLGridNode.m; sourceTree = "<group>"; };
 		894DD7994FE52717AD7F0414381BF95E /* HLSpriteKit-iOS.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "HLSpriteKit-iOS.xcconfig"; path = "../HLSpriteKit-iOS/HLSpriteKit-iOS.xcconfig"; sourceTree = "<group>"; };
 		8A2CB2DF028E63E2AB62A76E346758D4 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.3.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
@@ -235,7 +235,7 @@
 		927C832E0078C0E7FBF20800C6136362 /* Pods-macOS-Tests-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-macOS-Tests-dummy.m"; sourceTree = "<group>"; };
 		92B7C125F9D903D228BD716AD2D140E4 /* Pods-iOS-Tests-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-iOS-Tests-acknowledgements.plist"; sourceTree = "<group>"; };
 		92C36D826B9E47E8D9E5556F82368ADE /* HLLayoutManager.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = HLLayoutManager.h; sourceTree = "<group>"; };
-		93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		94B2CB48EC440341D63ABCA74602E3C4 /* UIImage+HLImageAdditions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "UIImage+HLImageAdditions.h"; sourceTree = "<group>"; };
 		98E1E3A0A1A64931DA7BBE48D6CD089B /* Pods-macOS-Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-macOS-Tests.release.xcconfig"; sourceTree = "<group>"; };
 		99F8F262DE2612C387F9AB817F5C9737 /* HLTableLayoutManager.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = HLTableLayoutManager.h; sourceTree = "<group>"; };
@@ -260,7 +260,7 @@
 		C75D939E26E963D60356CB452A9C1913 /* NSGestureRecognizer+MultipleActions.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "NSGestureRecognizer+MultipleActions.m"; sourceTree = "<group>"; };
 		C8CD26CFD64C7B473707F010D774802C /* UIImage+HLImageAdditions.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "UIImage+HLImageAdditions.m"; sourceTree = "<group>"; };
 		CCA30AF88C216856CAC3D698A220700B /* SKNode+HLAction.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "SKNode+HLAction.h"; sourceTree = "<group>"; };
-		CED86264F9A892BC4452AF4E0840DDF8 /* libHLSpriteKit-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "libHLSpriteKit-iOS.a"; path = "libHLSpriteKit-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CED86264F9A892BC4452AF4E0840DDF8 /* libHLSpriteKit-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libHLSpriteKit-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEE25A7AFA6F9D84DEC4AB90D6D8CC8C /* HLMultilineLabelNode.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = HLMultilineLabelNode.m; sourceTree = "<group>"; };
 		CF88971CCCFB611D06EE6E742B96DF5C /* SKNode+HLGestureTarget.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "SKNode+HLGestureTarget.h"; sourceTree = "<group>"; };
 		D18365100E0CD1571C7F7A50F3855741 /* Pods-macOS-Tests-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-macOS-Tests-acknowledgements.plist"; sourceTree = "<group>"; };
@@ -268,7 +268,7 @@
 		DA19046AF18727D443560D25D12E75AF /* HLOutlineLayoutManager.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = HLOutlineLayoutManager.h; sourceTree = "<group>"; };
 		DDBA032EC685BA7E5699E837A13F61C7 /* HLSpriteKit-iOS-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "HLSpriteKit-iOS-prefix.pch"; path = "../HLSpriteKit-iOS/HLSpriteKit-iOS-prefix.pch"; sourceTree = "<group>"; };
 		DDFA920306E480068D24FB412222B5EE /* HLRingLayoutManager.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = HLRingLayoutManager.h; sourceTree = "<group>"; };
-		DF77DBC57D292AF115A22B012443D8A8 /* libHLSpriteKit-OSX.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "libHLSpriteKit-OSX.a"; path = "libHLSpriteKit-OSX.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DF77DBC57D292AF115A22B012443D8A8 /* libHLSpriteKit-OSX.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libHLSpriteKit-OSX.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DFDF8255808F8D0622506EAA129C766F /* Pods-iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-iOS.release.xcconfig"; sourceTree = "<group>"; };
 		E08EF0188F865977CF8F9A9CACA9194C /* Pods-macOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-macOS.debug.xcconfig"; sourceTree = "<group>"; };
 		E4C379BFD5EBD5564AB0A78CF26BEE9C /* HLTableLayoutManager.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = HLTableLayoutManager.m; sourceTree = "<group>"; };
@@ -420,7 +420,6 @@
 				94B2CB48EC440341D63ABCA74602E3C4 /* UIImage+HLImageAdditions.h */,
 				C8CD26CFD64C7B473707F010D774802C /* UIImage+HLImageAdditions.m */,
 			);
-			name = HLSpriteKit;
 			path = HLSpriteKit;
 			sourceTree = "<group>";
 		};
@@ -777,7 +776,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0830;
-				LastUpgradeCheck = 0700;
+				LastUpgradeCheck = 0920;
 			};
 			buildConfigurationList = 2D8E8EC45A3A1A1D94AE762CB5028504 /* Build configuration list for PBXProject "Pods" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -1181,7 +1180,9 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -1189,15 +1190,21 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGNING_REQUIRED = NO;
 				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"POD_CONFIGURATION_DEBUG=1",
@@ -1254,7 +1261,9 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -1262,14 +1271,20 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGNING_REQUIRED = NO;
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"POD_CONFIGURATION_RELEASE=1",
 					"$(inherited)",

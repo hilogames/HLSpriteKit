@@ -1,13 +1,26 @@
 
 # Change Log
 
-## Master
+## 1.6.0 [2018-01-18]
+
+### Breaking
+
+- Aaaaaaaaand it now appears `HLHacktion` is broken in iOS11.  I have
+  filed a radar (http://www.openradar.me/radar?id=5620643227762688)
+  but it's not totally clear whether this is a bug or a feature.  
+  [Karl Voskuil](https://github.com/karlvoskuil)
 
 ### Added
 
 - The ugly shuffler!  `HLUglyShuffler`!  It produces N different kinda
   random seeming shuffles of N different items.  Successive items are
   calculated in constant time using constant space.  
+  [Karl Voskuil](https://github.com/karlvoskuil)
+
+### Fixed
+
+- Fixed blind invocations of `size` on `SKNode` to something safer and
+  100% more compilable.  Thanks @phpmaple.  
   [Karl Voskuil](https://github.com/karlvoskuil)
 
 ### Deprecated
