@@ -42,6 +42,8 @@ Layout managers currently provided:
 
  * `HLGridLayoutManager`, for grid-like layouts;
 
+ * `HLStackLayoutManager`, for one-dimensional layouts;
+
  * `HLRingLayoutManager`, for ring-like polar-coordinate layouts;
 
  * `HLOutlineLayoutManager`, for vertical lists (especially of text)

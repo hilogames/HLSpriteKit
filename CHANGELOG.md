@@ -20,6 +20,13 @@
   "Alignment" demo scene in the `Example` project.  
   [Karl Voskuil](https://github.com/karlvoskuil)
 
+### Added
+
+- A new stack layout manager for one-dimensional layouts.  The stack
+  can fit nodes or fill space, can align its nodes individually, and
+  can stack left, right, down, or up.  
+  [Karl Voskuil](https://github.com/karlvoskuil)
+
 ## 1.6.0 [2018-01-18]
 
 ### Breaking

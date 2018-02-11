@@ -28,6 +28,7 @@
 #import "HLRingNode.h"
 #import "HLScene.h"
 #import "HLScrollNode.h"
+#import "HLStackLayoutManager.h"
 #import "HLTableLayoutManager.h"
 #import "HLTiledNode.h"
 #import "HLToolbarNode.h"

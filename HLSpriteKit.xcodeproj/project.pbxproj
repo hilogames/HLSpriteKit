@@ -65,6 +65,8 @@
 		847D62B21D8499AF006E287F /* SKNode+HLNodeVisuals.m in Sources */ = {isa = PBXBuildFile; fileRef = 847D627A1D8499AF006E287F /* SKNode+HLNodeVisuals.m */; };
 		847D62B31D8499AF006E287F /* UIImage+HLImageAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 847D627B1D8499AF006E287F /* UIImage+HLImageAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		847D62B41D8499AF006E287F /* UIImage+HLImageAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 847D627C1D8499AF006E287F /* UIImage+HLImageAdditions.m */; };
+		CB21A89920225F5B00E51FB8 /* HLStackLayoutManager.h in Headers */ = {isa = PBXBuildFile; fileRef = CB21A89720225F5B00E51FB8 /* HLStackLayoutManager.h */; };
+		CB21A89A20225F5B00E51FB8 /* HLStackLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = CB21A89820225F5B00E51FB8 /* HLStackLayoutManager.m */; };
 		CB8D943F1F881A2E00CAFA17 /* HLLog.h in Headers */ = {isa = PBXBuildFile; fileRef = CB8D943C1F881A2D00CAFA17 /* HLLog.h */; };
 		CB8D94401F881A2E00CAFA17 /* HLUglyShuffler.h in Headers */ = {isa = PBXBuildFile; fileRef = CB8D943D1F881A2E00CAFA17 /* HLUglyShuffler.h */; };
 		CB8D94411F881A2E00CAFA17 /* HLUglyShuffler.m in Sources */ = {isa = PBXBuildFile; fileRef = CB8D943E1F881A2E00CAFA17 /* HLUglyShuffler.m */; };
@@ -137,6 +139,8 @@
 		847D627A1D8499AF006E287F /* SKNode+HLNodeVisuals.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SKNode+HLNodeVisuals.m"; sourceTree = "<group>"; };
 		847D627B1D8499AF006E287F /* UIImage+HLImageAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+HLImageAdditions.h"; sourceTree = "<group>"; };
 		847D627C1D8499AF006E287F /* UIImage+HLImageAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+HLImageAdditions.m"; sourceTree = "<group>"; };
+		CB21A89720225F5B00E51FB8 /* HLStackLayoutManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLStackLayoutManager.h; sourceTree = "<group>"; };
+		CB21A89820225F5B00E51FB8 /* HLStackLayoutManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLStackLayoutManager.m; sourceTree = "<group>"; };
 		CB8D943C1F881A2D00CAFA17 /* HLLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLLog.h; sourceTree = "<group>"; };
 		CB8D943D1F881A2E00CAFA17 /* HLUglyShuffler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLUglyShuffler.h; sourceTree = "<group>"; };
 		CB8D943E1F881A2E00CAFA17 /* HLUglyShuffler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLUglyShuffler.m; sourceTree = "<group>"; };
@@ -180,71 +184,73 @@
 			isa = PBXGroup;
 			children = (
 				CB9E8CCB1E23FFC700F410B0 /* HLAction.h */,
-				CB9E8CCC1E23FFC700F410B0 /* HLAction.m */,
 				847D62471D8499AF006E287F /* HLComponentNode.h */,
-				847D62481D8499AF006E287F /* HLComponentNode.m */,
 				847D62491D8499AF006E287F /* HLEmitterStore.h */,
-				847D624A1D8499AF006E287F /* HLEmitterStore.m */,
 				847D624B1D8499AF006E287F /* HLError.h */,
 				847D624C1D8499AF006E287F /* HLGestureTarget.h */,
-				847D624D1D8499AF006E287F /* HLGestureTarget.m */,
 				CBF9D2BB1DAD3450008F9C92 /* HLGridLayoutManager.h */,
-				CBF9D2BC1DAD3450008F9C92 /* HLGridLayoutManager.m */,
 				847D624E1D8499AF006E287F /* HLGridNode.h */,
-				847D624F1D8499AF006E287F /* HLGridNode.m */,
 				847D62451D8499AF006E287F /* HLHacktion.h */,
-				847D62461D8499AF006E287F /* HLHacktion.m */,
 				847D62501D8499AF006E287F /* HLItemContentNode.h */,
-				847D62511D8499AF006E287F /* HLItemContentNode.m */,
 				847D62521D8499AF006E287F /* HLItemNode.h */,
-				847D62531D8499AF006E287F /* HLItemNode.m */,
 				847D62541D8499AF006E287F /* HLItemsNode.h */,
-				847D62551D8499AF006E287F /* HLItemsNode.m */,
 				847D62561D8499AF006E287F /* HLLabelButtonNode.h */,
-				847D62571D8499AF006E287F /* HLLabelButtonNode.m */,
 				847D62581D8499AF006E287F /* HLLayoutManager.h */,
-				847D62591D8499AF006E287F /* HLLayoutManager.m */,
 				CB8D943C1F881A2D00CAFA17 /* HLLog.h */,
 				847D625A1D8499AF006E287F /* HLMath.h */,
-				847D625B1D8499AF006E287F /* HLMath.m */,
 				847D625C1D8499AF006E287F /* HLMenuNode.h */,
-				847D625D1D8499AF006E287F /* HLMenuNode.m */,
 				847D625E1D8499AF006E287F /* HLMessageNode.h */,
-				847D625F1D8499AF006E287F /* HLMessageNode.m */,
 				847D62601D8499AF006E287F /* HLMultilineLabelNode.h */,
-				847D62611D8499AF006E287F /* HLMultilineLabelNode.m */,
 				847D62621D8499AF006E287F /* HLOutlineLayoutManager.h */,
-				847D62631D8499AF006E287F /* HLOutlineLayoutManager.m */,
 				847D62641D8499AF006E287F /* HLRingLayoutManager.h */,
-				847D62651D8499AF006E287F /* HLRingLayoutManager.m */,
 				847D62661D8499AF006E287F /* HLRingNode.h */,
-				847D62671D8499AF006E287F /* HLRingNode.m */,
 				847D62681D8499AF006E287F /* HLScene.h */,
-				847D62691D8499AF006E287F /* HLScene.m */,
 				847D626A1D8499AF006E287F /* HLScrollNode.h */,
-				847D626B1D8499AF006E287F /* HLScrollNode.m */,
 				847D626C1D8499AF006E287F /* HLSpriteKit.h */,
+				CB21A89720225F5B00E51FB8 /* HLStackLayoutManager.h */,
 				847D626D1D8499AF006E287F /* HLTableLayoutManager.h */,
-				847D626E1D8499AF006E287F /* HLTableLayoutManager.m */,
 				847D626F1D8499AF006E287F /* HLTiledNode.h */,
-				847D62701D8499AF006E287F /* HLTiledNode.m */,
 				847D62711D8499AF006E287F /* HLToolbarNode.h */,
-				847D62721D8499AF006E287F /* HLToolbarNode.m */,
 				CB8D943D1F881A2E00CAFA17 /* HLUglyShuffler.h */,
-				CB8D943E1F881A2E00CAFA17 /* HLUglyShuffler.m */,
 				84662B451DA33093006B1812 /* NSGestureRecognizer+MultipleActions.h */,
-				84662B461DA33093006B1812 /* NSGestureRecognizer+MultipleActions.m */,
 				847D62731D8499AF006E287F /* SKLabelNode+HLLabelNodeAdditions.h */,
-				847D62741D8499AF006E287F /* SKLabelNode+HLLabelNodeAdditions.m */,
 				CB9E8CCD1E23FFC700F410B0 /* SKNode+HLAction.h */,
-				CB9E8CCE1E23FFC700F410B0 /* SKNode+HLAction.m */,
 				847D62751D8499AF006E287F /* SKNode+HLGestureTarget.h */,
-				847D62761D8499AF006E287F /* SKNode+HLGestureTarget.m */,
 				847D62771D8499AF006E287F /* SKNode+HLLayoutManager.h */,
-				847D62781D8499AF006E287F /* SKNode+HLLayoutManager.m */,
 				847D62791D8499AF006E287F /* SKNode+HLNodeVisuals.h */,
-				847D627A1D8499AF006E287F /* SKNode+HLNodeVisuals.m */,
 				847D627B1D8499AF006E287F /* UIImage+HLImageAdditions.h */,
+				CB9E8CCC1E23FFC700F410B0 /* HLAction.m */,
+				847D62481D8499AF006E287F /* HLComponentNode.m */,
+				847D624A1D8499AF006E287F /* HLEmitterStore.m */,
+				847D624D1D8499AF006E287F /* HLGestureTarget.m */,
+				CBF9D2BC1DAD3450008F9C92 /* HLGridLayoutManager.m */,
+				847D624F1D8499AF006E287F /* HLGridNode.m */,
+				847D62461D8499AF006E287F /* HLHacktion.m */,
+				847D62511D8499AF006E287F /* HLItemContentNode.m */,
+				847D62531D8499AF006E287F /* HLItemNode.m */,
+				847D62551D8499AF006E287F /* HLItemsNode.m */,
+				847D62571D8499AF006E287F /* HLLabelButtonNode.m */,
+				847D62591D8499AF006E287F /* HLLayoutManager.m */,
+				847D625B1D8499AF006E287F /* HLMath.m */,
+				847D625D1D8499AF006E287F /* HLMenuNode.m */,
+				847D625F1D8499AF006E287F /* HLMessageNode.m */,
+				847D62611D8499AF006E287F /* HLMultilineLabelNode.m */,
+				847D62631D8499AF006E287F /* HLOutlineLayoutManager.m */,
+				847D62651D8499AF006E287F /* HLRingLayoutManager.m */,
+				847D62671D8499AF006E287F /* HLRingNode.m */,
+				847D62691D8499AF006E287F /* HLScene.m */,
+				847D626B1D8499AF006E287F /* HLScrollNode.m */,
+				CB21A89820225F5B00E51FB8 /* HLStackLayoutManager.m */,
+				847D626E1D8499AF006E287F /* HLTableLayoutManager.m */,
+				847D62701D8499AF006E287F /* HLTiledNode.m */,
+				847D62721D8499AF006E287F /* HLToolbarNode.m */,
+				CB8D943E1F881A2E00CAFA17 /* HLUglyShuffler.m */,
+				84662B461DA33093006B1812 /* NSGestureRecognizer+MultipleActions.m */,
+				847D62741D8499AF006E287F /* SKLabelNode+HLLabelNodeAdditions.m */,
+				CB9E8CCE1E23FFC700F410B0 /* SKNode+HLAction.m */,
+				847D62761D8499AF006E287F /* SKNode+HLGestureTarget.m */,
+				847D62781D8499AF006E287F /* SKNode+HLLayoutManager.m */,
+				847D627A1D8499AF006E287F /* SKNode+HLNodeVisuals.m */,
 				847D627C1D8499AF006E287F /* UIImage+HLImageAdditions.m */,
 			);
 			path = HLSpriteKit;
@@ -280,6 +286,7 @@
 				847D62881D8499AF006E287F /* HLItemContentNode.h in Headers */,
 				847D629A1D8499AF006E287F /* HLOutlineLayoutManager.h in Headers */,
 				847D629E1D8499AF006E287F /* HLRingNode.h in Headers */,
+				CB21A89920225F5B00E51FB8 /* HLStackLayoutManager.h in Headers */,
 				847D62A91D8499AF006E287F /* HLToolbarNode.h in Headers */,
 				847D62AF1D8499AF006E287F /* SKNode+HLLayoutManager.h in Headers */,
 				847D62AD1D8499AF006E287F /* SKNode+HLGestureTarget.h in Headers */,
@@ -322,7 +329,7 @@
 		847D61C11D8498E6006E287F /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0820;
+				LastUpgradeCheck = 0920;
 				ORGANIZATIONNAME = "Hilo Games";
 				TargetAttributes = {
 					847D61C91D8498E6006E287F = {
@@ -363,6 +370,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CB21A89A20225F5B00E51FB8 /* HLStackLayoutManager.m in Sources */,
 				847D62A31D8499AF006E287F /* HLScrollNode.m in Sources */,
 				847D62AC1D8499AF006E287F /* SKLabelNode+HLLabelNodeAdditions.m in Sources */,
 				847D629F1D8499AF006E287F /* HLRingNode.m in Sources */,
@@ -410,7 +418,9 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -418,7 +428,11 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
@@ -462,7 +476,9 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -470,7 +486,11 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
