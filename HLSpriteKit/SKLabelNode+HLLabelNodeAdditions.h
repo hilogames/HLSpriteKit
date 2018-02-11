@@ -11,7 +11,7 @@
 /**
  A height mode used when aligning text vertically.
 
- See `getVerticalAlignmentForAlignmentMode:heightMode:useAlignmentMode:labelHeight:yOffset:`
+ See `getVerticalAlignmentForAlignmentMode:heightMode:useAlignmentMode:labelHeight:offsetY:`
  for details.
 */
 typedef NS_ENUM(NSInteger, HLLabelHeightMode) {
@@ -40,6 +40,42 @@ typedef NS_ENUM(NSInteger, HLLabelHeightMode) {
 @interface SKLabelNode (HLLabelNodeAdditions)
 
 /// @name Calculating Vertical Alignment
+
+/**
+ Returns the vertical offset, in points, of a label's font baseline from the visual
+ center position of the label according to the height mode.
+
+ This is addressing a similar problem as `getVerticalAlignmentForAlignmentMode:`, but in a
+ simplified form.  This method answers the following question:
+
+    > I have a label that I would like to visually center at a given `y`.  How far (down)
+    > from that `y` should I position the label's baseline?
+
+ The height mode describes what should be considered "visually centered".  For instance if
+ the height mode is `HLLabelHeightModeFont`, then the returned offset shifts the baseline
+ (probably down) so that the full line height of the font is centered.
+
+ (Try `HLLabelHeightModeFontAscenderBias` for a pleasing alternative.)
+
+ To position a label according to the returned offset, set its `verticalAlignmentMode` to
+ `SKLabelVerticalAlignmentModeBaseline` and add the offset to its `position.y`.
+ Alternately, `alignVerticalWithAlignmentMode:heightMode`, passing baseline-alignment for
+ the first parameter.
+
+ Note: Returns `0.0` if `heightMode` is `HLLabelHeightModeText`.  This is not the correct
+ answer, but: 1) I'm too stupid to know how to calculate the correct answer; and 2) If you
+ want to visually center by text-height, you can use `SKVerticalAlignmentModeCenter`, and
+ forget all this baseline-and-offset stuff.
+*/
++ (CGFloat)baselineOffsetYFromVisualCenterForHeightMode:(HLLabelHeightMode)heightMode
+                                               fontName:(NSString *)fontName
+                                               fontSize:(CGFloat)fontSize;
+
+/**
+ Convenience method for `baselineOffsetYFromVisualCenterForHeightMode:fontName:fontSize:`
+ using the font name and size from this label.
+*/
+- (CGFloat)baselineOffsetYFromVisualCenterForHeightMode:(HLLabelHeightMode)heightMode;
 
 /**
  Gets vertical alignment parameters for this `SKLabelNode` when aligning using
@@ -129,8 +165,8 @@ typedef NS_ENUM(NSInteger, HLLabelHeightMode) {
  method is parameterized this way for maximum compatibility with normal SpriteKit
  alignment.  Two examples:
 
-   - When using height mode `HLLabelHeightModeText`, all alignments are the same as
-     just setting the label's `verticalAlignmentMode` property with no offset.
+   - When using height mode `HLLabelHeightModeText`, all alignments are the same as just
+     setting the label's `verticalAlignmentMode` property with no offset.
 
    - Height mode "ascender" with alignment mode "bottom" is the same as normal SpriteKit
      baseline alignment.  (Although the returned `labelHeight` might be useful for
@@ -138,23 +174,23 @@ typedef NS_ENUM(NSInteger, HLLabelHeightMode) {
 
  Note that most height modes cause baseline alignment of text regardless of alignment
  mode.  But perhaps some alternate height modes will prove useful: A height halfway
- between font height and current text height, so that baselines move a little bit based
- on current text?
+ between font height and current text height, so that baselines move a little bit based on
+ current text?
 */
 - (void)getVerticalAlignmentForAlignmentMode:(SKLabelVerticalAlignmentMode)verticalAlignmentMode
                                   heightMode:(HLLabelHeightMode)heightMode
                             useAlignmentMode:(SKLabelVerticalAlignmentMode *)useVerticalAlignmentMode
                                  labelHeight:(CGFloat *)labelHeight
-                                     yOffset:(CGFloat *)yOffset;
+                                     offsetY:(CGFloat *)offsetY;
 
 /**
- Convenience method for calculating an alignment and setting label properties according
- to the results.
+ Convenience method for calculating an alignment and setting label properties according to
+ the results.
 
- In particular, this method sets the `verticalAlignmentMode` of the label, and offsets
- the label's `position.y`.
+ In particular, this method sets the `verticalAlignmentMode` of the label, and offsets the
+ label's `position.y`.
 
- See `getVerticalAlignmentMode:heightMode:useAlignmentMode:labelHeight:yOffset` for
+ See `getVerticalAlignmentMode:heightMode:useAlignmentMode:labelHeight:offsetY` for
  information on calculating the alignment.
 */
 - (void)alignVerticalWithAlignmentMode:(SKLabelVerticalAlignmentMode)verticalAlignmentMode

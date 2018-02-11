@@ -318,14 +318,14 @@
     //   [labelNode alignVerticalWithAlignmentMode:alignmentMode heightMode:heightMode];
     SKLabelVerticalAlignmentMode useAlignmentMode;
     CGFloat labelHeight;
-    CGFloat yOffset;
+    CGFloat offsetY;
     [labelNode getVerticalAlignmentForAlignmentMode:alignmentMode
                                          heightMode:heightMode
                                    useAlignmentMode:&useAlignmentMode
                                         labelHeight:&labelHeight
-                                            yOffset:&yOffset];
+                                            offsetY:&offsetY];
     labelNode.verticalAlignmentMode = useAlignmentMode;
-    labelNode.position = CGPointMake(position.x, position.y + yOffset);
+    labelNode.position = CGPointMake(position.x, position.y + offsetY);
 
     boxNode.hidden = NO;
     boxNode.size = CGSizeMake(labelNode.frame.size.width, labelHeight);

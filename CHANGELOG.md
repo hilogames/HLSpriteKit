@@ -13,10 +13,11 @@
   `HLLabelButtonNode`...but that ended up a trip for biscuits.  Still,
   the reconceptualization makes more sense.  Sorry if it breaks your
   stuff.  If we're lucky, all you'll have to do is change (for
-  example) `HLLabelNodeVerticalAlignFont` to `HLLabelHeightModeFont`.
-  If it's more complicated than that, please let me know!  See how to
-  use the parameterization in the brand-new "Alignment" demo scene in
-  the `Example` project.  
+  example) `HLLabelNodeVerticalAlignFont` to `HLLabelHeightModeFont`,
+  and maybe use `baselineYOffsetFromVisualCenterForHeightMode()` for
+  simple cases.  If it's more complicated than that, please let me
+  know!  See how to use the parameterization in the brand-new
+  "Alignment" demo scene in the `Example` project.  
   [Karl Voskuil](https://github.com/karlvoskuil)
 
 ## 1.6.0 [2018-01-18]

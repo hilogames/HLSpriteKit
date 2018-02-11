@@ -12,11 +12,66 @@
 
 @implementation SKLabelNode (HLLabelNodeAdditions)
 
+- (CGFloat)baselineOffsetYFromVisualCenterForHeightMode:(HLLabelHeightMode)heightMode
+{
+  return [SKLabelNode baselineOffsetYFromVisualCenterForHeightMode:heightMode
+                                                          fontName:self.fontName
+                                                          fontSize:self.fontSize];
+}
+
++ (CGFloat)baselineOffsetYFromVisualCenterForHeightMode:(HLLabelHeightMode)heightMode
+                                               fontName:(NSString *)fontName
+                                               fontSize:(CGFloat)fontSize
+{
+  // note: For the record: I have no idea about the performance of this, especially
+  // if dealing with lots of labels that may or may not share the same font name
+  // and font size.
+
+  if (heightMode == HLLabelHeightModeText) {
+    // See note in header.  This is not the correct answer, but I don't know how to
+    // calculate the correct answer, and this height mode is not relevant to the problem
+    // addressed by this method, so I'm too lazy to learn how to calculate the correct
+    // answer.
+    return 0.0f;
+  }
+
+#if TARGET_OS_IPHONE
+  UIFont *font = [UIFont fontWithName:fontName size:fontSize];
+#else
+  NSFont *font = [NSFont fontWithName:fontName size:fontSize];
+#endif
+  if (!font) {
+    [NSException raise:@"HLLabelNodeUnknownFont" format:@"Could not find font \"%@\".", fontName];
+  }
+
+  CGFloat offsetY = 0.0;
+  switch (heightMode) {
+    case HLLabelHeightModeText:
+      // note: Already handled above.
+      break;
+    case HLLabelHeightModeFont:
+      offsetY = -font.ascender / 2.0f - font.descender / 2.0f;
+      break;
+    case HLLabelHeightModeFontAscender:
+      offsetY = -font.ascender / 2.0f;
+      break;
+    case HLLabelHeightModeFontAscenderBias:
+      // note: Ascender bias leaves room for the full ascender plus half of the descender
+      // (keep in mind font.descender metric is a negative offset).  This is arbitrary.
+      // note: Find bottom of line, then go up by half the descender.
+      // Simplifies -(a - d/2)/2 - d/2 = -a/2 - d/4
+      offsetY = -font.ascender / 2.0f - font.descender / 4.0f;
+      break;
+  }
+
+  return offsetY;
+}
+
 - (void)getVerticalAlignmentForAlignmentMode:(SKLabelVerticalAlignmentMode)verticalAlignmentMode
                                   heightMode:(HLLabelHeightMode)heightMode
                             useAlignmentMode:(SKLabelVerticalAlignmentMode *)useVerticalAlignmentMode
                                  labelHeight:(CGFloat *)labelHeight
-                                     yOffset:(CGFloat *)yOffset
+                                     offsetY:(CGFloat *)offsetY
 {
   // note: For the record: I have no idea about the performance of this, especially
   // if dealing with lots of labels that may or may not share the same font name
@@ -29,8 +84,8 @@
     if (labelHeight) {
       *labelHeight = self.frame.size.height;
     }
-    if (yOffset) {
-      *yOffset = 0.0f;
+    if (offsetY) {
+      *offsetY = 0.0f;
     }
     return;
   }
@@ -57,19 +112,19 @@
       if (labelHeight) {
         *labelHeight = font.ascender - font.descender;
       }
-      if (yOffset) {
+      if (offsetY) {
         switch (verticalAlignmentMode) {
           case SKLabelVerticalAlignmentModeTop:
-            *yOffset = -font.ascender;
+            *offsetY = -font.ascender;
             break;
           case SKLabelVerticalAlignmentModeBottom:
-            *yOffset = -font.descender;
+            *offsetY = -font.descender;
             break;
           case SKLabelVerticalAlignmentModeCenter:
-            *yOffset = -font.ascender / 2.0f - font.descender / 2.0f;
+            *offsetY = -font.ascender / 2.0f - font.descender / 2.0f;
             break;
           case SKLabelVerticalAlignmentModeBaseline:
-            *yOffset = 0.0f;
+            *offsetY = 0.0f;
             break;
         }
       }
@@ -82,19 +137,19 @@
       if (labelHeight) {
         *labelHeight = font.ascender;
       }
-      if (yOffset) {
+      if (offsetY) {
         switch (verticalAlignmentMode) {
           case SKLabelVerticalAlignmentModeTop:
-            *yOffset = -font.ascender;
+            *offsetY = -font.ascender;
             break;
           case SKLabelVerticalAlignmentModeBottom:
-            *yOffset = 0.0f;
+            *offsetY = 0.0f;
             break;
           case SKLabelVerticalAlignmentModeCenter:
-            *yOffset = -font.ascender / 2.0f;
+            *offsetY = -font.ascender / 2.0f;
             break;
           case SKLabelVerticalAlignmentModeBaseline:
-            *yOffset = 0.0f;
+            *offsetY = 0.0f;
             break;
         }
       }
@@ -109,25 +164,24 @@
       if (labelHeight) {
         *labelHeight = font.ascender - font.descender / 2.0f;
       }
-      if (yOffset) {
+      if (offsetY) {
         switch (verticalAlignmentMode) {
           case SKLabelVerticalAlignmentModeTop:
-            *yOffset = -font.ascender;
+            *offsetY = -font.ascender;
             break;
           case SKLabelVerticalAlignmentModeBottom:
-            *yOffset = -font.descender / 2.0f;
+            *offsetY = -font.descender / 2.0f;
             break;
           case SKLabelVerticalAlignmentModeCenter:
             // note: Find bottom of line, then go up by half the descender.
             // Simplifies -(a - d/2)/2 - d/2 = -a/2 - d/4
-            *yOffset = -font.ascender / 2.0f - font.descender / 4.0f;
+            *offsetY = -font.ascender / 2.0f - font.descender / 4.0f;
             break;
           case SKLabelVerticalAlignmentModeBaseline:
-            *yOffset = 0.0f;
+            *offsetY = 0.0f;
             break;
         }
       }
-      break;
       break;
   }
 }
@@ -135,16 +189,16 @@
 - (void)alignVerticalWithAlignmentMode:(SKLabelVerticalAlignmentMode)verticalAlignmentMode
                             heightMode:(HLLabelHeightMode)heightMode
 {
-  CGFloat yOffset;
+  CGFloat offsetY;
   SKLabelVerticalAlignmentMode useVerticalAlignmentMode;
   [self getVerticalAlignmentForAlignmentMode:verticalAlignmentMode
                                   heightMode:heightMode
                             useAlignmentMode:&useVerticalAlignmentMode
                                  labelHeight:nil
-                                     yOffset:&yOffset];
+                                     offsetY:&offsetY];
   self.verticalAlignmentMode = useVerticalAlignmentMode;
   CGPoint position = self.position;
-  position.y += yOffset;
+  position.y += offsetY;
   self.position = position;
 }
 
