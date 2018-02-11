@@ -195,9 +195,9 @@ const CGFloat HLTableLayoutManagerEpsilon = 0.001f;
     }
   }
   CGFloat widthTotalConstant = _columnSeparator * (_columnCount - 1) + _tableBorder * 2.0f;
-  CGFloat widthTotalExpanding = _constrainedSize.width - widthTotalFixed - widthTotalConstant;
-  if (widthTotalExpanding <= 0.0f) {
-    widthTotalExpanding = 0.0f;
+  CGFloat widthTotalExpanding = 0.0f;
+  if (widthExpandingColumnRatioSum < 0.0 && _constrainedSize.width > (widthTotalFixed + widthTotalConstant)) {
+    widthTotalExpanding = _constrainedSize.width - widthTotalFixed - widthTotalConstant;
   }
 
   // Second pass (columns): Calculate expanding column widths.
@@ -244,9 +244,9 @@ const CGFloat HLTableLayoutManagerEpsilon = 0.001f;
     }
   }
   CGFloat heightTotalConstant = _rowSeparator * (_rowCount - 1) + _tableBorder * 2.0f;
-  CGFloat heightTotalExpanding = _constrainedSize.height - heightTotalFixed - heightTotalConstant;
-  if (heightTotalExpanding <= 0.0f) {
-    heightTotalExpanding = 0.0f;
+  CGFloat heightTotalExpanding = 0.0f;
+  if (heightExpandingRowRatioSum < 0.0f && _constrainedSize.height > (heightTotalFixed + heightTotalConstant)) {
+    heightTotalExpanding = _constrainedSize.height - heightTotalFixed - heightTotalConstant;
   }
 
   // Second pass (rows): Calculate expanding row heights.
