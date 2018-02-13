@@ -102,8 +102,8 @@ typedef NS_ENUM(NSInteger, HLGridLayoutManagerFillMode) {
 
  The order of the passed nodes determines position in the grid, according to the
  `fillMode` of the grid.  A square is skipped if the corresponding element in the array is
- not a kind of `SKNode` class.  (It is suggested to pass `[NSNull null]` to intentionally
- leave squares empty.)
+ not a kind of `SKNode` class.  (It is suggested to pass `[NSNull null]` or `[SKNode
+ node]` to intentionally leave squares empty.)
 
  This method must always be called explicitly to realize layout changes.  On one hand,
  it's annoying to have to remember to call it; on the other hand, it allows the owner
@@ -149,19 +149,19 @@ typedef NS_ENUM(NSInteger, HLGridLayoutManagerFillMode) {
  Default value is `(0.5, 0.5)`.
 
  For example, if the `anchorPoint` is `(0.5, 0.5)`, the grid will be centered on position
- `CGPointZero` plus the `gridOffset`.
+ `CGPointZero` plus the `gridPosition`.
 */
 @property (nonatomic, assign) CGPoint anchorPoint;
 
 /**
- A constant offset used for the grid during layout.
+ A conceptual position used for the grid during layout, in scene point coordinate space.
+
+ For example, if the `gridPosition` is `(10.0, 0.0)`, all nodes laid out will have ten
+ points added to their `position.x`.
 
  Default value is `(0.0, 0.0)`.
-
- For example, if the `gridOffset` is `(10.0, 0.0)`, all nodes laid out will have ten
- points added to their `position.x`.
 */
-@property (nonatomic, assign) CGPoint gridOffset;
+@property (nonatomic, assign) CGPoint gridPosition;
 
 /**
  The number of columns in the grid.

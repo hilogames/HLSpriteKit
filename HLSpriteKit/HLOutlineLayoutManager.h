@@ -49,8 +49,8 @@ FOUNDATION_EXPORT const CGFloat HLOutlineLayoutManagerEpsilon;
 
  As a vertical list, the outline does not know about its own width, or the widths of its
  nodes.  Therefore it does not know anything about X anchor points, either.  Node X
- positions are set starting at `outlineOffset.x` and indented at each outline level by the
- corresponding value in `levelIndents`.
+ positions are set starting at `outlinePosition.x` and indented at each outline level by
+ the corresponding value in `levelIndents`.
 
  Some configurations of an outline layout manager only make sense for a fixed number of
  nodes (see, for example, `setNodeLevels:`).  In that case, only as many nodes will be
@@ -74,18 +74,24 @@ FOUNDATION_EXPORT const CGFloat HLOutlineLayoutManagerEpsilon;
 /**
  The anchor point Y-value used for the outline during layout.
 
- For example, if the `anchorPointY` is `0.5`, the outline will be centered vertically on
- position `0.0` plus the `outlineOffset.y`.  Default value is `0.5`.
+ For example, if the `anchorPoint` is `0.0`, the outline will be positioned above the
+ `outlinePosition`.  If the `anchorPoint` is `0.5`, the outline will be vertically
+ centered on the `outlinePosition`.
+
+ Default value is `0.5`.
 */
 @property (nonatomic, assign) CGFloat anchorPointY;
 
 /**
- A constant offset used for the outline during layout.
+ A conceptual position used for the outline during layout, in scene point coordinate
+ space.
 
- For example, if the `outlineOffset` is `(10.0, 0.0)`, all nodes laid out will have ten
- points added to their `position.x`.  Default value is `(0.0, 0.0)`.
+ For example, if the `outlinePosition` is `(10.0, 0.0)`, all nodes laid out will have ten
+ points added to their `position.x`.
+
+ Default value is `(0.0, 0.0)`.
 */
-@property (nonatomic, assign) CGPoint outlineOffset;
+@property (nonatomic, assign) CGPoint outlinePosition;
 
 /**
  An array of `NSUInteger` specifying the outline level to be used for each node during
@@ -111,7 +117,7 @@ FOUNDATION_EXPORT const CGFloat HLOutlineLayoutManagerEpsilon;
 
      outlineLayoutManager.levelIndents = @[ @0.0f, @20.0f, @10.0f ];
 
- ...then a node at level 3 will have its X position indented from `outlineOffset.x` by
+ ...then a node at level 3 will have its X position indented from `outlinePosition.x` by
  `40`, which is the sum of the indents of levels 0 through 3 (respectively, `0`, `20`,
  `10`, and `10`).
 */

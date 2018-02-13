@@ -24,6 +24,16 @@ const CGFloat HLTableLayoutManagerEpsilon = 0.001f;
 }
 
 - (instancetype)initWithColumnCount:(NSUInteger)columnCount
+{
+  self = [super init];
+  if (self) {
+    _anchorPoint = CGPointMake(0.5f, 0.5f);
+    _columnCount = columnCount;
+  }
+  return self;
+}
+
+- (instancetype)initWithColumnCount:(NSUInteger)columnCount
                        columnWidths:(NSArray *)columnWidths
                  columnAnchorPoints:(NSArray *)columnAnchorPoints
                          rowHeights:(NSArray *)rowHeights
@@ -45,10 +55,10 @@ const CGFloat HLTableLayoutManagerEpsilon = 0.001f;
   if (self) {
 #if TARGET_OS_IPHONE
     _anchorPoint = [aDecoder decodeCGPointForKey:@"anchorPoint"];
-    _tableOffset = [aDecoder decodeCGPointForKey:@"tableOffset"];
+    _tablePosition = [aDecoder decodeCGPointForKey:@"tablePosition"];
 #else
     _anchorPoint = [aDecoder decodePointForKey:@"anchorPoint"];
-    _tableOffset = [aDecoder decodePointForKey:@"tableOffset"];
+    _tablePosition = [aDecoder decodePointForKey:@"tablePosition"];
 #endif
     _columnCount = (NSUInteger)[aDecoder decodeIntegerForKey:@"columnCount"];
     _rowCount = (NSUInteger)[aDecoder decodeIntegerForKey:@"rowCount"];
@@ -60,6 +70,7 @@ const CGFloat HLTableLayoutManagerEpsilon = 0.001f;
     _columnWidths = [aDecoder decodeObjectForKey:@"columnWidths"];
     _columnAnchorPoints = [aDecoder decodeObjectForKey:@"columnAnchorPoints"];
     _rowHeights = [aDecoder decodeObjectForKey:@"rowHeight"];
+    _rowLabelOffsetYs = [aDecoder decodeObjectForKey:@"rowLabelOffsetYs"];
     _tableBorder = (CGFloat)[aDecoder decodeDoubleForKey:@"tableBorder"];
     _columnSeparator = (CGFloat)[aDecoder decodeDoubleForKey:@"columnSeparator"];
     _rowSeparator = (CGFloat)[aDecoder decodeDoubleForKey:@"rowSeparator"];
@@ -76,10 +87,10 @@ const CGFloat HLTableLayoutManagerEpsilon = 0.001f;
 {
 #if TARGET_OS_IPHONE
   [aCoder encodeCGPoint:_anchorPoint forKey:@"anchorPoint"];
-  [aCoder encodeCGPoint:_tableOffset forKey:@"tableOffset"];
+  [aCoder encodeCGPoint:_tablePosition forKey:@"tablePosition"];
 #else
   [aCoder encodePoint:_anchorPoint forKey:@"anchorPoint"];
-  [aCoder encodePoint:_tableOffset forKey:@"tableOffset"];
+  [aCoder encodePoint:_tablePosition forKey:@"tablePosition"];
 #endif
   [aCoder encodeInteger:(NSInteger)_columnCount forKey:@"columnCount"];
   // noob: rowCount and size could be recalculated, but since they are
@@ -93,6 +104,7 @@ const CGFloat HLTableLayoutManagerEpsilon = 0.001f;
   [aCoder encodeObject:_columnWidths forKey:@"columnWidths"];
   [aCoder encodeObject:_columnAnchorPoints forKey:@"columnAnchorPoints"];
   [aCoder encodeObject:_rowHeights forKey:@"rowHeights"];
+  [aCoder encodeObject:_rowLabelOffsetYs forKey:@"rowLabelOffsetYs"];
   [aCoder encodeDouble:_tableBorder forKey:@"tableBorder"];
   [aCoder encodeDouble:_columnSeparator forKey:@"columnSeparator"];
   [aCoder encodeDouble:_rowSeparator forKey:@"rowSeparator"];
@@ -108,13 +120,14 @@ const CGFloat HLTableLayoutManagerEpsilon = 0.001f;
   HLTableLayoutManager *copy = [[[self class] allocWithZone:zone] init];
   if (copy) {
     copy->_anchorPoint = _anchorPoint;
-    copy->_tableOffset = _tableOffset;
+    copy->_tablePosition = _tablePosition;
     copy->_columnCount = _columnCount;
     copy->_rowCount = _rowCount;
     copy->_constrainedSize = _constrainedSize;
     copy->_columnWidths = [_columnWidths copyWithZone:zone];
     copy->_columnAnchorPoints = [_columnAnchorPoints copyWithZone:zone];
     copy->_rowHeights = [_rowHeights copyWithZone:zone];
+    copy->_rowLabelOffsetYs = [_rowLabelOffsetYs copyWithZone:zone];
     copy->_tableBorder = _tableBorder;
     copy->_columnSeparator = _columnSeparator;
     copy->_rowSeparator = _rowSeparator;
@@ -135,134 +148,130 @@ const CGFloat HLTableLayoutManagerEpsilon = 0.001f;
 
 - (void)GL_layout:(NSArray *)nodes getColumnWidths:(NSArray *__strong *)returnColumnWidths rowHeights:(NSArray *__strong *)returnRowHeights
 {
-  if (_columnCount == 0) {
-    return;
-  }
   NSUInteger nodesCount = [nodes count];
   if (nodesCount == 0) {
     return;
   }
-  if (!_columnWidths || !_rowHeights) {
-    return;
+  NSUInteger columnCount = _columnCount;
+  if (columnCount == 0) {
+    columnCount = nodesCount;
   }
   NSUInteger columnWidthsCount = [_columnWidths count];
   NSUInteger columnAnchorPointsCount = [_columnAnchorPoints count];
   NSUInteger rowHeightsCount = [_rowHeights count];
-  if (columnWidthsCount == 0 || columnAnchorPointsCount == 0 || rowHeightsCount == 0) {
-    return;
-  }
+  NSUInteger rowLabelOffsetYsCount = [_rowLabelOffsetYs count];
 
-  _rowCount = (nodesCount - 1) / _columnCount + 1;
-  // note: Analytically this is always true.  But the check is here for the sake of the
+  _rowCount = (nodesCount - 1) / columnCount + 1;
+  // note: Analytically this is always false.  But the check is here for the sake of the
   // static analyzer, which otherwise complains about the malloc below.
   if (_rowCount == 0) {
     return;
   }
 
-  // First pass (columns): Calculate fixed-size column widths, and sum expanding-column ratios.
-  CGFloat *columnWidths = (CGFloat *)malloc(_columnCount * sizeof(CGFloat));
+  // First pass (columns): Calculate fixed-size column widths, and sum fill-column ratios.
+  CGFloat *columnWidths = (CGFloat *)malloc(columnCount * sizeof(CGFloat));
   CGFloat widthTotalFixed = 0.0f;
-  CGFloat widthExpandingColumnRatioSum = 0.0f;
+  CGFloat widthFillColumnRatioSum = 0.0f;
   {
-    CGFloat widthColumn = 0.0f;
-    for (NSUInteger column = 0; column < _columnCount; ++column) {
+    CGFloat columnWidth = 0.0f;
+    for (NSUInteger column = 0; column < columnCount; ++column) {
       if (column < columnWidthsCount) {
-        NSNumber *widthColumnNumber = _columnWidths[column];
-        widthColumn = (CGFloat)[widthColumnNumber doubleValue];
+        NSNumber *columnWidthNumber = _columnWidths[column];
+        columnWidth = (CGFloat)[columnWidthNumber doubleValue];
       }
-      if (widthColumn > HLTableLayoutManagerEpsilon) {
-        widthTotalFixed += widthColumn;
-        columnWidths[column] = widthColumn;
-      } else if (widthColumn < -HLTableLayoutManagerEpsilon) {
-        widthExpandingColumnRatioSum += widthColumn;
-        columnWidths[column] = widthColumn;
+      if (columnWidth > HLTableLayoutManagerEpsilon) {
+        widthTotalFixed += columnWidth;
+        columnWidths[column] = columnWidth;
+      } else if (columnWidth < -HLTableLayoutManagerEpsilon) {
+        widthFillColumnRatioSum += columnWidth;
+        columnWidths[column] = columnWidth;
       } else {
-        CGFloat widthCellMax = 0.0f;
+        CGFloat cellWidthMax = 0.0f;
         for (NSUInteger row = 0; row < _rowCount; ++row) {
-          NSUInteger nodeIndex = row * _columnCount + column;
+          NSUInteger nodeIndex = row * columnCount + column;
           if (nodeIndex >= nodesCount) {
             break;
           }
           id node = nodes[nodeIndex];
           CGFloat nodeWidth = HLLayoutManagerGetNodeWidth(node);
-          if (nodeWidth > widthCellMax) {
-            widthCellMax = nodeWidth;
+          if (nodeWidth > cellWidthMax) {
+            cellWidthMax = nodeWidth;
           }
         }
-        widthTotalFixed += widthCellMax;
-        columnWidths[column] = widthCellMax;
+        widthTotalFixed += cellWidthMax;
+        columnWidths[column] = cellWidthMax;
       }
     }
   }
-  CGFloat widthTotalConstant = _columnSeparator * (_columnCount - 1) + _tableBorder * 2.0f;
-  CGFloat widthTotalExpanding = 0.0f;
-  if (widthExpandingColumnRatioSum < 0.0 && _constrainedSize.width > (widthTotalFixed + widthTotalConstant)) {
-    widthTotalExpanding = _constrainedSize.width - widthTotalFixed - widthTotalConstant;
+  CGFloat widthTotalConstant = _columnSeparator * (columnCount - 1) + _tableBorder * 2.0f;
+  CGFloat widthTotalFill = 0.0f;
+  if (widthFillColumnRatioSum < 0.0 && _constrainedSize.width > (widthTotalFixed + widthTotalConstant)) {
+    widthTotalFill = _constrainedSize.width - widthTotalFixed - widthTotalConstant;
   }
 
-  // Second pass (columns): Calculate expanding column widths.
-  for (NSUInteger column = 0; column < _columnCount; ++column) {
-    CGFloat widthColumn = columnWidths[column];
-    if (widthColumn < -HLTableLayoutManagerEpsilon) {
-      columnWidths[column] = widthTotalExpanding / widthExpandingColumnRatioSum * widthColumn;
+  // Second pass (columns): Calculate fill column widths.
+  for (NSUInteger column = 0; column < columnCount; ++column) {
+    CGFloat columnWidth = columnWidths[column];
+    if (columnWidth < -HLTableLayoutManagerEpsilon) {
+      columnWidths[column] = widthTotalFill / widthFillColumnRatioSum * columnWidth;
     }
   }
 
-  // First pass (rows): Calculate fixed-size row heights, and sum expanding row ratios.
+  // First pass (rows): Calculate fixed-size row heights, and sum fill row ratios.
   CGFloat *rowHeights = (CGFloat *)malloc(_rowCount * sizeof(CGFloat));
   CGFloat heightTotalFixed = 0.0f;
-  CGFloat heightExpandingRowRatioSum = 0.0f;
+  CGFloat heightFillRowRatioSum = 0.0f;
   {
-    CGFloat heightRow = 0.0f;
+    CGFloat rowHeight = 0.0f;
     for (NSUInteger row = 0; row < _rowCount; ++row) {
       if (row < rowHeightsCount) {
-        NSNumber *heightRowNumber = _rowHeights[row];
-        heightRow = (CGFloat)[heightRowNumber doubleValue];
+        NSNumber *rowHeightNumber = _rowHeights[row];
+        rowHeight = (CGFloat)[rowHeightNumber doubleValue];
       }
-      if (heightRow > HLTableLayoutManagerEpsilon) {
-        heightTotalFixed += heightRow;
-        rowHeights[row] = heightRow;
-      } else if (heightRow < -HLTableLayoutManagerEpsilon) {
-        heightExpandingRowRatioSum += heightRow;
-        rowHeights[row] = heightRow;
+      if (rowHeight > HLTableLayoutManagerEpsilon) {
+        heightTotalFixed += rowHeight;
+        rowHeights[row] = rowHeight;
+      } else if (rowHeight < -HLTableLayoutManagerEpsilon) {
+        heightFillRowRatioSum += rowHeight;
+        rowHeights[row] = rowHeight;
       } else {
-        CGFloat heightCellMax = 0.0f;
-        for (NSUInteger column = 0; column < _columnCount; ++column) {
-          NSUInteger nodeIndex = row * _columnCount + column;
+        CGFloat cellHeightMax = 0.0f;
+        for (NSUInteger column = 0; column < columnCount; ++column) {
+          NSUInteger nodeIndex = row * columnCount + column;
           if (nodeIndex >= nodesCount) {
             break;
           }
           id node = nodes[nodeIndex];
           CGFloat nodeHeight = HLLayoutManagerGetNodeHeight(node);
-          if (nodeHeight > heightCellMax) {
-            heightCellMax = nodeHeight;
+          if (nodeHeight > cellHeightMax) {
+            cellHeightMax = nodeHeight;
           }
         }
-        heightTotalFixed += heightCellMax;
-        rowHeights[row] = heightCellMax;
+        heightTotalFixed += cellHeightMax;
+        rowHeights[row] = cellHeightMax;
       }
     }
   }
   CGFloat heightTotalConstant = _rowSeparator * (_rowCount - 1) + _tableBorder * 2.0f;
-  CGFloat heightTotalExpanding = 0.0f;
-  if (heightExpandingRowRatioSum < 0.0f && _constrainedSize.height > (heightTotalFixed + heightTotalConstant)) {
-    heightTotalExpanding = _constrainedSize.height - heightTotalFixed - heightTotalConstant;
+  CGFloat heightTotalFill = 0.0f;
+  if (heightFillRowRatioSum < 0.0f && _constrainedSize.height > (heightTotalFixed + heightTotalConstant)) {
+    heightTotalFill = _constrainedSize.height - heightTotalFixed - heightTotalConstant;
   }
 
-  // Second pass (rows): Calculate expanding row heights.
+  // Second pass (rows): Calculate fill row heights.
   for (NSUInteger row = 0; row < _rowCount; ++row) {
-    CGFloat heightRow = rowHeights[row];
-    if (heightRow < -HLTableLayoutManagerEpsilon) {
-      rowHeights[row] = heightTotalExpanding / heightExpandingRowRatioSum * heightRow;
+    CGFloat rowHeight = rowHeights[row];
+    if (rowHeight < -HLTableLayoutManagerEpsilon) {
+      rowHeights[row] = heightTotalFill / heightFillRowRatioSum * rowHeight;
     }
   }
 
-  _size = CGSizeMake(widthTotalFixed + widthTotalExpanding + widthTotalConstant,
-                     heightTotalFixed + heightTotalExpanding + heightTotalConstant);
+  _size = CGSizeMake(widthTotalFixed + widthTotalFill + widthTotalConstant,
+                     heightTotalFixed + heightTotalFill + heightTotalConstant);
 
   if (returnColumnWidths) {
     NSMutableArray *rcw = [NSMutableArray array];
-    for (NSUInteger column = 0; column < _columnCount; ++column) {
+    for (NSUInteger column = 0; column < columnCount; ++column) {
       [rcw addObject:[NSNumber numberWithDouble:columnWidths[column]]];
     }
     *returnColumnWidths = rcw;
@@ -277,45 +286,56 @@ const CGFloat HLTableLayoutManagerEpsilon = 0.001f;
 
   // note: x and y track the upper left corner of each cell.
   NSEnumerator *nodesEnumerator = [nodes objectEnumerator];
-  CGFloat yCell = _size.height * (1.0f - _anchorPoint.y) - _tableBorder + _tableOffset.y;
-  CGFloat startXCell = _size.width * -1.0f * _anchorPoint.x + _tableBorder + _tableOffset.x;
+  CGFloat cellY = _size.height * (1.0f - _anchorPoint.y) - _tableBorder + _tablePosition.y;
+  CGFloat startCellX = _size.width * -1.0f * _anchorPoint.x + _tableBorder + _tablePosition.x;
+  CGFloat labelOffsetY = 0.0f;
   id node = nil;
   for (NSUInteger row = 0; row < _rowCount; ++row) {
 
-    CGFloat heightCell = rowHeights[row];
+    CGFloat cellHeight = rowHeights[row];
 
-    CGFloat xCell = startXCell;
-    CGPoint anchorPointCell = CGPointZero;
-    for (NSUInteger column = 0; column < _columnCount; ++column) {
+    if (row < rowLabelOffsetYsCount) {
+      NSNumber *labelOffsetYNumber = _rowLabelOffsetYs[row];
+      labelOffsetY = (CGFloat)[labelOffsetYNumber doubleValue];
+    }
+
+    CGFloat cellX = startCellX;
+    CGPoint cellAnchorPoint = CGPointMake(0.5f, 0.5f);
+    for (NSUInteger column = 0; column < columnCount; ++column) {
 
       node = [nodesEnumerator nextObject];
       if (!node) {
         break;
       }
 
-      CGFloat widthCell = columnWidths[column];
+      CGFloat cellWidth = columnWidths[column];
 
       if (column < columnAnchorPointsCount) {
         NSValue *anchorPointValue = _columnAnchorPoints[column];
 #if TARGET_OS_IPHONE
-        anchorPointCell = [anchorPointValue CGPointValue];
+        cellAnchorPoint = [anchorPointValue CGPointValue];
 #else
-        anchorPointCell = [anchorPointValue pointValue];
+        cellAnchorPoint = [anchorPointValue pointValue];
 #endif
       }
 
       if ([node isKindOfClass:[SKNode class]]) {
-        [(SKNode *)node setPosition:CGPointMake(xCell + widthCell * anchorPointCell.x,
-                                                yCell - heightCell * (1.0f - anchorPointCell.y))];
+        if ([node isKindOfClass:[SKLabelNode class]]) {
+          [(SKNode *)node setPosition:CGPointMake(cellX + cellWidth * cellAnchorPoint.x,
+                                                  cellY - cellHeight * (1.0f - cellAnchorPoint.y) + labelOffsetY)];
+        } else {
+          [(SKNode *)node setPosition:CGPointMake(cellX + cellWidth * cellAnchorPoint.x,
+                                                  cellY - cellHeight * (1.0f - cellAnchorPoint.y))];
+        }
       }
 
-      xCell = xCell + widthCell + _columnSeparator;
+      cellX = cellX + cellWidth + _columnSeparator;
     }
 
     if (!node) {
       break;
     }
-    yCell = yCell - heightCell - _rowSeparator;
+    cellY = cellY - cellHeight - _rowSeparator;
   }
 
   free(columnWidths);

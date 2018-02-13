@@ -14,42 +14,127 @@ FOUNDATION_EXPORT const CGFloat HLTableLayoutManagerEpsilon;
 
 /**
  Provides functionality to lay out (set positions of) nodes in a table.  This manager may
- be attached to an `SKNode` using `[SKNode+HLLayoutManager hlSetLayoutManager`.
+ be attached to an `SKNode` using `[SKNode+HLLayoutManager hlSetLayoutManager]`.
+
+ ### Aligning Labels in a Table
+
+ Say you have a row of label nodes.  How do you vertically align the text?
+
+   - It's easy to assign the same Y-position to nodes in a table row.
+
+   - Therefore, it's easy to vertically align a row of label nodes using the
+     `verticalAlignmentMode` property of the labels: baseline, top, center, or bottom.
+     Baseline alignment is typical.
+
+ Things get more complicated, however, in the following situations:
+
+   1. When the row contains both label nodes and sprite nodes.
+
+                  +-----+             +----+ +-----+
+          Player  |#####|  Abilities  | /\ | | --> |
+                  +-----+             +----+ +-----+
+
+   2. When the text is enclosed visually by a box the same size as the row.
+
+          +----------------------------------+
+          |  Wave   3  of   10     Gold  15  |
+          +----------------------------------+
+
+ In these cases, baseline alignment for the label nodes is still typical.  The question
+ is: Where should the baseline go relative to the sprite nodes (and/or enclosing box)?
+
+ Well, the answer is: "Anywhere you want it to go."  But there's a special case of this
+ special case which nevertheless occurs frequently: Where should the baseline go relative
+ to the sprite nodes **if you want the text visually centered with the boxes**?  Now the
+ answer is usually: "Down a few points."
+
+ Probably you should not adjust anchor points in order to achive visual centering.  The
+ Y-offset required to visually-center a label is related to the label's font geometry and
+ size, and is unrelated to the heights of the nearby sprites or enclosing box.  In other
+ words, it's a Y-offset in point coordinate space and not an anchor in unit coordinate
+ space.
+
+ Calculate the offset for different kinds of visual centering using
+ `baselineOffsetYFromVisualCenterForHeightMode:fontName:fontSize:` from
+ `SKLabelNode+HLLabelNodeAdditions`.
+
+ Then use `rowLabelOffsetYs` to configure the offset on the table.  It will automatically
+ be applied to label nodes in the row, and not sprite nodes.
+
+ Comments on usage:
+
+   - The use-case for `rowLabelOffsetYs` is for (vertical) visual centering of
+     baseline-aligned label nodes.
+
+   - It is assumed (though not enforced) that all label nodes in the row will be using
+     baseline alignment.
+
+   - If labels in different columns of the same row have different fonts or font sizes,
+     their calculated visual-centering Y-offsets will be different.  But
+     baseline-alignment is considered more important, and so the table only allows a
+     single offset calculated for the entire row.  Use the "typical" font size to
+     calculate the shared offset, or use an average, or forgetting the offset and instead
+     tweak anchor points.
+
+   - If an entire row in the table uses different or larger fonts (a header row, perhaps?)
+     then again the Y-offset for visual centering might be different for that row.  The
+     table allows specification of a different Y-offset for each row.
+
+ Comments on possible alternate designs:
+
+   - Rather than a label-only Y-offset, could specify offsets for each column.  But it's
+     tedious to specify each column offset when it seems like it's always zero for sprites
+     and the same constant for labels.  I even wrote a helper to do generate the offsets,
+     and it still felt tedious.  Needs a use-case.  Even if we did column offsets, we'd
+     still need an additional per-row Y-offset to help with the problem of header rows.
+     Which would still be label-only.  Anchor point is almost always good enough for
+     sprites.  Which brings us back to the idea of using a struct to specify column
+     alignments, rather than a CGPoint for the column anchor point.  Then the struct could
+     include an anchor point, an offset, and various visual-centering options.
+
+   - Could have more enhanced "automatic" offset options.  Like, you specify the height
+     mode, and the offset is calculated automatically for the row (using the first-found
+     label node?) and then applied to all label nodes in the row.  Maybe you could even
+     specify a strategy for calculation -- use a fixed Y-offset for all rows, or a fixed
+     Y-offset for each row, or calculate a Y-offset (using a height mode) for the row
+     based on the label node in a certain column, or calculate different Y-offsets (using
+     a height mode) for each label node in the row (even if that breaks baseline
+     alignment).  All of this seems like overkill, and needs a use-case.
 */
 @interface HLTableLayoutManager : NSObject <HLLayoutManager, NSCopying, NSCoding>
 
 /// @name Creating a Table Layout Manager
 
 /**
- Initializes an unconfigured table layout manager.
+ Initializes a default-configuration table layout manager, featuring: an infinite count of
+ columns per row; rows and columns that are sized to fit their largest nodes; and
+ center-alignment of nodes in cells.
 */
-- (instancetype)init NS_DESIGNATED_INITIALIZER;
+- (instancetype)init;
 
 /**
- Initializes the object with all parameters necessary for a basic table layout of nodes.
+ Initializes the layout manager for a table layout where all columns and rows are sized to
+ fit their largest nodes, and all nodes are center-aligned in their cells.
+*/
+- (instancetype)initWithColumnCount:(NSUInteger)columnCount;
+
+/**
+ Initializes the layout manager for a custom table layout.
 */
 - (instancetype)initWithColumnCount:(NSUInteger)columnCount
                        columnWidths:(NSArray *)columnWidths
                  columnAnchorPoints:(NSArray *)columnAnchorPoints
-                         rowHeights:(NSArray *)rowHeights NS_DESIGNATED_INITIALIZER;
-
-// TODO: This is declared for the sake of the NS_DESIGNATED_INITIALIZER; I expected a
-// superclass to do this for me.  Give it some time and then try to remove this
-// declaration.
-- (instancetype)initWithCoder:(NSCoder *)aDecoder NS_DESIGNATED_INITIALIZER;
+                         rowHeights:(NSArray *)rowHeights;
 
 /// @name Performing a Layout
 
 /**
  Set the positions of all passed nodes according to the layout-affecting parameters.
 
- For layout to have an effect: `columnCount` must be non-zero, and `columnWidths` and
- `columnAnchorPoints` and `rowHeights` must have at least one element each.
-
  The order of the passed nodes determines position in the table: rows are filled left to
  right starting with the top row.  A cell is skipped if the corresponding element in the
- array is not a kind of `SKNode` class.  (It is suggested to pass `[NSNull null]` to
- intentionally leave cells empty.)
+ array is not a kind of `SKNode` class.  (It is suggested to pass `[NSNull null]` or
+ `[SKNode node]` to intentionally leave cells empty.)
 
  This method must always be called explicitly to realize layout changes.  On one hand,
  it's annoying to have to remember to call it; on the other hand, it allows the owner
@@ -70,39 +155,45 @@ FOUNDATION_EXPORT const CGFloat HLTableLayoutManagerEpsilon;
 /// @name Getting and Setting Table Geometry
 
 /**
- The anchor point used for the table during layout.
+ The anchor point used for the table during layout, in scene unit coordinate space.
 
- For example, if the `anchorPoint` is `(0.5, 0.5)`, the table will be centered on position
- `CGPointZero` plus the `tableOffset`.  Default value is `(0.5, 0.5)`.
+ For example, if the `anchorPoint` is `(0.0, 0.0)`, the table will be positioned above and
+ to the right of the `tablePosition`.  If the `anchorPoint` is `(0.5, 0.5)`, the table
+ will be centered on the `tablePosition`.
+
+ Default value is `(0.5, 0.5)`.
 */
 @property (nonatomic, assign) CGPoint anchorPoint;
 
 /**
- A constant offset used for the table during layout.
+ A conceptual position used for the table during layout, in scene point coordinate space.
 
- For example, if the `tableOffset` is `(10.0, 0.0)`, all nodes laid out will have ten
- points added to their `position.x`.  Default value is `(0.0, 0.0)`.
+ For example, if the `tablePosition` is `(10.0, 0.0)`, all nodes laid out will have ten
+ points added to their `position.x`.
+
+ Default value is `(0.0, 0.0)`.
 */
-@property (nonatomic, assign) CGPoint tableOffset;
+@property (nonatomic, assign) CGPoint tablePosition;
 
 /**
- The number of columns in the table.
+ The number of columns in the table, or `0` for infinite.
 
- This property, and not `columnWidths`, determines the number of columns for layout
- purposes.
+ Default value is `0`.
 */
 @property (nonatomic, assign) NSUInteger columnCount;
 
 /**
- Specifies the total width and height of the table when it contains expanding columns and
+ Specifies the total width and height of the table when it contains "fill" columns and
  rows.
 
- See notes on `columnWidths` and `rowHeights` properties.  If there are no expanding
- columns or rows, this size will be ignored.  If the constrained size (in a particular
- dimension) is not large enough to hold all the non-expanding rows or columns, plus the
- `tableBorder` and cell separators, the width or height of the expanding rows will be set
- to zero, and the total size of the table (see size property) will be larger than the
- constrained size.
+ See notes on `columnWidths` and `rowHeights` properties.  If there are no fill columns or
+ rows, this size will be ignored.  If the constrained size (in a particular dimension) is
+ not large enough to hold all the non-fill rows or columns, plus the `tableBorder` and
+ cell separators, the width or height of all fill rows or columns will be set to zero, and
+ the total size of the table (see `size` property) will be larger than the constrained
+ size.
+
+ Default value is `CGSizeZero`.
 */
 @property (nonatomic, assign) CGSize constrainedSize;
 
@@ -110,23 +201,30 @@ FOUNDATION_EXPORT const CGFloat HLTableLayoutManagerEpsilon;
  An array of `CGFloat`s specifying the widths of table columns.
 
  Columns in the table without corresponding widths in the array will be sized according to
- the last column width in the array.
+ the last column width in the array.  If the array is `nil` or empty, all columns will be
+ fit-sized to their nodes (as with special value `0.0` below).
 
- Special sizes may be specified as follows:
+ Sizes may be specified as fixed, fit, or fill:
 
- - A width of `0.0` (that is, a value that has a difference from `0.0` less than
-   `HLTableLayoutNodeEpsilon`) means the layout manager should attempt to size the column
-   to fit the largest node in the column.  The width of a node is determined by
-   `HLLayoutManagerGetNodeWidth()`; see that function for details.
+ - A positive width means "fixed": the column is sized to that number of points.
 
- - A width less than zero (actually, less than `-HLTableLayoutEpsilon`) will expand the
-   column to share the available constrained width of the table.  Furthermore, the extra
-   space can be shared unequally: it will be allocated according to the ratio of the
-   expanding columns' sizes.  For example, say the constrained width of the table is `100`
-   for three columns.  If the `tableBorder` is `1` and the `columnSeparator` is `2`, that
-   leaves `95` for the columns.  The first column is specified with a fixed width of `35`,
-   leaving `60` for the two remaining columns, which have widths specified as `-1.0` and
-   `-2.0`, resulting in actual column widths of `20` and `40`, respectively.
+ - A zero width means "fit": the column is sized to fit the widest node in the column.
+   The width of a node is determined by `HLLayoutManagerGetNodeWidth()`; see that function
+   for details.
+
+ - A negative width means means "fill": the column is allocated a portion of the available
+   constrained width of the table.  Furthermore, the available space is shared among fill
+   cells proportionally to their fill cell widths.  For example, if colummn widths are `[
+   -2, -1, -2 ]`, the middle column will get half as much space as the outer columns.
+
+ ("Positive" means greater than `HLTableLayoutManagerEpsilon`; "negative" means less than
+ negative `HLTableLayoutManagerEpsilon`; "zero" otherwise.)
+
+ For example, say the constrained width of the table is `100` for three columns.  If the
+ `tableBorder` is `1` and the `columnSeparator` is `2`, that leaves `95` for the columns.
+ The first column is specified with a fixed width of `35`, leaving `60` for the two
+ remaining columns, which have widths specified as `-1.0` and `-2.0`, resulting in actual
+ column widths of `20` and `40`, respectively.
 */
 @property (nonatomic, strong) NSArray *columnWidths;
 
@@ -134,37 +232,65 @@ FOUNDATION_EXPORT const CGFloat HLTableLayoutManagerEpsilon;
  An array of CGFloats specifying the heights of table rows.
 
  Rows in the table without corresponding heights in the array will be sized according to
- the last row height in the array.
+ the last row height in the array.  If the array is `nil` or empty, all rows will be
+ fit-sized to their nodes.
 
- Special sizes may be specified the same way as `columnWidths`; see notes there.
+ Sizes may be specified the same way as `columnWidths`; see notes there.
 */
 @property (nonatomic, strong) NSArray *rowHeights;
 
 /**
- The anchor points used for cell position calculations during layout.
+ The anchor points used to position and align nodes in their cells during layout,
+ specified in point coordinate space.
 
- This can be used to set vertical and horizontal justification for cells in each column.
+ In order to be passed in the array, each value is a `CGPoint` wrapped in an `NSValue`,
+ for example:
+
+     layoutManager.columnAnchorPoints = @[ [NSValue valueWithCGPoint:CGPointMake(0.0f, 1.0f)] ];
+
+ When performing a layout, the table layout manager allocates a cell (of a certain size)
+ for each node.  The node is then positioned in that cell primarily according to the
+ column anchor point.  Anchor `0.0` is the left edge or bottom edge of the cell; anchor
+ point `1.0` is the right or top edge; anchor `0.5` is the center.
+
  Columns in the table without corresponding anchor points in the array will be anchored
- according to the last anchor point in the array.
+ according to the last anchor point in the array.  If the array is `nil` or empty, all
+ nodes will be positioned in the center of their allocated cell (as with anchor point
+ `0.5`).
 
- The nodes being laid out may or may not have their own `anchorPoint` properties; if they
- do, they will be ignored by this layout manager.  (In most cases the nodes in a column
- should have the same anchor point as that column.)
+ Usually the column anchor point corresponds directly to the anchor point of sprite nodes
+ or alignment modes of label nodes that will be laid out in the columns.  For instance, if
+ a label has a horizontal alignment mode of `SKLabelHorizontalAlignmentModeRight`, then
+ its column anchor point X value will probably be `1.0`.  It's worth noting, though, that
+ the layout manager ignores the current anchor points or alignments of the nodes during
+ layout.
 
- An example: Say a table layout manager is laying out rows that contain an icon, a line of
- text, and a few number values.  The icon is a `SKSpriteNode` with default `anchorPoint`
- `(0.5, 0.5)`.  The line of text is an `SKLabelNode` with left horizontal alignment and
- baseline vertical alignment; a good anchor point would be `(0.0, 0.25)` to put the label
- on the left side of the cell and a bit up from the bottom (to leave room for the font
- descender below the baseline).  The number values are also `SKLabelNode`s with the same
- baseline alignment, but with right alignment, and so they should go at anchor point
- `(1.0, 0.25)`.  All together, a good setting for `columnAnchorPoints` would be:
-
-     @[ [NSValue valueWithCGPoint:CGPointMake(0.5f, 0.5f)],
-        [NSValue valueWithCGPoint:CGPointMake(0.0f, 0.25f)],
-        [NSValue valueWithCGPoint:CGPointMake(1.0f, 0.25f)] ]
+ Note that vertically aligning label nodes can be a challenge when mixing them with sprite
+ nodes.  See "Aligning Labels in a Table" in the header notes; in particular, use
+ `rowLabelOffsetYs` to adjust the baseline of label nodes in the row relative to sprites.
 */
 @property (nonatomic, strong) NSArray *columnAnchorPoints;
+
+/**
+ The Y-offsets used for each row to adjust the position of label nodes in their cells
+ during layout, specified in point coordinate space.
+
+ In order to be passed in an array, each value is passed as a wrapped `NSNumber` double
+ that will be cast to a `CGFloat`.
+
+ When performing a layout, the table layout manager allocates a cell (of a certain size)
+ for each node.  All nodes are positioned in that cell using the column anchor point, but
+ additionally, for label nodes, this Y-offset is added.
+
+ This can help with vertical alignment of labels with respect to sprite nodes in the same
+ row.  See "Aligning Labels in a Table" in the header notes for more details, and for use
+ cases.
+
+ Rows in the table without corresponding offsets in the array will be offset according to
+ the last offset in the array.  If the array is `nil` or empty, no offsets will be
+ applied.
+*/
+@property (nonatomic, strong) NSArray *rowLabelOffsetYs;
 
 /**
  The distance (reserved by `layout:`) between each edge of the table and the nearest cell

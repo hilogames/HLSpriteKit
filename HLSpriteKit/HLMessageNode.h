@@ -121,9 +121,9 @@ typedef NS_ENUM(NSInteger, HLMessageNodeAnimation) {
  of the background.
 
  In particular, messages (for most applications) should be baseline-aligned, and
- vertically centered in the background.  A good height mode for most fonts to achieve
- that goal is `HLLabelHeightModeFont`.  If that looks like it's leaving too much room
- for the descender, try `HLLabelHeightModeAscenderBias`.
+ vertically visually centered in the background.  A good height mode for most fonts to
+ achieve that goal is `HLLabelHeightModeFont`.  If that looks like it's leaving too much
+ room for the descender, try `HLLabelHeightModeAscenderBias`.
 
  See `getVerticalAlignmentMode:heightMode:useAlignmentMode:labelHeight:yOffset` in
  `SKLabelNode+HLLabelNodeAdditions.h` for way too much information.

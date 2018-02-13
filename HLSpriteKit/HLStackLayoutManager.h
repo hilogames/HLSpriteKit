@@ -71,11 +71,10 @@ HLStackLayoutManagerVerticalAlignLabelNodes(NSArray *nodes,
  This method assumes the label nodes will be using `SKLabelVerticalAlignmentModeBaseline`,
  but neither sets this value on the nodes nor check that it has been set.
 
- See "Aligning Labels in a Stack" in the header notes for the purpose of this
- method.  In particular, this method is intended for *vertically* aligning label nodes in
- a *vertical* stack.  For vertically aligning label nodes in a *horizontal* stack, instead
- use `HLStackLayoutManagerVerticalAlignLabelNodes()`, which must be called after every
- layout.
+ See "Aligning Labels in a Stack" in the header notes for the purpose of this method.  In
+ particular, this method is intended for *vertically* aligning label nodes in a *vertical*
+ stack.  For vertically aligning label nodes in a *horizontal* stack, instead use
+ `HLStackLayoutManagerVerticalAlignLabelNodes()`, which must be called after every layout.
 
  Also it's worth noting that this method is overkill for stacks that contain only label
  nodes.  Again, see header notes, but the real purpose is for visual-center vertical
@@ -264,24 +263,25 @@ HLStackLayoutManagerBaselineCellOffsetsFromVisualCenter(NSArray *nodes,
 
  Well, the answer is: "Anywhere you want it to go."  But there's a special case of this
  special case which nevertheless occurs frequently: Where should the baseline go relative
- to the sprite nodes **if I want the text visually centered with the boxes**?  Now the
+ to the sprite nodes **if you want the text visually centered with the boxes**?  Now the
  answer is usually: "Down a few points."
 
- Achieving this by messing with label node positions and sprite node anchor points is not
- convenient.
+ It is not convenient to achieve this by tweaking sprite node anchor points.  The Y-offset
+ required to visually-center a label is related to the label's font geometry and size, and
+ is unrelated to the height of the cell or box in which the label is located.
 
- Convenient would be: A layout option for label nodes such that they are **visually
- centered on their position** (while maintaining baseline alignment).  For case (1) above,
- the sprite nodes and label nodes would then both be visually centered on the horizontal
- axis.  For case (2) above, the `stackPosition.y` would be set to the exact vertical
- center of the background box, and the text would be visually centered on that position.
+ So instead, when visually centering labels and sprites, configure all vertical positions
+ to the intended visual center axis (using `stackPosition.y`).  Then perform the layout.
+ Then use a helper method to calculate and apply a Y-position offset for each label node
+ (for a given kind of visual centering).  This will need to be done after every layout,
+ but at least it will automatically adapt to changes in font typeface, font size, and
+ visual-centering styles.
 
- Meanwhile, and this goes back to the beginning of this annoyingly-long discussion: The
- stack layout manager claims to handle position only in the stacking dimension.  Vertical
- positioning in a horizontal stack is not the stacking dimension.
+ The helper method is `HLStackLayoutManagerVerticalAlignLabelNodes()`.
 
- So!  Use the module helper method `HLStackLayoutManagerVerticalAlignLabelNodes()`
- provided for this purpose, after every layout:
+ For the kind of visual centering discussed here, you'd ask it to align label nodes using
+ center alignment for a certain height mode; try "ascender bias" for a sometimes-pleasing
+ result:
 
      playerNodes = @[ [SKLabelNode labelNodeWithText:@"Player"],
                        portraitSpriteNode,
@@ -296,33 +296,36 @@ HLStackLayoutManagerBaselineCellOffsetsFromVisualCenter(NSArray *nodes,
                                                  HLLabelHeightModeFontAscenderBias,
                                                  0.0f);
 
- Or combine the last two lines together using a convenience form of `layout`:
+ To help call it after every layout, combine the last two lines together using a
+ convenience form of `layout`:
 
      [layoutManager layout:playerNodes
         withLabelNodesVerticalAlign:SKLabelVerticalAlignmentModeCenter
                          heightMode:HLLabelHeightModeFontAscenderBias
                   additionalOffsetY:0.0f];
 
+ The helper method provides a full set of options for vertical alignment of labels; see
+ that method for details.
+
  #### Vertical Alignment in a Vertical Stack
 
- With a vertical stack including label nodes, you have much more control over the
- Y-position of each node within its cell.  And yet often the goal is the same as with a
- horizontal stack: It's nice to set the position of the vertical **visual center** of the
- label (rather than the baseline, top, center, or bottom).
+ With a vertical stack including label nodes, the goal is often the same as with a
+ horizontal stack: It's nice to vertically visually center labels in their cells.
 
- The Y-offset required to visually-center a label is related to the label's font geometry
- and size, and is unrelated to the height of the cell or box in which the label is
- located.
+ Again, the Y-offset from baseline required to visually-center a label node is a point
+ value related to the label's font geometry and size and not related to the height of its
+ cell.
 
- Therefore, to vertically visually align labels in a vertical stack, use `cellOffsets`.
+ In a vertical stack, the vertical position of each label node can be configured with
+ `cellOffsets`.  So, unlike a horizontal stack, the visual centering offset(s) can be
+ calculated once and configured in the stack for all layouts.
 
- If all labels should use the same offset, which is likely, it can be calculated once
- using `baselineOffsetYFromVisualCenterForHeightMode:fontName:fontSize:` from
+ If the same offset should be used by all labels, which is likely, it can be calculated
+ once using `baselineOffsetYFromVisualCenterForHeightMode:fontName:fontSize:` from
  `SKLabelNode+HLLabelNodeAdditions`.
 
- Cell offsets can be specified individually for each node in the stack, for instance if
- some of the nodes in the stack are sprite nodes, or if label nodes have different font
- sizes.  Something like this:
+ Or, if different cells need different offsets, the setup (without a helper method) looks
+ more like this:
 
      SKLabelNode *smallLabel = [SKLabelNode labelNodeWithFontNamed:@"Courier"];
      smallLabel.fontSize = 10.0f;
@@ -338,7 +341,7 @@ HLStackLayoutManagerBaselineCellOffsetsFromVisualCenter(NSArray *nodes,
      NSArray *stackNodes = @[ smallLabel, thumbnail, bigLabel ];
 
      layoutManager.stackDirection = HLStackLayoutManagerStackDirectionDown;
-     layoutManager.cellOffsets = [ smallOffsetY, 0.0f, bigOffsetY ];
+     layoutManager.cellOffsets = @[ @(smallOffsetY), @(0.0f), @(bigOffsetY) ];
      [layoutManager layout:stackNodes];
 
  The module helper method `HLStackLayoutManagerBaselineCellOffsetsFromVisualCenter()` can
@@ -375,8 +378,8 @@ HLStackLayoutManagerBaselineCellOffsetsFromVisualCenter(NSArray *nodes,
          fieldOffsets [S]          cellOffsets         cellOffsets [S]
          recordHeights                                 cellHeight
 
-         constrainedFieldWidth     constrainedLength   constrainedCellWidth
-         constrainedRecordHeight                       constrainedCellHeight
+         constrainedTableWidth     constrainedLength   constrainedStripWidth
+         constrainedTableHeight                        constrainedStripHeight
 
          anchorPoint [S]           anchorPoint         anchorPoint [S]
          tablePosition [S]         stackPosition [S]   stripPosition [S]
@@ -514,13 +517,13 @@ HLStackLayoutManagerBaselineCellOffsetsFromVisualCenter(NSArray *nodes,
 @property (nonatomic, assign) HLStackLayoutManagerStackDirection stackDirection;
 
 /**
- The anchor point used for the stack during layout.
+ The anchor point used for the stack during layout, in scene unit coordinate space.
 
  Since the stack is only aware of one dimension, the anchor point is actually an anchor
  float.
 
  For example, if the `anchorPoint` is `0.0`, the stack will be positioned to the right of
- the `stackPosition`.  If `anchorPoint` is `0.5`, the stack will be centered on the
+ the `stackPosition`.  If the `anchorPoint` is `0.5`, the stack will be centered on the
  `stackPosition`.
 
  Default value is `0.5`.
@@ -528,7 +531,7 @@ HLStackLayoutManagerBaselineCellOffsetsFromVisualCenter(NSArray *nodes,
 @property (nonatomic, assign) CGFloat anchorPoint;
 
 /**
- A conceptual position used for the stack during layout.
+ A conceptual position used for the stack during layout, in scene point coordinate space.
 
  For example, if the `stackPosition` is `(10.0, 0.0)`, all nodes laid out will have ten
  points added to their `position.x`.
@@ -538,13 +541,13 @@ HLStackLayoutManagerBaselineCellOffsetsFromVisualCenter(NSArray *nodes,
 @property (nonatomic, assign) CGPoint stackPosition;
 
 /**
- Specifies the total length of the stack when it contains expanding cells.
+ Specifies the total length of the stack when it contains "fill" cells.
 
- See notes on `cellLengths` property.  If there are no expanding cells, this length will
- be ignored.  If the constrained length is not large enough to hold all the non-expanding
- cells, plus the `stackBorder` and `cellSeparator`, the length of the expanding cells will
- be set to zero, and the total length of the stack (see `length` property) will be larger
- than the constrained length.
+ See notes on `cellLengths` property.  If there are no fill cells, this length will be
+ ignored.  If the constrained length is not large enough to hold all the non-fill cells,
+ plus the `stackBorder` and `cellSeparator`, the length of all fill cells will be set to
+ zero, and the total length of the stack (see `length` property) will be larger than the
+ constrained length.
 */
 @property (nonatomic, assign) CGFloat constrainedLength;
 
@@ -595,7 +598,7 @@ HLStackLayoutManagerBaselineCellOffsetsFromVisualCenter(NSArray *nodes,
 
  Since the stack is only aware of one dimension, each cell has only one anchor point
  value, corresponding to the stacking dimension (either X or Y).  In order to be passed in
- an array, each value is passed as a wrapped `[NSNumber]` double that will be cast to a
+ an array, each value is passed as a wrapped `NSNumber` double that will be cast to a
  `CGFloat`.
 
  When performing a layout, the stack layout manager allocates a cell (of a certain length)
@@ -611,10 +614,11 @@ HLStackLayoutManagerBaselineCellOffsetsFromVisualCenter(NSArray *nodes,
  `0.5`).
 
  Usually the cell anchor point corresponds directly to the anchor point of sprite nodes or
- alignment modes of label nodes.  For instance, if a label has a horizontal alignment mode
- of `SKLabelHorizontalAlignmentModeRight`, then in a horizontal stack its cell alignment
- will probably be `1.0`.  It's worth noting, though, that the layout manager ignores the
- current anchor points or alignments of the nodes during layout.
+ alignment modes of label nodes that will be laid out in the cells.  For instance, if a
+ label has a horizontal alignment mode of `SKLabelHorizontalAlignmentModeRight`, then in a
+ horizontal stack its cell anchor point will probably be `1.0`.  It's worth noting,
+ though, that the layout manager ignores the current anchor points or alignments of the
+ nodes during layout.
 
  Use `cellOffsets` to position nodes in their cells using point coordinate space.
 
@@ -630,7 +634,7 @@ HLStackLayoutManagerBaselineCellOffsetsFromVisualCenter(NSArray *nodes,
 
  Since the stack is only aware of one dimension, each cell has only one offset value,
  corresponding to the stacking dimension (either X or Y).  In order to be passed in an
- array, each value is passed as a wrapped `[NSNumber]` double that will be cast to a
+ array, each value is passed as a wrapped `NSNumber` double that will be cast to a
  `CGFloat`.
 
  When performing a layout, the stack layout manager allocates a cell (of a certain length)
@@ -647,8 +651,7 @@ HLStackLayoutManagerBaselineCellOffsetsFromVisualCenter(NSArray *nodes,
 
  Note that vertically aligning label nodes in either vertical or horizontal stacks can be
  a challenge when mixing them with sprite nodes.  See "Aligning Labels in a Stack" in the
- header notes; in particular, there is a version of this method that helps with vertical
- alignment of labels in vertical stacks.
+ header notes.
 */
 @property (nonatomic, strong) NSArray *cellOffsets;
 

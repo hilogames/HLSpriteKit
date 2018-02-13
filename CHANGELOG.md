@@ -20,6 +20,12 @@
   "Alignment" demo scene in the `Example` project.  
   [Karl Voskuil](https://github.com/karlvoskuil)
 
+- Various so-called improvements to layout manager terminology,
+  heedlessly and needlessly breaking things.  The `tableOffset` is now
+  called `tablePosition`; likewise for `gridOffset`, `ringOffset`, and
+  `outlineOffset`.  
+  [Karl Voskuil](https://github.com/karlvoskuil)
+
 ### Added
 
 - A new stack layout manager for one-dimensional layouts.  The stack

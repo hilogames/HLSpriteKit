@@ -205,10 +205,10 @@ additionalOffsetY:(CGFloat)additionalOffsetY
       break;
   }
 
-  // First pass: Calculate fixed-size lengths, and sum expanding-length ratios.
+  // First pass: Calculate fixed-size lengths, and sum fill-length ratios.
   CGFloat *finalCellLengths = (CGFloat *)malloc(nodesCount * sizeof(CGFloat));
   CGFloat lengthTotalFixed = 0.0f;
-  CGFloat lengthExpandingRatioSum = 0.0f;
+  CGFloat lengthFillRatioSum = 0.0f;
   {
     CGFloat cellLength = 0.0f;
     for (NSUInteger nodeIndex = 0; nodeIndex < nodesCount; ++nodeIndex) {
@@ -220,7 +220,7 @@ additionalOffsetY:(CGFloat)additionalOffsetY
         lengthTotalFixed += cellLength;
         finalCellLengths[nodeIndex] = cellLength;
       } else if (cellLength < -HLStackLayoutManagerEpsilon) {
-        lengthExpandingRatioSum += cellLength;
+        lengthFillRatioSum += cellLength;
         finalCellLengths[nodeIndex] = cellLength;
       } else {
         // note: Leave cellLength zero so subsequent nodes reusing this cellLength
@@ -232,11 +232,11 @@ additionalOffsetY:(CGFloat)additionalOffsetY
     }
   }
   CGFloat lengthTotalConstant = _cellSeparator * (nodesCount - 1) + _stackBorder * 2.0f;
-  CGFloat lengthTotalExpanding = 0.0f;
-  if (lengthExpandingRatioSum < 0.0 && _constrainedLength > (lengthTotalFixed + lengthTotalConstant)) {
-    lengthTotalExpanding = _constrainedLength - lengthTotalFixed - lengthTotalConstant;
+  CGFloat lengthTotalFill = 0.0f;
+  if (lengthFillRatioSum < 0.0 && _constrainedLength > (lengthTotalFixed + lengthTotalConstant)) {
+    lengthTotalFill = _constrainedLength - lengthTotalFixed - lengthTotalConstant;
   }
-  _length = lengthTotalFixed + lengthTotalExpanding + lengthTotalConstant;
+  _length = lengthTotalFixed + lengthTotalFill + lengthTotalConstant;
 
   // note: s is the absolute position of the edge of the cell closest to the stack start,
   // for example the left edge in a rightwards stack, or the top edge in a downwards
@@ -264,7 +264,7 @@ additionalOffsetY:(CGFloat)additionalOffsetY
 
     CGFloat cellLength = finalCellLengths[nodeIndex];
     if (cellLength < -HLStackLayoutManagerEpsilon) {
-      cellLength = lengthTotalExpanding / lengthExpandingRatioSum * cellLength;
+      cellLength = lengthTotalFill / lengthFillRatioSum * cellLength;
     }
 
     if (nodeIndex < cellAnchorPointsCount) {

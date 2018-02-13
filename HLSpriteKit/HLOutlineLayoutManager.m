@@ -19,7 +19,7 @@ const CGFloat HLOutlineLayoutManagerEpsilon = 0.001f;
   self = [super init];
   if (self) {
     _anchorPointY = 0.5f;
-    _outlineOffset = CGPointZero;
+    _outlinePosition = CGPointZero;
   }
   return self;
 }
@@ -32,7 +32,7 @@ const CGFloat HLOutlineLayoutManagerEpsilon = 0.001f;
   self = [super init];
   if (self) {
     _anchorPointY = 0.5f;
-    _outlineOffset = CGPointZero;
+    _outlinePosition = CGPointZero;
     _nodeLevels = nodeLevels;
     _levelIndents = levelIndents;
     _levelNodeHeights = levelNodeHeights;
@@ -47,9 +47,9 @@ const CGFloat HLOutlineLayoutManagerEpsilon = 0.001f;
   if (self) {
     _anchorPointY = (CGFloat)[aDecoder decodeDoubleForKey:@"anchorPointY"];
 #if TARGET_OS_IPHONE
-    _outlineOffset = [aDecoder decodeCGPointForKey:@"outlineOffset"];
+    _outlinePosition = [aDecoder decodeCGPointForKey:@"outlinePosition"];
 #else
-    _outlineOffset = [aDecoder decodePointForKey:@"outlineOffset"];
+    _outlinePosition = [aDecoder decodePointForKey:@"outlinePosition"];
 #endif
     _height = (CGFloat)[aDecoder decodeDoubleForKey:@"height"];
     _nodeLevels = [aDecoder decodeObjectForKey:@"nodeLevels"];
@@ -66,9 +66,9 @@ const CGFloat HLOutlineLayoutManagerEpsilon = 0.001f;
 {
   [aCoder encodeDouble:_anchorPointY forKey:@"anchorPointY"];
 #if TARGET_OS_IPHONE
-  [aCoder encodeCGPoint:_outlineOffset forKey:@"outlineOffset"];
+  [aCoder encodeCGPoint:_outlinePosition forKey:@"outlinePosition"];
 #else
-  [aCoder encodePoint:_outlineOffset forKey:@"outlineOffset"];
+  [aCoder encodePoint:_outlinePosition forKey:@"outlinePosition"];
 #endif
   [aCoder encodeDouble:_height forKey:@"height"];
   [aCoder encodeObject:_nodeLevels forKey:@"nodeLevels"];
@@ -84,7 +84,7 @@ const CGFloat HLOutlineLayoutManagerEpsilon = 0.001f;
   HLOutlineLayoutManager *copy = [[[self class] allocWithZone:zone] init];
   if (copy) {
     copy->_anchorPointY = _anchorPointY;
-    copy->_outlineOffset = _outlineOffset;
+    copy->_outlinePosition = _outlinePosition;
     copy->_height = _height;
     copy->_nodeLevels = [_nodeLevels copyWithZone:zone];
     copy->_levelIndents = [_levelIndents copyWithZone:zone];
@@ -238,8 +238,8 @@ const CGFloat HLOutlineLayoutManagerEpsilon = 0.001f;
     }
 
     y -= nodeHeight;
-    CGPoint position = CGPointMake(_outlineOffset.x + nodeIndent,
-                                   _outlineOffset.y + y + nodeHeight * nodeAnchorPointY);
+    CGPoint position = CGPointMake(_outlinePosition.x + nodeIndent,
+                                   _outlinePosition.y + y + nodeHeight * nodeAnchorPointY);
     if (!animated) {
       node.position = position;
     } else {

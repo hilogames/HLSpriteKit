@@ -42,9 +42,9 @@ typedef NS_ENUM(NSInteger, HLRingLayoutManagerThetasMode) {
   self = [super init];
   if (self) {
 #if TARGET_OS_IPHONE
-    _ringOffset = [aDecoder decodeCGPointForKey:@"ringOffset"];
+    _ringPosition = [aDecoder decodeCGPointForKey:@"ringPosition"];
 #else
-    _ringOffset = [aDecoder decodePointForKey:@"ringOffset"];
+    _ringPosition = [aDecoder decodePointForKey:@"ringPosition"];
 #endif
     _radii = [aDecoder decodeObjectForKey:@"radii"];
     _thetasMode = [aDecoder decodeIntegerForKey:@"thetasMode"];
@@ -76,9 +76,9 @@ typedef NS_ENUM(NSInteger, HLRingLayoutManagerThetasMode) {
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
 #if TARGET_OS_IPHONE
-  [aCoder encodeCGPoint:_ringOffset forKey:@"ringOffset"];
+  [aCoder encodeCGPoint:_ringPosition forKey:@"ringPosition"];
 #else
-  [aCoder encodePoint:_ringOffset forKey:@"ringOffset"];
+  [aCoder encodePoint:_ringPosition forKey:@"ringPosition"];
 #endif
   [aCoder encodeObject:_radii forKey:@"radii"];
   [aCoder encodeInteger:_thetasMode forKey:@"thetasMode"];
@@ -109,7 +109,7 @@ typedef NS_ENUM(NSInteger, HLRingLayoutManagerThetasMode) {
 {
   HLRingLayoutManager *copy = [[[self class] allocWithZone:zone] init];
   if (copy) {
-    copy->_ringOffset = _ringOffset;
+    copy->_ringPosition = _ringPosition;
     copy->_radii = [_radii copy];
     copy->_thetasMode = _thetasMode;
     switch (_thetasMode) {

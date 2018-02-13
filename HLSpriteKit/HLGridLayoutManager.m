@@ -69,10 +69,10 @@
   if (self) {
 #if TARGET_OS_IPHONE
     _anchorPoint = [aDecoder decodeCGPointForKey:@"anchorPoint"];
-    _gridOffset = [aDecoder decodeCGPointForKey:@"gridOffset"];
+    _gridPosition = [aDecoder decodeCGPointForKey:@"gridPosition"];
 #else
     _anchorPoint = [aDecoder decodePointForKey:@"anchorPoint"];
-    _gridOffset = [aDecoder decodePointForKey:@"gridOffset"];
+    _gridPosition = [aDecoder decodePointForKey:@"gridPosition"];
 #endif
     _columnCount = (NSUInteger)[aDecoder decodeIntegerForKey:@"columnCount"];
     _rowCount = (NSUInteger)[aDecoder decodeIntegerForKey:@"rowCount"];
@@ -99,10 +99,10 @@
 {
 #if TARGET_OS_IPHONE
   [aCoder encodeCGPoint:_anchorPoint forKey:@"anchorPoint"];
-  [aCoder encodeCGPoint:_gridOffset forKey:@"gridOffset"];
+  [aCoder encodeCGPoint:_gridPosition forKey:@"gridPosition"];
 #else
   [aCoder encodePoint:_anchorPoint forKey:@"anchorPoint"];
-  [aCoder encodePoint:_gridOffset forKey:@"gridOffset"];
+  [aCoder encodePoint:_gridPosition forKey:@"gridPosition"];
 #endif
   [aCoder encodeInteger:(NSInteger)_columnCount forKey:@"columnCount"];
   [aCoder encodeInteger:(NSInteger)_rowCount forKey:@"rowCount"];
@@ -128,7 +128,7 @@
   HLGridLayoutManager *copy = [[[self class] allocWithZone:zone] init];
   if (copy) {
     copy->_anchorPoint = _anchorPoint;
-    copy->_gridOffset = _gridOffset;
+    copy->_gridPosition = _gridPosition;
     copy->_columnCount = _columnCount;
     copy->_rowCount = _rowCount;
     copy->_squareSize = _squareSize;
@@ -178,10 +178,10 @@
   // corresponding to the origin used in the SpriteKit coordinate system.
 
   CGFloat lowerLeftSquareX = _size.width * -1.0f * _anchorPoint.x
-    + _gridBorder + _gridOffset.x
+    + _gridBorder + _gridPosition.x
     + _squareSize.width * _squareAnchorPoint.x;
   CGFloat lowerLeftSquareY = _size.height * -1.0f * _anchorPoint.y
-    + _gridBorder + _gridOffset.y
+    + _gridBorder + _gridPosition.y
     + _squareSize.height * _squareAnchorPoint.y;
   CGFloat squareOffsetX = _squareSize.width + _squareSeparator;
   CGFloat squareOffsetY = _squareSize.height + _squareSeparator;
@@ -379,10 +379,10 @@
   // corresponding to the origin used in the SpriteKit coordinate system.
 
   CGFloat lowerLeftSquareX = _size.width * -1.0f * _anchorPoint.x
-    + _gridBorder + _gridOffset.x
+    + _gridBorder + _gridPosition.x
     + _squareSize.width * _squareAnchorPoint.x;
   CGFloat lowerLeftSquareY = _size.height * -1.0f * _anchorPoint.y
-    + _gridBorder + _gridOffset.y
+    + _gridBorder + _gridPosition.y
     + _squareSize.height * _squareAnchorPoint.y;
   CGFloat squareOffsetX = _squareSize.width + _squareSeparator;
   CGFloat squareOffsetY = _squareSize.height + _squareSeparator;
@@ -603,7 +603,7 @@
   if (![self HL_getRowAndColumnForLocation:location row:&row column:&column]) {
     return NO;
   }
-  
+
   switch (_fillMode) {
     case HLGridLayoutManagerFillRightThenDown:
       *primaryIndex = (_rowCount - 1 - row);
@@ -638,7 +638,7 @@
       *secondaryIndex = row;
       break;
   }
-  
+
   return YES;
 }
 
@@ -647,11 +647,11 @@
   // note: Calculate row and column indexes so that the origin is in the lower left,
   // corresponding to the origin used in the SpriteKit coordinate system.
 
-  CGFloat lowerLeftSquareLeftX = _size.width * -1.0f * _anchorPoint.x + _gridBorder + _gridOffset.x;
-  CGFloat lowerLeftSquareBottomY = _size.height * -1.0f * _anchorPoint.y + _gridBorder + _gridOffset.y;
+  CGFloat lowerLeftSquareLeftX = _size.width * -1.0f * _anchorPoint.x + _gridBorder + _gridPosition.x;
+  CGFloat lowerLeftSquareBottomY = _size.height * -1.0f * _anchorPoint.y + _gridBorder + _gridPosition.y;
   CGFloat squareOffsetX = _squareSize.width + _squareSeparator;
   CGFloat squareOffsetY = _squareSize.height + _squareSeparator;
-  
+
   CGFloat lowerLeftSquareLocationX = location.x - lowerLeftSquareLeftX;
 
   int c = (int)floor(lowerLeftSquareLocationX / squareOffsetX);
