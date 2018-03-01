@@ -43,10 +43,9 @@ FOUNDATION_EXPORT const CGFloat HLTableLayoutManagerEpsilon;
  In these cases, baseline alignment for the label nodes is still typical.  The question
  is: Where should the baseline go relative to the sprite nodes (and/or enclosing box)?
 
- Well, the answer is: "Anywhere you want it to go."  But there's a special case of this
- special case which nevertheless occurs frequently: Where should the baseline go relative
- to the sprite nodes **if you want the text visually centered with the boxes**?  Now the
- answer is usually: "Down a few points."
+ Well, the answer is: "Anywhere you want it to go."  Commonly, though, the goal is to
+ **visually center** the text with the boxes.  In that case the answer is usually: "Down a
+ few points."
 
  Probably you should not adjust anchor points in order to achive visual centering.  The
  Y-offset required to visually-center a label is related to the label's font geometry and
@@ -54,7 +53,7 @@ FOUNDATION_EXPORT const CGFloat HLTableLayoutManagerEpsilon;
  words, it's a Y-offset in point coordinate space and not an anchor in unit coordinate
  space.
 
- Calculate the offset for different kinds of visual centering using
+ Instead, calculate the offset for different kinds of visual centering using
  `baselineOffsetYFromVisualCenterForHeightMode:fontName:fontSize:` from
  `SKLabelNode+HLLabelNodeAdditions`.
 
@@ -69,28 +68,31 @@ FOUNDATION_EXPORT const CGFloat HLTableLayoutManagerEpsilon;
    - It is assumed (though not enforced) that all label nodes in the row will be using
      baseline alignment.
 
-   - If labels in different columns of the same row have different fonts or font sizes,
-     their calculated visual-centering Y-offsets will be different.  But
-     baseline-alignment is considered more important, and so the table only allows a
-     single offset calculated for the entire row.  Use the "typical" font size to
-     calculate the shared offset, or use an average, or forgetting the offset and instead
-     tweak anchor points.
+   - If a row in the table uses different or larger fonts (a header row, perhaps?) then
+     its calculated visual-centering Y-offset will be different.  The table allows
+     specification of different Y-offsets for each row.
 
-   - If an entire row in the table uses different or larger fonts (a header row, perhaps?)
-     then again the Y-offset for visual centering might be different for that row.  The
-     table allows specification of a different Y-offset for each row.
+   - If labels in different columns of the same row have different fonts or font sizes,
+     however, there is no obvious solution.  Baseline-alignment within the row is probably
+     the priority, and so a single offset is appropriate for the whole row -- but it's not
+     clear exactly which offset to use.  Perhaps there is a "typical" font size; perhaps
+     using an average offset would be good; or perhaps an anchor-point solution would be
+     best after all.  (The helper
+     `baselineInsetYFromBottomForHeightMode:fontName:fontSize:` deals with unit coordinate
+     space insets, not offsets, and might be able to provide a good anchor point value.)
 
  Comments on possible alternate designs:
 
    - Rather than a label-only Y-offset, could specify offsets for each column.  But it's
      tedious to specify each column offset when it seems like it's always zero for sprites
-     and the same constant for labels.  I even wrote a helper to do generate the offsets,
-     and it still felt tedious.  Needs a use-case.  Even if we did column offsets, we'd
-     still need an additional per-row Y-offset to help with the problem of header rows.
-     Which would still be label-only.  Anchor point is almost always good enough for
-     sprites.  Which brings us back to the idea of using a struct to specify column
-     alignments, rather than a CGPoint for the column anchor point.  Then the struct could
-     include an anchor point, an offset, and various visual-centering options.
+     and the same constant for labels.  I even wrote a helper to generate the offsets, and
+     it still felt tedious.  Needs a use-case.  Even if we did column offsets, we'd still
+     need an additional per-row Y-offset to help with the problem of header rows.  Which
+     would still be label-only.  Anchor point is almost always good enough for sprites.
+     Which brings us back to the idea of using a struct to specify column alignments,
+     rather than a CGPoint for the column anchor point.  Then the struct could include an
+     anchor point, an offset, and various visual-centering options.  Or perhaps a functor
+     of some kind which is applied to the position of each node after layout.
 
    - Could have more enhanced "automatic" offset options.  Like, you specify the height
      mode, and the offset is calculated automatically for the row (using the first-found

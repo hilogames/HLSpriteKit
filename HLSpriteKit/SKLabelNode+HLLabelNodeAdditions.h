@@ -48,8 +48,8 @@ typedef NS_ENUM(NSInteger, HLLabelHeightMode) {
  This is addressing a similar problem as `getVerticalAlignmentForAlignmentMode:`, but in a
  simplified form.  This method answers the following question:
 
-    > I have a label that I would like to visually center at a given `y`.  How far (down)
-    > from that `y` should I position the label's baseline?
+    > I have a label that I would like to visually center at a given `y`.  How far from
+    > that `y` should I position the label's baseline?
 
  The height mode describes what should be considered "visually centered".  For instance if
  the height mode is `HLLabelHeightModeFont`, then the returned offset shifts the baseline
@@ -59,8 +59,8 @@ typedef NS_ENUM(NSInteger, HLLabelHeightMode) {
 
  To position a label according to the returned offset, set its `verticalAlignmentMode` to
  `SKLabelVerticalAlignmentModeBaseline` and add the offset to its `position.y`.
- Alternately, `alignVerticalWithAlignmentMode:heightMode`, passing baseline-alignment for
- the first parameter.
+ Alternately, call `alignVerticalWithAlignmentMode:heightMode`, passing center-alignment
+ for the first parameter.
 
  Note: Returns `0.0` if `heightMode` is `HLLabelHeightModeText`.  This is not the correct
  answer, but: 1) I'm too stupid to know how to calculate the correct answer; and 2) If you
@@ -76,6 +76,48 @@ typedef NS_ENUM(NSInteger, HLLabelHeightMode) {
  using the font name and size from this label.
 */
 - (CGFloat)baselineOffsetYFromVisualCenterForHeightMode:(HLLabelHeightMode)heightMode;
+
+/**
+ Returns the inset, in unit coordinate space, of a label's font baseline from the bottom
+ of the label according to the height mode.
+
+ See `baselineOffsetYFromVisualCenterForHeightMode:fontName:fontSize`.  This method is
+ answering the same question, but in terms of a relative (unit coordinate space) inset
+ from the bottom rather than an absolute (point coordinate space) offset from the center.
+
+ By example:
+
+                             ___ A) top according to height mode "ascender bias"
+             |
+             | _   o   o
+             |/ \  |   |     --- A) center according to height mode "ascender bias"
+             |  |  |   |     ___ B) baseline
+                       |     ___ C) bottom according to height mode "ascender bias"
+                     \_/
+
+ The height mode "ascender bias" uses font metrics to count half of the descender; in the
+ illustration, the bottom (C) is below the "h" and "i" glyph bottom, but above the "j"
+ glyph bottom.  The baseline offset method returns the offset from (A) to (B), in points;
+ this method returns the inset from (C) to (B), as a fraction of the total height (A) to
+ (C).
+
+ The offset is typically more useful, but the inset can be used in places where
+ anchor-point type positioning is required or appropriate.
+
+ Note: Returns `0.0` if `heightMode` is `HLLabelHeightModeText`.  This is not the correct
+ answer, but: 1) I'm too stupid to know how to calculate the correct answer; and 2) If you
+ want to visually center by text-height, you can use `SKVerticalAlignmentModeCenter`, and
+ forget all this baseline-and-inset stuff.
+*/
++ (CGFloat)baselineInsetYFromBottomForHeightMode:(HLLabelHeightMode)heightMode
+                                        fontName:(NSString *)fontName
+                                        fontSize:(CGFloat)fontSize;
+
+/**
+ Convenience method for `baselineInsetYFromBottomForHeightMode:fontName:fontSize:` using
+ the font name and size from this label.
+*/
+- (CGFloat)baselineInsetYFromBottomForHeightMode:(HLLabelHeightMode)heightMode;
 
 /**
  Gets vertical alignment parameters for this `SKLabelNode` when aligning using

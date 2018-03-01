@@ -23,7 +23,10 @@
 - Various so-called improvements to layout manager terminology,
   heedlessly and needlessly breaking things.  The `tableOffset` is now
   called `tablePosition`; likewise for `gridOffset`, `ringOffset`, and
-  `outlineOffset`.  
+  `outlineOffset`.  In the outline layout manager, `levelNodeHeights`
+  is now `levelLineHeights`; `levelSeparatorBeforeHeights` is
+  `levelLineBeforeSeparators`; and `levelSeparatorAfterHeights` is
+  `levelLineAfterSeparators`.  
   [Karl Voskuil](https://github.com/karlvoskuil)
 
 ### Added

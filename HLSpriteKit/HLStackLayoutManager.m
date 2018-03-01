@@ -12,63 +12,6 @@
 
 const CGFloat HLStackLayoutManagerEpsilon = 0.001f;
 
-void
-HLStackLayoutManagerVerticalAlignLabelNodes(NSArray *nodes,
-                                            SKLabelVerticalAlignmentMode alignmentMode,
-                                            HLLabelHeightMode heightMode,
-                                            CGFloat additionalOffsetY)
-{
-  CGFloat offsetY;
-  SKLabelVerticalAlignmentMode useAlignmentMode;
-  for (id node in nodes) {
-    if ([node isKindOfClass:[SKLabelNode class]]) {
-      SKLabelNode *labelNode = (SKLabelNode *)node;
-      [labelNode getVerticalAlignmentForAlignmentMode:alignmentMode
-                                           heightMode:heightMode
-                                     useAlignmentMode:&useAlignmentMode
-                                          labelHeight:nil
-                                              offsetY:&offsetY];
-      labelNode.verticalAlignmentMode = useAlignmentMode;
-      CGPoint labelNodePosition = labelNode.position;
-      labelNodePosition.y = labelNodePosition.y + offsetY + additionalOffsetY;
-      labelNode.position = labelNodePosition;
-    }
-  }
-}
-
-NSArray *
-HLStackLayoutManagerBaselineCellOffsetsFromVisualCenter(NSArray *nodes,
-                                                        HLLabelHeightMode heightMode,
-                                                        CGFloat additionalOffsetY)
-{
-  NSMutableArray *cellOffsets = [NSMutableArray array];
-  NSMutableArray *duplicateCellOffsets = [NSMutableArray array];
-  CGFloat lastCellOffset = 0.0f;
-
-  for (id node in nodes) {
-    CGFloat cellOffset;
-    if ([node isKindOfClass:[SKLabelNode class]]) {
-      SKLabelNode *labelNode = (SKLabelNode *)node;
-      // note: Could check labelNode.verticalAlignmentMode == baseline, and issue a
-      // warning if not.  But for now, trust the caller.
-      CGFloat baselineOffsetY = [labelNode baselineOffsetYFromVisualCenterForHeightMode:heightMode];
-      cellOffset = baselineOffsetY + additionalOffsetY;
-    } else {
-      cellOffset = 0.0f;
-    }
-    if (fabs(cellOffset - lastCellOffset) < HLStackLayoutManagerEpsilon) {
-      [duplicateCellOffsets addObject:@(cellOffset)];
-    } else {
-      [cellOffsets addObjectsFromArray:duplicateCellOffsets];
-      [duplicateCellOffsets removeAllObjects];
-      [cellOffsets addObject:@(cellOffset)];
-      lastCellOffset = cellOffset;
-    }
-  }
-
-  return cellOffsets;
-}
-
 @implementation HLStackLayoutManager
 
 - (instancetype)init
@@ -130,7 +73,7 @@ HLStackLayoutManagerBaselineCellOffsetsFromVisualCenter(NSArray *nodes,
     _constrainedLength = (CGFloat)[aDecoder decodeDoubleForKey:@"constrainedLength"];
     _cellLengths = [aDecoder decodeObjectForKey:@"cellLengths"];
     _cellAnchorPoints = [aDecoder decodeObjectForKey:@"cellAnchorPoints"];
-    _cellOffsets = [aDecoder decodeObjectForKey:@"cellOffsets"];
+    _cellLabelOffsetY = (CGFloat)[aDecoder decodeDoubleForKey:@"cellLabelOffsetY"];
     _stackBorder = (CGFloat)[aDecoder decodeDoubleForKey:@"stackBorder"];
     _cellSeparator = (CGFloat)[aDecoder decodeDoubleForKey:@"cellSeparator"];
     _length = (CGFloat)[aDecoder decodeDoubleForKey:@"length"];
@@ -150,7 +93,7 @@ HLStackLayoutManagerBaselineCellOffsetsFromVisualCenter(NSArray *nodes,
   [aCoder encodeDouble:_constrainedLength forKey:@"constrainedLength"];
   [aCoder encodeObject:_cellLengths forKey:@"cellLengths"];
   [aCoder encodeObject:_cellAnchorPoints forKey:@"cellAnchorPoints"];
-  [aCoder encodeObject:_cellOffsets forKey:@"cellOffsets"];
+  [aCoder encodeDouble:_cellLabelOffsetY forKey:@"cellLabelOffsetY"];
   [aCoder encodeDouble:_stackBorder forKey:@"stackBorder"];
   [aCoder encodeDouble:_cellSeparator forKey:@"cellSeparator"];
   [aCoder encodeDouble:_length forKey:@"length"];
@@ -166,21 +109,12 @@ HLStackLayoutManagerBaselineCellOffsetsFromVisualCenter(NSArray *nodes,
     copy->_constrainedLength = _constrainedLength;
     copy->_cellLengths = [_cellLengths copyWithZone:zone];
     copy->_cellAnchorPoints = [_cellAnchorPoints copyWithZone:zone];
-    copy->_cellOffsets = [_cellOffsets copyWithZone:zone];
+    copy->_cellLabelOffsetY = _cellLabelOffsetY;
     copy->_stackBorder = _stackBorder;
     copy->_cellSeparator = _cellSeparator;
     copy->_length = _length;
   }
   return copy;
-}
-
-- (void)layout:(NSArray *)nodes
-withLabelNodesVerticalAlign:(SKLabelVerticalAlignmentMode)alignmentMode
-    heightMode:(HLLabelHeightMode)heightMode
-additionalOffsetY:(CGFloat)additionalOffsetY
-{
-  [self layout:nodes];
-  HLStackLayoutManagerVerticalAlignLabelNodes(nodes, alignmentMode, heightMode, additionalOffsetY);
 }
 
 - (void)layout:(NSArray *)nodes
@@ -191,7 +125,6 @@ additionalOffsetY:(CGFloat)additionalOffsetY
   }
   NSUInteger cellLengthsCount = (_cellLengths ? [_cellLengths count] : 0);
   NSUInteger cellAnchorPointsCount = (_cellAnchorPoints ? [_cellAnchorPoints count] : 0);
-  NSUInteger cellOffsetsCount = (_cellOffsets ? [_cellOffsets count] : 0);
 
   CGFloat (*cellLengthAutoFunction)(id);
   switch (_stackDirection) {
@@ -257,7 +190,6 @@ additionalOffsetY:(CGFloat)additionalOffsetY
       break;
   }
   CGFloat cellAnchorPoint = 0.5f;
-  CGFloat cellOffset = 0.0f;
 
   for (NSUInteger nodeIndex = 0; nodeIndex < nodesCount; ++nodeIndex) {
     id node = nodes[nodeIndex];
@@ -272,37 +204,37 @@ additionalOffsetY:(CGFloat)additionalOffsetY
       cellAnchorPoint = (CGFloat)[cellAnchorPointValue doubleValue];
     }
 
-    if (nodeIndex < cellOffsetsCount) {
-      NSNumber *cellOffsetValue = _cellOffsets[nodeIndex];
-      cellOffset = (CGFloat)[cellOffsetValue doubleValue];
+    CGFloat cellOffsetY = 0.0f;
+    if ([node isKindOfClass:[SKLabelNode class]]) {
+      cellOffsetY = _cellLabelOffsetY;
     }
 
     switch (_stackDirection) {
       case HLStackLayoutManagerStackRight:
         if ([node isKindOfClass:[SKNode class]]) {
-          [(SKNode *)node setPosition:CGPointMake(s + cellLength * cellAnchorPoint + cellOffset,
-                                                  _stackPosition.y)];
+          [(SKNode *)node setPosition:CGPointMake(s + cellLength * cellAnchorPoint,
+                                                  _stackPosition.y + cellOffsetY)];
         }
         s = s + cellLength + _cellSeparator;
         break;
       case HLStackLayoutManagerStackLeft:
         if ([node isKindOfClass:[SKNode class]]) {
-          [(SKNode *)node setPosition:CGPointMake(s - cellLength * (1.0f - cellAnchorPoint) + cellOffset,
-                                                  _stackPosition.y)];
+          [(SKNode *)node setPosition:CGPointMake(s - cellLength * (1.0f - cellAnchorPoint),
+                                                  _stackPosition.y + cellOffsetY)];
         }
         s = s - cellLength - _cellSeparator;
         break;
       case HLStackLayoutManagerStackUp:
         if ([node isKindOfClass:[SKNode class]]) {
           [(SKNode *)node setPosition:CGPointMake(_stackPosition.x,
-                                                  s + cellLength * cellAnchorPoint + cellOffset)];
+                                                  s + cellLength * cellAnchorPoint + cellOffsetY)];
         }
         s = s + cellLength + _cellSeparator;
         break;
       case HLStackLayoutManagerStackDown:
         if ([node isKindOfClass:[SKNode class]]) {
           [(SKNode *)node setPosition:CGPointMake(_stackPosition.x,
-                                                  s - cellLength * (1.0f - cellAnchorPoint) + cellOffset)];
+                                                  s - cellLength * (1.0f - cellAnchorPoint) + cellOffsetY)];
         }
         s = s - cellLength - _cellSeparator;
         break;

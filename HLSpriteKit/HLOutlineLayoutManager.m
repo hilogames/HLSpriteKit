@@ -26,7 +26,37 @@ const CGFloat HLOutlineLayoutManagerEpsilon = 0.001f;
 
 - (instancetype)initWithNodeLevels:(NSArray *)nodeLevels
                       levelIndents:(NSArray *)levelIndents
-                  levelNodeHeights:(NSArray *)levelNodeHeights
+{
+  self = [super init];
+  if (self) {
+    _anchorPointY = 0.5f;
+    _outlinePosition = CGPointZero;
+    _nodeLevels = nodeLevels;
+    _levelIndents = levelIndents;
+  }
+  return self;
+}
+
+- (instancetype)initWithNodeLevels:(NSArray *)nodeLevels
+                      levelIndents:(NSArray *)levelIndents
+                  levelLineHeights:(NSArray *)levelLineHeights
+                levelLabelOffsetYs:(NSArray *)levelLabelOffsetYs
+{
+  self = [super init];
+  if (self) {
+    _anchorPointY = 0.5f;
+    _outlinePosition = CGPointZero;
+    _nodeLevels = nodeLevels;
+    _levelIndents = levelIndents;
+    _levelLineHeights = levelLineHeights;
+    _levelLabelOffsetYs = levelLabelOffsetYs;
+  }
+  return self;
+}
+
+- (instancetype)initWithNodeLevels:(NSArray *)nodeLevels
+                      levelIndents:(NSArray *)levelIndents
+                  levelLineHeights:(NSArray *)levelLineHeights
                 levelAnchorPointYs:(NSArray *)levelAnchorPointYs
 {
   self = [super init];
@@ -35,7 +65,7 @@ const CGFloat HLOutlineLayoutManagerEpsilon = 0.001f;
     _outlinePosition = CGPointZero;
     _nodeLevels = nodeLevels;
     _levelIndents = levelIndents;
-    _levelNodeHeights = levelNodeHeights;
+    _levelLineHeights = levelLineHeights;
     _levelAnchorPointYs = levelAnchorPointYs;
   }
   return self;
@@ -54,10 +84,11 @@ const CGFloat HLOutlineLayoutManagerEpsilon = 0.001f;
     _height = (CGFloat)[aDecoder decodeDoubleForKey:@"height"];
     _nodeLevels = [aDecoder decodeObjectForKey:@"nodeLevels"];
     _levelIndents = [aDecoder decodeObjectForKey:@"levelIndents"];
-    _levelNodeHeights = [aDecoder decodeObjectForKey:@"levelNodeHeights"];
+    _levelLineHeights = [aDecoder decodeObjectForKey:@"levelLineHeights"];
     _levelAnchorPointYs = [aDecoder decodeObjectForKey:@"levelAnchorPointYs"];
-    _levelSeparatorBeforeHeights = [aDecoder decodeObjectForKey:@"levelSeparatorBeforeHeights"];
-    _levelSeparatorAfterHeights = [aDecoder decodeObjectForKey:@"levelSeparatorAfterHeights"];
+    _levelLabelOffsetYs = [aDecoder decodeObjectForKey:@"levelLabelOffsetYs"];
+    _levelLineBeforeSeparators = [aDecoder decodeObjectForKey:@"levelLineBeforeSeparators"];
+    _levelLineAfterSeparators = [aDecoder decodeObjectForKey:@"levelLineAfterSeparators"];
   }
   return self;
 }
@@ -73,10 +104,11 @@ const CGFloat HLOutlineLayoutManagerEpsilon = 0.001f;
   [aCoder encodeDouble:_height forKey:@"height"];
   [aCoder encodeObject:_nodeLevels forKey:@"nodeLevels"];
   [aCoder encodeObject:_levelIndents forKey:@"levelIndents"];
-  [aCoder encodeObject:_levelNodeHeights forKey:@"levelNodeHeights"];
+  [aCoder encodeObject:_levelLineHeights forKey:@"levelLineHeights"];
   [aCoder encodeObject:_levelAnchorPointYs forKey:@"levelAnchorPointYs"];
-  [aCoder encodeObject:_levelSeparatorBeforeHeights forKey:@"levelSeparatorBeforeHeights"];
-  [aCoder encodeObject:_levelSeparatorAfterHeights forKey:@"levelSeparatorAfterHeights"];
+  [aCoder encodeObject:_levelLabelOffsetYs forKey:@"levelLabelOffsetYs"];
+  [aCoder encodeObject:_levelLineBeforeSeparators forKey:@"levelLineBeforeSeparators"];
+  [aCoder encodeObject:_levelLineAfterSeparators forKey:@"levelLineAfterSeparators"];
 }
 
 - (instancetype)copyWithZone:(NSZone *)zone
@@ -88,10 +120,11 @@ const CGFloat HLOutlineLayoutManagerEpsilon = 0.001f;
     copy->_height = _height;
     copy->_nodeLevels = [_nodeLevels copyWithZone:zone];
     copy->_levelIndents = [_levelIndents copyWithZone:zone];
-    copy->_levelNodeHeights = [_levelNodeHeights copyWithZone:zone];
+    copy->_levelLineHeights = [_levelLineHeights copyWithZone:zone];
     copy->_levelAnchorPointYs = [_levelAnchorPointYs copyWithZone:zone];
-    copy->_levelSeparatorBeforeHeights = [_levelSeparatorBeforeHeights copyWithZone:zone];
-    copy->_levelSeparatorAfterHeights = [_levelSeparatorAfterHeights copyWithZone:zone];
+    copy->_levelLabelOffsetYs = [_levelLabelOffsetYs copyWithZone:zone];
+    copy->_levelLineBeforeSeparators = [_levelLineBeforeSeparators copyWithZone:zone];
+    copy->_levelLineAfterSeparators = [_levelLineAfterSeparators copyWithZone:zone];
   }
   return copy;
 }
@@ -118,86 +151,133 @@ const CGFloat HLOutlineLayoutManagerEpsilon = 0.001f;
   }
   NSUInteger layoutCount = MIN(nodeLevelsCount, nodesCount);
   NSUInteger levelIndentsCount = [_levelIndents count];
-  NSUInteger levelNodeHeightsCount = [_levelNodeHeights count];
-  NSUInteger levelAnchorPointYsCount = [_levelAnchorPointYs count];
-  if (levelIndentsCount == 0 || levelNodeHeightsCount == 0 || levelAnchorPointYsCount == 0) {
+  if (levelIndentsCount == 0) {
     return;
   }
+  NSUInteger levelLineHeightsCount = (_levelLineHeights ? [_levelLineHeights count] : 0);
+  NSUInteger levelAnchorPointYsCount = (_levelAnchorPointYs ? [_levelAnchorPointYs count] : 0);
+  NSUInteger levelLabelOffsetYsCount = (_levelLabelOffsetYs ? [_levelLabelOffsetYs count] : 0);
+  NSUInteger levelLineBeforeSeparatorsCount = (_levelLineBeforeSeparators ? [_levelLineBeforeSeparators count] : 0);
+  NSUInteger levelLineAfterSeparatorsCount = (_levelLineAfterSeparators ? [_levelLineAfterSeparators count] : 0);
 
+  // note: Assume it's faster to copy and interpret NSValues out of their NSArrays into
+  // stack C arrays, rather than do multiple NSArray accesses for each node.  Untested,
+  // though; maybe premature optimization.  And if we're really all that concerned,
+  // shouldn't we be putting the NSArray values into C arrays when they are set, at the
+  // object level, rather than at each layout?
   CGFloat *levelIndentsAccumulated = (CGFloat *)malloc(levelIndentsCount * sizeof(CGFloat));
   CGFloat levelIndentAccumulated = 0.0f;
   for (NSUInteger levelIndex = 0; levelIndex < levelIndentsCount; ++levelIndex) {
     levelIndentAccumulated += (CGFloat)[_levelIndents[levelIndex] doubleValue];
     levelIndentsAccumulated[levelIndex] = levelIndentAccumulated;
   }
-
-  // note: Assume it's faster to copy and interpret NSValues out of their NSArrays into local
-  // C variables, rather than do multiple NSArray accesses for each node.  Untested,
-  // though; maybe premature optimization.  And if we're really all that concerned, shouldn't
-  // we be putting the NSArray values into C arrays when they are set, at the object level,
-  // rather than at each layout?
   CGFloat lastLevelIndent = (CGFloat)[_levelIndents[levelIndentsCount - 1] doubleValue];
-  CGFloat *levelNodeHeights = (CGFloat *)malloc(levelNodeHeightsCount * sizeof(CGFloat));
-  for (NSUInteger levelIndex = 0; levelIndex < levelNodeHeightsCount; ++levelIndex) {
-    levelNodeHeights[levelIndex] = (CGFloat)[_levelNodeHeights[levelIndex] doubleValue];
+  CGFloat *levelLineHeights = NULL;
+  if (levelLineHeightsCount > 0) {
+    levelLineHeights = (CGFloat *)malloc(levelLineHeightsCount * sizeof(CGFloat));
+    for (NSUInteger levelIndex = 0; levelIndex < levelLineHeightsCount; ++levelIndex) {
+      levelLineHeights[levelIndex] = (CGFloat)[_levelLineHeights[levelIndex] doubleValue];
+    }
   }
-  CGFloat *levelAnchorPointYs = (CGFloat *)malloc(levelAnchorPointYsCount * sizeof(CGFloat));
-  for (NSUInteger levelIndex = 0; levelIndex < levelAnchorPointYsCount; ++levelIndex) {
-    levelAnchorPointYs[levelIndex] = (CGFloat)[_levelAnchorPointYs[levelIndex] doubleValue];
+  CGFloat *levelAnchorPointYs = NULL;
+  if (levelAnchorPointYsCount > 0) {
+    levelAnchorPointYs = (CGFloat *)malloc(levelAnchorPointYsCount * sizeof(CGFloat));
+    for (NSUInteger levelIndex = 0; levelIndex < levelAnchorPointYsCount; ++levelIndex) {
+      levelAnchorPointYs[levelIndex] = (CGFloat)[_levelAnchorPointYs[levelIndex] doubleValue];
+    }
   }
-  NSUInteger levelSeparatorBeforeHeightsCount = [_levelSeparatorBeforeHeights count];
-  CGFloat *levelSeparatorBeforeHeights = (CGFloat *)malloc(levelSeparatorBeforeHeightsCount * sizeof(CGFloat));
-  for (NSUInteger levelIndex = 0; levelIndex < levelSeparatorBeforeHeightsCount; ++levelIndex) {
-    levelSeparatorBeforeHeights[levelIndex] = (CGFloat)[_levelSeparatorBeforeHeights[levelIndex] doubleValue];
+  CGFloat *levelLabelOffsetYs = NULL;
+  if (levelLabelOffsetYsCount > 0) {
+    levelLabelOffsetYs = (CGFloat *)malloc(levelLabelOffsetYsCount * sizeof(CGFloat));
+    for (NSUInteger levelIndex = 0; levelIndex < levelLabelOffsetYsCount; ++levelIndex) {
+      levelLabelOffsetYs[levelIndex] = (CGFloat)[_levelLabelOffsetYs[levelIndex] doubleValue];
+    }
   }
-  NSUInteger levelSeparatorAfterHeightsCount = [_levelSeparatorAfterHeights count];
-  CGFloat *levelSeparatorAfterHeights = (CGFloat *)malloc(levelSeparatorAfterHeightsCount * sizeof(CGFloat));
-  for (NSUInteger levelIndex = 0; levelIndex < levelSeparatorAfterHeightsCount; ++levelIndex) {
-    levelSeparatorAfterHeights[levelIndex] = (CGFloat)[_levelSeparatorAfterHeights[levelIndex] doubleValue];
+  CGFloat *levelLineBeforeSeparators = NULL;
+  if (levelLineBeforeSeparatorsCount > 0) {
+    levelLineBeforeSeparators = (CGFloat *)malloc(levelLineBeforeSeparatorsCount * sizeof(CGFloat));
+    for (NSUInteger levelIndex = 0; levelIndex < levelLineBeforeSeparatorsCount; ++levelIndex) {
+      levelLineBeforeSeparators[levelIndex] = (CGFloat)[_levelLineBeforeSeparators[levelIndex] doubleValue];
+    }
+  }
+  CGFloat *levelLineAfterSeparators = NULL;
+  if (levelLineAfterSeparatorsCount > 0) {
+    levelLineAfterSeparators = (CGFloat *)malloc(levelLineAfterSeparatorsCount * sizeof(CGFloat));
+    for (NSUInteger levelIndex = 0; levelIndex < levelLineAfterSeparatorsCount; ++levelIndex) {
+      levelLineAfterSeparators[levelIndex] = (CGFloat)[_levelLineAfterSeparators[levelIndex] doubleValue];
+    }
   }
 
-  // note: Is anchorPointY used enough with a value other than 1.0 to make this second
-  // loop worthwhile?  Leave it for now; optimize later.
-  CGFloat outlineHeight = 0.0f;
+  // note: If the overall outline anchor point Y is not 1.0, then we need to know the
+  // total outline height before we can finalize node Y positions.  That probably means
+  // two passes: Even if all line heights are fixed, we still need to know how many nodes
+  // are assigned to each outline level.  This is one way to do the two passes, but there
+  // might be better ways.
+
+  // First pass: Calculate the relative Y-position of each node in the outline, and sum
+  // total outline height.
+  CGFloat *nodeOffsetYs = (CGFloat *)malloc(layoutCount * sizeof(CGFloat));
+  CGFloat offsetY = 0.0f;
   for (NSUInteger nodeIndex = 0; nodeIndex < layoutCount; ++nodeIndex) {
 
     NSUInteger nodeLevel = [_nodeLevels[nodeIndex] unsignedIntegerValue];
+    SKNode *node = nodes[nodeIndex];
 
-    CGFloat nodeHeight = 0.0f;
-    if (nodeLevel < levelNodeHeightsCount) {
-      nodeHeight = levelNodeHeights[nodeLevel];
-    } else {
-      nodeHeight = levelNodeHeights[levelNodeHeightsCount - 1];
-    }
-    if (nodeHeight < HLOutlineLayoutManagerEpsilon) {
-      SKNode *node = nodes[nodeIndex];
-      nodeHeight = HLLayoutManagerGetNodeHeight(node);
-    }
-    outlineHeight += nodeHeight;
-  
     if (nodeIndex > 0) {
-      CGFloat nodeSeparatorBefore = 0.0f;
-      if (nodeLevel < levelSeparatorBeforeHeightsCount) {
-        nodeSeparatorBefore = levelSeparatorBeforeHeights[nodeLevel];
-      } else if (levelSeparatorBeforeHeightsCount > 0) {
-        nodeSeparatorBefore = levelSeparatorBeforeHeights[levelSeparatorBeforeHeightsCount - 1];
+      CGFloat lineBeforeSeparator = 0.0f;
+      if (nodeLevel < levelLineBeforeSeparatorsCount) {
+        lineBeforeSeparator = levelLineBeforeSeparators[nodeLevel];
+      } else if (levelLineBeforeSeparatorsCount > 0) {
+        lineBeforeSeparator = levelLineBeforeSeparators[levelLineBeforeSeparatorsCount - 1];
       }
-      outlineHeight += nodeSeparatorBefore;
+      offsetY -= lineBeforeSeparator;
     }
-  
-    if (nodeIndex + 1 < layoutCount) {
-      CGFloat nodeSeparatorAfter = 0.0f;
-      if (nodeLevel < levelSeparatorAfterHeightsCount) {
-        nodeSeparatorAfter = levelSeparatorAfterHeights[nodeLevel];
-      } else if (levelSeparatorAfterHeightsCount > 0) {
-        nodeSeparatorAfter = levelSeparatorAfterHeights[levelSeparatorAfterHeightsCount - 1];
+
+    CGFloat lineHeight = 0.0f;
+    if (nodeLevel < levelLineHeightsCount) {
+      lineHeight = levelLineHeights[nodeLevel];
+    } else if (levelLineHeightsCount > 0) {
+      lineHeight = levelLineHeights[levelLineHeightsCount - 1];
+    }
+    if (lineHeight < HLOutlineLayoutManagerEpsilon) {
+      lineHeight = HLLayoutManagerGetNodeHeight(node);
+    }
+
+    CGFloat anchorPointY = 0.5f;
+    if (nodeLevel < levelAnchorPointYsCount) {
+      anchorPointY = levelAnchorPointYs[nodeLevel];
+    } else if (levelAnchorPointYsCount > 0) {
+      anchorPointY = levelAnchorPointYs[levelAnchorPointYsCount - 1];
+    }
+
+    CGFloat nodeOffsetY = 0.0f;
+    if ([node isKindOfClass:[SKLabelNode class]]) {
+      if (nodeLevel < levelLabelOffsetYsCount) {
+        nodeOffsetY = levelLabelOffsetYs[nodeLevel];
+      } else if (levelLabelOffsetYsCount > 0) {
+        nodeOffsetY = levelLabelOffsetYs[levelLabelOffsetYsCount - 1];
       }
-      outlineHeight += nodeSeparatorAfter;
+    }
+
+    offsetY -= lineHeight;
+    nodeOffsetYs[nodeIndex] = offsetY + nodeOffsetY + lineHeight * anchorPointY;
+
+    if (nodeIndex + 1 < layoutCount) {
+      CGFloat lineAfterSeparator = 0.0f;
+      if (nodeLevel < levelLineAfterSeparatorsCount) {
+        lineAfterSeparator = levelLineAfterSeparators[nodeLevel];
+      } else if (levelLineAfterSeparatorsCount > 0) {
+        lineAfterSeparator = levelLineAfterSeparators[levelLineAfterSeparatorsCount - 1];
+      }
+      offsetY -= lineAfterSeparator;
     }
   }
+  CGFloat outlineHeight = -offsetY;
+
   _height = outlineHeight;
 
-  CGFloat y = outlineHeight * (1.0f - _anchorPointY);
+  // Second pass: Calculate starting Y and each node indent X, and position nodes.
+  CGFloat outlineYTop = _outlinePosition.y + outlineHeight * (1.0f - _anchorPointY);
   for (NSUInteger nodeIndex = 0; nodeIndex < layoutCount; ++nodeIndex) {
 
     NSUInteger nodeLevel = [_nodeLevels[nodeIndex] unsignedIntegerValue];
@@ -207,39 +287,11 @@ const CGFloat HLOutlineLayoutManagerEpsilon = 0.001f;
     if (nodeLevel < levelIndentsCount) {
       nodeIndent = levelIndentsAccumulated[nodeLevel];
     } else {
-      nodeIndent = levelIndentsAccumulated[levelIndentsCount - 1] + lastLevelIndent * (nodeLevel - levelIndentsCount);
+      nodeIndent = levelIndentsAccumulated[levelIndentsCount - 1] + lastLevelIndent * (nodeLevel - levelIndentsCount + 1);
     }
 
-    CGFloat nodeHeight = 0.0f;
-    if (nodeLevel < levelNodeHeightsCount) {
-      nodeHeight = levelNodeHeights[nodeLevel];
-    } else {
-      nodeHeight = levelNodeHeights[levelNodeHeightsCount - 1];
-    }
-    if (nodeHeight < HLOutlineLayoutManagerEpsilon) {
-      nodeHeight = HLLayoutManagerGetNodeHeight(node);
-    }
-
-    CGFloat nodeAnchorPointY = 0.0f;
-    if (nodeLevel < levelAnchorPointYsCount) {
-      nodeAnchorPointY = levelAnchorPointYs[nodeLevel];
-    } else {
-      nodeAnchorPointY = levelAnchorPointYs[levelAnchorPointYsCount - 1];
-    }
-
-    if (nodeIndex > 0) {
-      CGFloat nodeSeparatorBefore = 0.0f;
-      if (nodeLevel < levelSeparatorBeforeHeightsCount) {
-        nodeSeparatorBefore = levelSeparatorBeforeHeights[nodeLevel];
-      } else if (levelSeparatorBeforeHeightsCount > 0) {
-        nodeSeparatorBefore = levelSeparatorBeforeHeights[levelSeparatorBeforeHeightsCount - 1];
-      }
-      y -= nodeSeparatorBefore;
-    }
-
-    y -= nodeHeight;
     CGPoint position = CGPointMake(_outlinePosition.x + nodeIndent,
-                                   _outlinePosition.y + y + nodeHeight * nodeAnchorPointY);
+                                   outlineYTop + nodeOffsetYs[nodeIndex]);
     if (!animated) {
       node.position = position;
     } else {
@@ -251,23 +303,15 @@ const CGFloat HLOutlineLayoutManagerEpsilon = 0.001f;
         [node runAction:moveAction];
       }
     }
-
-    if (nodeIndex + 1 < layoutCount) {
-      CGFloat nodeSeparatorAfter = 0.0f;
-      if (nodeLevel < levelSeparatorAfterHeightsCount) {
-        nodeSeparatorAfter = levelSeparatorAfterHeights[nodeLevel];
-      } else if (levelSeparatorAfterHeightsCount > 0) {
-        nodeSeparatorAfter = levelSeparatorAfterHeights[levelSeparatorAfterHeightsCount - 1];
-      }
-      y -= nodeSeparatorAfter;
-    }
   }
 
   free(levelIndentsAccumulated);
-  free(levelNodeHeights);
+  free(levelLineHeights);
   free(levelAnchorPointYs);
-  free(levelSeparatorBeforeHeights);
-  free(levelSeparatorAfterHeights);
+  free(levelLabelOffsetYs);
+  free(levelLineBeforeSeparators);
+  free(levelLineAfterSeparators);
+  free(nodeOffsetYs);
 }
 
 @end
@@ -275,7 +319,7 @@ const CGFloat HLOutlineLayoutManagerEpsilon = 0.001f;
 NSUInteger
 HLOutlineLayoutManagerNodeContainingPointY(NSArray *nodes, CGFloat pointY,
                                            NSArray *nodeLevels,
-                                           NSArray *levelNodeHeights, NSArray *levelAnchorPointYs)
+                                           NSArray *levelLineHeights, NSArray *levelAnchorPointYs)
 {
   NSUInteger layoutCount = MIN([nodes count], [nodeLevels count]);
   SKNode *pointYNode = [SKNode node];
@@ -296,8 +340,8 @@ HLOutlineLayoutManagerNodeContainingPointY(NSArray *nodes, CGFloat pointY,
     }
   }];
 
-  NSUInteger levelNodeHeightsCount = [levelNodeHeights count];
-  NSUInteger levelAnchorPointYsCount = [levelAnchorPointYs count];
+  NSUInteger levelLineHeightsCount = (levelLineHeights ? [levelLineHeights count] : 0);
+  NSUInteger levelAnchorPointYsCount = (levelAnchorPointYs ? [levelAnchorPointYs count] : 0);
 
   // note: greaterNodeIndex is the node with array position greater than pointYNode, which means the node
   // with a y-position smaller than pointY.  The node that contains the pointY is either that node,
@@ -312,25 +356,25 @@ HLOutlineLayoutManagerNodeContainingPointY(NSArray *nodes, CGFloat pointY,
 
     NSUInteger nodeLevel = [nodeLevels[nodeIndex] unsignedIntegerValue];
 
-    CGFloat nodeHeight = 0.0f;
-    if (nodeLevel < levelNodeHeightsCount) {
-      nodeHeight = [levelNodeHeights[nodeLevel] doubleValue];
-    } else {
-      nodeHeight = [levelNodeHeights[levelNodeHeightsCount - 1] doubleValue];
+    CGFloat lineHeight = 0.0f;
+    if (nodeLevel < levelLineHeightsCount) {
+      lineHeight = [levelLineHeights[nodeLevel] doubleValue];
+    } else if (levelLineHeightsCount > 0) {
+      lineHeight = [levelLineHeights[levelLineHeightsCount - 1] doubleValue];
     }
-    if (nodeHeight < HLOutlineLayoutManagerEpsilon) {
-      nodeHeight = HLLayoutManagerGetNodeHeight(node);
+    if (lineHeight < HLOutlineLayoutManagerEpsilon) {
+      lineHeight = HLLayoutManagerGetNodeHeight(node);
     }
 
-    CGFloat nodeAnchorPointY = 0.0f;
+    CGFloat anchorPointY = 0.5f;
     if (nodeLevel < levelAnchorPointYsCount) {
-      nodeAnchorPointY = [levelAnchorPointYs[nodeLevel] doubleValue];
-    } else {
-      nodeAnchorPointY = [levelAnchorPointYs[levelAnchorPointYsCount - 1] doubleValue];
+      anchorPointY = [levelAnchorPointYs[nodeLevel] doubleValue];
+    } else if (levelAnchorPointYsCount > 0) {
+      anchorPointY = [levelAnchorPointYs[levelAnchorPointYsCount - 1] doubleValue];
     }
 
-    if (pointY <= nodePositionY + nodeHeight * (1.0f - nodeAnchorPointY)
-        && pointY >= nodePositionY - nodeHeight * nodeAnchorPointY) {
+    if (pointY <= nodePositionY + lineHeight * (1.0f - anchorPointY)
+        && pointY >= nodePositionY - lineHeight * anchorPointY) {
       return nodeIndex;
     }
   }
