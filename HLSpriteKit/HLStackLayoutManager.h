@@ -445,3 +445,26 @@ typedef NS_ENUM(NSInteger, HLStackLayoutManagerStackDirection) {
 @property (nonatomic, readonly) CGFloat length;
 
 @end
+
+/**
+ Convenience method for finding the index of the node whose cell contains the passed
+ point, for nodes that have been laid out by an `HLStackLayoutManager`.
+
+ Since the stack is only aware of one dimension, the point is a single value corresponding
+ to the stacking dimension (either X or Y).
+
+ Returns `NSNotFound` if no such node is found.
+
+ The algorithm uses binary search in the nodes list (assuming it is ordered by position in
+ the stacking dimension), and calculates cell length in the same way it is calculated in
+ `HLStackLayoutManager` (which involves a few array lookups and `NSValue` conversions).
+ The non-stacking dimension is not considered.  The stacking direction could be inferred,
+ but the stacking dimension cannot.  The cell separator is not considered to be part of
+ the node's cell; it is inferred from the current node position.
+*/
+NSUInteger HLStackLayoutManagerCellContainingPoint(NSArray *nodes,
+                                                   CGFloat point,
+                                                   HLStackLayoutManagerStackDirection stackDirection,
+                                                   NSArray *cellLengths,
+                                                   NSArray *cellAnchorPoints,
+                                                   CGFloat cellLabelOffsetY);

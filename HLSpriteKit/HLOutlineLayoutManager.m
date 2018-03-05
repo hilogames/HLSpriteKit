@@ -317,17 +317,20 @@ const CGFloat HLOutlineLayoutManagerEpsilon = 0.001f;
 @end
 
 NSUInteger
-HLOutlineLayoutManagerNodeContainingPointY(NSArray *nodes, CGFloat pointY,
+HLOutlineLayoutManagerLineContainingPointY(NSArray *nodes,
+                                           CGFloat pointY,
                                            NSArray *nodeLevels,
-                                           NSArray *levelLineHeights, NSArray *levelAnchorPointYs)
+                                           NSArray *levelLineHeights,
+                                           NSArray *levelAnchorPointYs,
+                                           NSArray *levelLabelOffsetYs)
 {
   NSUInteger layoutCount = MIN([nodes count], [nodeLevels count]);
   SKNode *pointYNode = [SKNode node];
   pointYNode.position = CGPointMake(0.0f, pointY);
-  NSUInteger greaterNodeIndex = [nodes indexOfObject:pointYNode
-                                       inSortedRange:NSMakeRange(0, layoutCount)
-                                             options:NSBinarySearchingInsertionIndex
-                                     usingComparator:^NSComparisonResult(SKNode *node1, SKNode *node2){
+  NSUInteger nextNodeIndex = [nodes indexOfObject:pointYNode
+                                    inSortedRange:NSMakeRange(0, layoutCount)
+                                          options:NSBinarySearchingInsertionIndex
+                                  usingComparator:^NSComparisonResult(SKNode *node1, SKNode *node2){
     // note: Array of nodes is sorted according to position.y, largest to smallest.  NSArray considers "ascending"
     // direction to be from the first element of the sorted array to the last element of the sorted array, so, though
     // it might seem strange, a descending position.y is considered to be "ascending".
@@ -342,13 +345,14 @@ HLOutlineLayoutManagerNodeContainingPointY(NSArray *nodes, CGFloat pointY,
 
   NSUInteger levelLineHeightsCount = (levelLineHeights ? [levelLineHeights count] : 0);
   NSUInteger levelAnchorPointYsCount = (levelAnchorPointYs ? [levelAnchorPointYs count] : 0);
+  NSUInteger levelLabelOffsetYsCount = (levelLabelOffsetYs ? [levelLabelOffsetYs count] : 0);
 
-  // note: greaterNodeIndex is the node with array position greater than pointYNode, which means the node
+  // note: nextNodeIndex is the node with array position greater than pointYNode, which means the node
   // with a y-position smaller than pointY.  The node that contains the pointY is either that node,
-  // the one with next-larger y-position (that is, with the next-lower array index).  Here, the range to
-  // check is [begin, end).
-  NSUInteger checkNodeIndexBegin = (greaterNodeIndex > 0 ? greaterNodeIndex - 1 : greaterNodeIndex);
-  NSUInteger checkNodeIndexEnd = (greaterNodeIndex < layoutCount ? greaterNodeIndex + 1 : greaterNodeIndex);
+  // or the one with next-larger y-position (that is, with the next-lower array index).  Using [begin, end)
+  // range terminology.
+  NSUInteger checkNodeIndexBegin = (nextNodeIndex > 0 ? nextNodeIndex - 1 : nextNodeIndex);
+  NSUInteger checkNodeIndexEnd = (nextNodeIndex < layoutCount ? nextNodeIndex + 1 : nextNodeIndex);
   for (NSUInteger nodeIndex = checkNodeIndexBegin; nodeIndex < checkNodeIndexEnd; ++nodeIndex) {
 
     SKNode *node = nodes[nodeIndex];
@@ -373,8 +377,17 @@ HLOutlineLayoutManagerNodeContainingPointY(NSArray *nodes, CGFloat pointY,
       anchorPointY = [levelAnchorPointYs[levelAnchorPointYsCount - 1] doubleValue];
     }
 
-    if (pointY <= nodePositionY + lineHeight * (1.0f - anchorPointY)
-        && pointY >= nodePositionY - lineHeight * anchorPointY) {
+    CGFloat nodeOffsetY = 0.0f;
+    if ([node isKindOfClass:[SKLabelNode class]]) {
+      if (nodeLevel < levelLabelOffsetYsCount) {
+        nodeOffsetY = [levelLabelOffsetYs[nodeLevel] doubleValue];
+      } else if (levelLabelOffsetYsCount > 0) {
+        nodeOffsetY = [levelLabelOffsetYs[levelLabelOffsetYsCount - 1] doubleValue];
+      }
+    }
+
+    if (pointY <= nodePositionY - nodeOffsetY + lineHeight * (1.0f - anchorPointY)
+        && pointY >= nodePositionY - nodeOffsetY - lineHeight * anchorPointY) {
       return nodeIndex;
     }
   }

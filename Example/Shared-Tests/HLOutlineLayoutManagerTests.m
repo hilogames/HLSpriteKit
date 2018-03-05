@@ -122,8 +122,8 @@
 {
   const CGFloat HLEpsilon = 0.0001f;
 
-  SKSpriteNode *bigNode = [SKSpriteNode spriteNodeWithColor:[SKColor whiteColor] size:CGSizeMake(30.0f, 30.0f)];
   SKSpriteNode *mediumNode = [SKSpriteNode spriteNodeWithColor:[SKColor whiteColor] size:CGSizeMake(20.0f, 20.0f)];
+  SKSpriteNode *bigNode = [SKSpriteNode spriteNodeWithColor:[SKColor whiteColor] size:CGSizeMake(30.0f, 30.0f)];
   SKSpriteNode *smallNode = [SKSpriteNode spriteNodeWithColor:[SKColor whiteColor] size:CGSizeMake(10.0f, 10.0f)];
 
   NSArray *nodes = @[ mediumNode, bigNode, smallNode ];
@@ -139,6 +139,148 @@
     XCTAssertEqualWithAccuracy(bigNode.position.y, -50.0f, HLEpsilon);
     XCTAssertEqualWithAccuracy(smallNode.position.y, -60.0f, HLEpsilon);
     XCTAssertEqualWithAccuracy(layoutManager.height, 60.0f, HLEpsilon);
+  }
+}
+
+- (void)testLineContainingPoint
+{
+  SKSpriteNode *mediumNode = [SKSpriteNode spriteNodeWithColor:[SKColor whiteColor] size:CGSizeMake(20.0f, 20.0f)];
+  SKLabelNode *labelNode = [SKLabelNode labelNodeWithText:@"Hello I Am A Label!"];  // height 20.0 set later
+  SKSpriteNode *bigNode = [SKSpriteNode spriteNodeWithColor:[SKColor whiteColor] size:CGSizeMake(30.0f, 30.0f)];
+  SKSpriteNode *smallNode = [SKSpriteNode spriteNodeWithColor:[SKColor whiteColor] size:CGSizeMake(10.0f, 10.0f)];
+
+  NSArray *nodes = @[ mediumNode, labelNode, bigNode, smallNode ];
+  NSArray *nodeLevels = @[ @0, @1, @0, @0 ];
+  // note: Specify fixed height for the label to keep things simple.
+  NSArray *levelLineHeights = @[ @0.0f, @20.0f, @0.0f ];
+
+  // Basic.
+  {
+    HLOutlineLayoutManager *layoutManager = [[HLOutlineLayoutManager alloc] initWithNodeLevels:nodeLevels levelIndents:@[ @10.0f ]];
+    layoutManager.levelLineHeights = levelLineHeights;
+    layoutManager.anchorPointY = 1.0f;
+    [layoutManager layout:nodes];
+    XCTAssertEqual(NSNotFound, HLOutlineLayoutManagerLineContainingPointY(nodes, 0.01f, nodeLevels, levelLineHeights, nil, nil));
+    XCTAssertEqual(0, HLOutlineLayoutManagerLineContainingPointY(nodes, -0.01f, nodeLevels, levelLineHeights, nil, nil));
+    XCTAssertEqual(0, HLOutlineLayoutManagerLineContainingPointY(nodes, -19.99f, nodeLevels, levelLineHeights, nil, nil));
+    XCTAssertEqual(1, HLOutlineLayoutManagerLineContainingPointY(nodes, -20.01f, nodeLevels, levelLineHeights, nil, nil));
+    XCTAssertEqual(1, HLOutlineLayoutManagerLineContainingPointY(nodes, -39.99f, nodeLevels, levelLineHeights, nil, nil));
+    XCTAssertEqual(2, HLOutlineLayoutManagerLineContainingPointY(nodes, -40.01f, nodeLevels, levelLineHeights, nil, nil));
+    XCTAssertEqual(2, HLOutlineLayoutManagerLineContainingPointY(nodes, -69.99f, nodeLevels, levelLineHeights, nil, nil));
+    XCTAssertEqual(3, HLOutlineLayoutManagerLineContainingPointY(nodes, -70.01f, nodeLevels, levelLineHeights, nil, nil));
+    XCTAssertEqual(3, HLOutlineLayoutManagerLineContainingPointY(nodes, -79.99f, nodeLevels, levelLineHeights, nil, nil));
+    XCTAssertEqual(NSNotFound, HLOutlineLayoutManagerLineContainingPointY(nodes, -81.0f, nodeLevels, levelLineHeights, nil, nil));
+    // Line anchor points and label offsets shouldn't affect anything.
+    NSArray *levelAnchorPointYs = @[ @0.31415f ];
+    layoutManager.levelAnchorPointYs = levelAnchorPointYs;
+    NSArray *levelLabelOffsetYs = @[ @1.14142f ];
+    layoutManager.levelLabelOffsetYs = levelLabelOffsetYs;
+    [layoutManager layout:nodes];
+    XCTAssertEqual(NSNotFound, HLOutlineLayoutManagerLineContainingPointY(nodes, 0.01f, nodeLevels, levelLineHeights, levelAnchorPointYs, levelLabelOffsetYs));
+    XCTAssertEqual(0, HLOutlineLayoutManagerLineContainingPointY(nodes, -0.01f, nodeLevels, levelLineHeights, levelAnchorPointYs, levelLabelOffsetYs));
+    XCTAssertEqual(0, HLOutlineLayoutManagerLineContainingPointY(nodes, -19.99f, nodeLevels, levelLineHeights, levelAnchorPointYs, levelLabelOffsetYs));
+    XCTAssertEqual(1, HLOutlineLayoutManagerLineContainingPointY(nodes, -20.01f, nodeLevels, levelLineHeights, levelAnchorPointYs, levelLabelOffsetYs));
+    XCTAssertEqual(1, HLOutlineLayoutManagerLineContainingPointY(nodes, -39.99f, nodeLevels, levelLineHeights, levelAnchorPointYs, levelLabelOffsetYs));
+    XCTAssertEqual(2, HLOutlineLayoutManagerLineContainingPointY(nodes, -40.01f, nodeLevels, levelLineHeights, levelAnchorPointYs, levelLabelOffsetYs));
+    XCTAssertEqual(2, HLOutlineLayoutManagerLineContainingPointY(nodes, -69.99f, nodeLevels, levelLineHeights, levelAnchorPointYs, levelLabelOffsetYs));
+    XCTAssertEqual(3, HLOutlineLayoutManagerLineContainingPointY(nodes, -70.01f, nodeLevels, levelLineHeights, levelAnchorPointYs, levelLabelOffsetYs));
+    XCTAssertEqual(3, HLOutlineLayoutManagerLineContainingPointY(nodes, -79.99f, nodeLevels, levelLineHeights, levelAnchorPointYs, levelLabelOffsetYs));
+    XCTAssertEqual(NSNotFound, HLOutlineLayoutManagerLineContainingPointY(nodes, -80.01f, nodeLevels, levelLineHeights, levelAnchorPointYs, levelLabelOffsetYs));
+  }
+
+  // Before-separators.
+  {
+    HLOutlineLayoutManager *layoutManager = [[HLOutlineLayoutManager alloc] initWithNodeLevels:nodeLevels levelIndents:@[ @10.0f ]];
+    layoutManager.levelLineHeights = levelLineHeights;
+    layoutManager.anchorPointY = 1.0f;
+    layoutManager.levelLineBeforeSeparators = @[ @3.0f, @5.0f ];
+    [layoutManager layout:nodes];
+    XCTAssertEqual(NSNotFound, HLOutlineLayoutManagerLineContainingPointY(nodes, 0.01f, nodeLevels, levelLineHeights, nil, nil));
+    XCTAssertEqual(0, HLOutlineLayoutManagerLineContainingPointY(nodes, -0.01f, nodeLevels, levelLineHeights, nil, nil));
+    XCTAssertEqual(0, HLOutlineLayoutManagerLineContainingPointY(nodes, -19.99f, nodeLevels, levelLineHeights, nil, nil));
+    XCTAssertEqual(NSNotFound, HLOutlineLayoutManagerLineContainingPointY(nodes, -20.01f, nodeLevels, levelLineHeights, nil, nil));
+    XCTAssertEqual(NSNotFound, HLOutlineLayoutManagerLineContainingPointY(nodes, -24.99f, nodeLevels, levelLineHeights, nil, nil));
+    XCTAssertEqual(1, HLOutlineLayoutManagerLineContainingPointY(nodes, -25.01f, nodeLevels, levelLineHeights, nil, nil));
+    XCTAssertEqual(1, HLOutlineLayoutManagerLineContainingPointY(nodes, -44.99f, nodeLevels, levelLineHeights, nil, nil));
+    XCTAssertEqual(NSNotFound, HLOutlineLayoutManagerLineContainingPointY(nodes, -45.01f, nodeLevels, levelLineHeights, nil, nil));
+    XCTAssertEqual(NSNotFound, HLOutlineLayoutManagerLineContainingPointY(nodes, -47.99f, nodeLevels, levelLineHeights, nil, nil));
+    XCTAssertEqual(2, HLOutlineLayoutManagerLineContainingPointY(nodes, -48.01f, nodeLevels, levelLineHeights, nil, nil));
+    XCTAssertEqual(2, HLOutlineLayoutManagerLineContainingPointY(nodes, -77.99f, nodeLevels, levelLineHeights, nil, nil));
+    XCTAssertEqual(NSNotFound, HLOutlineLayoutManagerLineContainingPointY(nodes, -78.01f, nodeLevels, levelLineHeights, nil, nil));
+    XCTAssertEqual(NSNotFound, HLOutlineLayoutManagerLineContainingPointY(nodes, -80.99f, nodeLevels, levelLineHeights, nil, nil));
+    XCTAssertEqual(3, HLOutlineLayoutManagerLineContainingPointY(nodes, -81.01f, nodeLevels, levelLineHeights, nil, nil));
+    XCTAssertEqual(3, HLOutlineLayoutManagerLineContainingPointY(nodes, -90.99f, nodeLevels, levelLineHeights, nil, nil));
+    XCTAssertEqual(NSNotFound, HLOutlineLayoutManagerLineContainingPointY(nodes, -91.01f, nodeLevels, levelLineHeights, nil, nil));
+    // Line anchor points and label offsets shouldn't affect anything.
+    NSArray *levelAnchorPointYs = @[ @0.31415f ];
+    layoutManager.levelAnchorPointYs = levelAnchorPointYs;
+    NSArray *levelLabelOffsetYs = @[ @1.14142f ];
+    layoutManager.levelLabelOffsetYs = levelLabelOffsetYs;
+    [layoutManager layout:nodes];
+    XCTAssertEqual(NSNotFound, HLOutlineLayoutManagerLineContainingPointY(nodes, 0.01f, nodeLevels, levelLineHeights, levelAnchorPointYs, levelLabelOffsetYs));
+    XCTAssertEqual(0, HLOutlineLayoutManagerLineContainingPointY(nodes, -0.01f, nodeLevels, levelLineHeights, levelAnchorPointYs, levelLabelOffsetYs));
+    XCTAssertEqual(0, HLOutlineLayoutManagerLineContainingPointY(nodes, -19.99f, nodeLevels, levelLineHeights, levelAnchorPointYs, levelLabelOffsetYs));
+    XCTAssertEqual(NSNotFound, HLOutlineLayoutManagerLineContainingPointY(nodes, -20.01f, nodeLevels, levelLineHeights, levelAnchorPointYs, levelLabelOffsetYs));
+    XCTAssertEqual(NSNotFound, HLOutlineLayoutManagerLineContainingPointY(nodes, -24.99f, nodeLevels, levelLineHeights, levelAnchorPointYs, levelLabelOffsetYs));
+    XCTAssertEqual(1, HLOutlineLayoutManagerLineContainingPointY(nodes, -25.01f, nodeLevels, levelLineHeights, levelAnchorPointYs, levelLabelOffsetYs));
+    XCTAssertEqual(1, HLOutlineLayoutManagerLineContainingPointY(nodes, -44.99f, nodeLevels, levelLineHeights, levelAnchorPointYs, levelLabelOffsetYs));
+    XCTAssertEqual(NSNotFound, HLOutlineLayoutManagerLineContainingPointY(nodes, -45.01f, nodeLevels, levelLineHeights, levelAnchorPointYs, levelLabelOffsetYs));
+    XCTAssertEqual(NSNotFound, HLOutlineLayoutManagerLineContainingPointY(nodes, -47.99f, nodeLevels, levelLineHeights, levelAnchorPointYs, levelLabelOffsetYs));
+    XCTAssertEqual(2, HLOutlineLayoutManagerLineContainingPointY(nodes, -48.01f, nodeLevels, levelLineHeights, levelAnchorPointYs, levelLabelOffsetYs));
+    XCTAssertEqual(2, HLOutlineLayoutManagerLineContainingPointY(nodes, -77.99f, nodeLevels, levelLineHeights, levelAnchorPointYs, levelLabelOffsetYs));
+    XCTAssertEqual(NSNotFound, HLOutlineLayoutManagerLineContainingPointY(nodes, -78.01f, nodeLevels, levelLineHeights, levelAnchorPointYs, levelLabelOffsetYs));
+    XCTAssertEqual(NSNotFound, HLOutlineLayoutManagerLineContainingPointY(nodes, -80.99f, nodeLevels, levelLineHeights, levelAnchorPointYs, levelLabelOffsetYs));
+    XCTAssertEqual(3, HLOutlineLayoutManagerLineContainingPointY(nodes, -81.01f, nodeLevels, levelLineHeights, levelAnchorPointYs, levelLabelOffsetYs));
+    XCTAssertEqual(3, HLOutlineLayoutManagerLineContainingPointY(nodes, -90.99f, nodeLevels, levelLineHeights, levelAnchorPointYs, levelLabelOffsetYs));
+    XCTAssertEqual(NSNotFound, HLOutlineLayoutManagerLineContainingPointY(nodes, -91.01f, nodeLevels, levelLineHeights, levelAnchorPointYs, levelLabelOffsetYs));
+  }
+
+  // Before- and after-separators.
+  {
+    HLOutlineLayoutManager *layoutManager = [[HLOutlineLayoutManager alloc] initWithNodeLevels:nodeLevels levelIndents:@[ @10.0f ]];
+    layoutManager.levelLineHeights = levelLineHeights;
+    layoutManager.anchorPointY = 1.0f;
+    layoutManager.levelLineBeforeSeparators = @[ @3.0f, @5.0f ];
+    layoutManager.levelLineAfterSeparators = @[ @1.0f, @0.0 ];
+    [layoutManager layout:nodes];
+    XCTAssertEqual(NSNotFound, HLOutlineLayoutManagerLineContainingPointY(nodes, 0.01f, nodeLevels, levelLineHeights, nil, nil));
+    XCTAssertEqual(0, HLOutlineLayoutManagerLineContainingPointY(nodes, -0.01f, nodeLevels, levelLineHeights, nil, nil));
+    XCTAssertEqual(0, HLOutlineLayoutManagerLineContainingPointY(nodes, -19.99f, nodeLevels, levelLineHeights, nil, nil));
+    XCTAssertEqual(NSNotFound, HLOutlineLayoutManagerLineContainingPointY(nodes, -20.01f, nodeLevels, levelLineHeights, nil, nil));
+    XCTAssertEqual(NSNotFound, HLOutlineLayoutManagerLineContainingPointY(nodes, -25.99f, nodeLevels, levelLineHeights, nil, nil));
+    XCTAssertEqual(1, HLOutlineLayoutManagerLineContainingPointY(nodes, -26.01f, nodeLevels, levelLineHeights, nil, nil));
+    XCTAssertEqual(1, HLOutlineLayoutManagerLineContainingPointY(nodes, -45.99f, nodeLevels, levelLineHeights, nil, nil));
+    XCTAssertEqual(NSNotFound, HLOutlineLayoutManagerLineContainingPointY(nodes, -46.01f, nodeLevels, levelLineHeights, nil, nil));
+    XCTAssertEqual(NSNotFound, HLOutlineLayoutManagerLineContainingPointY(nodes, -48.99f, nodeLevels, levelLineHeights, nil, nil));
+    XCTAssertEqual(2, HLOutlineLayoutManagerLineContainingPointY(nodes, -49.01f, nodeLevels, levelLineHeights, nil, nil));
+    XCTAssertEqual(2, HLOutlineLayoutManagerLineContainingPointY(nodes, -78.99f, nodeLevels, levelLineHeights, nil, nil));
+    XCTAssertEqual(NSNotFound, HLOutlineLayoutManagerLineContainingPointY(nodes, -79.01f, nodeLevels, levelLineHeights, nil, nil));
+    XCTAssertEqual(NSNotFound, HLOutlineLayoutManagerLineContainingPointY(nodes, -82.99f, nodeLevels, levelLineHeights, nil, nil));
+    XCTAssertEqual(3, HLOutlineLayoutManagerLineContainingPointY(nodes, -83.01f, nodeLevels, levelLineHeights, nil, nil));
+    XCTAssertEqual(3, HLOutlineLayoutManagerLineContainingPointY(nodes, -92.99f, nodeLevels, levelLineHeights, nil, nil));
+    XCTAssertEqual(NSNotFound, HLOutlineLayoutManagerLineContainingPointY(nodes, -93.01f, nodeLevels, levelLineHeights, nil, nil));
+    // Line anchor points and label offsets shouldn't affect anything.
+    NSArray *levelAnchorPointYs = @[ @0.31415f ];
+    layoutManager.levelAnchorPointYs = levelAnchorPointYs;
+    NSArray *levelLabelOffsetYs = @[ @1.14142f ];
+    layoutManager.levelLabelOffsetYs = levelLabelOffsetYs;
+    [layoutManager layout:nodes];
+    XCTAssertEqual(NSNotFound, HLOutlineLayoutManagerLineContainingPointY(nodes, 0.01f, nodeLevels, levelLineHeights, levelAnchorPointYs, levelLabelOffsetYs));
+    XCTAssertEqual(0, HLOutlineLayoutManagerLineContainingPointY(nodes, -0.01f, nodeLevels, levelLineHeights, levelAnchorPointYs, levelLabelOffsetYs));
+    XCTAssertEqual(0, HLOutlineLayoutManagerLineContainingPointY(nodes, -19.99f, nodeLevels, levelLineHeights, levelAnchorPointYs, levelLabelOffsetYs));
+    XCTAssertEqual(NSNotFound, HLOutlineLayoutManagerLineContainingPointY(nodes, -20.01f, nodeLevels, levelLineHeights, levelAnchorPointYs, levelLabelOffsetYs));
+    XCTAssertEqual(NSNotFound, HLOutlineLayoutManagerLineContainingPointY(nodes, -25.99f, nodeLevels, levelLineHeights, levelAnchorPointYs, levelLabelOffsetYs));
+    XCTAssertEqual(1, HLOutlineLayoutManagerLineContainingPointY(nodes, -26.01f, nodeLevels, levelLineHeights, levelAnchorPointYs, levelLabelOffsetYs));
+    XCTAssertEqual(1, HLOutlineLayoutManagerLineContainingPointY(nodes, -45.99f, nodeLevels, levelLineHeights, levelAnchorPointYs, levelLabelOffsetYs));
+    XCTAssertEqual(NSNotFound, HLOutlineLayoutManagerLineContainingPointY(nodes, -46.01f, nodeLevels, levelLineHeights, levelAnchorPointYs, levelLabelOffsetYs));
+    XCTAssertEqual(NSNotFound, HLOutlineLayoutManagerLineContainingPointY(nodes, -48.99f, nodeLevels, levelLineHeights, levelAnchorPointYs, levelLabelOffsetYs));
+    XCTAssertEqual(2, HLOutlineLayoutManagerLineContainingPointY(nodes, -49.01f, nodeLevels, levelLineHeights, levelAnchorPointYs, levelLabelOffsetYs));
+    XCTAssertEqual(2, HLOutlineLayoutManagerLineContainingPointY(nodes, -78.99f, nodeLevels, levelLineHeights, levelAnchorPointYs, levelLabelOffsetYs));
+    XCTAssertEqual(NSNotFound, HLOutlineLayoutManagerLineContainingPointY(nodes, -79.01f, nodeLevels, levelLineHeights, levelAnchorPointYs, levelLabelOffsetYs));
+    XCTAssertEqual(NSNotFound, HLOutlineLayoutManagerLineContainingPointY(nodes, -82.99f, nodeLevels, levelLineHeights, levelAnchorPointYs, levelLabelOffsetYs));
+    XCTAssertEqual(3, HLOutlineLayoutManagerLineContainingPointY(nodes, -83.01f, nodeLevels, levelLineHeights, levelAnchorPointYs, levelLabelOffsetYs));
+    XCTAssertEqual(3, HLOutlineLayoutManagerLineContainingPointY(nodes, -92.99f, nodeLevels, levelLineHeights, levelAnchorPointYs, levelLabelOffsetYs));
+    XCTAssertEqual(NSNotFound, HLOutlineLayoutManagerLineContainingPointY(nodes, -93.01f, nodeLevels, levelLineHeights, levelAnchorPointYs, levelLabelOffsetYs));
   }
 }
 

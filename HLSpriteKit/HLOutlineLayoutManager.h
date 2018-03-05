@@ -362,14 +362,18 @@ FOUNDATION_EXPORT const CGFloat HLOutlineLayoutManagerEpsilon;
  Convenience method for finding the index of the node whose line contains the passed Y
  position, for nodes that have been laid out by an `HLOutlineLayoutManager`.
 
- Returns `NSNotFound` if no such node is found.
+ Returns `NSNotFound` if no such line is found.
 
  The algorithm uses binary search in the nodes list (assuming it is ordered by descending
  Y position), and calculates line height in the same way it is calculated in
  `HLOutlineLayoutManager` (which involves a few array lookups and `NSValue` conversions).
  X position is not considered.  Separators (both "before" and "after") are not considered
- to be part of the node's line; they do not need to be passed because they are inferred.
+ to be part of the node's line; they do not need to be passed because they are inferred
+ from current node position.
 */
-NSUInteger HLOutlineLayoutManagerNodeContainingPointY(NSArray *nodes, CGFloat pointY,
+NSUInteger HLOutlineLayoutManagerLineContainingPointY(NSArray *nodes,
+                                                      CGFloat pointY,
                                                       NSArray *nodeLevels,
-                                                      NSArray *levelLineHeights, NSArray *levelAnchorPointYs);
+                                                      NSArray *levelLineHeights,
+                                                      NSArray *levelAnchorPointYs,
+                                                      NSArray *levelLabelOffsetYs);
