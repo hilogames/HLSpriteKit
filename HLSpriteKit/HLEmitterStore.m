@@ -40,6 +40,15 @@
   return [emitter copy];
 }
 
+- (SKEmitterNode *)emitterForKey:(NSString *)key
+{
+  SKEmitterNode *emitter = _emitters[key];
+  if (!emitter) {
+    return nil;
+  }
+  return emitter;
+}
+
 - (void)setEmitter:(SKEmitterNode *)emitterNode forKey:(NSString *)key
 {
   _emitters[key] = emitterNode;
@@ -53,6 +62,11 @@
   }
   _emitters[key] = emitter;
   return emitter;
+}
+
+- (void)removeAll
+{
+  [_emitters removeAllObjects];
 }
 
 @end

@@ -35,6 +35,14 @@
 - (SKEmitterNode *)emitterCopyForKey:(NSString *)key;
 
 /**
+ Returns the stored emitter for the passed key, or `nil` if not found.
+
+ @warning Modifying the returned emitter will affect all future copies from this store.
+ Typically an emitter node is copied before it is used.  See `emitterCopyForKey:`
+*/
+- (SKEmitterNode *)emitterForKey:(NSString *)key;
+
+/**
  Sets the passed emitter in the store with the passed key.
 */
 - (void)setEmitter:(SKEmitterNode *)emitterNode forKey:(NSString *)key;
@@ -47,5 +55,10 @@
  Throws an exception if the emitter cannot be loaded.
 */
 - (SKEmitterNode *)setEmitterWithResource:(NSString *)name forKey:(NSString *)key;
+
+/**
+ Removes all emitters from the store.
+*/
+- (void)removeAll;
 
 @end
