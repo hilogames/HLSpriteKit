@@ -29,6 +29,13 @@
   `levelLineAfterSeparators`.  
   [Karl Voskuil](https://github.com/karlvoskuil)
 
+- Change default easing functions for `HLAction` from cubic easing to
+  sine easing.  Much less aggressive, and closer to the `SKAction`
+  easing, which is based on gentle cubic Bezier curves.  (For example,
+  `SKActionTimingEaseOut` is a [cubic Bezier with control points `(1/3,
+  1/3)` and `(2/3, 1)`](http://cubic-bezier.com/#.333,.333,.667,1).)  
+  [Karl Voskuil](https://github.com/karlvoskuil)
+
 ### Added
 
 - A new stack layout manager for one-dimensional layouts.  The stack
