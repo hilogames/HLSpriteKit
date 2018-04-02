@@ -12,26 +12,26 @@
 #import <UIKit/UIKit.h>
 #endif
 
+#include <math.h>
+
 CGFloat
 HLActionApplyTiming(HLActionTimingMode timingMode, CGFloat normalTime)
 {
+  // SKAction easing functions use cubic Bezier curves with implicit first and last
+  // control points (0, 0) and (1, 1).  Trial and error with ease-out proves it is using
+  // (1/3, 1/3) and (2/3, 1) for middle control points; the others are likely symmetric.
+  // These Beziers are gentler than our sine curves, but the sine math is much simpler.
+
   // Precondition: 0.0 <= normalTime <= 1.0
   switch (timingMode) {
     case HLActionTimingLinear:
       return normalTime;
     case HLActionTimingEaseIn:
-      return normalTime * normalTime * normalTime;
-    case HLActionTimingEaseOut: {
-      CGFloat t = (normalTime - 1.0f);
-      return t * t * t + 1.0f;
-    }
+      return (CGFloat)(sin((normalTime - 1.0) * M_PI_2) + 1.0);
+    case HLActionTimingEaseOut:
+      return (CGFloat)sin(normalTime * M_PI_2);
     case HLActionTimingEaseInEaseOut:
-      if (normalTime < 0.5f) {
-        return normalTime * normalTime * normalTime * 4.0f;
-      } else {
-        CGFloat t = normalTime * 2.0f - 2.0f;
-        return t * t * t / 2.0f + 1.0f;
-      }
+      return (CGFloat)((1.0 - cos(normalTime * M_PI)) / 2.0);
   }
 }
 
@@ -43,16 +43,12 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
     case HLActionTimingLinear:
       return normalTime;
     case HLActionTimingEaseIn:
-      return (CGFloat)cbrt(normalTime);
+      return (CGFloat)(asin(normalTime - 1.0) / M_PI_2 + 1.0);
     case HLActionTimingEaseOut: {
-      return (CGFloat)(cbrt(normalTime - 1.0f) + 1.0f);
+      return (CGFloat)(asin(normalTime) / M_PI_2);
     }
     case HLActionTimingEaseInEaseOut:
-      if (normalTime < 0.5f) {
-        return (CGFloat)cbrt(normalTime / 4.0f);
-      } else {
-        return (CGFloat)((cbrt(normalTime * 2.0f - 2.0f) + 2.0f) / 2.0f);
-      }
+      return (CGFloat)(acos(1.0 - normalTime * 2.0) / M_PI);
   }
 }
 
