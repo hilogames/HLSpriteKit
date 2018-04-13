@@ -20,17 +20,18 @@ typedef NS_ENUM(NSInteger, HLActionTimingMode) {
   */
   HLActionTimingLinear,
   /**
-   Time starts out slow and accelerates to a quick end, according to a cubic easing function.
+   Time starts out slow and accelerates to a quick end, according to a sine easing
+   function.
   */
   HLActionTimingEaseIn,
   /**
-   Time starts out quick and decelerates to a slow end, according to a cubic easing
+   Time starts out quick and decelerates to a slow end, according to a sine easing
    function.
   */
   HLActionTimingEaseOut,
   /**
    Time starts out slow, accelerates through the middle, and decelerates again to a slow
-   end, according to cubic easing functions.
+   end, according to sine easing functions.
   */
   HLActionTimingEaseInEaseOut,
 };
@@ -673,6 +674,63 @@ When complete, `elapsedTime` won't necessarily match the action's `duration`:
 @end
 
 /**
+ An action that tracks a relative change in z-position over a duration.
+ */
+@interface HLChangeZPositionByAction : HLAction <NSCoding, NSCopying>
+
+/// @name Creating the Action
+
+/**
+ Creates a change-z-position-by action.
+ */
+- (instancetype)initWithZPosition:(CGFloat)deltaZPosition duration:(NSTimeInterval)duration;
+
+/// @name Accessing Action State
+
+/**
+ The instantaneous change in position of the change-z-position-by action (caused by the
+ last update).
+
+ If a node was passed to the update method, its `zPosition` was changed by this delta.
+ */
+@property (nonatomic, readonly) CGFloat instantaneousDelta;
+
+@end
+
+/**
+ An action that changes z-position from one value to another over a duration.
+ */
+@interface HLChangeZPositionToAction : HLAction <NSCoding, NSCopying>
+
+/// @name Creating the Action
+
+/**
+ Creates a change-z-position-to action.
+
+ When the action is first updated, it will set its original z-position based on the
+ `zPosition` of the passed node.  For this reason, the node parameter passed to the first
+ update must be non-nil.  (To set the original z-position without a node, use
+ `initWithZFrom:to:duration:`.)
+ */
+- (instancetype)initWithZPositionTo:(CGFloat)zPositionTo duration:(NSTimeInterval)duration;
+
+/**
+ Creates a change-z-position-to action with a designated original z-position.
+ */
+- (instancetype)initWithZPositionFrom:(CGFloat)zPositionFrom to:(CGFloat)zPositionTo duration:(NSTimeInterval)duration;
+
+/// @name Accessing Action State
+
+/**
+ The current z-position of the change-z-position-to action.
+
+ If a node was passed to the update method, it was updated with this position.
+ */
+@property (nonatomic, readonly) CGFloat zPosition;
+
+@end
+
+/**
  An action that tracks a relative change in rotation over a duration.
 */
 @interface HLRotateByAction : HLAction <NSCoding, NSCopying>
@@ -691,7 +749,7 @@ When complete, `elapsedTime` won't necessarily match the action's `duration`:
 /**
  The instantaneous change in rotation of the rotate-by action (caused by the last update).
 
- If a node was passed to the update method, this value was added to its zRotation.
+ If a node was passed to the update method, its `zRotation` was changed by this delta.
 
  Angle values are measured in radians.
 */
@@ -725,7 +783,7 @@ When complete, `elapsedTime` won't necessarily match the action's `duration`:
  update must be non-nil.  (To set the initial rotation angle without a node, use
  `initWithAngleFrom:to:duration:shortestUnitArc:`.)
 */
-- (instancetype)initWithAngle:(CGFloat)angleTo duration:(NSTimeInterval)duration shortestUnitArc:(BOOL)shortestUnitArc;
+- (instancetype)initWithAngleTo:(CGFloat)angleTo duration:(NSTimeInterval)duration shortestUnitArc:(BOOL)shortestUnitArc;
 
 /**
  Creates a rotate-to action with optional automatic direction and a designated "angle from"
@@ -749,7 +807,7 @@ When complete, `elapsedTime` won't necessarily match the action's `duration`:
 /**
  The current rotation of the rotate-to action, in radians.
 
- If a node was passed to the update method, its `zPosition` was set to this value.
+ If a node was passed to the update method, its `zRotation` was set to this value.
 */
 @property (nonatomic, readonly) CGFloat angle;
 
@@ -1570,6 +1628,27 @@ When complete, `elapsedTime` won't necessarily match the action's `duration`:
 //+ (HLMoveToXAction *)moveFromX:(CGFloat)xFrom to:(CGFloat)xTo duration:(NSTimeInterval)duration;
 //+ (HLMoveToYAction *)moveToY:(CGFloat)yTo duration:(NSTimeInterval)duration;
 //+ (HLMoveToYAction *)moveFromY:(CGFloat)yFrom to:(CGFloat)yTo duration:(NSTimeInterval)duration;
+
+/**
+ Creates an action that tracks a relative change in z-position over a duration.
+*/
++ (HLChangeZPositionByAction *)changeZPositionBy:(CGFloat)zPositionDelta duration:(NSTimeInterval)duration;
+
+/**
+ Creates an action that changes z-position from one value to another over a duration.
+
+ When the action is first updated, it will set its original z-position based on the
+ `zPosition` of the passed node.  For this reason, the node parameter passed to the first
+ update must be non-nil.  (To set the original z-position without a node, use
+ `changeZPositionFrom:to:duration:`.)
+*/
++ (HLChangeZPositionToAction *)changeZPositionTo:(CGFloat)zPositionTo duration:(NSTimeInterval)duration;
+
+/**
+ Creates an action that changes z-position from one value to another over a duration, with
+ a designated original z-position.
+*/
++ (HLChangeZPositionToAction *)changeZPositionFrom:(CGFloat)zPositionFrom to:(CGFloat)zPositionTo duration:(NSTimeInterval)duration;
 
 /**
  Creates an action that tracks a relative change in rotation over a duration.

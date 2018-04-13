@@ -507,6 +507,21 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
   return [[HLMoveToAction alloc] initWithOrigin:origin destination:destination duration:duration];
 }
 
++ (HLChangeZPositionByAction *)changeZPositionBy:(CGFloat)zPositionDelta duration:(NSTimeInterval)duration
+{
+  return [[HLChangeZPositionByAction alloc] initWithZPosition:zPositionDelta duration:duration];
+}
+
++ (HLChangeZPositionToAction *)changeZPositionTo:(CGFloat)zPositionTo duration:(NSTimeInterval)duration
+{
+  return [[HLChangeZPositionToAction alloc] initWithZPositionTo:zPositionTo duration:duration];
+}
+
++ (HLChangeZPositionToAction *)changeZPositionFrom:(CGFloat)zPositionFrom to:(CGFloat)zPositionTo duration:(NSTimeInterval)duration
+{
+  return [[HLChangeZPositionToAction alloc] initWithZPositionFrom:zPositionFrom to:zPositionTo duration:duration];
+}
+
 + (HLRotateByAction *)rotateByAngle:(CGFloat)angleDelta duration:(NSTimeInterval)duration
 {
   return [[HLRotateByAction alloc] initWithAngle:angleDelta duration:duration];
@@ -514,7 +529,7 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
 
 + (HLRotateToAction *)rotateToAngle:(CGFloat)angleTo duration:(NSTimeInterval)duration;
 {
-  return [[HLRotateToAction alloc] initWithAngle:angleTo duration:duration shortestUnitArc:NO];
+  return [[HLRotateToAction alloc] initWithAngleTo:angleTo duration:duration shortestUnitArc:NO];
 }
 
 + (HLRotateToAction *)rotateFromAngle:(CGFloat)angleFrom to:(CGFloat)angleTo duration:(NSTimeInterval)duration;
@@ -524,7 +539,7 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
 
 + (HLRotateToAction *)rotateToAngle:(CGFloat)angleTo duration:(NSTimeInterval)duration shortestUnitArc:(BOOL)shortestUnitArc;
 {
-  return [[HLRotateToAction alloc] initWithAngle:angleTo duration:duration shortestUnitArc:shortestUnitArc];
+  return [[HLRotateToAction alloc] initWithAngleTo:angleTo duration:duration shortestUnitArc:shortestUnitArc];
 }
 
 + (HLRotateToAction *)rotateFromAngle:(CGFloat)angleFrom to:(CGFloat)angleTo duration:(NSTimeInterval)duration shortestUnitArc:(BOOL)shortestUnitArc;
@@ -1391,6 +1406,200 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
 
 @end
 
+@implementation HLChangeZPositionByAction
+{
+  CGFloat _delta;
+  CGFloat _lastCumulativeDelta;
+}
+
+- (instancetype)initWithZPosition:(CGFloat)zPositionDelta duration:(NSTimeInterval)duration
+{
+  self = [super initWithDuration:duration];
+  if (self) {
+    _delta = zPositionDelta;
+  }
+  return self;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+  self = [super initWithCoder:aDecoder];
+  if (self) {
+    _delta = (CGFloat)[aDecoder decodeDoubleForKey:@"delta"];
+    _lastCumulativeDelta = (CGFloat)[aDecoder decodeDoubleForKey:@"lastCumulativeDelta"];
+  }
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+  [super encodeWithCoder:aCoder];
+  [aCoder encodeDouble:_delta forKey:@"delta"];
+  [aCoder encodeDouble:_lastCumulativeDelta forKey:@"lastCumulativeDelta"];
+}
+
+- (instancetype)copyWithZone:(NSZone *)zone
+{
+  HLChangeZPositionByAction *copy = [super copyWithZone:zone];
+  if (copy) {
+    copy->_delta = _delta;
+    copy->_lastCumulativeDelta = _lastCumulativeDelta;
+  }
+  return copy;
+}
+
+- (BOOL)HL_update:(NSTimeInterval)incrementalTime node:(SKNode *)node extraTime:(NSTimeInterval *)extraTime
+{
+  // note: This mechanism chosen in order to avoid floating point drift (in the sum of instantaneous deltas
+  // applied to the node or returned by the property) and to support calculation of property .instantaneousDelta.
+
+  CGFloat lastInstantaneousDelta = [self HL_instantaneousDelta];
+  // note: Always calculate the cumulative by adding the instantaneous, so that we can compensate for the difference
+  // between "elasped delta" (normal-elapsed-time * total-delta) and "cumulative delta" (sum of a series of
+  // instantaneous-delta).
+  _lastCumulativeDelta += lastInstantaneousDelta;
+
+  BOOL notYetCompleted;
+  [self HL_advanceTime:incrementalTime extraTime:extraTime notYetCompleted:&notYetCompleted];
+
+  if (node) {
+    CGFloat instantaneousDelta = [self HL_instantaneousDelta];
+    node.zPosition += instantaneousDelta;
+  }
+
+  return notYetCompleted;
+}
+
+- (CGFloat)instantaneousDelta
+{
+  CGFloat instantaneousDelta = [self HL_instantaneousDelta];
+  return instantaneousDelta;
+}
+
+- (CGFloat)HL_instantaneousDelta
+{
+  NSTimeInterval elapsedTime = self.elapsedTime;
+  NSTimeInterval duration = self.duration;
+
+  CGFloat instantaneousDelta;
+  if (elapsedTime >= duration) {
+    instantaneousDelta = _delta - _lastCumulativeDelta;
+  } else {
+    CGFloat normalTime = elapsedTime / duration;
+    instantaneousDelta = _delta * normalTime - _lastCumulativeDelta;
+  }
+  return instantaneousDelta;
+}
+
+@end
+
+@implementation HLChangeZPositionToAction
+{
+  BOOL _isZPositionFromSet;
+  CGFloat _zPositionFrom;
+  CGFloat _zPositionTo;
+}
+
+- (instancetype)initWithZPositionTo:(CGFloat)zPositionTo duration:(NSTimeInterval)duration
+{
+  self = [super initWithDuration:duration];
+  if (self) {
+    _isZPositionFromSet = NO;
+    _zPositionTo = zPositionTo;
+  }
+  return self;
+}
+
+- (instancetype)initWithZPositionFrom:(CGFloat)zPositionFrom to:(CGFloat)zPositionTo duration:(NSTimeInterval)duration
+{
+  self = [super initWithDuration:duration];
+  if (self) {
+    _isZPositionFromSet = YES;
+    _zPositionFrom = zPositionFrom;
+    _zPositionTo = zPositionTo;
+  }
+  return self;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+  self = [super initWithCoder:aDecoder];
+  if (self) {
+    _isZPositionFromSet = [aDecoder decodeBoolForKey:@"isZPositionFromSet"];
+    _zPositionFrom = (CGFloat)[aDecoder decodeDoubleForKey:@"zPositionFrom"];
+    _zPositionTo = (CGFloat)[aDecoder decodeDoubleForKey:@"zPositionTo"];
+  }
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+  [super encodeWithCoder:aCoder];
+  [aCoder encodeBool:_isZPositionFromSet forKey:@"isZPositionFromSet"];
+  [aCoder encodeDouble:_zPositionFrom forKey:@"zPositionFrom"];
+  [aCoder encodeDouble:_zPositionTo forKey:@"zPositionTo"];
+}
+
+- (instancetype)copyWithZone:(NSZone *)zone
+{
+  HLChangeZPositionToAction *copy = [super copyWithZone:zone];
+  if (copy) {
+    copy->_isZPositionFromSet = _isZPositionFromSet;
+    copy->_zPositionFrom = _zPositionFrom;
+    copy->_zPositionTo = _zPositionTo;
+  }
+  return copy;
+}
+
+- (BOOL)HL_update:(NSTimeInterval)incrementalTime node:(SKNode *)node extraTime:(NSTimeInterval *)extraTime
+{
+  if (!_isZPositionFromSet) {
+    if (node) {
+      _zPositionFrom = node.zPosition;
+      _isZPositionFromSet = YES;
+    } else {
+      [NSException raise:@"HLActionUninitialized" format:@"HLChangeZPositionToAction requires a z-position-from:"
+       " either pass a node to the first update,"
+       " or initialize with initWithZPositionFrom:to:duration:."];
+    }
+  }
+
+  BOOL notYetCompleted;
+  [self HL_advanceTime:incrementalTime extraTime:extraTime notYetCompleted:&notYetCompleted];
+
+  if (node) {
+    node.zPosition = [self HL_zPosition];
+  }
+
+  return notYetCompleted;
+}
+
+- (CGFloat)zPosition
+{
+  if (!_isZPositionFromSet) {
+    [NSException raise:@"HLActionUninitialized" format:@"HLChangeZPositionToAction requires an z-position-from:"
+     " either pass a node to the first update,"
+     " or initialize with initWithZPositionFrom:to:duration:."];
+  }
+  return [self HL_zPosition];
+}
+
+- (CGFloat)HL_zPosition
+{
+  NSTimeInterval elapsedTime = self.elapsedTime;
+  NSTimeInterval duration = self.duration;
+
+  if (elapsedTime >= duration) {
+    return _zPositionTo;
+  }
+
+  CGFloat normalTime = elapsedTime / duration;
+
+  return _zPositionFrom * (1.0f - normalTime) + _zPositionTo * normalTime;
+}
+
+@end
+
 @implementation HLRotateByAction
 {
   CGFloat _delta;
@@ -1486,7 +1695,7 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
   BOOL _shortestUnitArc;
 }
 
-- (instancetype)initWithAngle:(CGFloat)angleTo duration:(NSTimeInterval)duration shortestUnitArc:(BOOL)shortestUnitArc
+- (instancetype)initWithAngleTo:(CGFloat)angleTo duration:(NSTimeInterval)duration shortestUnitArc:(BOOL)shortestUnitArc
 {
   self = [super initWithDuration:duration];
   if (self) {
