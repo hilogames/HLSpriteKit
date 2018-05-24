@@ -8,6 +8,8 @@
 
 #import "HLAction.h"
 
+#import "HLLog.h"
+
 #if TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
 #endif
@@ -65,6 +67,10 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
 - (NSTimeInterval)HL_elapsedTimeForElapsedTimeLinear:(NSTimeInterval)elapsedTimeLinear;
 
 - (NSTimeInterval)HL_elapsedTimeLinearForElapsedTime:(NSTimeInterval)elapsedTime;
+
+#if DEBUG
+@property (nonatomic, assign) BOOL completed;
+#endif
 
 @end
 
@@ -205,6 +211,25 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
 
 - (void)runAction:(HLAction *)action withKey:(NSString *)key
 {
+  // Want to prevent people running HLActions more than once, like SKActions.
+  // Currently Gargoyles is doing it in GLUnit GL_fade* for unitNode and shadowNode.
+  // Want to get a warning about it.
+  // So:
+  //  . Note it's okay to run an action with elapsedTime > 0; it might have been decoded
+  //     that way, or manually advanced.
+  //
+  //  1) First problem: Running on two action runners at the same time.
+  //       Note that even if it's the SAME action runner, that's still no good, as if
+  //       e.g. an HLAction is run in a sequence twice.  Need to COPY it, user!
+  //
+  //  2) Second problem: Running an action which has already completed.  Should be copied
+  //     before it is run.  Or else we could provide a reset method, but that seems
+  //     unnecessary.
+  //
+  //  . Alternately, could try to detect the problem in update on the action, but I think it just
+  //    doesn't know anything about its runner there, and shouldn't.  Most users will use
+  //    runners, and so we can detect it here, in run.
+
   // note: Requiring a key greatly simplifies the implementation here.
   if (!key) {
     [NSException raise:@"HLActionMissingKey" format:@"Action cannot be run without a key."];
@@ -247,6 +272,9 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
     _duration = duration;
     _elapsedTimeLinear = 0.0f;
     _speed = 1.0f;
+#if DEBUG
+    _completed = NO;
+#endif
   }
   return self;
 }
@@ -275,6 +303,13 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
     } else {
       _speed = 1.0f;
     }
+#if DEBUG
+    if ([aDecoder containsValueForKey:@"completed"]) {
+      self.completed = [aDecoder decodeBoolForKey:@"completed"];
+    } else {
+      self.completed = NO;
+    }
+#endif
   }
   return self;
 }
@@ -300,6 +335,11 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
   if (_speed != 1.0f) {
     [aCoder encodeInteger:_speed forKey:@"speed"];
   }
+#if DEBUG
+  if (_completed) {
+    [aCoder encodeBool:_completed forKey:@"completed"];
+  }
+#endif
 }
 
 - (instancetype)copyWithZone:(NSZone *)zone
@@ -310,6 +350,9 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
     copy->_elapsedTimeLinear = _elapsedTimeLinear;
     copy->_timingMode = _timingMode;
     copy->_speed = _speed;
+#if DEBUG
+    copy->_completed = _completed;
+#endif
   }
   return copy;
 }
@@ -385,7 +428,7 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
   // Examples:
   //
   //  . HLPerformSelector*Action will be updated exactly once, which means they don't have
-  //    to keep track themselves whether or not they triggered.  This call should happend
+  //    to keep track themselves whether or not they triggered.  This call should happen
   //    regardless of elapsed time.
   //
   //  . HLCustomAction wants to guarantee to invoke its selector with
@@ -763,11 +806,19 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
 
 - (BOOL)HL_update:(NSTimeInterval)incrementalTime node:(SKNode *)node extraTime:(NSTimeInterval *)extraTime
 {
+#if DEBUG
+  if (self.completed) {
+    // note: Some actions rely on this precondition (that update is not called after
+    // returning NO) more than others.  Probably things will break, but maybe not.
+    HLLog(HLLogError, @"HLActions should not be updated after they have completed."
+          " (Note that SKActions are immutable and can be reused multiple times,"
+          " but HLActions are stateful and can only be used once.)");
+  }
   // note: Since groups must be created non-empty, the only way we have no actions is if
-  // we've removed them on a previous update and returned NO.  This gives us a nice way to
-  // assert for ourselves a rule that should be true for all actions: that after we return
-  // NO, we aren't called again.
-  assert([_mutableActions count] > 0);
+  // we've removed them on a previous update and returned NO.  This gives us an alternate
+  // way to assert the precondition (if the self.completed is ever removed).
+  //assert([_mutableActions count] > 0);
+#endif
 
   NSTimeInterval elapsedTimeOld = self.elapsedTime;
   [self HL_advanceTime:incrementalTime];
@@ -825,6 +876,9 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
       // to successfully convert to the caller's time frame.
       assert(*extraTime >= 0.0 && *extraTime <= incrementalTime);
     }
+#if DEBUG
+    self.completed = YES;
+#endif
     return NO;
   }
 }
@@ -890,6 +944,20 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
   // duration; it's only completed when its update returns NO.  For collections of actions,
   // that also means we can't trust our duration and elapsed time to know when we are complete:
   // we are only completed when all our actions are completed, and our duration is approximate.
+
+#if DEBUG
+  if (self.completed) {
+    // note: Some actions rely on this precondition (that update is not called after
+    // returning NO) more than others.  Probably things will break, but maybe not.
+    HLLog(HLLogError, @"HLActions should not be updated after they have completed."
+          " (Note that SKActions are immutable and can be reused multiple times,"
+          " but HLActions are stateful and can only be used once.)");
+  }
+  // note: Since sequences must be created non-empty, the only way we have no actions is
+  // if we've removed them on a previous update and returned NO.  This gives us an
+  // alternate way to assert the precondition (if the self.completed is ever removed).
+  //assert([_mutableActions count] > 0);
+#endif
 
   // note: Sequences have another expectation: One action in a sequence won't get its
   // first update call until the last action has completed.
@@ -977,11 +1045,6 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
   //
   // Going with the first option, for now.
 
-  // note: Since sequences must be created non-empty, the only way we have no actions is
-  // if we've removed them on a previous update and returned NO.  This gives us a nice way
-  // to assert the rule that actions aren't updated if they've previously returned NO.
-  assert([_mutableActions count] > 0);
-
   // note: A problem we have in HLActionRunner that we don't have here: Our actions can't
   // be modified in the middle of an update.  So iterating through them is straightforward.
   // I'm noting it here because sometimes I think I should allow adding or removing actions
@@ -1037,6 +1100,9 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
       // to successfully convert to the caller's time frame.
       assert(*extraTime >= 0.0 && *extraTime <= incrementalTime);
     }
+#if DEBUG
+    self.completed = YES;
+#endif
     return NO;
   }
 }
@@ -1111,6 +1177,16 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
 
 - (BOOL)HL_update:(NSTimeInterval)incrementalTime node:(SKNode *)node extraTime:(NSTimeInterval *)extraTime
 {
+#if DEBUG
+  if (self.completed) {
+    // note: Some actions rely on this precondition (that update is not called after
+    // returning NO) more than others.  Probably things will break, but maybe not.
+    HLLog(HLLogError, @"HLActions should not be updated after they have completed."
+          " (Note that SKActions are immutable and can be reused multiple times,"
+          " but HLActions are stateful and can only be used once.)");
+  }
+#endif
+
   NSTimeInterval elapsedTimeOld = self.elapsedTime;
   [self HL_advanceTime:incrementalTime];
   NSTimeInterval elapsedTime = self.elapsedTime;
@@ -1162,6 +1238,9 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
       // to successfully convert to the caller's time frame.
       assert(*extraTime >= 0.0 && *extraTime <= incrementalTime);
     }
+#if DEBUG
+    self.completed = YES;
+#endif
     return NO;
   }
 }
@@ -1172,8 +1251,22 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
 
 - (BOOL)HL_update:(NSTimeInterval)incrementalTime node:(SKNode *)node extraTime:(NSTimeInterval *)extraTime
 {
+#if DEBUG
+  if (self.completed) {
+    // note: Some actions rely on this precondition (that update is not called after
+    // returning NO) more than others.  Probably things will break, but maybe not.
+    HLLog(HLLogError, @"HLActions should not be updated after they have completed."
+          " (Note that SKActions are immutable and can be reused multiple times,"
+          " but HLActions are stateful and can only be used once.)");
+  }
+#endif
   BOOL notYetCompleted;
   [self HL_advanceTime:incrementalTime extraTime:extraTime notYetCompleted:&notYetCompleted];
+#if DEBUG
+  if (!notYetCompleted) {
+    self.completed = YES;
+  }
+#endif
   return notYetCompleted;
 }
 
@@ -1232,6 +1325,16 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
 
 - (BOOL)HL_update:(NSTimeInterval)incrementalTime node:(SKNode *)node extraTime:(NSTimeInterval *)extraTime
 {
+#if DEBUG
+  if (self.completed) {
+    // note: Some actions rely on this precondition (that update is not called after
+    // returning NO) more than others.  Probably things will break, but maybe not.
+    HLLog(HLLogError, @"HLActions should not be updated after they have completed."
+          " (Note that SKActions are immutable and can be reused multiple times,"
+          " but HLActions are stateful and can only be used once.)");
+  }
+#endif
+
   // note: This mechanism chosen in order to avoid floating point drift (in the sum of instantaneous deltas
   // applied to the node or returned by the property) and to support calculation of property .instantaneousDelta.
 
@@ -1253,6 +1356,11 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
     node.position = position;
   }
 
+#if DEBUG
+  if (!notYetCompleted) {
+    self.completed = YES;
+  }
+#endif
   return notYetCompleted;
 }
 
@@ -1350,6 +1458,16 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
 
 - (BOOL)HL_update:(NSTimeInterval)incrementalTime node:(SKNode *)node extraTime:(NSTimeInterval *)extraTime
 {
+#if DEBUG
+  if (self.completed) {
+    // note: Some actions rely on this precondition (that update is not called after
+    // returning NO) more than others.  Probably things will break, but maybe not.
+    HLLog(HLLogError, @"HLActions should not be updated after they have completed."
+          " (Note that SKActions are immutable and can be reused multiple times,"
+          " but HLActions are stateful and can only be used once.)");
+  }
+#endif
+
   // note: For reference, compare SKAction moveTo: The node's origin is remembered on the
   // first update, and then the position is set at each subsequent update absolutely on a
   // line between origin and destination (disregarding current position along the way).
@@ -1373,6 +1491,11 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
     node.position = [self HL_position];
   }
 
+#if DEBUG
+  if (!notYetCompleted) {
+    self.completed = YES;
+  }
+#endif
   return notYetCompleted;
 }
 
@@ -1450,6 +1573,16 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
 
 - (BOOL)HL_update:(NSTimeInterval)incrementalTime node:(SKNode *)node extraTime:(NSTimeInterval *)extraTime
 {
+#if DEBUG
+  if (self.completed) {
+    // note: Some actions rely on this precondition (that update is not called after
+    // returning NO) more than others.  Probably things will break, but maybe not.
+    HLLog(HLLogError, @"HLActions should not be updated after they have completed."
+          " (Note that SKActions are immutable and can be reused multiple times,"
+          " but HLActions are stateful and can only be used once.)");
+  }
+#endif
+
   // note: This mechanism chosen in order to avoid floating point drift (in the sum of instantaneous deltas
   // applied to the node or returned by the property) and to support calculation of property .instantaneousDelta.
 
@@ -1467,6 +1600,11 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
     node.zPosition += instantaneousDelta;
   }
 
+#if DEBUG
+  if (!notYetCompleted) {
+    self.completed = YES;
+  }
+#endif
   return notYetCompleted;
 }
 
@@ -1553,6 +1691,16 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
 
 - (BOOL)HL_update:(NSTimeInterval)incrementalTime node:(SKNode *)node extraTime:(NSTimeInterval *)extraTime
 {
+#if DEBUG
+  if (self.completed) {
+    // note: Some actions rely on this precondition (that update is not called after
+    // returning NO) more than others.  Probably things will break, but maybe not.
+    HLLog(HLLogError, @"HLActions should not be updated after they have completed."
+          " (Note that SKActions are immutable and can be reused multiple times,"
+          " but HLActions are stateful and can only be used once.)");
+  }
+#endif
+
   if (!_isZPositionFromSet) {
     if (node) {
       _zPositionFrom = node.zPosition;
@@ -1571,6 +1719,11 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
     node.zPosition = [self HL_zPosition];
   }
 
+#if DEBUG
+  if (!notYetCompleted) {
+    self.completed = YES;
+  }
+#endif
   return notYetCompleted;
 }
 
@@ -1644,6 +1797,16 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
 
 - (BOOL)HL_update:(NSTimeInterval)incrementalTime node:(SKNode *)node extraTime:(NSTimeInterval *)extraTime
 {
+#if DEBUG
+  if (self.completed) {
+    // note: Some actions rely on this precondition (that update is not called after
+    // returning NO) more than others.  Probably things will break, but maybe not.
+    HLLog(HLLogError, @"HLActions should not be updated after they have completed."
+          " (Note that SKActions are immutable and can be reused multiple times,"
+          " but HLActions are stateful and can only be used once.)");
+  }
+#endif
+
   // note: This mechanism chosen in order to avoid floating point drift (in the sum of instantaneous deltas
   // applied to the node or returned by the property) and to support calculation of property .instantaneousDelta.
 
@@ -1661,6 +1824,11 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
     node.zRotation += instantaneousDelta;
   }
 
+#if DEBUG
+  if (!notYetCompleted) {
+    self.completed = YES;
+  }
+#endif
   return notYetCompleted;
 }
 
@@ -1757,6 +1925,16 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
 
 - (BOOL)HL_update:(NSTimeInterval)incrementalTime node:(SKNode *)node extraTime:(NSTimeInterval *)extraTime
 {
+#if DEBUG
+  if (self.completed) {
+    // note: Some actions rely on this precondition (that update is not called after
+    // returning NO) more than others.  Probably things will break, but maybe not.
+    HLLog(HLLogError, @"HLActions should not be updated after they have completed."
+          " (Note that SKActions are immutable and can be reused multiple times,"
+          " but HLActions are stateful and can only be used once.)");
+  }
+#endif
+
   if (!_isAngleFromSet) {
     if (node) {
       if (_shortestUnitArc) {
@@ -1779,6 +1957,11 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
     node.zRotation = [self HL_angle];
   }
 
+#if DEBUG
+  if (!notYetCompleted) {
+    self.completed = YES;
+  }
+#endif
   return notYetCompleted;
 }
 
@@ -1865,6 +2048,16 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
 
 - (BOOL)HL_update:(NSTimeInterval)incrementalTime node:(SKNode *)node extraTime:(NSTimeInterval *)extraTime
 {
+#if DEBUG
+  if (self.completed) {
+    // note: Some actions rely on this precondition (that update is not called after
+    // returning NO) more than others.  Probably things will break, but maybe not.
+    HLLog(HLLogError, @"HLActions should not be updated after they have completed."
+          " (Note that SKActions are immutable and can be reused multiple times,"
+          " but HLActions are stateful and can only be used once.)");
+  }
+#endif
+
   // note: This mechanism chosen in order to avoid floating point drift (in the sum of instantaneous deltas
   // applied to the node or returned by the property) and to support calculation of property .instantaneousDelta.
 
@@ -1883,6 +2076,11 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
     node.yScale += instantaneousDelta;
   }
 
+#if DEBUG
+  if (!notYetCompleted) {
+    self.completed = YES;
+  }
+#endif
   return notYetCompleted;
 }
 
@@ -1962,6 +2160,16 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
 
 - (BOOL)HL_update:(NSTimeInterval)incrementalTime node:(SKNode *)node extraTime:(NSTimeInterval *)extraTime
 {
+#if DEBUG
+  if (self.completed) {
+    // note: Some actions rely on this precondition (that update is not called after
+    // returning NO) more than others.  Probably things will break, but maybe not.
+    HLLog(HLLogError, @"HLActions should not be updated after they have completed."
+          " (Note that SKActions are immutable and can be reused multiple times,"
+          " but HLActions are stateful and can only be used once.)");
+  }
+#endif
+
   // note: This mechanism chosen in order to avoid floating point drift (in the sum of instantaneous deltas
   // applied to the node or returned by the property) and to support calculation of property .instantaneousDelta*.
 
@@ -1985,6 +2193,11 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
     node.yScale += instantaneousDeltaY;
   }
 
+#if DEBUG
+  if (!notYetCompleted) {
+    self.completed = YES;
+  }
+#endif
   return notYetCompleted;
 }
 
@@ -2097,6 +2310,16 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
 
 - (BOOL)HL_update:(NSTimeInterval)incrementalTime node:(SKNode *)node extraTime:(NSTimeInterval *)extraTime
 {
+#if DEBUG
+  if (self.completed) {
+    // note: Some actions rely on this precondition (that update is not called after
+    // returning NO) more than others.  Probably things will break, but maybe not.
+    HLLog(HLLogError, @"HLActions should not be updated after they have completed."
+          " (Note that SKActions are immutable and can be reused multiple times,"
+          " but HLActions are stateful and can only be used once.)");
+  }
+#endif
+
   if (!_isFromSet) {
     if (node) {
       _xFrom = node.xScale;
@@ -2120,6 +2343,11 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
     node.yScale = scaleY;
   }
 
+#if DEBUG
+  if (!notYetCompleted) {
+    self.completed = YES;
+  }
+#endif
   return notYetCompleted;
 }
 
@@ -2220,6 +2448,16 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
 
 - (BOOL)HL_update:(NSTimeInterval)incrementalTime node:(SKNode *)node extraTime:(NSTimeInterval *)extraTime
 {
+#if DEBUG
+  if (self.completed) {
+    // note: Some actions rely on this precondition (that update is not called after
+    // returning NO) more than others.  Probably things will break, but maybe not.
+    HLLog(HLLogError, @"HLActions should not be updated after they have completed."
+          " (Note that SKActions are immutable and can be reused multiple times,"
+          " but HLActions are stateful and can only be used once.)");
+  }
+#endif
+
   // note: This mechanism chosen in order to avoid floating point drift (in the sum of instantaneous deltas
   // applied to the node or returned by the property) and to support calculation of property .instantaneousDelta.
 
@@ -2237,6 +2475,11 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
     node.alpha += instantaneousDelta;
   }
 
+#if DEBUG
+  if (!notYetCompleted) {
+    self.completed = YES;
+  }
+#endif
   return notYetCompleted;
 }
 
@@ -2323,6 +2566,16 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
 
 - (BOOL)HL_update:(NSTimeInterval)incrementalTime node:(SKNode *)node extraTime:(NSTimeInterval *)extraTime
 {
+#if DEBUG
+  if (self.completed) {
+    // note: Some actions rely on this precondition (that update is not called after
+    // returning NO) more than others.  Probably things will break, but maybe not.
+    HLLog(HLLogError, @"HLActions should not be updated after they have completed."
+          " (Note that SKActions are immutable and can be reused multiple times,"
+          " but HLActions are stateful and can only be used once.)");
+  }
+#endif
+
   if (!_isAlphaFromSet) {
     if (node) {
       _alphaFrom = node.alpha;
@@ -2341,6 +2594,11 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
     node.alpha = [self HL_alpha];
   }
 
+#if DEBUG
+  if (!notYetCompleted) {
+    self.completed = YES;
+  }
+#endif
   return notYetCompleted;
 }
 
@@ -2489,6 +2747,16 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
 
 - (BOOL)HL_update:(NSTimeInterval)incrementalTime node:(SKNode *)node extraTime:(NSTimeInterval *)extraTime
 {
+#if DEBUG
+  if (self.completed) {
+    // note: Some actions rely on this precondition (that update is not called after
+    // returning NO) more than others.  Probably things will break, but maybe not.
+    HLLog(HLLogError, @"HLActions should not be updated after they have completed."
+          " (Note that SKActions are immutable and can be reused multiple times,"
+          " but HLActions are stateful and can only be used once.)");
+  }
+#endif
+
   // note: Should use duck-typing here, or check for SKSpriteNode?
   BOOL haveSpriteNode = (node && [node isKindOfClass:[SKSpriteNode class]]);
 
@@ -2525,6 +2793,11 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
     ((SKSpriteNode *)node).colorBlendFactor = colorBlendFactor;
   }
 
+#if DEBUG
+  if (!notYetCompleted) {
+    self.completed = YES;
+  }
+#endif
   return notYetCompleted;
 }
 
@@ -2716,6 +2989,16 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
 
 - (BOOL)HL_update:(NSTimeInterval)incrementalTime node:(SKNode *)node extraTime:(NSTimeInterval *)extraTime
 {
+#if DEBUG
+  if (self.completed) {
+    // note: Some actions rely on this precondition (that update is not called after
+    // returning NO) more than others.  Probably things will break, but maybe not.
+    HLLog(HLLogError, @"HLActions should not be updated after they have completed."
+          " (Note that SKActions are immutable and can be reused multiple times,"
+          " but HLActions are stateful and can only be used once.)");
+  }
+#endif
+
   // note: Should use duck-typing here, or check for SKSpriteNode?
   BOOL haveTexturedNode = (node && [node isKindOfClass:[SKSpriteNode class]]);
 
@@ -2763,6 +3046,11 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
     }
   }
 
+#if DEBUG
+  if (!notYetCompleted) {
+    self.completed = YES;
+  }
+#endif
   return notYetCompleted;
 }
 
@@ -2891,6 +3179,9 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
 
 - (BOOL)HL_update:(NSTimeInterval)incrementalTime node:(SKNode *)node extraTime:(NSTimeInterval *)extraTime
 {
+  // note: This action never completes, so the typical DEBUG check for completion
+  // is not meaningful.
+
   [self HL_advanceTime:incrementalTime];
 
   // note: See note in HLAnimateTexturesAction HL_update; for now, calculate texture index on-demand.
@@ -2948,11 +3239,25 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
 
 - (BOOL)HL_update:(NSTimeInterval)incrementalTime node:(SKNode *)node extraTime:(NSTimeInterval *)extraTime
 {
+#if DEBUG
+  if (self.completed) {
+    // note: Some actions rely on this precondition (that update is not called after
+    // returning NO) more than others.  Probably things will break, but maybe not.
+    HLLog(HLLogError, @"HLActions should not be updated after they have completed."
+          " (Note that SKActions are immutable and can be reused multiple times,"
+          " but HLActions are stateful and can only be used once.)");
+  }
+#endif
+
   [self HL_advanceTime:incrementalTime];
   if (node && node.parent) {
     [node removeFromParent];
   }
+
   *extraTime = incrementalTime;
+#if DEBUG
+  self.completed = YES;
+#endif
   return NO;
 }
 
@@ -3003,12 +3308,23 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
 
 - (BOOL)HL_update:(NSTimeInterval)incrementalTime node:(SKNode *)node extraTime:(NSTimeInterval *)extraTime
 {
-  // note: See note in [HLAction HL_update] for handling action completion and removal.  In
-  // short, an action must be allowed a final update call regardless of its elapsed time
-  // and duration; it's only completed when its update returns NO.  Further, when it
-  // returns NO, then it won't be called again.  For our purposes, we take advantage of
-  // this to assert that we'll do one (and only one) callback to our target.
-  assert(self.elapsedTime == 0.0);
+#if DEBUG
+  if (self.completed) {
+    // note: Some actions rely on this precondition (that update is not called after
+    // returning NO) more than others.  Probably things will break, but maybe not.
+    HLLog(HLLogError, @"HLActions should not be updated after they have completed."
+          " (Note that SKActions are immutable and can be reused multiple times,"
+          " but HLActions are stateful and can only be used once.)");
+  }
+  // note: For more details, see note in [HLAction HL_update] for handling action
+  // completion and removal.  In short, an action must be allowed a final update call
+  // regardless of its elapsed time and duration; it's only completed when its update
+  // returns NO.  Further, when it returns NO, then it won't be called again.  This is
+  // especially important for perform selector actions, so that they call their target
+  // callbacks exactly once.  Here is an alternative way to check for multiple calls (if
+  // we ever don't have the self.completed).
+  //assert(self.elapsedTime == 0.0);
+#endif
 
   [self HL_advanceTime:incrementalTime];
 
@@ -3020,6 +3336,9 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
   }
 
   *extraTime = incrementalTime;
+#if DEBUG
+  self.completed = YES;
+#endif
   return NO;
 }
 
@@ -3075,12 +3394,23 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
 
 - (BOOL)HL_update:(NSTimeInterval)incrementalTime node:(SKNode *)node extraTime:(NSTimeInterval *)extraTime
 {
-  // note: See note in [HLAction HL_update] for handling action completion and removal.  In
-  // short, an action must be allowed a final update call regardless of its elapsed time
-  // and duration; it's only completed when its update returns NO.  Further, when it
-  // returns NO, then it won't be called again.  For our purposes, we take advantage of
-  // this to assert that we'll do one (and only one) callback to our target.
-  assert(self.elapsedTime == 0.0);
+#if DEBUG
+  if (self.completed) {
+    // note: Some actions rely on this precondition (that update is not called after
+    // returning NO) more than others.  Probably things will break, but maybe not.
+    HLLog(HLLogError, @"HLActions should not be updated after they have completed."
+          " (Note that SKActions are immutable and can be reused multiple times,"
+          " but HLActions are stateful and can only be used once.)");
+  }
+  // note: For more details, see note in [HLAction HL_update] for handling action
+  // completion and removal.  In short, an action must be allowed a final update call
+  // regardless of its elapsed time and duration; it's only completed when its update
+  // returns NO.  Further, when it returns NO, then it won't be called again.  This is
+  // especially important for perform selector actions, so that they call their target
+  // callbacks exactly once.  Here is an alternative way to check for multiple calls (if
+  // we ever don't have the self.completed).
+  //assert(self.elapsedTime == 0.0);
+#endif
 
   [self HL_advanceTime:incrementalTime];
 
@@ -3092,6 +3422,9 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
   }
 
   *extraTime = incrementalTime;
+#if DEBUG
+  self.completed = YES;
+#endif
   return NO;
 }
 
@@ -3152,12 +3485,23 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
 
 - (BOOL)HL_update:(NSTimeInterval)incrementalTime node:(SKNode *)node extraTime:(NSTimeInterval *)extraTime
 {
-  // note: See note in [HLAction HL_update] for handling action completion and removal.  In
-  // short, an action must be allowed a final update call regardless of its elapsed time
-  // and duration; it's only completed when its update returns NO.  Further, when it
-  // returns NO, then it won't be called again.  For our purposes, we take advantage of
-  // this to assert that we'll do one (and only one) callback to our target.
-  assert(self.elapsedTime == 0.0);
+#if DEBUG
+  if (self.completed) {
+    // note: Some actions rely on this precondition (that update is not called after
+    // returning NO) more than others.  Probably things will break, but maybe not.
+    HLLog(HLLogError, @"HLActions should not be updated after they have completed."
+          " (Note that SKActions are immutable and can be reused multiple times,"
+          " but HLActions are stateful and can only be used once.)");
+  }
+  // note: For more details, see note in [HLAction HL_update] for handling action
+  // completion and removal.  In short, an action must be allowed a final update call
+  // regardless of its elapsed time and duration; it's only completed when its update
+  // returns NO.  Further, when it returns NO, then it won't be called again.  This is
+  // especially important for perform selector actions, so that they call their target
+  // callbacks exactly once.  Here is an alternative way to check for multiple calls (if
+  // we ever don't have the self.completed).
+  //assert(self.elapsedTime == 0.0);
+#endif
 
   [self HL_advanceTime:incrementalTime];
 
@@ -3169,6 +3513,9 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
   }
 
   *extraTime = incrementalTime;
+#if DEBUG
+  self.completed = YES;
+#endif
   return NO;
 }
 
@@ -3219,12 +3566,23 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
 
 - (BOOL)HL_update:(NSTimeInterval)incrementalTime node:(SKNode *)node extraTime:(NSTimeInterval *)extraTime
 {
-  // note: See note in [HLAction HL_update] for handling action completion and removal.  In
-  // short, an action must be allowed a final update call regardless of its elapsed time
-  // and duration; it's only completed when its update returns NO.  Further, when it
-  // returns NO, then it won't be called again.  For our purposes, we take advantage of
-  // this to assert that we'll do one (and only one) callback to our target.
-  assert(self.elapsedTime == 0.0);
+#if DEBUG
+  if (self.completed) {
+    // note: Some actions rely on this precondition (that update is not called after
+    // returning NO) more than others.  Probably things will break, but maybe not.
+    HLLog(HLLogError, @"HLActions should not be updated after they have completed."
+          " (Note that SKActions are immutable and can be reused multiple times,"
+          " but HLActions are stateful and can only be used once.)");
+  }
+  // note: For more details, see note in [HLAction HL_update] for handling action
+  // completion and removal.  In short, an action must be allowed a final update call
+  // regardless of its elapsed time and duration; it's only completed when its update
+  // returns NO.  Further, when it returns NO, then it won't be called again.  This is
+  // especially important for perform selector actions, so that they call their target
+  // callbacks exactly once.  Here is an alternative way to check for multiple calls (if
+  // we ever don't have the self.completed).
+  //assert(self.elapsedTime == 0.0);
+#endif
 
   [self HL_advanceTime:incrementalTime];
 
@@ -3236,6 +3594,9 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
   }
 
   *extraTime = incrementalTime;
+#if DEBUG
+  self.completed = YES;
+#endif
   return NO;
 }
 
@@ -3291,12 +3652,23 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
 
 - (BOOL)HL_update:(NSTimeInterval)incrementalTime node:(SKNode *)node extraTime:(NSTimeInterval *)extraTime
 {
-  // note: See note in [HLAction HL_update] for handling action completion and removal.  In
-  // short, an action must be allowed a final update call regardless of its elapsed time
-  // and duration; it's only completed when its update returns NO.  Further, when it
-  // returns NO, then it won't be called again.  For our purposes, we take advantage of
-  // this to assert that we'll do one (and only one) callback to our target.
-  assert(self.elapsedTime == 0.0);
+#if DEBUG
+  if (self.completed) {
+    // note: Some actions rely on this precondition (that update is not called after
+    // returning NO) more than others.  Probably things will break, but maybe not.
+    HLLog(HLLogError, @"HLActions should not be updated after they have completed."
+          " (Note that SKActions are immutable and can be reused multiple times,"
+          " but HLActions are stateful and can only be used once.)");
+  }
+  // note: For more details, see note in [HLAction HL_update] for handling action
+  // completion and removal.  In short, an action must be allowed a final update call
+  // regardless of its elapsed time and duration; it's only completed when its update
+  // returns NO.  Further, when it returns NO, then it won't be called again.  This is
+  // especially important for perform selector actions, so that they call their target
+  // callbacks exactly once.  Here is an alternative way to check for multiple calls (if
+  // we ever don't have the self.completed).
+  //assert(self.elapsedTime == 0.0);
+#endif
 
   [self HL_advanceTime:incrementalTime];
 
@@ -3308,6 +3680,9 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
   }
 
   *extraTime = incrementalTime;
+#if DEBUG
+  self.completed = YES;
+#endif
   return NO;
 }
 
@@ -3368,12 +3743,23 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
 
 - (BOOL)HL_update:(NSTimeInterval)incrementalTime node:(SKNode *)node extraTime:(NSTimeInterval *)extraTime
 {
-  // note: See note in [HLAction HL_update] for handling action completion and removal.  In
-  // short, an action must be allowed a final update call regardless of its elapsed time
-  // and duration; it's only completed when its update returns NO.  Further, when it
-  // returns NO, then it won't be called again.  For our purposes, we take advantage of
-  // this to assert that we'll do one (and only one) callback to our target.
-  assert(self.elapsedTime == 0.0);
+#if DEBUG
+  if (self.completed) {
+    // note: Some actions rely on this precondition (that update is not called after
+    // returning NO) more than others.  Probably things will break, but maybe not.
+    HLLog(HLLogError, @"HLActions should not be updated after they have completed."
+          " (Note that SKActions are immutable and can be reused multiple times,"
+          " but HLActions are stateful and can only be used once.)");
+  }
+  // note: For more details, see note in [HLAction HL_update] for handling action
+  // completion and removal.  In short, an action must be allowed a final update call
+  // regardless of its elapsed time and duration; it's only completed when its update
+  // returns NO.  Further, when it returns NO, then it won't be called again.  This is
+  // especially important for perform selector actions, so that they call their target
+  // callbacks exactly once.  Here is an alternative way to check for multiple calls (if
+  // we ever don't have the self.completed).
+  //assert(self.elapsedTime == 0.0);
+#endif
 
   [self HL_advanceTime:incrementalTime];
 
@@ -3385,6 +3771,9 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
   }
 
   *extraTime = incrementalTime;
+#if DEBUG
+  self.completed = YES;
+#endif
   return NO;
 }
 
@@ -3442,6 +3831,16 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
 
 - (BOOL)HL_update:(NSTimeInterval)incrementalTime node:(SKNode *)node extraTime:(NSTimeInterval *)extraTime
 {
+#if DEBUG
+  if (self.completed) {
+    // note: Some actions rely on this precondition (that update is not called after
+    // returning NO) more than others.  Probably things will break, but maybe not.
+    HLLog(HLLogError, @"HLActions should not be updated after they have completed."
+          " (Note that SKActions are immutable and can be reused multiple times,"
+          " but HLActions are stateful and can only be used once.)");
+  }
+#endif
+
   // note: See note in [HLAction HL_update] for handling action completion and removal.  In
   // short, an action must be allowed a final update call regardless of its elapsed time
   // and duration; it's only completed when its update returns NO.  Further, when it
@@ -3470,6 +3869,11 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
     }
   }
 
+#if DEBUG
+  if (!notYetCompleted) {
+    self.completed = YES;
+  }
+#endif
   return notYetCompleted;
 }
 

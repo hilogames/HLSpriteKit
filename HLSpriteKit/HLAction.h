@@ -263,6 +263,14 @@ typedef NS_ENUM(NSInteger, HLActionTimingMode) {
  mentioning: It is extensible, so you can write your own custom actions by descending from
  the `HLAction` parent class, and it is open-source, so you can see how it works.
 
+ ## Important Differences Between `HLAction` and `SKAction`
+
+ Because `SKAction` actions are immutable, they can be created once and run multiple
+ times, on the same node or on different nodes.  `HLAction` actions, on the other hand,
+ are stateful, and so should not be reused.  Running a single `HLAction` in two different
+ action-runners at the same time, for instance, would advance its elapsed time twice as
+ fast as expected.
+
  ## Possibilities
 
  ### Modification of Action State
