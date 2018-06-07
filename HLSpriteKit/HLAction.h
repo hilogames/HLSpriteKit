@@ -1195,6 +1195,16 @@ When complete, `elapsedTime` won't necessarily match the action's `duration`:
 */
 @property (nonatomic, readonly) NSArray *textures;
 
+/**
+ The value of `restore` passed to the initializer.
+*/
+@property (nonatomic, readonly) BOOL restore;
+
+/**
+ The texture that will be restored, if any.
+*/
+@property (nonatomic, readonly) SKTexture *restoreTexture;
+
 @end
 
 /**

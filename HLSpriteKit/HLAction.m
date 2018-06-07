@@ -2885,8 +2885,6 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
 {
   NSTimeInterval _timePerFrame;
   BOOL _resize;
-  BOOL _restore;
-  SKTexture *_restoreTexture;
   BOOL _isRestoreTextureSpecified;
 }
 
