@@ -23,6 +23,7 @@
     [self addChild:_renderNode];
 
     _widthMaximum = 0.0f;
+    _lineHeightMultiple = 0.0f;
     _lineSpacing = 0.0f;
     _renderNode.anchorPoint = CGPointMake(0.5f, 0.5f);
     _alignment = NSTextAlignmentCenter;
@@ -38,6 +39,7 @@
 
 - (instancetype)initWithText:(NSString *)text
                 widthMaximum:(CGFloat)widthMaximum
+          lineHeightMultiple:(CGFloat)lineHeightMultiple
                  lineSpacing:(CGFloat)lineSpacing
                    alignment:(NSTextAlignment)alignment
                     fontName:(NSString *)fontName
@@ -52,6 +54,7 @@
 
     _text = [text copy];
     _widthMaximum = widthMaximum;
+    _lineHeightMultiple = lineHeightMultiple;
     _lineSpacing = lineSpacing;
     _renderNode.anchorPoint = CGPointMake(0.5f, 0.5f);
     _alignment = alignment;
@@ -79,6 +82,7 @@
 
     _text = [aDecoder decodeObjectForKey:@"text"];
     _widthMaximum = (CGFloat)[aDecoder decodeDoubleForKey:@"widthMaximum"];
+    _lineHeightMultiple = (CGFloat)[aDecoder decodeDoubleForKey:@"lineHeightMultiple"];
     _lineSpacing = (CGFloat)[aDecoder decodeDoubleForKey:@"lineSpacing"];
 #if TARGET_OS_IPHONE
     _renderNode.anchorPoint = [aDecoder decodeCGPointForKey:@"anchorPoint"];
@@ -104,6 +108,7 @@
 
   [aCoder encodeObject:_text forKey:@"text"];
   [aCoder encodeDouble:_widthMaximum forKey:@"widthMaximum"];
+  [aCoder encodeDouble:_lineHeightMultiple forKey:@"lineHeightMultiple"];
   [aCoder encodeDouble:_lineSpacing forKey:@"lineSpacing"];
 #if TARGET_OS_IPHONE
   [aCoder encodeCGPoint:_renderNode.anchorPoint forKey:@"anchorPoint"];
@@ -143,6 +148,12 @@
 - (void)setAlignment:(NSTextAlignment)alignment
 {
   _alignment = alignment;
+  [self GL_render];
+}
+
+- (void)setLineHeightMultiple:(CGFloat)lineHeightMultiple
+{
+  _lineHeightMultiple = lineHeightMultiple;
   [self GL_render];
 }
 
@@ -193,6 +204,7 @@
 
   NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
   paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
+  paragraphStyle.lineHeightMultiple = _lineHeightMultiple;
   paragraphStyle.lineSpacing = _lineSpacing;
   paragraphStyle.alignment = _alignment;
 

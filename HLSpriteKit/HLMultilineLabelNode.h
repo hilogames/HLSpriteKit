@@ -54,6 +54,7 @@
 */
 - (instancetype)initWithText:(NSString *)text
                 widthMaximum:(CGFloat)widthMaximum
+          lineHeightMultiple:(CGFloat)lineHeightMultiple
                  lineSpacing:(CGFloat)lineSpacing
                    alignment:(NSTextAlignment)alignment
                     fontName:(NSString *)fontName
@@ -110,6 +111,18 @@
  non-empty).
 */
 @property (nonatomic, assign) CGFloat widthMaximum;
+
+/**
+ A multiplier for the natural line height of the multiline label node.
+
+ A value of `0.0` means "no multiplier."
+
+ Default value is `0.0`.
+
+ Setting this property results in the label being rendered (if `text` is set and
+ non-empty).
+*/
+@property (nonatomic, assign) CGFloat lineHeightMultiple;
 
 /**
  The distance in points between the bottom of one line and the top of the next.
