@@ -328,6 +328,7 @@
   NSString *text = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
   HLMultilineLabelNode *multilineLabelNode = [[HLMultilineLabelNode alloc] initWithText:text
                                                                            widthMaximum:240.0f
+                                                                     lineHeightMultiple:0.0f
                                                                             lineSpacing:0.0f
                                                                               alignment:NSTextAlignmentLeft
                                                                                fontName:@"Helvetica"
