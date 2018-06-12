@@ -67,6 +67,8 @@
 		847D62B41D8499AF006E287F /* UIImage+HLImageAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 847D627C1D8499AF006E287F /* UIImage+HLImageAdditions.m */; };
 		CB21A89920225F5B00E51FB8 /* HLStackLayoutManager.h in Headers */ = {isa = PBXBuildFile; fileRef = CB21A89720225F5B00E51FB8 /* HLStackLayoutManager.h */; };
 		CB21A89A20225F5B00E51FB8 /* HLStackLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = CB21A89820225F5B00E51FB8 /* HLStackLayoutManager.m */; };
+		CB5BA9E020D8540600F4389A /* HLParallaxLayoutManager.h in Headers */ = {isa = PBXBuildFile; fileRef = CB5BA9DE20D8540500F4389A /* HLParallaxLayoutManager.h */; };
+		CB5BA9E120D8540600F4389A /* HLParallaxLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = CB5BA9DF20D8540500F4389A /* HLParallaxLayoutManager.m */; };
 		CB8D943F1F881A2E00CAFA17 /* HLLog.h in Headers */ = {isa = PBXBuildFile; fileRef = CB8D943C1F881A2D00CAFA17 /* HLLog.h */; };
 		CB8D94401F881A2E00CAFA17 /* HLUglyShuffler.h in Headers */ = {isa = PBXBuildFile; fileRef = CB8D943D1F881A2E00CAFA17 /* HLUglyShuffler.h */; };
 		CB8D94411F881A2E00CAFA17 /* HLUglyShuffler.m in Sources */ = {isa = PBXBuildFile; fileRef = CB8D943E1F881A2E00CAFA17 /* HLUglyShuffler.m */; };
@@ -141,6 +143,8 @@
 		847D627C1D8499AF006E287F /* UIImage+HLImageAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+HLImageAdditions.m"; sourceTree = "<group>"; };
 		CB21A89720225F5B00E51FB8 /* HLStackLayoutManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLStackLayoutManager.h; sourceTree = "<group>"; };
 		CB21A89820225F5B00E51FB8 /* HLStackLayoutManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLStackLayoutManager.m; sourceTree = "<group>"; };
+		CB5BA9DE20D8540500F4389A /* HLParallaxLayoutManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLParallaxLayoutManager.h; sourceTree = "<group>"; };
+		CB5BA9DF20D8540500F4389A /* HLParallaxLayoutManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLParallaxLayoutManager.m; sourceTree = "<group>"; };
 		CB8D943C1F881A2D00CAFA17 /* HLLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLLog.h; sourceTree = "<group>"; };
 		CB8D943D1F881A2E00CAFA17 /* HLUglyShuffler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLUglyShuffler.h; sourceTree = "<group>"; };
 		CB8D943E1F881A2E00CAFA17 /* HLUglyShuffler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLUglyShuffler.m; sourceTree = "<group>"; };
@@ -202,6 +206,7 @@
 				847D625E1D8499AF006E287F /* HLMessageNode.h */,
 				847D62601D8499AF006E287F /* HLMultilineLabelNode.h */,
 				847D62621D8499AF006E287F /* HLOutlineLayoutManager.h */,
+				CB5BA9DE20D8540500F4389A /* HLParallaxLayoutManager.h */,
 				847D62641D8499AF006E287F /* HLRingLayoutManager.h */,
 				847D62661D8499AF006E287F /* HLRingNode.h */,
 				847D62681D8499AF006E287F /* HLScene.h */,
@@ -236,6 +241,7 @@
 				847D625F1D8499AF006E287F /* HLMessageNode.m */,
 				847D62611D8499AF006E287F /* HLMultilineLabelNode.m */,
 				847D62631D8499AF006E287F /* HLOutlineLayoutManager.m */,
+				CB5BA9DF20D8540500F4389A /* HLParallaxLayoutManager.m */,
 				847D62651D8499AF006E287F /* HLRingLayoutManager.m */,
 				847D62671D8499AF006E287F /* HLRingNode.m */,
 				847D62691D8499AF006E287F /* HLScene.m */,
@@ -275,6 +281,7 @@
 				847D62A41D8499AF006E287F /* HLSpriteKit.h in Headers */,
 				847D62961D8499AF006E287F /* HLMessageNode.h in Headers */,
 				847D62981D8499AF006E287F /* HLMultilineLabelNode.h in Headers */,
+				CB5BA9E020D8540600F4389A /* HLParallaxLayoutManager.h in Headers */,
 				84662B471DA33093006B1812 /* NSGestureRecognizer+MultipleActions.h in Headers */,
 				847D628C1D8499AF006E287F /* HLItemsNode.h in Headers */,
 				847D62921D8499AF006E287F /* HLMath.h in Headers */,
@@ -376,6 +383,7 @@
 				847D629F1D8499AF006E287F /* HLRingNode.m in Sources */,
 				847D629B1D8499AF006E287F /* HLOutlineLayoutManager.m in Sources */,
 				847D62821D8499AF006E287F /* HLEmitterStore.m in Sources */,
+				CB5BA9E120D8540600F4389A /* HLParallaxLayoutManager.m in Sources */,
 				847D627E1D8499AF006E287F /* HLHacktion.m in Sources */,
 				847D62AA1D8499AF006E287F /* HLToolbarNode.m in Sources */,
 				847D62A81D8499AF006E287F /* HLTiledNode.m in Sources */,

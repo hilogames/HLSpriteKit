@@ -10,26 +10,6 @@ SpriteKit scene and node subclasses, plus various utilities.
 
 ## Features
 
-### HLGestureTarget
-
-A gesture target handles gestures from gesture recognizers (either
-`UIGestureRecognizer` under iOS or `NSGestureRecognizer` under
-macOS). It can be attached to any `SKNode` using the class category
-`SKNode+HLGestureTarget`.
-
-The use pattern is this: The `SKScene` knows about its view, and so
-the scene is the gesture recognizer delegate. It manages a collection
-of shared gesture recognizers, which it attaches to and detaches from
-its view as appropriate. When a certain gesture is recognized by a
-gesture recognizer, the scene figures out which node or nodes are the
-target of the gesture, and it forwards the gestures to those nodes
-using the `HLGestureTarget` interface.
-
-Here’s the point: The scene can effectively use gesture recognizers
-(rather than responder interface `touchesBegan:withEvent:` or
-`mouseUp:`), and the gesture handling code can be encapsulated within
-node subclasses (rather than dumped into a bloated scene).
-
 ### HLLayoutManager
 
 A layout manager provides a single method (`layout`) to lay out
@@ -48,6 +28,9 @@ Layout managers currently provided:
 
  * `HLOutlineLayoutManager`, for vertical lists (especially of text)
    indented in levels.
+
+ * `HLParallaxLayoutManager`, for layers of nodes that move at
+   different speeds.
 
 Putting layout code in a third-party object (rather than in the
 `SKScene` or `SKNode` subclass) allows for easier reuse of common
@@ -90,6 +73,26 @@ layout math.
 
  * `HLTiledNode`. Behaves like an `SKSpriteNode` that tiles its
    texture to fit a specified size.
+
+### HLGestureTarget
+
+A gesture target handles gestures from gesture recognizers (either
+`UIGestureRecognizer` under iOS or `NSGestureRecognizer` under
+macOS). It can be attached to any `SKNode` using the class category
+`SKNode+HLGestureTarget`.
+
+The use pattern is this: The `SKScene` knows about its view, and so
+the scene is the gesture recognizer delegate. It manages a collection
+of shared gesture recognizers, which it attaches to and detaches from
+its view as appropriate. When a certain gesture is recognized by a
+gesture recognizer, the scene figures out which node or nodes are the
+target of the gesture, and it forwards the gestures to those nodes
+using the `HLGestureTarget` interface.
+
+Here’s the point: The scene can effectively use gesture recognizers
+(rather than responder interface `touchesBegan:withEvent:` or
+`mouseUp:`), and the gesture handling code can be encapsulated within
+node subclasses (rather than dumped into a bloated scene).
 
 ### HLScene
 

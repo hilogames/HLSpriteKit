@@ -24,6 +24,7 @@
 #import "HLMessageNode.h"
 #import "HLMultilineLabelNode.h"
 #import "HLOutlineLayoutManager.h"
+#import "HLParallaxLayoutManager.h"
 #import "HLRingLayoutManager.h"
 #import "HLRingNode.h"
 #import "HLScene.h"

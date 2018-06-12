@@ -43,6 +43,11 @@
   can stack left, right, down, or up.  
   [Karl Voskuil](https://github.com/karlvoskuil)
 
+- A new parallax layout manager for layers of nodes that move at
+  different speeds (giving a feeling of depth due to the parallax
+  effect).  
+  [Karl Voskuil](https://github.com/karlvoskuil)
+
 ## 1.6.0 [2018-01-18]
 
 ### Breaking
