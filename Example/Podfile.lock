@@ -6,11 +6,11 @@ DEPENDENCIES:
 
 EXTERNAL SOURCES:
   HLSpriteKit:
-    :path: ../
+    :path: "../"
 
 SPEC CHECKSUMS:
-  HLSpriteKit: ae0f6b65acfdf528d3f49297dcef4deaa60593e9
+  HLSpriteKit: 00545460e11346af5360c44961c90e2c3b46ef47
 
 PODFILE CHECKSUM: 85db0cf8bc517f3dc201ffdcf48d6db5871b71d4
 
-COCOAPODS: 1.2.1
+COCOAPODS: 1.5.3
