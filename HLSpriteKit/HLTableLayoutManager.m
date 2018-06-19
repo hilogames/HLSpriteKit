@@ -69,7 +69,7 @@ const CGFloat HLTableLayoutManagerEpsilon = 0.001f;
 #endif
     _columnWidths = [aDecoder decodeObjectForKey:@"columnWidths"];
     _columnAnchorPoints = [aDecoder decodeObjectForKey:@"columnAnchorPoints"];
-    _rowHeights = [aDecoder decodeObjectForKey:@"rowHeight"];
+    _rowHeights = [aDecoder decodeObjectForKey:@"rowHeights"];
     _rowLabelOffsetYs = [aDecoder decodeObjectForKey:@"rowLabelOffsetYs"];
     _tableBorder = (CGFloat)[aDecoder decodeDoubleForKey:@"tableBorder"];
     _columnSeparator = (CGFloat)[aDecoder decodeDoubleForKey:@"columnSeparator"];

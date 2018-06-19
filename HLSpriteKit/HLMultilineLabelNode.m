@@ -115,6 +115,7 @@
 #else
   [aCoder encodePoint:_renderNode.anchorPoint forKey:@"anchorPoint"];
 #endif
+  [aCoder encodeInteger:_alignment forKey:@"alignment"];
   [aCoder encodeObject:_fontName forKey:@"fontName"];
   [aCoder encodeDouble:_fontSize forKey:@"fontSize"];
   [aCoder encodeObject:_fontColor forKey:@"fontColor"];
