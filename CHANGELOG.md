@@ -1,7 +1,7 @@
 
 # Change Log
 
-## Master
+## 1.7.0 [2018-06-21]
 
 ### Breaking
 

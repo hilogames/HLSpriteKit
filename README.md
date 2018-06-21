@@ -68,11 +68,11 @@ layout math.
    content with pan and pinch gestures. The interface is deliberately
    analogous to `UIScrollView`.
 
- * `HLToolbarNode`. A horizontal toolbar of squares, with various
-   visual formatting, sizing, and animation options.
-
  * `HLTiledNode`. Behaves like an `SKSpriteNode` that tiles its
    texture to fit a specified size.
+
+ * `HLToolbarNode`. A horizontal toolbar of squares, with various
+   visual formatting, sizing, and animation options.
 
 ### HLGestureTarget
 
