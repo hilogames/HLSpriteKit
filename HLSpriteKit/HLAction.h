@@ -679,6 +679,11 @@ When complete, `elapsedTime` won't necessarily match the action's `duration`:
 */
 @property (nonatomic, readonly) CGPoint position;
 
+/**
+ The value of `destination` passed to the initializer.
+ */
+@property (nonatomic, readonly) CGPoint destination;
+
 @end
 
 /**
@@ -818,6 +823,11 @@ When complete, `elapsedTime` won't necessarily match the action's `duration`:
  If a node was passed to the update method, its `zRotation` was set to this value.
 */
 @property (nonatomic, readonly) CGFloat angle;
+
+/**
+ The value of `angleTo` passed to the initializer.
+*/
+@property (nonatomic, readonly) CGFloat angleTo;
 
 @end
 

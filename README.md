@@ -18,18 +18,18 @@ nodes. It can be attached to any `SKNode` using the class category
 
 Layout managers currently provided:
 
- * `HLTableLayoutManager`, for table-like layouts;
+ * `HLTableLayoutManager` for table-like layouts;
 
- * `HLGridLayoutManager`, for grid-like layouts;
+ * `HLGridLayoutManager` for grid-like layouts;
 
- * `HLStackLayoutManager`, for one-dimensional layouts;
+ * `HLStackLayoutManager` for one-dimensional layouts;
 
- * `HLRingLayoutManager`, for ring-like polar-coordinate layouts;
+ * `HLRingLayoutManager` for ring-like polar-coordinate layouts;
 
- * `HLOutlineLayoutManager`, for vertical lists (especially of text)
+ * `HLOutlineLayoutManager` for vertical lists (especially of text)
    indented in levels.
 
- * `HLParallaxLayoutManager`, for layers of nodes that move at
+ * `HLParallaxLayoutManager` for layers of nodes that move at
    different speeds.
 
 Putting layout code in a third-party object (rather than in the

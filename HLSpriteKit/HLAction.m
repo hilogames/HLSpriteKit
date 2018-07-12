@@ -1509,6 +1509,11 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
   return [self HL_position];
 }
 
+- (CGPoint)destination
+{
+  return _destination;
+}
+
 - (CGPoint)HL_position
 {
   NSTimeInterval elapsedTime = self.elapsedTime;
@@ -2000,6 +2005,11 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
     freeAngle -= twoPi;
   }
   return freeAngle;
+}
+
+- (CGFloat)angleTo
+{
+  return _angleTo;
 }
 
 @end
