@@ -219,7 +219,8 @@ typedef NS_ENUM(NSInteger, HLRingLayoutManagerThetasMode) {
       }
     }
 
-    node.position = CGPointMake(radius * (CGFloat)cos(theta), radius * (CGFloat)sin(theta));
+    node.position = CGPointMake(_ringPosition.x + radius * (CGFloat)cos(theta),
+                                _ringPosition.y + radius * (CGFloat)sin(theta));
 
     if (_thetasMode != HLRingLayoutManagerThetasAssigned) {
       theta += thetaIncrement;
