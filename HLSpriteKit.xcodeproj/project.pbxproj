@@ -76,6 +76,8 @@
 		CB9E8CD01E23FFC700F410B0 /* HLAction.m in Sources */ = {isa = PBXBuildFile; fileRef = CB9E8CCC1E23FFC700F410B0 /* HLAction.m */; };
 		CB9E8CD11E23FFC700F410B0 /* SKNode+HLAction.h in Headers */ = {isa = PBXBuildFile; fileRef = CB9E8CCD1E23FFC700F410B0 /* SKNode+HLAction.h */; };
 		CB9E8CD21E23FFC700F410B0 /* SKNode+HLAction.m in Sources */ = {isa = PBXBuildFile; fileRef = CB9E8CCE1E23FFC700F410B0 /* SKNode+HLAction.m */; };
+		CBB010932118E45800DC7431 /* HLIconNode.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB010912118E45800DC7431 /* HLIconNode.m */; };
+		CBB010942118E45800DC7431 /* HLIconNode.h in Headers */ = {isa = PBXBuildFile; fileRef = CBB010922118E45800DC7431 /* HLIconNode.h */; };
 		CBF9D2BD1DAD3450008F9C92 /* HLGridLayoutManager.h in Headers */ = {isa = PBXBuildFile; fileRef = CBF9D2BB1DAD3450008F9C92 /* HLGridLayoutManager.h */; };
 		CBF9D2BE1DAD3450008F9C92 /* HLGridLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = CBF9D2BC1DAD3450008F9C92 /* HLGridLayoutManager.m */; };
 /* End PBXBuildFile section */
@@ -152,6 +154,8 @@
 		CB9E8CCC1E23FFC700F410B0 /* HLAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLAction.m; sourceTree = "<group>"; };
 		CB9E8CCD1E23FFC700F410B0 /* SKNode+HLAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SKNode+HLAction.h"; sourceTree = "<group>"; };
 		CB9E8CCE1E23FFC700F410B0 /* SKNode+HLAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SKNode+HLAction.m"; sourceTree = "<group>"; };
+		CBB010912118E45800DC7431 /* HLIconNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLIconNode.m; sourceTree = "<group>"; };
+		CBB010922118E45800DC7431 /* HLIconNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLIconNode.h; sourceTree = "<group>"; };
 		CBF9D2BB1DAD3450008F9C92 /* HLGridLayoutManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLGridLayoutManager.h; sourceTree = "<group>"; };
 		CBF9D2BC1DAD3450008F9C92 /* HLGridLayoutManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLGridLayoutManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -195,6 +199,7 @@
 				CBF9D2BB1DAD3450008F9C92 /* HLGridLayoutManager.h */,
 				847D624E1D8499AF006E287F /* HLGridNode.h */,
 				847D62451D8499AF006E287F /* HLHacktion.h */,
+				CBB010922118E45800DC7431 /* HLIconNode.h */,
 				847D62501D8499AF006E287F /* HLItemContentNode.h */,
 				847D62521D8499AF006E287F /* HLItemNode.h */,
 				847D62541D8499AF006E287F /* HLItemsNode.h */,
@@ -231,6 +236,7 @@
 				CBF9D2BC1DAD3450008F9C92 /* HLGridLayoutManager.m */,
 				847D624F1D8499AF006E287F /* HLGridNode.m */,
 				847D62461D8499AF006E287F /* HLHacktion.m */,
+				CBB010912118E45800DC7431 /* HLIconNode.m */,
 				847D62511D8499AF006E287F /* HLItemContentNode.m */,
 				847D62531D8499AF006E287F /* HLItemNode.m */,
 				847D62551D8499AF006E287F /* HLItemsNode.m */,
@@ -304,6 +310,7 @@
 				847D62811D8499AF006E287F /* HLEmitterStore.h in Headers */,
 				847D628E1D8499AF006E287F /* HLLabelButtonNode.h in Headers */,
 				847D62901D8499AF006E287F /* HLLayoutManager.h in Headers */,
+				CBB010942118E45800DC7431 /* HLIconNode.h in Headers */,
 				847D629C1D8499AF006E287F /* HLRingLayoutManager.h in Headers */,
 				CB9E8CD11E23FFC700F410B0 /* SKNode+HLAction.h in Headers */,
 			);
@@ -385,6 +392,7 @@
 				847D62821D8499AF006E287F /* HLEmitterStore.m in Sources */,
 				CB5BA9E120D8540600F4389A /* HLParallaxLayoutManager.m in Sources */,
 				847D627E1D8499AF006E287F /* HLHacktion.m in Sources */,
+				CBB010932118E45800DC7431 /* HLIconNode.m in Sources */,
 				847D62AA1D8499AF006E287F /* HLToolbarNode.m in Sources */,
 				847D62A81D8499AF006E287F /* HLTiledNode.m in Sources */,
 				847D62851D8499AF006E287F /* HLGestureTarget.m in Sources */,

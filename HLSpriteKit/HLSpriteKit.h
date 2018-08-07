@@ -13,6 +13,7 @@
 #import "HLGridNode.h"
 #import "HLGridLayoutManager.h"
 #import "HLHacktion.h"
+#import "HLIconNode.h"
 #import "HLItemContentNode.h"
 #import "HLItemNode.h"
 #import "HLItemsNode.h"

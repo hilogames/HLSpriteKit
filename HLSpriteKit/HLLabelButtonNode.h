@@ -88,7 +88,7 @@
 /**
  Specifies the anchor point of the button.
 
- Default value `(0.5,0.5)`.
+ Default value `(0.5, 0.5)`.
 */
 @property (nonatomic, assign) CGPoint anchorPoint;
 
