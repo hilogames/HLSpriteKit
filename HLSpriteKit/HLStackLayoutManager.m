@@ -266,14 +266,12 @@ HLStackLayoutManagerCellContainingPoint(NSArray *nodes,
   // array, but that would introduce an order-N operation, so in principle it seems
   // wrongheaded.
 
-  CGFloat (*cellLengthFitFunction)(id) = NULL;
   // note: NSArray considers "ascending" direction to be from the first element of the
   // sorted array to the last element of the sorted array, so for left and down, the
   // descending numerical position is considered "ascending".
   NSComparisonResult (^comparator)(SKNode *node1, SKNode *node2) = nil;
   switch (stackDirection) {
     case HLStackLayoutManagerStackRight:
-      cellLengthFitFunction = &HLLayoutManagerGetNodeWidth;
       comparator = ^NSComparisonResult(SKNode *node1, SKNode *node2){
         if (node1.position.x < node2.position.x) {
           return NSOrderedAscending;
@@ -285,7 +283,6 @@ HLStackLayoutManagerCellContainingPoint(NSArray *nodes,
       };
       break;
     case HLStackLayoutManagerStackLeft:
-      cellLengthFitFunction = &HLLayoutManagerGetNodeWidth;
       comparator = ^NSComparisonResult(SKNode *node1, SKNode *node2){
         if (node1.position.x > node2.position.x) {
           return NSOrderedAscending;
@@ -297,7 +294,6 @@ HLStackLayoutManagerCellContainingPoint(NSArray *nodes,
       };
       break;
     case HLStackLayoutManagerStackUp:
-      cellLengthFitFunction = &HLLayoutManagerGetNodeHeight;
       comparator = ^NSComparisonResult(SKNode *node1, SKNode *node2){
         if (node1.position.y < node2.position.y) {
           return NSOrderedAscending;
@@ -309,7 +305,6 @@ HLStackLayoutManagerCellContainingPoint(NSArray *nodes,
       };
       break;
     case HLStackLayoutManagerStackDown:
-      cellLengthFitFunction = &HLLayoutManagerGetNodeHeight;
       comparator = ^NSComparisonResult(SKNode *node1, SKNode *node2){
         if (node1.position.y > node2.position.y) {
           return NSOrderedAscending;

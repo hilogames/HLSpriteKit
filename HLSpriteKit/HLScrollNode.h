@@ -132,6 +132,9 @@ typedef NS_ENUM(NSInteger, HLScrollNodeContentScaleMinimumMode)
 
 /**
  The node that scrolls and scales within the `HLScrollNode`.
+
+ For efficiency (to minimize unnecessary layouts), set all layout-affecting parameters
+ before setting `contentNode`.
 */
 @property (nonatomic, strong) SKNode *contentNode;
 

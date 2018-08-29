@@ -219,7 +219,7 @@ typedef NS_ENUM(NSInteger, HLStackLayoutManagerStackDirection) {
 
    - If labels in the stack have different fonts or font sizes, their calculated
      visual-centering Y-offsets will be different.  But baseline-alignment is the
-     priority, and so the table only allows a single offset calculated for the entire
+     priority, and so the stack only allows a single offset calculated for the entire
      stack.  Use the "typical" font size to calculate the shared offset, or use an
      average, or forget the offset and go back to tweaking anchor points.  (The helper
      `baselineInsetYFromBottomForHeightMode:fontName:fontSize:` deals with unit coordinate
@@ -408,8 +408,8 @@ typedef NS_ENUM(NSInteger, HLStackLayoutManagerStackDirection) {
  A Y-offset used to adjust the position of all label nodes in the stack during layout,
  specified in point coordinate space.
 
- When performing a layout, the table layout manager allocates a cell (of a certain size)
- for each node.  All nodes are positioned in that cell using the column anchor point, but
+ When performing a layout, the stack layout manager allocates a cell (of a certain length)
+ for each node.  All nodes are positioned in that cell using the cell anchor point, but
  additionally, for label nodes, this Y-offset is added.
 
  This can help with vertical alignment of labels with respect to sprite nodes in the same

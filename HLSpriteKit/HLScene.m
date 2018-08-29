@@ -57,7 +57,7 @@ static BOOL _sceneAssetsLoaded = NO;
         }
 
         NSNumber *optionBitsNumber = node.userData[HLSceneChildUserDataKey];
-        if (!optionBitsNumber) {
+        if (optionBitsNumber == nil) {
           continue;
         }
         HLSceneChildOptionBits optionBits = [optionBitsNumber unsignedIntegerValue];
@@ -350,7 +350,7 @@ static BOOL _sceneAssetsLoaded = NO;
 {
   HLSceneChildOptionBits optionBits = 0;
   NSNumber *optionBitsNumber = (node.userData)[HLSceneChildUserDataKey];
-  if (optionBitsNumber) {
+  if (optionBitsNumber != nil) {
     optionBits = [optionBitsNumber unsignedIntegerValue];
   }
 
