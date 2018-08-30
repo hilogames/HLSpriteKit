@@ -432,6 +432,10 @@ enum {
 
 - (void)handleTap:(HLGestureRecognizer *)gestureRecognizer
 {
+  if (gestureRecognizer.state != UIGestureRecognizerStateEnded) {
+    return;
+  }
+
   CGPoint viewLocation = [gestureRecognizer locationInView:self.scene.view];
   CGPoint sceneLocation = [self.scene convertPointFromView:viewLocation];
   CGPoint location = [self convertPoint:sceneLocation fromNode:self.scene];
@@ -455,6 +459,10 @@ enum {
 
 - (void)handleClick:(HLGestureRecognizer *)gestureRecognizer
 {
+  if (gestureRecognizer.state != NSGestureRecognizerStateEnded) {
+    return;
+  }
+
   CGPoint viewLocation = [gestureRecognizer locationInView:self.scene.view];
   CGPoint sceneLocation = [self.scene convertPointFromView:viewLocation];
   CGPoint location = [self convertPoint:sceneLocation fromNode:self.scene];

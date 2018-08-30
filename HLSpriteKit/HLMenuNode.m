@@ -260,6 +260,15 @@ HLMenuNodeValidateButtonPrototype(SKNode *buttonPrototype, NSString *label)
 - (void)handleClick:(HLGestureRecognizer *)gestureRecognizer
 #endif
 {
+#if TARGET_OS_IPHONE
+  if (gestureRecognizer.state != UIGestureRecognizerStateEnded) {
+    return;
+  }
+#else
+  if (gestureRecognizer.state != NSGestureRecognizerStateEnded) {
+    return;
+  }
+#endif
   CGPoint viewLocation = [gestureRecognizer locationInView:self.scene.view];
   CGPoint sceneLocation = [self.scene convertPointFromView:viewLocation];
   CGPoint menuLocation = [self convertPoint:sceneLocation fromNode:self.scene];
