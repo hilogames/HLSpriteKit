@@ -181,6 +181,26 @@
   _labelNode.fontColor = fontColor;
 }
 
+- (SKColor *)color
+{
+  return _spriteNode.color;
+}
+
+- (void)setColor:(SKColor *)color
+{
+  _spriteNode.color = color;
+}
+
+- (CGFloat)colorBlendFactor
+{
+  return _spriteNode.colorBlendFactor;
+}
+
+- (void)setColorBlendFactor:(CGFloat)colorBlendFactor
+{
+  _spriteNode.colorBlendFactor = colorBlendFactor;
+}
+
 - (void)HL_layout
 {
   // note: All layout concerns the label node relative to the sprite node; if no

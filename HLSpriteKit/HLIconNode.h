@@ -21,7 +21,7 @@
    - Icon nodes (like iOS app icons) do not generally intend to respond to user
      interaction targeting their labels.  (That said, the generic `HLGestureTarget`
      implementation uses `SKNode calculateAccumulatedFrame` for hit-testing, which might
-     very well include the icon label.)
+     very well include the icon label.  The same is true of `SKNode containsPoint:`.)
 
  ## Common User Interaction Configurations
 
@@ -147,5 +147,15 @@
  The defualt value is determined by `[SKLabelNode fontColor]` (currently white).
 */
 @property (nonatomic, strong) SKColor *fontColor;
+
+/**
+ The color applied to the icon node.
+*/
+@property (nonatomic, assign) SKColor *color;
+
+/**
+ A value that describes how the `color` is blended with the icon node's texture.
+*/
+@property (nonatomic, assign) CGFloat colorBlendFactor;
 
 @end
