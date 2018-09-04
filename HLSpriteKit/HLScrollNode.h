@@ -12,6 +12,8 @@
 #import "HLComponentNode.h"
 #import "HLGestureTarget.h"
 
+@protocol HLScrollNodeDelegate;
+
 /**
  Specifies a mode for enforcing a scaling minimum (zooming out) for content.
 */
@@ -127,6 +129,13 @@ typedef NS_ENUM(NSInteger, HLScrollNodeContentScaleMinimumMode)
          contentScaleMinimum:(CGFloat)contentScaleMinimum
      contentScaleMinimumMode:(HLScrollNodeContentScaleMinimumMode)contentScaleMinimumMode
          contentScaleMaximum:(CGFloat)contentScaleMaximum;
+
+/// @name Setting the Delegate
+
+/**
+ The scroll node delegate.
+*/
+@property (nonatomic, weak) id <HLScrollNodeDelegate> delegate;
 
 /// @name Setting Content
 
@@ -374,5 +383,36 @@ typedef NS_ENUM(NSInteger, HLScrollNodeContentScaleMinimumMode)
  `actionForPinContentLocation:andSetContentScale:animatedDuration:`.
 */
 - (void)pinContentLocation:(CGPoint)contentLocation andSetContentScale:(CGFloat)contentScale animatedDuration:(NSTimeInterval)duration completion:(void (^)(void))completion;
+
+@end
+
+/**
+ A delegate for `HLScrollNode`.
+*/
+@protocol HLScrollNodeDelegate <NSObject>
+
+/// @name Handling User Interaction
+
+/**
+ Called when the user scrolls the scroll node.
+
+ Not called when the scroll is triggered programmatically (rather than by interaction).
+
+ Relevant to `HLGestureTarget` and `NSResponder` user interaction.
+ See "Common User Interaction Configurations".
+*/
+@optional
+- (void)scrollNode:(HLScrollNode *)scrollNode didScrollToContentOffset:(CGPoint)contentOffset;
+
+/**
+ Called when the user zooms the scroll node.
+
+ Not called when the zoom is triggered programmatically (rather than by interaction).
+
+ Relevant to `HLGestureTarget` and `NSResponder` user interaction.
+ See "Common User Interaction Configurations".
+*/
+@optional
+- (void)scrollNode:(HLScrollNode *)scrollNode didZoomToContentScale:(CGFloat)contentScale;
 
 @end

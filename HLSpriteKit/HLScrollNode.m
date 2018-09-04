@@ -97,6 +97,8 @@ enum {
   self = [super initWithCoder:aDecoder];
   if (self) {
 
+    _delegate = [aDecoder decodeObjectForKey:@"delegate"];
+
     _contentNode = [aDecoder decodeObjectForKey:@"contentNode"];
 #if TARGET_OS_IPHONE
     _size = [aDecoder decodeCGSizeForKey:@"size"];
@@ -132,6 +134,8 @@ enum {
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
   [super encodeWithCoder:aCoder];
+
+  [aCoder encodeConditionalObject:_delegate forKey:@"delegate"];
 
   [aCoder encodeObject:_contentNode forKey:@"contentNode"];
 #if TARGET_OS_IPHONE
@@ -1006,6 +1010,11 @@ enum {
                                                      positionY:(_contentNode.position.y + translationInNode.y)
                                                          scale:_contentNode.xScale];
   _scrollLastNodeLocation = nodeLocation;
+
+  id <HLScrollNodeDelegate> delegate = _delegate;
+  if (delegate && [delegate respondsToSelector:@selector(scrollNode:didScrollToContentOffset:)]) {
+    [delegate scrollNode:self didScrollToContentOffset:_contentNode.position];
+  }
 }
 
 - (void)HL_zoomStart:(CGPoint)centerNodeLocation
@@ -1028,6 +1037,11 @@ enum {
   _contentNode.position = [self HL_contentConstrainedPositionX:(_zoomPinNodeLocation.x - _zoomPinContentLocation.x * constrainedScale)
                                                      positionY:(_zoomPinNodeLocation.y - _zoomPinContentLocation.y * constrainedScale)
                                                          scale:constrainedScale];
+
+  id <HLScrollNodeDelegate> delegate = _delegate;
+  if (delegate && [delegate respondsToSelector:@selector(scrollNode:didZoomToContentScale:)]) {
+    [delegate scrollNode:self didZoomToContentScale:_contentNode.xScale];
+  }
 }
 
 @end
