@@ -115,6 +115,10 @@ HLGestureTarget_areEquivalentGestureRecognizers(HLGestureRecognizer *a, HLGestur
 #if TARGET_OS_IPHONE
 
 @implementation HLTapGestureTarget
+{
+  __weak id _handleGestureWeakTarget;
+  SEL _handleGestureSelector;
+}
 
 + (instancetype)tapGestureTargetWithDelegate:(id<HLTapGestureTargetDelegate>)delegate
 {
@@ -124,6 +128,11 @@ HLGestureTarget_areEquivalentGestureRecognizers(HLGestureRecognizer *a, HLGestur
 + (instancetype)tapGestureTargetWithHandleGestureBlock:(void (^)(HLGestureRecognizer *))handleGestureBlock
 {
   return [[HLTapGestureTarget alloc] initWithHandleGestureBlock:handleGestureBlock];
+}
+
++ (instancetype)tapGestureTargetWithHandleGestureWeakTarget:(id)weakTarget selector:(SEL)selector
+{
+  return [[HLTapGestureTarget alloc] initWithHandleGestureWeakTarget:weakTarget selector:selector];
 }
 
 - (instancetype)initWithDelegate:(id<HLTapGestureTargetDelegate>)delegate
@@ -146,6 +155,16 @@ HLGestureTarget_areEquivalentGestureRecognizers(HLGestureRecognizer *a, HLGestur
   return self;
 }
 
+- (instancetype)initWithHandleGestureWeakTarget:(id)weakTarget selector:(SEL)selector
+{
+  self = [super init];
+  if (self) {
+    _handleGestureWeakTarget = weakTarget;
+    _handleGestureSelector = selector;
+  }
+  return self;
+}
+
 - (instancetype)init
 {
   self = [super init];
@@ -161,6 +180,8 @@ HLGestureTarget_areEquivalentGestureRecognizers(HLGestureRecognizer *a, HLGestur
   if (self) {
     _delegate = [aDecoder decodeObjectForKey:@"delegate"];
     // note: Cannot decode _handleGestureBlock.
+    _handleGestureWeakTarget = [aDecoder decodeObjectForKey:@"handleGestureWeakTarget"];
+    _handleGestureSelector = NSSelectorFromString([aDecoder decodeObjectForKey:@"handleGestureSelector"]);
     _gestureTransparent = [aDecoder decodeBoolForKey:@"gestureTransparent"];
   }
   return self;
@@ -170,6 +191,8 @@ HLGestureTarget_areEquivalentGestureRecognizers(HLGestureRecognizer *a, HLGestur
 {
   [aCoder encodeConditionalObject:_delegate forKey:@"delegate"];
   // note: Cannot encode _handleGestureBlock.
+  [aCoder encodeConditionalObject:_handleGestureWeakTarget forKey:@"handleGestureWeakTarget"];
+  [aCoder encodeObject:NSStringFromSelector(_handleGestureSelector) forKey:@"handleGestureSelector"];
   [aCoder encodeBool:_gestureTransparent forKey:@"gestureTransparent"];
 }
 
@@ -179,9 +202,17 @@ HLGestureTarget_areEquivalentGestureRecognizers(HLGestureRecognizer *a, HLGestur
   if (copy) {
     copy->_delegate = _delegate;
     copy->_handleGestureBlock = _handleGestureBlock;
+    copy->_handleGestureWeakTarget = _handleGestureWeakTarget;
+    copy->_handleGestureSelector = _handleGestureSelector;
     copy->_gestureTransparent = _gestureTransparent;
   }
   return self;
+}
+
+- (void)setHandleGestureWeakTarget:(id)weakTarget selector:(SEL)selector
+{
+  _handleGestureWeakTarget = weakTarget;
+  _handleGestureSelector = selector;
 }
 
 - (BOOL)addToGesture:(HLGestureRecognizer *)gestureRecognizer
@@ -218,6 +249,15 @@ HLGestureTarget_areEquivalentGestureRecognizers(HLGestureRecognizer *a, HLGestur
   }
   if (_handleGestureBlock) {
     _handleGestureBlock(gestureRecognizer);
+  }
+  if (_handleGestureWeakTarget && _handleGestureSelector) {
+    id target = _handleGestureWeakTarget;
+    if (!target) {
+      return;
+    }
+    IMP imp = [target methodForSelector:_handleGestureSelector];
+    void (*func)(id, SEL, HLGestureRecognizer *) = (void (*)(id, SEL, HLGestureRecognizer *))imp;
+    func(target, _handleGestureSelector, gestureRecognizer);
   }
 }
 

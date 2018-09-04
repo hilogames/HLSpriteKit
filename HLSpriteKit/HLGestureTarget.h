@@ -223,6 +223,14 @@ BOOL HLGestureTarget_areEquivalentGestureRecognizers(HLGestureRecognizer *a, HLG
 - (instancetype)initWithHandleGestureBlock:(void(^)(HLGestureRecognizer *))handleGestureBlock;
 
 /**
+ Initializes a tap gesture target with the passed gesture-handling (weak) target and
+ selector.
+
+ See `setWeakTarget:selector:` for details on the required selector signature.
+*/
+- (instancetype)initWithHandleGestureWeakTarget:(id)weakTarget selector:(SEL)selector;
+
+/**
  Convenience method for instantiating a tap gesture target configured with the passed
  delegate.
 
@@ -237,6 +245,14 @@ BOOL HLGestureTarget_areEquivalentGestureRecognizers(HLGestureRecognizer *a, HLG
  See `initWithHandleGestureBlock:`.
 */
 + (instancetype)tapGestureTargetWithHandleGestureBlock:(void(^)(HLGestureRecognizer *))handleGestureBlock;
+
+/**
+ Convenience method for instantiating a tap gesture target configured with the passed
+ gesture-handling (weak) target and selector.
+
+ See `initWithHandleGestureWeakTarget:selector:`.
+*/
++ (instancetype)tapGestureTargetWithHandleGestureWeakTarget:(id)weakTarget selector:(SEL)selector;
 
 /// @name Setting the Delegate or Handler
 
@@ -277,10 +293,18 @@ BOOL HLGestureTarget_areEquivalentGestureRecognizers(HLGestureRecognizer *a, HLG
        }
      }]];
 
- An easier way to avoid retain cycles is to use the delegate interface of
- `HLTapGestureTarget`; see `delegate`.
+ An easier way to avoid retain cycles is to use the delegate or selector interface of
+ `HLTapGestureTarget`; see `delegate` or `setHandleGestureWeakTarget:selector:`.
 */
 @property (nonatomic, strong) void (^handleGestureBlock)(HLGestureRecognizer *);
+
+/**
+ A selector that will be performed on the target (retained weakly) when the gesture
+ target is tapped.
+
+ The selector must take one parameter: the gesture recognizer.
+*/
+- (void)setHandleGestureWeakTarget:(id)weakTarget selector:(SEL)selector;
 
 /// @name Configuring Gesture Handling
 

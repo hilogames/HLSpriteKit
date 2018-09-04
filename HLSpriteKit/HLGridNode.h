@@ -418,7 +418,7 @@ typedef NS_ENUM(NSInteger, HLGridNodeLayoutMode) {
 
  Relevant to `HLGestureTarget` and `NSResponder` user interaction.
  See "Common User Interaction Configurations".
- */
+*/
 - (void)gridNode:(HLGridNode *)gridNode didClickSquare:(int)squareIndex;
 
 #endif
