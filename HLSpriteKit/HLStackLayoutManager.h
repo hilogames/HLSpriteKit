@@ -109,10 +109,10 @@ typedef NS_ENUM(NSInteger, HLStackLayoutManagerStackDirection) {
      [layoutManager layout:buttonNodes];
 
  Layout the button bar in the top-right corner of the interface.  The buttons will still
- be laid out left-to-right, but we can position the stack using a top-right anchor point:
+ be laid out left-to-right, but we can position the stack using a right anchor point:
 
      layoutManager.stackPosition = CGPointMake(screenRight, screenTop);
-     layoutManager.anchorPoint = CGPointMake(1.0f, 1.0f);
+     layoutManager.anchorPoint = 1.0f;
      [layoutManager layout:buttonNodes];
 
  Layout the buttons in the same corner, but vertically along the right edge (rather than

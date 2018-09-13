@@ -177,13 +177,13 @@ const CGFloat HLStackLayoutManagerEpsilon = 0.001f;
   CGFloat s;
   switch (_stackDirection) {
     case HLStackLayoutManagerStackRight:
-      s = _stackPosition.x + _length * -1.0f * _anchorPoint + _stackBorder;
+      s = _stackPosition.x - _length * _anchorPoint + _stackBorder;
       break;
     case HLStackLayoutManagerStackLeft:
       s = _stackPosition.x + _length * (1.0f - _anchorPoint) - _stackBorder;
       break;
     case HLStackLayoutManagerStackUp:
-      s = _stackPosition.y + _length * -1.0f * _anchorPoint + _stackBorder;
+      s = _stackPosition.y - _length * _anchorPoint + _stackBorder;
       break;
     case HLStackLayoutManagerStackDown:
       s = _stackPosition.y + _length * (1.0f - _anchorPoint) - _stackBorder;
