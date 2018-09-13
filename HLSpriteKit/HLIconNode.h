@@ -52,6 +52,11 @@
 /// @name Creating an Icon Node
 
 /**
+ Initializes a new icon node with no texture.
+*/
+- (instancetype)init;
+
+/**
  Initializes a new icon node with a texture.
 */
 - (instancetype)initWithTexture:(SKTexture *)texture;

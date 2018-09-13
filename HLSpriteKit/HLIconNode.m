@@ -14,6 +14,17 @@
   SKLabelNode *_labelNode;
 }
 
+- (instancetype)init
+{
+  self = [super init];
+  if (self) {
+    _spriteNode = [SKSpriteNode node];
+    [self addChild:_spriteNode];
+    [self HL_iconNodeInitCommon];
+  }
+  return self;
+}
+
 - (instancetype)initWithTexture:(SKTexture *)texture
 {
   self = [super init];
@@ -93,6 +104,8 @@
 - (void)setTexture:(SKTexture *)texture
 {
   _spriteNode.texture = texture;
+  _spriteNode.size = texture.size;
+  [self HL_layout];
 }
 
 - (void)setText:(NSString *)text
