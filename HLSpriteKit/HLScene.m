@@ -305,7 +305,7 @@ static BOOL _sceneAssetsLoaded = NO;
     [NSException raise:@"HLSceneUnknownGestureTargetHitTestMode" format:@"Unknown gesture target hit test mode %ld.", (long)_gestureTargetHitTestMode];
   }
 
-  while (node != self) {
+  while (node) {
 
     // note: Any target registered for gesture recognition should be called to add itself
     // to any type of gesture, even if the gesture handler was not returned from the
