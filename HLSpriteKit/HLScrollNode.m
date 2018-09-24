@@ -8,9 +8,10 @@
 
 #import "HLScrollNode.h"
 
+// note: Scroll node is currently flat, but in the future there might be scroll bar
+// decorations or a background color or whatnot.
 enum {
-  HLScrollNodeZPositionLayerBackground = 0,
-  HLScrollNodeZPositionLayerContent,
+  HLScrollNodeZPositionLayerContent = 0,
   HLScrollNodeZPositionLayerCount
 };
 
@@ -202,6 +203,11 @@ enum {
 
 - (void)setZPositionScale:(CGFloat)zPositionScale
 {
+  // note: Scroll node is currently flat, but in the future it might have layers
+  // (for example, to display scroll bars decorations, or a background matte.)
+  // If/when that happens, then the content node will have to have its zPositionScale
+  // configured also -- if it's an HLComponentNode.  The caller won't know the correct
+  // layer increment to pass, so it must be our job.
   [super setZPositionScale:zPositionScale];
   if (!_contentNode) {
     return;
