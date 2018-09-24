@@ -54,11 +54,15 @@ sdk_iphonesimulator=iphonesimulator
 # note: xcpretty has a hard time handling output from multiple (concurrent)
 # destinations (see https://github.com/supermarin/xcpretty/issues/295).
 # So it's just an aesthetic issue, but -disable-concurrent-destination-testing.
+# Travis CI currently defaulting to osx_image xcode9.4, but the option doesn't
+# exist until Xcode 10.0.  So disable the option for now in Travis, but add it
+# in once the default xcode in Travis CI changes.
+local_options=-disable-concurrent-destination-testing
 xcodebuild clean build test \
            -workspace Example/HLSpriteKit.xcworkspace \
            -scheme iOS \
            -sdk $sdk_iphonesimulator \
-           -disable-concurrent-destination-testing \
+           $local_options \
            -destination 'platform=iOS Simulator,OS=8.4,name=iPhone 5s' \
            -destination 'platform=iOS Simulator,OS=9.3,name=iPad 2' \
            -destination 'platform=iOS Simulator,OS=latest,name=iPhone 6' \
