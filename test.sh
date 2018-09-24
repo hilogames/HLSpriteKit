@@ -9,8 +9,7 @@ set -e -o pipefail
 
 if (( $travis )); then
 
-    # note: Couldn't get this to run on TravisCI, but builds fine
-    # locally.
+    # note: Couldn't get this to test on TravisCI, but builds, anyway.
     #
     #  Assertion failed: (*shader), function xglCompileShader, file /BuildRoot/Library/Caches/com.apple.xbs/Sources/Jet/Jet-2.6.1/Jet/xgl_utils.mm, line 24.
     #  2016-09-21 17:13:00.353 xcodebuild[1406:4641] Error Domain=IDETestOperationsObserverErrorDomain Code=5 "Early unexpected exit, operation never finished bootstrapping - no restart will be attempted" UserInfo={NSLocalizedDescription=Early unexpected exit, operation never finished bootstrapping - no restart will be attempted}
@@ -52,20 +51,15 @@ if (( $travis )); then
     sdk_iphonesimulator=iphonesimulator10.3
 fi
 
-# note: Would like to do test of iOS8, but xcodebuild hangs after
-# simulator launch.  Just build it.
-xcodebuild clean build \
-           -workspace Example/HLSpriteKit.xcworkspace \
-           -scheme iOS \
-           -sdk $sdk_iphonesimulator \
-           -destination 'platform=iOS Simulator,OS=8.4,name=iPhone 5s' \
-           ONLY_ACTIVE_ARCH=NO \
-    | xcpretty
-
+# note: xcpretty has a hard time handling output from multiple (concurrent)
+# destinations (see https://github.com/supermarin/xcpretty/issues/295).
+# So it's just an aesthetic issue, but -disable-concurrent-destination-testing.
 xcodebuild clean build test \
            -workspace Example/HLSpriteKit.xcworkspace \
            -scheme iOS \
            -sdk $sdk_iphonesimulator \
+           -disable-concurrent-destination-testing \
+           -destination 'platform=iOS Simulator,OS=8.4,name=iPhone 5s' \
            -destination 'platform=iOS Simulator,OS=9.3,name=iPad 2' \
            -destination 'platform=iOS Simulator,OS=latest,name=iPhone 6' \
            ONLY_ACTIVE_ARCH=NO \
