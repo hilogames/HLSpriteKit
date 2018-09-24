@@ -151,8 +151,9 @@
  @param radius The distance betwen the origin (position) of the ring node and the center
                of each of the items.
 
- @param initialThetaRadians The angular coordinate of the first item on the ring (measured in
-                            radians, where 0 points right, and increasing counter-clockwise).
+ @param initialThetaRadians The angular coordinate of the first item on the ring (measured
+                            in radians, where 0 points right, and increasing
+                            counter-clockwise).
 */
 - (void)setLayoutWithRadius:(CGFloat)radius
                initialTheta:(CGFloat)initialThetaRadians;
@@ -180,6 +181,32 @@
 */
 - (void)setLayoutWithRadius:(CGFloat)radius
                initialTheta:(CGFloat)initialThetaRadians
+             thetaIncrement:(CGFloat)thetaIncrementRadians;
+
+/**
+ Sets the layout of the ring node with items spaced out incrementally in a cluster
+ centered on a given angular coordinate.
+
+ note: Currently the layout-affecting parameters are not properties, and so can't be set
+ individually, which helps avoid the problem where layout is redone multiple times as each
+ parameter is adjusted individually.
+
+ Layout can be set with or without content set.
+
+ @param radius The distance betwen the origin (position) of the ring node and the center
+               of each of the items.
+
+ @param centerThetaRadians The angular coordinate of the center of the cluster of laid-out
+                           nodes (measured in radians, where 0 points right, and
+                           increasing counter-clockwise).
+
+ @param thetaIncrementRadians The angular distance between successive nodes on the ring
+                              (measured in radians, where positive values indicate the
+                              counter-clockwise direction).  (Accordingly, a negative
+                              value means the nodes will be laid out in order clockwise.)
+*/
+- (void)setLayoutWithRadius:(CGFloat)radius
+                centerTheta:(CGFloat)centerThetaRadians
              thetaIncrement:(CGFloat)thetaIncrementRadians;
 
 /**

@@ -107,6 +107,15 @@ enum {
   [layoutManager layout:itemNodes];
 }
 
+- (void)setLayoutWithRadius:(CGFloat)radius centerTheta:(CGFloat)centerThetaRadians thetaIncrement:(CGFloat)thetaIncrementRadians
+{
+  NSArray *itemNodes = _itemsNode.itemNodes;
+  HLRingLayoutManager *layoutManager = [[HLRingLayoutManager alloc] init];
+  layoutManager.radii = @[ @(radius) ];
+  [layoutManager setThetasWithCenterTheta:centerThetaRadians thetaIncrement:thetaIncrementRadians];
+  [layoutManager layout:itemNodes];
+}
+
 - (int)itemAtPoint:(CGPoint)location
 {
   return [_itemsNode itemClosestToPoint:location maximumDistance:_itemAtPointDistanceMax closestDistance:nil];
