@@ -47,9 +47,9 @@ sdk_iphonesimulator=iphonesimulator
 # But the TravisCI failure was just the generic "Test target iOS-Tests
 # encountered an error", on a day with operational troubles, so it
 # might be a transient thing.  For now, specify.
-if (( $travis )); then
-    sdk_iphonesimulator=iphonesimulator10.3
-fi
+#if (( $travis )); then
+#    sdk_iphonesimulator=iphonesimulator10.3
+#fi
 
 # note: xcpretty has a hard time handling output from multiple (concurrent)
 # destinations (see https://github.com/supermarin/xcpretty/issues/295).
