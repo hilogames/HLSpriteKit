@@ -157,7 +157,13 @@ enum {
   CGFloat zPositionLayerIncrement = self.zPositionScale / HLItemContentBackHighlightNodeZPositionLayerCount;
   SKNode *contentNode = [self childNodeWithName:@"content"];
   contentNode.zPosition = HLItemContentBackHighlightNodeZPositionLayerContent * zPositionLayerIncrement;
+  if ([contentNode isKindOfClass:[HLComponentNode class]]) {
+    ((HLComponentNode *)contentNode).zPositionScale = zPositionLayerIncrement;
+  }
   _backHighlightNode.zPosition = HLItemContentBackHighlightNodeZPositionLayerBackHighlight * zPositionLayerIncrement;
+  if ([_backHighlightNode isKindOfClass:[HLComponentNode class]]) {
+    ((HLComponentNode *)_backHighlightNode).zPositionScale = zPositionLayerIncrement;
+  }
 }
 
 @end
@@ -311,7 +317,13 @@ enum {
   CGFloat zPositionLayerIncrement = self.zPositionScale / HLItemContentFrontHighlightNodeZPositionLayerCount;
   SKNode *contentNode = [self childNodeWithName:@"content"];
   contentNode.zPosition = HLItemContentFrontHighlightNodeZPositionLayerContent * zPositionLayerIncrement;
+  if ([contentNode isKindOfClass:[HLComponentNode class]]) {
+    ((HLComponentNode *)contentNode).zPositionScale = zPositionLayerIncrement;
+  }
   _frontHighlightNode.zPosition = HLItemContentFrontHighlightNodeZPositionLayerFrontHighlight * zPositionLayerIncrement;
+  if ([_frontHighlightNode isKindOfClass:[HLComponentNode class]]) {
+    ((HLComponentNode *)_frontHighlightNode).zPositionScale = zPositionLayerIncrement;
+  }
 }
 
 @end

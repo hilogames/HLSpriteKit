@@ -44,3 +44,40 @@
 }
 
 @end
+
+@implementation HLComponentSingleLayerNode
+
+@dynamic zPositionScale;
+
+- (void)setZPositionScale:(CGFloat)zPositionScale
+{
+  [super setZPositionScale:zPositionScale];
+  for (SKNode *childNode in self.children) {
+    if ([childNode isKindOfClass:[HLComponentNode class]]) {
+      ((HLComponentNode *)childNode).zPositionScale = zPositionScale;
+    }
+  }
+}
+
+@end
+
+@implementation HLComponentLayeredNode
+
+@dynamic zPositionScale;
+
+- (void)setZPositionScale:(CGFloat)zPositionScale
+{
+  [super setZPositionScale:zPositionScale];
+  NSArray *children = self.children;
+  NSUInteger childrenCount = [children count];
+  CGFloat zPositionLayerIncrement = zPositionScale / childrenCount;
+  for (NSUInteger c = 0; c < childrenCount; ++c) {
+    SKNode *childNode = children[c];
+    childNode.zPosition = zPositionLayerIncrement * c;
+    if ([childNode isKindOfClass:[HLComponentNode class]]) {
+      ((HLComponentNode *)childNode).zPositionScale = zPositionLayerIncrement;
+    }
+  }
+}
+
+@end

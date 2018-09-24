@@ -60,3 +60,52 @@
 @property (nonatomic, assign) CGFloat zPositionScale;
 
 @end
+
+/**
+ `HLComponentSingleLayerNode` is an `HLComponentNode` designed as a simple parent node
+ for children `HLComponentNodes` in a single Z layer.
+
+ In particular, when this component has its `zPositionScale` configured, it will
+ configure all its component children with the same scale.
+
+ This class is useful in certain situations where a component node is expected, and a
+ component node is desirable in order to pass along `zPositionScale` to its children,
+ and yet it's annoying to make a custom `HLComponentNode` subclass for such a simple
+ positioning scheme.
+*/
+@interface HLComponentSingleLayerNode : HLComponentNode
+
+/**
+ Sets `zPosition` to zero for all node children, and sets `zPositionScale` to the full
+ scale value for any children that are themselves `HLComponentNodes`.  (This is
+ appropriate if all children occupy a single layer in the component.)
+*/
+@property (nonatomic, assign) CGFloat zPositionScale;
+
+@end
+
+/**
+ `HLComponentLayeredNode` is an `HLComponentNode` designed as a simple parent node
+ for children layered low to high in `zPosition`.
+
+ In particular, when this component has its `zPositionScale` configured, it will
+ configure its children so that the first child is at `zPosition` zero, and the others
+ are incrementally layered above.  If any of the children are `HLComponentNodes`, they
+ will also have their `zPositionScale` configured.
+
+ This class is useful in certain situations where a component node is expected, and a
+ component node is desirable in order to arrange children in the Z dimension, and yet
+ it's annoying to make a custom `HLComponentNode` subclass for such a simple positioning
+ scheme.
+*/
+@interface HLComponentLayeredNode : HLComponentNode
+
+/**
+ Sets `zPosition` for all node children, in order from lowest to highest through the
+ scale.  Also configures `zPositionScale` to be a single slice of the scale for any
+ children that are themselves `HLComponentNodes`.  (This is appropriate if all children
+ are stacked from low to high in the component.)
+*/
+@property (nonatomic, assign) CGFloat zPositionScale;
+
+@end
