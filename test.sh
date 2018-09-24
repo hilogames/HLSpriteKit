@@ -57,12 +57,16 @@ sdk_iphonesimulator=iphonesimulator
 # Travis CI currently defaulting to osx_image xcode9.4, but the option doesn't
 # exist until Xcode 10.0.  So disable the option for now in Travis, but add it
 # in once the default xcode in Travis CI changes.
-local_options=-disable-concurrent-destination-testing
+if (( $travis )); then
+    xcode_build_options=""
+else
+    xcode_build_options=-disable-concurrent-destination-testing
+fi
 xcodebuild clean build test \
            -workspace Example/HLSpriteKit.xcworkspace \
            -scheme iOS \
            -sdk $sdk_iphonesimulator \
-           $local_options \
+           $xcode_build_options \
            -destination 'platform=iOS Simulator,OS=8.4,name=iPhone 5s' \
            -destination 'platform=iOS Simulator,OS=9.3,name=iPad 2' \
            -destination 'platform=iOS Simulator,OS=latest,name=iPhone 6' \
