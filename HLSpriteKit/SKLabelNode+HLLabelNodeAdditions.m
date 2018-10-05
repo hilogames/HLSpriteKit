@@ -123,6 +123,52 @@
   return insetY;
 }
 
+- (CGFloat)labelHeightForHeightMode:(HLLabelHeightMode)heightMode
+{
+  if (heightMode == HLLabelHeightModeText) {
+    return self.frame.size.height;
+  } else {
+    return [SKLabelNode labelHeightForHeightMode:heightMode fontName:self.fontName fontSize:self.fontSize];
+  }
+}
+
++ (CGFloat)labelHeightForHeightMode:(HLLabelHeightMode)heightMode
+                           fontName:(NSString *)fontName
+                           fontSize:(CGFloat)fontSize
+{
+  // note: For the record: I have no idea about the performance of this, especially
+  // if dealing with lots of labels that may or may not share the same font name
+  // and font size.
+
+  if (heightMode == HLLabelHeightModeText) {
+    // note: Depends on the text of the label; return 0.0 as a way to say "dunno."
+    return 0.0f;
+  }
+
+#if TARGET_OS_IPHONE
+  UIFont *font = [UIFont fontWithName:fontName size:fontSize];
+#else
+  NSFont *font = [NSFont fontWithName:fontName size:fontSize];
+#endif
+  if (!font) {
+    [NSException raise:@"HLLabelNodeUnknownFont" format:@"Could not find font \"%@\".", fontName];
+  }
+
+  switch (heightMode) {
+    case HLLabelHeightModeText:
+      // note: Already handled above.
+      return 0.0f;
+    case HLLabelHeightModeFont:
+      return (font.ascender - font.descender);
+    case HLLabelHeightModeFontAscender:
+      return font.ascender;
+    case HLLabelHeightModeFontAscenderBias:
+      // note: Ascender bias leaves room for the full ascender plus half of the descender
+      // (keep in mind font.descender metric is a negative offset).  This is arbitrary.
+      return (font.ascender - font.descender / 2.0f);
+  }
+}
+
 - (void)getVerticalAlignmentForAlignmentMode:(SKLabelVerticalAlignmentMode)verticalAlignmentMode
                                   heightMode:(HLLabelHeightMode)heightMode
                             useAlignmentMode:(SKLabelVerticalAlignmentMode *)useVerticalAlignmentMode

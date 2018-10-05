@@ -120,6 +120,28 @@ typedef NS_ENUM(NSInteger, HLLabelHeightMode) {
 - (CGFloat)baselineInsetYFromBottomForHeightMode:(HLLabelHeightMode)heightMode;
 
 /**
+ Returns the label height as calculated by other methods in this module, most notably
+ `getVerticalAlignmentForAlignmentMode:heightMode:useAlignmentMode:labelHeight:offsetY:`.
+
+ Note: Returns `0.0` if `heightMode` is `HLLabelHeightModeText`.  The label height, in
+ this case, depends on the text of the label.  Use `labelHeightForHeightMode:` to get a
+ better answer.
+*/
++ (CGFloat)labelHeightForHeightMode:(HLLabelHeightMode)heightMode
+                           fontName:(NSString *)fontName
+                           fontSize:(CGFloat)fontSize;
+
+/**
+ Returns label height for this label as calculated by other methods in this module.
+
+ If `heightMode` is `HLLabelHeightModeText`, then a height based on the current `text` of
+ the `SKLabelNode` is returned.  Otherwise this is merely a convenience method for
+ `labelHeightForHeightMode:fontName:fontSize:` using the font name and size from this
+ label.
+*/
+- (CGFloat)labelHeightForHeightMode:(HLLabelHeightMode)heightMode;
+
+/**
  Gets vertical alignment parameters for this `SKLabelNode` when aligning using
  a combination of `SKLabelVerticalAlignmentMode` and `HLLabelHeightMode`.
 
