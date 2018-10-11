@@ -186,6 +186,19 @@
   [self needSharedGestureRecognizersForNode:labelButtonNode];
   [catalogNode addChild:labelButtonNode];
 
+  SKLabelNode *wideLabelNode = [self HL_createWideLabelNode];
+#if TARGET_OS_IPHONE
+  [wideLabelNode hlSetGestureTarget:[HLTapGestureTarget tapGestureTargetWithHandleGestureBlock:^(UIGestureRecognizer *gestureRecognizer){
+    [self HL_showMessage:@"Tapped wide SKLabelNode."];
+  }]];
+#else
+  [wideLabelNode hlSetGestureTarget:[HLClickGestureTarget clickGestureTargetWithHandleGestureBlock:^(NSGestureRecognizer *gestureRecognizer){
+    [self HL_showMessage:@"Clicked wide SKLabelNode."];
+  }]];
+#endif
+  [self needSharedGestureRecognizersForNode:wideLabelNode];
+  [catalogNode addChild:wideLabelNode];
+
   [catalogNode hlLayoutChildren];
   catalogNode.size = catalogLayoutManager.size;
 
@@ -336,6 +349,39 @@
                                                                               fontColor:[SKColor darkGrayColor]
                                                                                  shadow:nil];
   return multilineLabelNode;
+}
+
+- (SKLabelNode *)HL_createWideLabelNode
+{
+  SKLabelNode *wideLabelNode = [SKLabelNode node];
+  wideLabelNode.fontColor = [SKColor blackColor];
+  const NSTimeInterval duration = 5.0;
+  const CGFloat widthMinimum = 10.0f;
+  const CGFloat widthMaximum = 180.0;
+  SKAction *decreaseWidthAction = [SKAction customActionWithDuration:duration actionBlock:^(SKNode *node, CGFloat elapsedTime){
+    CGFloat normalTime = elapsedTime / duration;
+    CGFloat widthCurrent = widthMinimum * normalTime + widthMaximum * (1.0f - normalTime);
+    [self HL_updateWideLabelNode:wideLabelNode withWidthMaximum:widthCurrent];
+  }];
+  SKAction *increaseWidthAction = [SKAction customActionWithDuration:duration actionBlock:^(SKNode *node, CGFloat elapsedTime){
+    CGFloat normalTime = elapsedTime / duration;
+    CGFloat widthCurrent = widthMinimum * (1.0f - normalTime) + widthMaximum * normalTime;
+    [self HL_updateWideLabelNode:wideLabelNode withWidthMaximum:widthCurrent];
+  }];
+  SKAction *changeWidthAction = [SKAction sequence:@[ decreaseWidthAction, increaseWidthAction ]];
+  [wideLabelNode runAction:[SKAction repeatAction:changeWidthAction count:3]];
+  [self HL_updateWideLabelNode:wideLabelNode withWidthMaximum:widthMaximum];
+  return wideLabelNode;
+}
+
+- (void)HL_updateWideLabelNode:(SKLabelNode *)wideLabelNode withWidthMaximum:(CGFloat)widthMaximum
+{
+  NSString *text = @"Lorem ipsum dolor sit amet.";
+  [wideLabelNode setText:text widthMaximum:widthMaximum
+       fontSizePreferred:16.0f
+         fontSizeMinimum:12.0f
+          truncationMode:HLLabelTruncationModeMiddle
+         truncationIndex:0];
 }
 
 - (void)HL_showMessage:(NSString *)message

@@ -307,4 +307,165 @@
   self.position = position;
 }
 
+- (void)setText:(NSString *)text
+   widthMaximum:(CGFloat)widthMaximum
+fontSizePreferred:(CGFloat)fontSizePreferred
+fontSizeMinimum:(CGFloat)fontSizeMinimum
+{
+  self.fontSize = fontSizePreferred;
+  self.text = text;
+  CGFloat width = self.frame.size.width;
+  const CGFloat GLFontSizeComparisonEpsilon = 0.001;
+  if (width <= widthMaximum || fontSizeMinimum + GLFontSizeComparisonEpsilon > fontSizePreferred) {
+    return;
+  }
+  // note: Font width is presumed to be proportional to font size.  Use an epsilon
+  // to get below widthMaximum in case it's close.
+  const CGFloat GLFontSizeCalculationEpsilon = 0.1;
+  CGFloat fontSize = widthMaximum / width * fontSizePreferred - GLFontSizeCalculationEpsilon;
+  if (fontSize < fontSizeMinimum) {
+    fontSize = fontSizeMinimum;
+  }
+  self.fontSize = fontSize;
+}
+
+- (void)setText:(NSString *)text
+   widthMaximum:(CGFloat)widthMaximum
+ truncationMode:(HLLabelTruncationMode)truncationMode
+truncationIndex:(NSUInteger)truncationIndex
+{
+  self.text = text;
+  CGFloat width = self.frame.size.width;
+  if (width <= widthMaximum) {
+    return;
+  }
+
+  NSUInteger textLength = text.length;
+  NSUInteger truncateLengthMin = 2;
+  NSUInteger truncateLengthMax;
+  if (truncationMode == HLLabelTruncationModeIndexed) {
+    truncateLengthMax = textLength - truncationIndex;
+  } else {
+    truncateLengthMax = textLength - 1;
+  }
+
+  NSString *lastGoodTruncatedText = nil;
+  while (truncateLengthMin <= truncateLengthMax) {
+
+    NSUInteger truncateLengthCurrent = (truncateLengthMin + truncateLengthMax) / 2;
+    NSRange truncateRange;
+    switch (truncationMode) {
+      case HLLabelTruncationModeHead:
+        truncateRange = NSMakeRange(0, truncateLengthCurrent);
+        break;
+      case HLLabelTruncationModeMiddle:
+        truncateRange = NSMakeRange((textLength - truncateLengthCurrent + 1) / 2, truncateLengthCurrent);
+        break;
+      case HLLabelTruncationModeTail:
+        truncateRange = NSMakeRange(textLength - truncateLengthCurrent, truncateLengthCurrent);
+        break;
+      case HLLabelTruncationModeIndexed:
+        truncateRange = NSMakeRange(truncationIndex, truncateLengthCurrent);
+        break;
+      case HLLabelTruncationModeNone:
+        return;
+    }
+    self.text = [text stringByReplacingCharactersInRange:truncateRange withString:@"…"];
+    width = self.frame.size.width;
+
+    if (width <= widthMaximum) {
+      lastGoodTruncatedText = self.text;
+      truncateLengthMax = truncateLengthCurrent - 1;
+    } else {
+      truncateLengthMin = truncateLengthCurrent + 1;
+    }
+  }
+
+  if (!lastGoodTruncatedText) {
+    self.text = @"…";
+  } else if (self.text != lastGoodTruncatedText) {
+    self.text = lastGoodTruncatedText;
+  }
+}
+
+- (void)setText:(NSString *)text
+   widthMaximum:(CGFloat)widthMaximum
+fontSizePreferred:(CGFloat)fontSizePreferred
+fontSizeMinimum:(CGFloat)fontSizeMinimum
+ truncationMode:(HLLabelTruncationMode)truncationMode
+truncationIndex:(NSUInteger)truncationIndex
+{
+  self.fontSize = fontSizePreferred;
+  self.text = text;
+  CGFloat width = self.frame.size.width;
+  if (width <= widthMaximum) {
+    return;
+  }
+
+  const CGFloat GLFontSizeComparisonEpsilon = 0.001;
+  const CGFloat GLFontSizeCalculationEpsilon = 0.1;
+  if (fontSizeMinimum + GLFontSizeComparisonEpsilon < fontSizePreferred) {
+    // note: Font width is presumed to be proportional to font size.  Use an epsilon
+    // to get below widthMaximum in case it's close.
+    CGFloat fontSize = widthMaximum / width * fontSizePreferred - GLFontSizeCalculationEpsilon;
+    if (fontSize < fontSizeMinimum) {
+      fontSize = fontSizeMinimum;
+    }
+    self.fontSize = fontSize;
+    width = self.frame.size.width;
+    if (width <= widthMaximum) {
+      return;
+    }
+  }
+
+  if (truncationMode != HLLabelTruncationModeNone) {
+    NSUInteger textLength = text.length;
+    NSUInteger truncateLengthMin = 2;
+    NSUInteger truncateLengthMax;
+    if (truncationMode == HLLabelTruncationModeIndexed) {
+      truncateLengthMax = textLength - truncationIndex;
+    } else {
+      truncateLengthMax = textLength - 1;
+    }
+
+    NSString *lastGoodTruncatedText = nil;
+    while (truncateLengthMin <= truncateLengthMax) {
+
+      NSUInteger truncateLengthCurrent = (truncateLengthMin + truncateLengthMax) / 2;
+      NSRange truncateRange;
+      switch (truncationMode) {
+        case HLLabelTruncationModeHead:
+          truncateRange = NSMakeRange(0, truncateLengthCurrent);
+          break;
+        case HLLabelTruncationModeMiddle:
+          truncateRange = NSMakeRange((textLength - truncateLengthCurrent + 1) / 2, truncateLengthCurrent);
+          break;
+        case HLLabelTruncationModeTail:
+          truncateRange = NSMakeRange(textLength - truncateLengthCurrent, truncateLengthCurrent);
+          break;
+        case HLLabelTruncationModeIndexed:
+          truncateRange = NSMakeRange(truncationIndex, truncateLengthCurrent);
+          break;
+        case HLLabelTruncationModeNone:
+          return;
+      }
+      self.text = [text stringByReplacingCharactersInRange:truncateRange withString:@"…"];
+      width = self.frame.size.width;
+
+      if (width <= widthMaximum) {
+        lastGoodTruncatedText = self.text;
+        truncateLengthMax = truncateLengthCurrent - 1;
+      } else {
+        truncateLengthMin = truncateLengthCurrent + 1;
+      }
+    }
+
+    if (!lastGoodTruncatedText) {
+      self.text = @"…";
+    } else if (self.text != lastGoodTruncatedText) {
+      self.text = lastGoodTruncatedText;
+    }
+  }
+}
+
 @end

@@ -37,6 +37,32 @@ typedef NS_ENUM(NSInteger, HLLabelHeightMode) {
   HLLabelHeightModeFontAscenderBias,
 };
 
+/**
+ A truncation mode used when truncating text.
+*/
+typedef NS_ENUM(NSInteger, HLLabelTruncationMode) {
+  /**
+   Do not truncate.
+  */
+  HLLabelTruncationModeNone,
+  /**
+   Truncate the text at a particular character index.
+  */
+  HLLabelTruncationModeIndexed,
+  /**
+   Trunate the text at the beginning.
+  */
+  HLLabelTruncationModeHead,
+  /**
+   Trunate the text in the middle.
+  */
+  HLLabelTruncationModeMiddle,
+  /**
+   Trunate the text at the end.
+  */
+  HLLabelTruncationModeTail,
+};
+
 @interface SKLabelNode (HLLabelNodeAdditions)
 
 /// @name Calculating Vertical Alignment
@@ -259,5 +285,44 @@ typedef NS_ENUM(NSInteger, HLLabelHeightMode) {
 */
 - (void)alignVerticalWithAlignmentMode:(SKLabelVerticalAlignmentMode)verticalAlignmentMode
                             heightMode:(HLLabelHeightMode)heightMode;
+
+/**
+ Sets the `text` property of this label to the given text, perhaps reducing font size
+ according to the parameters.
+*/
+- (void)setText:(NSString *)text
+   widthMaximum:(CGFloat)widthMaximum
+fontSizePreferred:(CGFloat)fontSizePreferred
+fontSizeMinimum:(CGFloat)fontSizeMinimum;
+
+/**
+ Sets the `text` property of this label to the given text, perhaps truncating it according
+ to the parameters.
+
+ The text is truncated to something less than or equal to the specified `widthMaximum`,
+ if possible; an ellipsis is inserted in place of the removed characters.
+
+ See `HLLabelTruncationMode` for details about how the text is truncated.
+*/
+- (void)setText:(NSString *)text
+   widthMaximum:(CGFloat)widthMaximum
+ truncationMode:(HLLabelTruncationMode)truncationMode
+truncationIndex:(NSUInteger)truncationIndex;
+
+/**
+ Sets the `text` property of this label to the given text, perhaps reducing font size
+ or truncating it according to the parameters.
+
+ Font size reduction is prioritized over truncation.
+
+ See `setText:WidthMaximum:fontSizePreferred:fontSizeMinimum:` and
+ `setText:widthMaximum:truncationMode:truncationIndex:` for details.
+*/
+- (void)setText:(NSString *)text
+   widthMaximum:(CGFloat)widthMaximum
+fontSizePreferred:(CGFloat)fontSizePreferred
+fontSizeMinimum:(CGFloat)fontSizeMinimum
+ truncationMode:(HLLabelTruncationMode)truncationMode
+truncationIndex:(NSUInteger)truncationIndex;
 
 @end
