@@ -285,7 +285,12 @@ static BOOL _sceneAssetsLoaded = NO;
   CGPoint sceneLocation = [event locationInNode:self];
 #endif
 
-  SKNode *node = self;
+  // note: A few edge cases in the past: It's possible for `nodesAtPoint` to return nil,
+  // which should be handled well in the while() loop below.  Also it's possible that the
+  // nodesAtPoint will all be tied for zPosition zero, in which case the first one
+  // returned should be chosen as a tie-breaker.
+
+  SKNode *node = nil;
   if (_gestureTargetHitTestMode == HLSceneGestureTargetHitTestModeDeepestThenParent) {
     node = [self nodeAtPoint:sceneLocation];
   } else if (_gestureTargetHitTestMode == HLSceneGestureTargetHitTestModeZPositionThenParent) {
