@@ -124,7 +124,7 @@
     }
     return;
   }
-  
+
   SKSpriteNode *firstChild = (SKSpriteNode *)[self.children firstObject];
   if (firstChild.texture && CGSizeEqualToSize(firstChild.texture.size, texture.size)) {
     for (SKSpriteNode *child in self.children) {

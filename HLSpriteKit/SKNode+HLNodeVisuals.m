@@ -41,7 +41,7 @@ static const CGFloat HLBlurEpsilon = 0.001f;
   CIFilter *clampFilter = [CIFilter filterWithName:@"CIColorClamp"
                                withInputParameters:@{ @"inputMinComponents" : inputMinComponents,
                                                       @"inputMaxComponents" : inputMaxComponents }];
-  
+
   SKEffectNode *clampEffectNode = [SKEffectNode node];
   [clampEffectNode addChild:shapeNode];
   clampEffectNode.shouldRasterize = YES;
@@ -51,17 +51,17 @@ static const CGFloat HLBlurEpsilon = 0.001f;
   if (blur < HLBlurEpsilon) {
     return clampEffectNode;
   }
-  
+
   CIFilter *blurFilter = [CIFilter filterWithName:@"CIGaussianBlur"];
   [blurFilter setDefaults];
   [blurFilter setValue:[NSNumber numberWithFloat:blur] forKey:@"inputRadius"];
-  
+
   SKEffectNode *blurNode = [SKEffectNode node];
   [blurNode addChild:clampEffectNode];
   blurNode.shouldRasterize = YES;
   blurNode.shouldEnableEffects = YES;
   blurNode.filter = blurFilter;
-  
+
   return blurNode;
 }
 
@@ -102,7 +102,7 @@ static const CGFloat HLBlurEpsilon = 0.001f;
   //  SKCropNode *colorizedOutlineNode = [SKCropNode node];
   //  [colorizedOutlineNode addChild:colorMatteNode];
   //  colorizedOutlineNode.maskNode = shapeNode;
-  
+
   CGFloat colorRedComponent;
   CGFloat colorGreenComponent;
   CGFloat colorBlueComponent;
@@ -119,21 +119,21 @@ static const CGFloat HLBlurEpsilon = 0.001f;
   clampEffectNode.shouldRasterize = YES;
   clampEffectNode.shouldEnableEffects = YES;
   clampEffectNode.filter = clampFilter;
-  
+
   if (blur < HLBlurEpsilon) {
     return clampEffectNode;
   }
-  
+
   CIFilter *blurFilter = [CIFilter filterWithName:@"CIGaussianBlur"];
   [blurFilter setDefaults];
   [blurFilter setValue:[NSNumber numberWithFloat:blur] forKey:@"inputRadius"];
-  
+
   SKEffectNode *blurNode = [SKEffectNode node];
   [blurNode addChild:clampEffectNode];
   blurNode.shouldRasterize = YES;
   blurNode.shouldEnableEffects = YES;
   blurNode.filter = blurFilter;
-  
+
   return blurNode;
 }
 

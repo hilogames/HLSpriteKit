@@ -79,7 +79,7 @@
 
 /**
  Sets the highlight of the back-highlight content node with animation.
- 
+
  A back-highlight node displays highlight by showing a second node behind its content.
  Here, "behind" refers to `zPosition`.
 */
@@ -122,7 +122,7 @@
 
 /**
  Sets the highlight of the back-highlight content node with animation.
- 
+
  A front-highlight node displays highlight by showing a second node in front of its
  content.  Here, "in front of" refers to `zPosition`.
 */

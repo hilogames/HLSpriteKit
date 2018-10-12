@@ -116,7 +116,7 @@ FOUNDATION_EXPORT const CGFloat HLRingLayoutManagerEpsilon;
  @param centerThetaRadians The angular coordinate of the center of the cluster of laid-out
                            nodes (measured in radians, where 0 points right, and
                            increasing counter-clockwise).
- 
+
  @param thetaIncrementRadians The angular distance between successive nodes on the ring
                               (measured in radians, where positive values indicate the
                               counter-clockwise direction).  (Accordingly, a negative

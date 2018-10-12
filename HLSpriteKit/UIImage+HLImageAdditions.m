@@ -91,7 +91,7 @@
   CGSize shadowedImageSize = CGSizeMake(originalImageSize.width + 2.0f * (offsetDistance + blur), originalImageSize.height + 2.0f * (offsetDistance + blur));
   UIGraphicsBeginImageContext(shadowedImageSize);
   CGContextRef context = UIGraphicsGetCurrentContext();
-  
+
   CGContextTranslateCTM(context, 0.0f, shadowedImageSize.height);
   CGContextScaleCTM(context, 1.0, -1.0);
 
@@ -118,7 +118,7 @@
 
   UIImage *shadowedImage = UIGraphicsGetImageFromCurrentImageContext();
   UIGraphicsEndImageContext();
-  
+
   return shadowedImage;
 }
 

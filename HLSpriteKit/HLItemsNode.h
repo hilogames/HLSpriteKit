@@ -131,14 +131,14 @@
 
 /**
  Convenience method for clearing the last selection.
- 
+
  Sets highlight `NO` for the previously-selected item, if any.
 */
 - (void)clearSelection;
 
 /**
  Convenience method for clearing the last selection with animation.
- 
+
  Sets highlight `NO` for the previously-selected item, if any, with animation.
 */
 - (void)clearSelectionBlinkCount:(int)blinkCount

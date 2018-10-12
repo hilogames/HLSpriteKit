@@ -258,12 +258,12 @@ enum {
   } else {
     newlyAdded = NO;
   }
-  
+
   const NSTimeInterval GLTimingEpsilon = 0.001;
   BOOL lingerForever = (_messageLingerDuration < GLTimingEpsilon);
-  
+
   _labelNode.text = message;
-  
+
   // note: Reset state for ALL possible animation types; the _messageAnimation
   // type could have changed since it was last animated.  If this gets too crazy,
   // though, then another solution can be found.
@@ -272,9 +272,9 @@ enum {
     _backgroundNode.position = CGPointZero;
     _backgroundNode.alpha = 1.0f;
   }
-  
+
   NSMutableArray *showActions = [NSMutableArray array];
-  
+
   switch (_messageAnimation) {
     case HLMessageNodeAnimationSlideLeft: {
       if (newlyAdded && animated) {
@@ -310,7 +310,7 @@ enum {
       break;
     }
   }
-  
+
   if (!lingerForever) {
     // note: As of iOS8, doing the remove using an [SKAction removeFromParent] causes EXC_BAD_ACCESS.
     [showActions addObject:[SKAction performSelector:@selector(removeFromParent) onTarget:self]];
@@ -318,7 +318,7 @@ enum {
   if ([showActions count] > 0) {
     [_backgroundNode runAction:[SKAction sequence:showActions] withKey:@"show"];
   }
-  
+
   if (_messageSoundFile && animated) {
     [_backgroundNode runAction:[SKAction playSoundFileNamed:_messageSoundFile waitForCompletion:NO]];
   }

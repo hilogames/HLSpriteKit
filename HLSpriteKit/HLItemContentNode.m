@@ -115,7 +115,7 @@ enum {
     [self addChild:_backHighlightNode];
   }
   _backHighlightNode.alpha = (finalHighlight ? 0.0f : 1.0f );
-  
+
   SKAction *blinkInAction;
   if (finalHighlight) {
     blinkInAction = [SKAction fadeInWithDuration:halfCycleDuration];
@@ -124,7 +124,7 @@ enum {
     blinkInAction = [SKAction fadeOutWithDuration:halfCycleDuration];
     blinkInAction.timingMode = SKActionTimingEaseOut;
   }
-  
+
   NSMutableArray *blinkActions = [NSMutableArray array];
   if (blinkCount > 0) {
     SKAction *blinkOutAction;
@@ -140,7 +140,7 @@ enum {
   }
 
   [blinkActions addObject:blinkInAction];
-  
+
   if (!finalHighlight) {
     [blinkActions addObject:[SKAction removeFromParent]];
   }
@@ -148,7 +148,7 @@ enum {
   if (completion) {
     [blinkActions addObject:[SKAction runBlock:completion]];
   }
-  
+
   [_backHighlightNode runAction:[SKAction sequence:blinkActions] withKey:@"setHighlight"];
 }
 
@@ -270,12 +270,12 @@ enum {
                        completion:(void (^)(void))completion
 {
   [_frontHighlightNode removeActionForKey:@"setHighlight"];
-  
+
   if (!_frontHighlightNode.parent) {
     [self addChild:_frontHighlightNode];
   }
   _frontHighlightNode.alpha = (finalHighlight ? 0.0f : 1.0f );
-  
+
   SKAction *blinkInAction;
   if (finalHighlight) {
     blinkInAction = [SKAction fadeInWithDuration:halfCycleDuration];
@@ -284,7 +284,7 @@ enum {
     blinkInAction = [SKAction fadeOutWithDuration:halfCycleDuration];
     blinkInAction.timingMode = SKActionTimingEaseOut;
   }
-  
+
   NSMutableArray *blinkActions = [NSMutableArray array];
   if (blinkCount > 0) {
     SKAction *blinkOutAction;
@@ -298,17 +298,17 @@ enum {
     SKAction *blinkAction = [SKAction sequence:@[ blinkInAction, blinkOutAction ]];
     [blinkActions addObject:[SKAction repeatAction:blinkAction count:(NSUInteger)blinkCount]];
   }
-  
+
   [blinkActions addObject:blinkInAction];
-  
+
   if (!finalHighlight) {
     [blinkActions addObject:[SKAction removeFromParent]];
   }
-  
+
   if (completion) {
     [blinkActions addObject:[SKAction runBlock:completion]];
   }
-  
+
   [_frontHighlightNode runAction:[SKAction sequence:blinkActions] withKey:@"setHighlight"];
 }
 

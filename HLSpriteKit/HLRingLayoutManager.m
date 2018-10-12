@@ -199,7 +199,7 @@ typedef NS_ENUM(NSInteger, HLRingLayoutManagerThetasMode) {
     case HLRingLayoutManagerThetasNone:
       return;
   }
-  
+
   CGFloat radius = 0.0f;
   for (NSUInteger nodeIndex = 0; nodeIndex < nodeCount; ++nodeIndex) {
 

@@ -82,7 +82,7 @@
    certain point).  In this case, though, the necessary state is already present on the
    laid-out nodes themselves, and so the function takes the last-laid-out nodes (and a
    few key manager properties) as input, and needs no other persistent state.
- 
+
  . `HLGridLayoutManager` does a similar kind of calculation, but it needs almost all of
    the manager properties, and none of the nodes, and so it implements its helper
    as an object method.
@@ -105,7 +105,7 @@
 
    . Different managers will need to track and return different state, so perhaps there
      should be a single interface, with an associated hierarchy of state objects:
-     
+
        - (void)layout:(NSArray *)nodes getState:(GLLayoutState * __strong *)layoutState;
 
      The layout manager often calculates useful data derived from the main geometrical
@@ -119,7 +119,7 @@
      sophisticated calculations.)  Instead, if the last-layout state is more-or-less
      plain-old-data, then each layout manager could declare similarly-named layout methods
      returning simple state potentially interesting to an owner:
-     
+
        - (void)layout:(NSArray *)nodes getSize:(CGSize *)size;
        - (void)layout:(NSArray *)nodes getColumnWidths:(NSArray * __strong *)columnWidths;
 

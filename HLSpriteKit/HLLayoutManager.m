@@ -30,7 +30,7 @@ HLLayoutManagerGetNodeSize(id node)
     [invocation getReturnValue:&nodeSize];
     return nodeSize;
   }
-  
+
   return CGSizeZero;
 }
 
@@ -54,7 +54,7 @@ HLLayoutManagerGetNodeWidth(id node)
     [invocation getReturnValue:&nodeSize];
     return nodeSize.width;
   }
-  
+
   return 0.0f;
 }
 

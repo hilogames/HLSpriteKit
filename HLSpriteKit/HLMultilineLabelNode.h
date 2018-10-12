@@ -198,9 +198,9 @@
 
 /**
  Shadow parameters for the rendered multiline label; `nil` for no shadow.
- 
+
  Default value is `nil`.
- 
+
  Setting this property results in the label being rendered (if `text` is set and
  non-empty).
 */
