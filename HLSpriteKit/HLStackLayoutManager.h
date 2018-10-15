@@ -286,6 +286,15 @@ typedef NS_ENUM(NSInteger, HLStackLayoutManagerStackDirection) {
 */
 - (void)layout:(NSArray *)nodes;
 
+/**
+ Layout and (optionally) return calculated final cell lengths.
+
+ See `layout:` for details.
+
+ Also see "Accessing Last-Layout State" notes in this class and in `HLLayoutManager`.
+ */
+- (void)layout:(NSArray *)nodes getCellLengths:(NSArray * __strong *)cellLengths;
+
 /// @name Getting and Setting Stack Geometry
 
 /**

@@ -119,6 +119,16 @@ const CGFloat HLStackLayoutManagerEpsilon = 0.001f;
 
 - (void)layout:(NSArray *)nodes
 {
+  [self GL_layout:nodes getCellLengths:nil];
+}
+
+- (void)layout:(NSArray *)nodes getCellLengths:(NSArray *__strong *)cellLengths
+{
+  [self GL_layout:nodes getCellLengths:cellLengths];
+}
+
+- (void)GL_layout:(NSArray *)nodes getCellLengths:(NSArray * __strong *)returnCellLengths
+{
   NSUInteger nodesCount = (nodes ? [nodes count] : 0);
   if (nodesCount == 0) {
     return;
@@ -170,6 +180,13 @@ const CGFloat HLStackLayoutManagerEpsilon = 0.001f;
     lengthTotalFill = _constrainedLength - lengthTotalFixed - lengthTotalConstant;
   }
   _length = lengthTotalFixed + lengthTotalFill + lengthTotalConstant;
+  if (returnCellLengths) {
+    NSMutableArray *rcl = [NSMutableArray array];
+    for (NSUInteger nodeIndex = 0; nodeIndex < nodesCount; ++nodeIndex) {
+      [rcl addObject:[NSNumber numberWithDouble:finalCellLengths[nodeIndex]]];
+    }
+    *returnCellLengths = rcl;
+  }
 
   // note: s is the absolute position of the edge of the cell closest to the stack start,
   // for example the left edge in a rightwards stack, or the top edge in a downwards
