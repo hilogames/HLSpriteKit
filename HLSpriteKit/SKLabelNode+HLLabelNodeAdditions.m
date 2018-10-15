@@ -312,13 +312,27 @@
 fontSizePreferred:(CGFloat)fontSizePreferred
 fontSizeMinimum:(CGFloat)fontSizeMinimum
 {
-  self.fontSize = fontSizePreferred;
-  self.text = text;
-  CGFloat width = self.frame.size.width;
   const CGFloat GLFontSizeComparisonEpsilon = 0.001;
-  if (width <= widthMaximum || fontSizeMinimum + GLFontSizeComparisonEpsilon > fontSizePreferred) {
+  if (fontSizeMinimum + GLFontSizeComparisonEpsilon > fontSizePreferred) {
+    // note: This may or may not be under widthMaximum -- but there is nothing to do.
+    self.fontSize = fontSizePreferred;
+    self.text = text;
     return;
   }
+
+#if TARGET_OS_IPHONE
+  UIFont *font = [UIFont fontWithName:self.fontName size:fontSizePreferred];
+#else
+  NSFont *font = [NSFont fontWithName:self.fontName size:fontSizePreferred];
+#endif
+  NSDictionary *attributes = @{ NSFontAttributeName : font };
+  CGFloat width = [text sizeWithAttributes:attributes].width;
+  if (width <= widthMaximum) {
+    self.fontSize = fontSizePreferred;
+    self.text = text;
+    return;
+  }
+
   // note: Font width is presumed to be proportional to font size.  Use an epsilon
   // to get below widthMaximum in case it's close.
   const CGFloat GLFontSizeCalculationEpsilon = 0.1;
@@ -327,6 +341,7 @@ fontSizeMinimum:(CGFloat)fontSizeMinimum
     fontSize = fontSizeMinimum;
   }
   self.fontSize = fontSize;
+  self.text = text;
 }
 
 - (void)setText:(NSString *)text
@@ -334,9 +349,15 @@ fontSizeMinimum:(CGFloat)fontSizeMinimum
  truncationMode:(HLLabelTruncationMode)truncationMode
 truncationIndex:(NSUInteger)truncationIndex
 {
-  self.text = text;
-  CGFloat width = self.frame.size.width;
+#if TARGET_OS_IPHONE
+  UIFont *font = [UIFont fontWithName:self.fontName size:self.fontSize];
+#else
+  NSFont *font = [NSFont fontWithName:self.fontName size:self.fontSize];
+#endif
+  NSDictionary *attributes = @{ NSFontAttributeName : font };
+  CGFloat width = [text sizeWithAttributes:attributes].width;
   if (width <= widthMaximum) {
+    self.text = text;
     return;
   }
 
@@ -370,21 +391,21 @@ truncationIndex:(NSUInteger)truncationIndex
       case HLLabelTruncationModeNone:
         return;
     }
-    self.text = [text stringByReplacingCharactersInRange:truncateRange withString:@"…"];
-    width = self.frame.size.width;
+    NSString *truncatedText = [text stringByReplacingCharactersInRange:truncateRange withString:@"…"];
+    width = [truncatedText sizeWithAttributes:attributes].width;
 
     if (width <= widthMaximum) {
-      lastGoodTruncatedText = self.text;
+      lastGoodTruncatedText = truncatedText;
       truncateLengthMax = truncateLengthCurrent - 1;
     } else {
       truncateLengthMin = truncateLengthCurrent + 1;
     }
   }
 
-  if (!lastGoodTruncatedText) {
-    self.text = @"…";
-  } else if (self.text != lastGoodTruncatedText) {
+  if (lastGoodTruncatedText) {
     self.text = lastGoodTruncatedText;
+  } else {
+    self.text = @"…";
   }
 }
 
@@ -395,10 +416,17 @@ fontSizeMinimum:(CGFloat)fontSizeMinimum
  truncationMode:(HLLabelTruncationMode)truncationMode
 truncationIndex:(NSUInteger)truncationIndex
 {
-  self.fontSize = fontSizePreferred;
-  self.text = text;
-  CGFloat width = self.frame.size.width;
+  CGFloat fontSize = fontSizePreferred;
+#if TARGET_OS_IPHONE
+  UIFont *font = [UIFont fontWithName:self.fontName size:fontSize];
+#else
+  NSFont *font = [NSFont fontWithName:self.fontName size:fontSize];
+#endif
+  NSDictionary *attributes = @{ NSFontAttributeName : font };
+  CGFloat width = [text sizeWithAttributes:attributes].width;
   if (width <= widthMaximum) {
+    self.fontSize = fontSize;
+    self.text = text;
     return;
   }
 
@@ -407,13 +435,21 @@ truncationIndex:(NSUInteger)truncationIndex
   if (fontSizeMinimum + GLFontSizeComparisonEpsilon < fontSizePreferred) {
     // note: Font width is presumed to be proportional to font size.  Use an epsilon
     // to get below widthMaximum in case it's close.
-    CGFloat fontSize = widthMaximum / width * fontSizePreferred - GLFontSizeCalculationEpsilon;
+    fontSize = widthMaximum / width * fontSizePreferred - GLFontSizeCalculationEpsilon;
     if (fontSize < fontSizeMinimum) {
       fontSize = fontSizeMinimum;
     }
-    self.fontSize = fontSize;
-    width = self.frame.size.width;
+#if TARGET_OS_IPHONE
+    font = [font fontWithSize:fontSize];
+#else
+    font = [NSFont fontWithName:self.fontName size:fontSize];
+#endif
+    attributes = @{ NSFontAttributeName : font };
+    width = [text sizeWithAttributes:attributes].width;
+
     if (width <= widthMaximum) {
+      self.fontSize = fontSize;
+      self.text = text;
       return;
     }
   }
@@ -449,23 +485,31 @@ truncationIndex:(NSUInteger)truncationIndex
         case HLLabelTruncationModeNone:
           return;
       }
-      self.text = [text stringByReplacingCharactersInRange:truncateRange withString:@"…"];
-      width = self.frame.size.width;
+      NSString *truncatedText = [text stringByReplacingCharactersInRange:truncateRange withString:@"…"];
+      width = [truncatedText sizeWithAttributes:attributes].width;
 
       if (width <= widthMaximum) {
-        lastGoodTruncatedText = self.text;
+        lastGoodTruncatedText = truncatedText;
         truncateLengthMax = truncateLengthCurrent - 1;
       } else {
         truncateLengthMin = truncateLengthCurrent + 1;
       }
     }
 
-    if (!lastGoodTruncatedText) {
-      self.text = @"…";
-    } else if (self.text != lastGoodTruncatedText) {
+    if (lastGoodTruncatedText) {
+      self.fontSize = fontSize;
       self.text = lastGoodTruncatedText;
+    } else {
+      self.fontSize = fontSize;
+      self.text = @"…";
     }
+    return;
   }
+
+  // note: Unable to make text small enough according to parameters.  Perhaps font
+  // size has been reduced a bit, though.
+  self.fontSize = fontSize;
+  self.text = text;
 }
 
 @end
