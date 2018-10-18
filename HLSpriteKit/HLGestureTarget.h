@@ -139,36 +139,25 @@ BOOL HLGestureTarget_areEquivalentGestureRecognizers(HLGestureRecognizer *a, HLG
  targets for the given location.)
 
  Returns an additional boolean indicating whether the location is "inside" the target
- (regardless of whether the target added itself to the gesture recognizer).  This value is
- important so that the caller can decide whether or not to offer the gesture to other
- targets.  A common example is a button target given a pan starting inside the button: The
- button does not care about pans, and so does not add itself as a target to the gesture,
- but it returns `isInside` `YES`, so the caller knows that the pan should probably not
- fall through to other targets.  (This could be separated out as a separate method in
- `HLGestureTarget`, but the logic is often computationally redundant with the decision to
- add self as target.)  (Also, as an motivating example: If all targets were `SKNode`s and
- the caller could use `containsPoint` to determine whether a gesture location was "inside"
- a particular target, then the target wouldn't have to weigh in.  But clearly a hit test
- inside a bounding box is not always sufficient; it depends on the target.)  Typically,
- all gesture locations passed to a gesture target's implementation of this method can be
- assumed to be inside the target (because of the caller's logic), unless the gesture
- location falls into some space of the target which is considered invisible (from a user's
- point of view).
+ (regardless of whether the target added itself to the gesture recognizer).  The typical
+ response is `YES`, but some nodes consider parts of themselves transparent to gestures,
+ and so are telling the caller that all gestures should fall through at this location.
 
- To explain the logic, here is a sketch of a typical caller implementation.  The caller is
- a delegate of a number of standard gesture recognizers.  It has many possible targets for
- the gestures, some of which are controlled completely by the caller, and some of which
- are encapsulated into opaque components.  The motivating example is reusable subclasses
- of `SKNode`, which can't own their own gesture recognizers, since they aren't views
- (`UIView` or `NSView`).  On first recognition of a gesture recognizer
- (`gestureRecognizer:shouldRecieveTouch:` in iOS or
+ To illustrate the logic of the parameters, here is a sketch of a typical caller
+ implementation.  The caller is a delegate of a number of standard gesture recognizers.
+ It has many possible targets for the gestures, some of which are controlled completely by
+ the caller, and some of which are encapsulated into opaque components.  The motivating
+ example is reusable subclasses of `SKNode`, which can't own their own gesture
+ recognizers, since they aren't views (`UIView` or `NSView`).  On first recognition of a
+ gesture recognizer (`gestureRecognizer:shouldRecieveTouch:` in iOS or
  `gestureRecognizer:shouldAttemptToRecognizeWith:` in macOS), the caller might use
  bounding box (e.g. `[SKNode containsPoint]`) or other hit testing (e.g. `[SKNode
  nodeAtPoint]`) to find possibly-relevant targets, and then query them in order of visible
  layer height (e.g. `[SKNode zPosition]`): each target is asked to add itself to the
- gesture if it's interested.  A caller might decide to only offer the gesture to the first
- target that claims the gesture is "inside"; or, it might decide to offer the gesture to
- all targets at a location regardless of layer height and opacity.
+ gesture if it's interested.  A caller might offer pans and swipes only to the first
+ target to add itself to the gesture; taps and long-presses might only be offered to the
+ first target that claims the gesture is "inside", regardless of whether or not that
+ target handles the gesture.
 */
 - (BOOL)addToGesture:(HLGestureRecognizer *)gestureRecognizer
        firstLocation:(CGPoint)sceneLocation
@@ -206,11 +195,6 @@ BOOL HLGestureTarget_areEquivalentGestureRecognizers(HLGestureRecognizer *a, HLG
 @interface HLTapGestureTarget : NSObject <HLGestureTarget, NSCoding, NSCopying>
 
 /// @name Creating a Tap Gesture Target
-
-/**
- Initializes a tap gesture target.
-*/
-- (instancetype)init;
 
 /**
  Initializes a tap gesture target with the passed delegate.
@@ -306,16 +290,6 @@ BOOL HLGestureTarget_areEquivalentGestureRecognizers(HLGestureRecognizer *a, HLG
 */
 - (void)setHandleGestureWeakTarget:(id)weakTarget selector:(SEL)selector;
 
-/// @name Configuring Gesture Handling
-
-/**
- Whether or not unhandled gestures are considered "isInside" the gesture target.
-
- If `NO`, then typically the gesture recognizer delegate will not allow any gesture inside
- the target to "fall through" to gesture targets below this one.  Default value is `NO`.
-*/
-@property (nonatomic, assign, getter=isGestureTransparent) BOOL gestureTransparent;
-
 @end
 
 @protocol HLTapGestureTargetDelegate <NSObject>
@@ -344,11 +318,6 @@ BOOL HLGestureTarget_areEquivalentGestureRecognizers(HLGestureRecognizer *a, HLG
 /// @name Creating a Click Gesture Target
 
 /**
- Initializes a click gesture target.
-*/
-- (instancetype)init;
-
-/**
  Initializes a click gesture target with the passed delegate.
 */
 - (instancetype)initWithDelegate:(id <HLClickGestureTargetDelegate>)delegate;
@@ -357,6 +326,14 @@ BOOL HLGestureTarget_areEquivalentGestureRecognizers(HLGestureRecognizer *a, HLG
  Initializes a click gesture target with the passed handle gesture block.
 */
 - (instancetype)initWithHandleGestureBlock:(void(^)(HLGestureRecognizer *))handleGestureBlock;
+
+/**
+ Initializes a click gesture target with the passed gesture-handling (weak) target and
+ selector.
+
+ See `setWeakTarget:selector:` for details on the required selector signature.
+*/
+- (instancetype)initWithHandleGestureWeakTarget:(id)weakTarget selector:(SEL)selector;
 
 /**
  Convenience method for instantiating a click gesture target configured with the passed
@@ -374,6 +351,14 @@ BOOL HLGestureTarget_areEquivalentGestureRecognizers(HLGestureRecognizer *a, HLG
 */
 + (instancetype)clickGestureTargetWithHandleGestureBlock:(void(^)(HLGestureRecognizer *))handleGestureBlock;
 
+/**
+ Convenience method for instantiating a click gesture target configured with the passed
+ gesture-handling (weak) target and selector.
+
+ See `initWithHandleGestureWeakTarget:selector:`.
+*/
++ (instancetype)clickGestureTargetWithHandleGestureWeakTarget:(id)weakTarget selector:(SEL)selector;
+
 /// @name Setting the Delegate or Handler
 
 /**
@@ -387,16 +372,6 @@ BOOL HLGestureTarget_areEquivalentGestureRecognizers(HLGestureRecognizer *a, HLG
  A block that will be executed when the gesture target is clicked.
 */
 @property (nonatomic, strong) void (^handleGestureBlock)(HLGestureRecognizer *);
-
-/// @name Configuring Gesture Handling
-
-/**
- Whether or not unhandled gestures are considered "isInside" the gesture target.
-
- If `NO`, then typically the gesture recognizer delegate will not allow any gesture inside
- the target to "fall through" to gesture targets below this one.  Default value is `NO`.
-*/
-@property (nonatomic, assign, getter=isGestureTransparent) BOOL gestureTransparent;
 
 @end
 

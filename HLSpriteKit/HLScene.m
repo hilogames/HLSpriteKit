@@ -262,18 +262,12 @@ static BOOL _sceneAssetsLoaded = NO;
   // perhaps leading to a lot of redundant checking, especially is-inside checking.
   // Ideas:
   //
-  //   - That's okay, because is-inside checking is usually quick.
+  //   - That's okay, because is-inside checking is usually quick, and when it's not,
+  //     it's done with the same logic as `addToGesture`.
   //
   //   - Could separate out the is-inside check, passing only the point and not the
-  //     type of gesture.  This wouldn't work e.g. for HLScrollNode content nodes,
-  //     which consider all gestures inside except is-inside.  To fix that, we make
-  //     it so that gesture targets have another property: gestureTransparent.  The
-  //     flow is then: check is-inside once for all gesture types for a certain target
-  //     (caching the result here?); then if inside, call addToGesture:, and if it
-  //     doesn't add, then check gestureTransparent to see if we should continue
-  //     checking.  (Keep in mind that is-inside checking is often repeated in the
-  //     addToGesture: routine, so separating them would introduce a little redundancy
-  //     in some cases.)
+  //     type of gesture.  The flow is then: check is-inside once for all gesture types
+  //     for a certain target, caching the result in some kind of object variable.
 
   [gestureRecognizer removeTarget:nil action:NULL];
 #if TARGET_OS_IPHONE
@@ -285,10 +279,10 @@ static BOOL _sceneAssetsLoaded = NO;
   CGPoint sceneLocation = [event locationInNode:self];
 #endif
 
-  // note: A few edge cases in the past: It's possible for `nodesAtPoint` to return nil,
-  // which should be handled well in the while() loop below.  Also it's possible that the
-  // nodesAtPoint will all be tied for zPosition zero, in which case the first one
-  // returned should be chosen as a tie-breaker.
+  // note: A couple edge cases in the past: It's possible for `nodesAtPoint` to return an
+  // empty array, which should be handled well in the while() loop below.  Also it's
+  // possible that the nodesAtPoint will all be tied for zPosition zero, in which case the
+  // first one returned should be chosen as a tie-breaker.
 
   SKNode *node = nil;
   if (_gestureTargetHitTestMode == HLSceneGestureTargetHitTestModeDeepestThenParent) {
@@ -310,21 +304,43 @@ static BOOL _sceneAssetsLoaded = NO;
     [NSException raise:@"HLSceneUnknownGestureTargetHitTestMode" format:@"Unknown gesture target hit test mode %ld.", (long)_gestureTargetHitTestMode];
   }
 
+  // note: Taps and long-presses should be offered only to the first target which claims
+  // the gesture is "inside", whether that target wants to handle it or not.  But other
+  // gestures (pans, swipes, pinches, and rotations) are usually less specific to the
+  // first target, and should be allowed to fall through until a target wants to handle
+  // it.  For example, say there's a game field that can be scrolled, with two objects: a
+  // player unit which can be dragged around the field, and a house which cannot.  A pan
+  // that begins on the player unit should drag the player; a pan that begins on the house
+  // should scroll the field.
+#if TARGET_OS_IPHONE
+  BOOL isGestureOpaque = ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]
+                          || [gestureRecognizer isKindOfClass:[UILongPressGestureRecognizer class]]);
+#else
+  BOOL isGestureOpaque = ([gestureRecognizer isKindOfClass:[NSClickGestureRecognizer class]]
+                          || [gestureRecognizer isKindOfClass:[NSPressGestureRecognizer class]]);
+#endif
+
   while (node) {
 
-    // note: Any target registered for gesture recognition should be called to add itself
-    // to any type of gesture, even if the gesture handler was not returned from the
-    // target's addsToGestureRecognizers.  Because, of course, the target usually wants to
-    // block gestures of all types if they are "inside" the target.
+    // note: Any target registered for gesture recognition is called to add itself to any
+    // type of gesture, even if the gesture handler was not returned from the target's
+    // addsToGestureRecognizers.  Previously this was done to allow targets to treat
+    // certain gesture recognizers specially, but there is no current use case for the
+    // behavior.
 
     id <HLGestureTarget> target = [node hlGestureTarget];
     if (target) {
-      BOOL isInside = NO;
-      if ([target addToGesture:gestureRecognizer firstLocation:sceneLocation isInside:&isInside]) {
-        return YES;
-      } else if (isInside) {
-        return NO;
+      BOOL isInside = YES;
+      BOOL addedToGesture = [target addToGesture:gestureRecognizer firstLocation:sceneLocation isInside:&isInside];
+      if (isInside) {
+        if (addedToGesture) {
+          return YES;
+        } else if (isGestureOpaque) {
+          return NO;
+        }
       }
+      // note: It would be strange if a target claimed the gesture wasn't inside itself,
+      // and yet it added itself to the gesture.  But it's allowed.
     }
     node = node.parent;
   }

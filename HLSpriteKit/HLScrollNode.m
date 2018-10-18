@@ -731,8 +731,8 @@ enum {
 #if TARGET_OS_IPHONE
   if (HLGestureTarget_areEquivalentGestureRecognizers(gestureRecognizer, [[UIPanGestureRecognizer alloc] init])) {
     [gestureRecognizer addTarget:self action:@selector(handlePan:)];
-    *isInside = YES;
     [self HL_scrollBegin:locationInSelf];
+    *isInside = YES;
     return YES;
   } else if (HLGestureTarget_areEquivalentGestureRecognizers(gestureRecognizer, [[UIPinchGestureRecognizer alloc] init])) {
     [gestureRecognizer addTarget:self action:@selector(handlePinch:)];
@@ -742,8 +742,8 @@ enum {
 #else
   if (HLGestureTarget_areEquivalentGestureRecognizers(gestureRecognizer, [[NSPanGestureRecognizer alloc] init])) {
     [gestureRecognizer addTarget:self action:@selector(handlePan:)];
-    *isInside = YES;
     [self HL_scrollBegin:locationInSelf];
+    *isInside = YES;
     return YES;
   }
   if (HLGestureTarget_areEquivalentGestureRecognizers(gestureRecognizer, [[NSMagnificationGestureRecognizer alloc] init])) {
@@ -753,6 +753,10 @@ enum {
   }
 #endif
 
+  // note: The scroll node content might be opaque, but the scroll node itself is
+  // transparent -- there's nothing really "inside" it.  This allows components that
+  // own a scroll node to get all gestures except for the scroll node handling its own
+  // scrolls and pinches.
   *isInside = NO;
   return NO;
 }

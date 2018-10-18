@@ -140,7 +140,6 @@ HLGestureTarget_areEquivalentGestureRecognizers(HLGestureRecognizer *a, HLGestur
   self = [super init];
   if (self) {
     _delegate = delegate;
-    _gestureTransparent = NO;
   }
   return self;
 }
@@ -150,7 +149,6 @@ HLGestureTarget_areEquivalentGestureRecognizers(HLGestureRecognizer *a, HLGestur
   self = [super init];
   if (self) {
     _handleGestureBlock = handleGestureBlock;
-    _gestureTransparent = NO;
   }
   return self;
 }
@@ -165,15 +163,6 @@ HLGestureTarget_areEquivalentGestureRecognizers(HLGestureRecognizer *a, HLGestur
   return self;
 }
 
-- (instancetype)init
-{
-  self = [super init];
-  if (self) {
-    _gestureTransparent = NO;
-  }
-  return self;
-}
-
 - (instancetype)initWithCoder:(NSCoder *)aDecoder
 {
   self = [super init];
@@ -182,7 +171,6 @@ HLGestureTarget_areEquivalentGestureRecognizers(HLGestureRecognizer *a, HLGestur
     // note: Cannot decode _handleGestureBlock.
     _handleGestureWeakTarget = [aDecoder decodeObjectForKey:@"handleGestureWeakTarget"];
     _handleGestureSelector = NSSelectorFromString([aDecoder decodeObjectForKey:@"handleGestureSelector"]);
-    _gestureTransparent = [aDecoder decodeBoolForKey:@"gestureTransparent"];
   }
   return self;
 }
@@ -193,7 +181,6 @@ HLGestureTarget_areEquivalentGestureRecognizers(HLGestureRecognizer *a, HLGestur
   // note: Cannot encode _handleGestureBlock.
   [aCoder encodeConditionalObject:_handleGestureWeakTarget forKey:@"handleGestureWeakTarget"];
   [aCoder encodeObject:NSStringFromSelector(_handleGestureSelector) forKey:@"handleGestureSelector"];
-  [aCoder encodeBool:_gestureTransparent forKey:@"gestureTransparent"];
 }
 
 - (instancetype)copyWithZone:(NSZone *)zone
@@ -204,7 +191,6 @@ HLGestureTarget_areEquivalentGestureRecognizers(HLGestureRecognizer *a, HLGestur
     copy->_handleGestureBlock = _handleGestureBlock;
     copy->_handleGestureWeakTarget = _handleGestureWeakTarget;
     copy->_handleGestureSelector = _handleGestureSelector;
-    copy->_gestureTransparent = _gestureTransparent;
   }
   return self;
 }
@@ -220,16 +206,15 @@ HLGestureTarget_areEquivalentGestureRecognizers(HLGestureRecognizer *a, HLGestur
             isInside:(BOOL *)isInside
 {
   BOOL handleGesture = NO;
+  *isInside = YES;
 
   if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
     UITapGestureRecognizer *tapGestureRecognizer = (UITapGestureRecognizer *)gestureRecognizer;
     if (tapGestureRecognizer.numberOfTapsRequired == 1) {
-      *isInside = YES;
       handleGesture = YES;
     }
   }
 
-  *isInside = !_gestureTransparent;
   if (handleGesture) {
     [gestureRecognizer addTarget:self action:@selector(HLTapGestureTarget_handleGesture:)];
   }
@@ -266,6 +251,10 @@ HLGestureTarget_areEquivalentGestureRecognizers(HLGestureRecognizer *a, HLGestur
 #else
 
 @implementation HLClickGestureTarget
+{
+  __weak id _handleGestureWeakTarget;
+  SEL _handleGestureSelector;
+}
 
 + (instancetype)clickGestureTargetWithDelegate:(id<HLClickGestureTargetDelegate>)delegate
 {
@@ -277,12 +266,16 @@ HLGestureTarget_areEquivalentGestureRecognizers(HLGestureRecognizer *a, HLGestur
   return [[HLClickGestureTarget alloc] initWithHandleGestureBlock:handleGestureBlock];
 }
 
++ (instancetype)clickGestureTargetWithHandleGestureWeakTarget:(id)weakTarget selector:(SEL)selector
+{
+  return [[HLClickGestureTarget alloc] initWithHandleGestureWeakTarget:weakTarget selector:selector];
+}
+
 - (instancetype)initWithDelegate:(id<HLClickGestureTargetDelegate>)delegate
 {
   self = [super init];
   if (self) {
     _delegate = delegate;
-    _gestureTransparent = NO;
   }
   return self;
 }
@@ -292,16 +285,6 @@ HLGestureTarget_areEquivalentGestureRecognizers(HLGestureRecognizer *a, HLGestur
   self = [super init];
   if (self) {
     _handleGestureBlock = handleGestureBlock;
-    _gestureTransparent = NO;
-  }
-  return self;
-}
-
-- (instancetype)init
-{
-  self = [super init];
-  if (self) {
-    _gestureTransparent = NO;
   }
   return self;
 }
@@ -312,7 +295,18 @@ HLGestureTarget_areEquivalentGestureRecognizers(HLGestureRecognizer *a, HLGestur
   if (self) {
     _delegate = [aDecoder decodeObjectForKey:@"delegate"];
     // note: Cannot decode _handleGestureBlock.
-    _gestureTransparent = [aDecoder decodeBoolForKey:@"gestureTransparent"];
+    _handleGestureWeakTarget = [aDecoder decodeObjectForKey:@"handleGestureWeakTarget"];
+    _handleGestureSelector = NSSelectorFromString([aDecoder decodeObjectForKey:@"handleGestureSelector"]);
+  }
+  return self;
+}
+
+- (instancetype)initWithHandleGestureWeakTarget:(id)weakTarget selector:(SEL)selector
+{
+  self = [super init];
+  if (self) {
+    _handleGestureWeakTarget = weakTarget;
+    _handleGestureSelector = selector;
   }
   return self;
 }
@@ -321,7 +315,8 @@ HLGestureTarget_areEquivalentGestureRecognizers(HLGestureRecognizer *a, HLGestur
 {
   [aCoder encodeConditionalObject:_delegate forKey:@"delegate"];
   // note: Cannot encode _handleGestureBlock.
-  [aCoder encodeBool:_gestureTransparent forKey:@"gestureTransparent"];
+  [aCoder encodeConditionalObject:_handleGestureWeakTarget forKey:@"handleGestureWeakTarget"];
+  [aCoder encodeObject:NSStringFromSelector(_handleGestureSelector) forKey:@"handleGestureSelector"];
 }
 
 - (instancetype)copyWithZone:(NSZone *)zone
@@ -330,7 +325,8 @@ HLGestureTarget_areEquivalentGestureRecognizers(HLGestureRecognizer *a, HLGestur
   if (copy) {
     copy->_delegate = _delegate;
     copy->_handleGestureBlock = _handleGestureBlock;
-    copy->_gestureTransparent = _gestureTransparent;
+    copy->_handleGestureWeakTarget = _handleGestureWeakTarget;
+    copy->_handleGestureSelector = _handleGestureSelector;
   }
   return self;
 }
@@ -340,16 +336,15 @@ HLGestureTarget_areEquivalentGestureRecognizers(HLGestureRecognizer *a, HLGestur
             isInside:(BOOL *)isInside
 {
   BOOL handleGesture = NO;
+  *isInside = YES;
 
   if ([gestureRecognizer isKindOfClass:[NSClickGestureRecognizer class]]) {
     NSClickGestureRecognizer *clickGestureRecognizer = (NSClickGestureRecognizer *)gestureRecognizer;
     if (clickGestureRecognizer.numberOfClicksRequired == 1) {
-      *isInside = YES;
       handleGesture = YES;
     }
   }
 
-  *isInside = !_gestureTransparent;
   if (handleGesture) {
     [gestureRecognizer addTarget:self action:@selector(HLClickGestureTarget_handleGesture:)];
   }
@@ -369,6 +364,15 @@ HLGestureTarget_areEquivalentGestureRecognizers(HLGestureRecognizer *a, HLGestur
   }
   if (_handleGestureBlock) {
     _handleGestureBlock(gestureRecognizer);
+  }
+  if (_handleGestureWeakTarget && _handleGestureSelector) {
+    id target = _handleGestureWeakTarget;
+    if (!target) {
+      return;
+    }
+    IMP imp = [target methodForSelector:_handleGestureSelector];
+    void (*func)(id, SEL, HLGestureRecognizer *) = (void (*)(id, SEL, HLGestureRecognizer *))imp;
+    func(target, _handleGestureSelector, gestureRecognizer);
   }
 }
 

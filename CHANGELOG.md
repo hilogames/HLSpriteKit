@@ -3,6 +3,15 @@
 
 ## Master
 
+### Breaking
+
+- For gesture targets: Taps and long-presses are now only offered to
+  the top target in the scene; pans and swipes and their ilk fall
+  through to the first target that handles them.  This is a big
+  change, but I'm hoping it fits the way gesture targets are already
+  used.  If this doesn't, let me know!  
+  [Karl Voskuil](https://github.com/karlvoskuil)
+
 ### Added
 
 - New methods to `SKLabelNode` category to reduce font size or
