@@ -260,6 +260,17 @@ typedef NS_ENUM(NSInteger, HLScrollNodeContentScaleMinimumMode)
 */
 @property (nonatomic, assign, getter=isContentClipped) BOOL contentClipped;
 
+/// @name Configuring Scrolling Behavior
+
+/**
+ The rate at which the scroll view decelerates after the user ends interaction.
+
+ Default value is `0.998`, which corresponds to `UIScrollViewDecelerationRateNormal`.
+ Fast deceleration is `0.990`, which corresponds to `UIScrollViewDecelerationRateFast`.
+ Instant deceleration is `0.0`.
+*/
+@property (nonatomic, assign) CGFloat decelerationRate;
+
 /// @name Setting Content Offset and Scale
 
 /**

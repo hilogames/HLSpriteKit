@@ -5,9 +5,13 @@
 
 ### Added
 
-- Add methods to `SKLabelNode` category to reduce font size or
+- New methods to `SKLabelNode` category to reduce font size or
   truncate text to fit a width.  Now we have a way to list
   "Barnaby Marmaduke...Usansky."  
+  [Karl Voskuil](https://github.com/karlvoskuil)
+
+- Inertial scrolling in `HLScrollNode`.  It is enabled by default;
+  disable it by setting `decelerationRate` to `0`.  
   [Karl Voskuil](https://github.com/karlvoskuil)
 
 ## 1.7.0 [2018-06-21]

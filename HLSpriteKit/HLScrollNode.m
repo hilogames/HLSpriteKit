@@ -21,6 +21,9 @@ enum {
   CGFloat _contentScaleOffline;
 
   CGPoint _scrollLastNodeLocation;
+  CGPoint _scrollInertialVelocityPointsPerSecond;
+  CGPoint _scrollInertialNodeLocationSample;
+  CFTimeInterval _scrollInertialTimeSample;
   CGPoint _zoomPinContentLocation;
   CGPoint _zoomPinNodeLocation;
   CGFloat _zoomOriginalContentScale;
@@ -54,6 +57,7 @@ enum {
     _contentScaleMinimumMode = HLScrollNodeContentScaleMinimumFitTight;
     _contentScaleMaximum = 1.0f;
     _contentClipped = NO;
+    _decelerationRate = 0.998f;
   }
   return self;
 }
@@ -728,7 +732,7 @@ enum {
   if (HLGestureTarget_areEquivalentGestureRecognizers(gestureRecognizer, [[UIPanGestureRecognizer alloc] init])) {
     [gestureRecognizer addTarget:self action:@selector(handlePan:)];
     *isInside = YES;
-    [self HL_scrollStart:locationInSelf];
+    [self HL_scrollBegin:locationInSelf];
     return YES;
   } else if (HLGestureTarget_areEquivalentGestureRecognizers(gestureRecognizer, [[UIPinchGestureRecognizer alloc] init])) {
     [gestureRecognizer addTarget:self action:@selector(handlePinch:)];
@@ -739,7 +743,7 @@ enum {
   if (HLGestureTarget_areEquivalentGestureRecognizers(gestureRecognizer, [[NSPanGestureRecognizer alloc] init])) {
     [gestureRecognizer addTarget:self action:@selector(handlePan:)];
     *isInside = YES;
-    [self HL_scrollStart:locationInSelf];
+    [self HL_scrollBegin:locationInSelf];
     return YES;
   }
   if (HLGestureTarget_areEquivalentGestureRecognizers(gestureRecognizer, [[NSMagnificationGestureRecognizer alloc] init])) {
@@ -760,13 +764,15 @@ enum {
   }
 
 #if TARGET_OS_IPHONE
-  if (gestureRecognizer.state == UIGestureRecognizerStateEnded
-      || gestureRecognizer.state == UIGestureRecognizerStateCancelled) {
+  if (gestureRecognizer.state == UIGestureRecognizerStateEnded) {
+    [self HL_scrollInertialBegin];
+  } else if (gestureRecognizer.state == UIGestureRecognizerStateCancelled) {
     return;
   }
 #else
-  if (gestureRecognizer.state == NSGestureRecognizerStateEnded
-      || gestureRecognizer.state == NSGestureRecognizerStateCancelled) {
+  if (gestureRecognizer.state == NSGestureRecognizerStateEnded) {
+    [self HL_scrollInertialBegin];
+  } else if (gestureRecognizer.state == NSGestureRecognizerStateCancelled) {
     return;
   }
 #endif
@@ -796,7 +802,7 @@ enum {
     CGPoint viewLocation = [gestureRecognizer locationInView:self.scene.view];
     CGPoint sceneLocation = [self.scene convertPointFromView:viewLocation];
     CGPoint nodeLocation = [self convertPoint:sceneLocation fromNode:self.scene];
-    [self HL_zoomStart:nodeLocation];
+    [self HL_zoomBegin:nodeLocation];
   } else if (gestureRecognizer.state == UIGestureRecognizerStateChanged) {
     CGFloat scale = ((UIPinchGestureRecognizer *)gestureRecognizer).scale;
     [self HL_zoomUpdate:scale];
@@ -808,7 +814,7 @@ enum {
     CGPoint viewLocation = [gestureRecognizer locationInView:self.scene.view];
     CGPoint sceneLocation = [self.scene convertPointFromView:viewLocation];
     CGPoint nodeLocation = [self convertPoint:sceneLocation fromNode:self.scene];
-    [self HL_zoomStart:nodeLocation];
+    [self HL_zoomBegin:nodeLocation];
   } else if (gestureRecognizer.state == NSGestureRecognizerStateChanged) {
     CGFloat scale = 1.0f + ((NSMagnificationGestureRecognizer *)gestureRecognizer).magnification;
     [self HL_zoomUpdate:scale];
@@ -881,13 +887,17 @@ enum {
   NSSet *allTouches = [event allTouches];
   NSUInteger allTouchesCount = [allTouches count];
 
-  if (allTouchesCount == 1) {
+  if (allTouchesCount == 0) {
+
+    [self HL_scrollInertialBegin];
+
+  } else if (allTouchesCount == 1) {
 
     UITouch *touch = [allTouches anyObject];
     CGPoint viewLocation = [touch locationInView:self.scene.view];
     CGPoint sceneLocation = [self.scene convertPointFromView:viewLocation];
     CGPoint nodeLocation = [self convertPoint:sceneLocation fromNode:self.scene];
-    [self HL_scrollStart:nodeLocation];
+    [self HL_scrollBegin:nodeLocation];
 
   } else if (allTouchesCount == 2) {
 
@@ -910,7 +920,7 @@ enum {
     centerNodeLocation.x = (nodeLocation0.x + nodeLocation1.x) / 2.0f;
     centerNodeLocation.y = (nodeLocation0.y + nodeLocation1.y) / 2.0f;
 
-    [self HL_zoomStart:centerNodeLocation];
+    [self HL_zoomBegin:centerNodeLocation];
   }
 }
 
@@ -922,7 +932,7 @@ enum {
 - (void)mouseDown:(NSEvent *)event
 {
   CGPoint nodeLocation = [event locationInNode:self];
-  [self HL_scrollStart:nodeLocation];
+  [self HL_scrollBegin:nodeLocation];
 }
 
 - (void)mouseDragged:(NSEvent *)event
@@ -932,6 +942,14 @@ enum {
   }
   CGPoint nodeLocation = [event locationInNode:self];
   [self HL_scrollUpdate:nodeLocation];
+}
+
+- (void)mouseUp:(NSEvent *)event
+{
+  if (!_contentNode) {
+    return;
+  }
+  [self HL_scrollInertialBegin];
 }
 
 #endif
@@ -1003,9 +1021,12 @@ enum {
   return scale;
 }
 
-- (void)HL_scrollStart:(CGPoint)nodeLocation
+- (void)HL_scrollBegin:(CGPoint)nodeLocation
 {
   _scrollLastNodeLocation = nodeLocation;
+  _scrollInertialVelocityPointsPerSecond = CGPointZero;
+  _scrollInertialNodeLocationSample = nodeLocation;
+  _scrollInertialTimeSample = CACurrentMediaTime();
 }
 
 - (void)HL_scrollUpdate:(CGPoint)nodeLocation
@@ -1021,9 +1042,124 @@ enum {
   if (delegate && [delegate respondsToSelector:@selector(scrollNode:didScrollToContentOffset:)]) {
     [delegate scrollNode:self didScrollToContentOffset:_contentNode.position];
   }
+
+  // note: Velocity measurements get a bit twitchy if they are calculated continuously, so
+  // average over a small window of time:
+  //
+  //  - A window of 0.01 seconds feels twitchy; but 0.02 seconds seems fine on iOS.
+  //
+  //  - A large window is problematic if the user makes a quick panning gesture and
+  //    expects inertial scrolling but doesn't get it because we haven't yet calculated an
+  //    initial velocity.  At a window of 0.02 I don't really notice this, because my
+  //    gesture is not that quick, but even at about 0.03 I can flick back and forth
+  //    rapidly and notice that sometimes the inertial scrolling doesn't seem to catch.
+  //    One solution, when using a larger window, is to calculate the first velocity
+  //    sample specially, so that it's continously updated for the entire first window.  I
+  //    didn't like this much when I gave it a try, though, since inevitably the
+  //    instantaneous velocity was too high, and so the content would flash way too far
+  //    over when the gesture was quick.  Could do an initial velocity sample that's in
+  //    the same direction of the gesture, but limited to a maximum?  Hm.  For now, it
+  //    seems better and simpler to ignore quick gestures entirely (in terms of inertial
+  //    scrolling).
+  const CFTimeInterval HLScrollInertialSampleTimeMinimum = 0.02;
+
+  CFTimeInterval currentTime = CACurrentMediaTime();
+  CFTimeInterval elapsedTime = (currentTime - _scrollInertialTimeSample);
+  if (elapsedTime >= HLScrollInertialSampleTimeMinimum) {
+    _scrollInertialVelocityPointsPerSecond = CGPointMake((nodeLocation.x - _scrollInertialNodeLocationSample.x) / elapsedTime,
+                                                         (nodeLocation.y - _scrollInertialNodeLocationSample.y) / elapsedTime);
+    _scrollInertialNodeLocationSample = nodeLocation;
+    _scrollInertialTimeSample = currentTime;
+  }
 }
 
-- (void)HL_zoomStart:(CGPoint)centerNodeLocation
+- (void)HL_scrollInertialBegin
+{
+  if (_decelerationRate <= 0.0f || _decelerationRate >= 1.0f) {
+    return;
+  }
+  [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(HL_scrollInertialUpdate) object:nil];
+  // If the user manually decelerates the scroll at the end of the gesture, then we want
+  // to do no inertial scrolling.  This threshold is not necessarily the same as the
+  // threshold for halting inertial scrolling once it has started; it's probably higher.
+  // (That is: The content should nicely "stick" to a resting spot when manually
+  // decelerating; but when inertially decelerating, the content should glide smoothly
+  // into a resting spot.)
+  const CGFloat HLScrollInertialBeginVelocityMinimum = 100.0f;
+  if (_scrollInertialVelocityPointsPerSecond.x < HLScrollInertialBeginVelocityMinimum
+      && _scrollInertialVelocityPointsPerSecond.x > -HLScrollInertialBeginVelocityMinimum
+      && _scrollInertialVelocityPointsPerSecond.y < HLScrollInertialBeginVelocityMinimum
+      && _scrollInertialVelocityPointsPerSecond.y > -HLScrollInertialBeginVelocityMinimum) {
+    return;
+  }
+  [self HL_scrollInertialUpdate];
+}
+
+- (void)HL_scrollInertialUpdate
+{
+  // The lower limit for velocity; lower than this and we stop inertial scrolling.
+  const CGFloat HLScrollInertialVelocityMinimum = 20.0f;
+  // The interval between updates when the scroll node is scrolling itself by inertial
+  // scrolling, in seconds.  For now it's set to about 30 fps, which seems fine.
+  const NSTimeInterval HLScrollInertialTickSeconds = 0.033;
+
+  CFTimeInterval currentTime = CACurrentMediaTime();
+  CFTimeInterval elapsedTime = (currentTime - _scrollInertialTimeSample);
+  _scrollInertialTimeSample = currentTime;
+
+  // note: Two notes on deceleration:
+  //
+  // 1) `UIScrollView` has two deceleration rates, without units specified: Either 0.998
+  //    for normal deceleration, or 0.990 for fast deceleration.  Until I know better, I'm
+  //    interpreting these as multipliers on the velocity (measured in points per second)
+  //    which are applied 1,000 times per second.  (Evidence?  The resut is about right.)
+  //
+  // 2) Deceleration should be applied at regular time intervals, but we're called at
+  //    probably-irregular time intervals.
+  //
+  // Uh, I'm least 60% sure the math for this works out with a simple pow().
+  CGFloat decelerationRateForElapsedTime = (CGFloat)pow(_decelerationRate, (elapsedTime * 1000.0f));
+  _scrollInertialVelocityPointsPerSecond.x *= decelerationRateForElapsedTime;
+  _scrollInertialVelocityPointsPerSecond.y *= decelerationRateForElapsedTime;
+
+  if (_scrollInertialVelocityPointsPerSecond.x < HLScrollInertialVelocityMinimum
+      && _scrollInertialVelocityPointsPerSecond.x > -HLScrollInertialVelocityMinimum
+      && _scrollInertialVelocityPointsPerSecond.y < HLScrollInertialVelocityMinimum
+      && _scrollInertialVelocityPointsPerSecond.y > -HLScrollInertialVelocityMinimum) {
+    return;
+  }
+
+  CGPoint startContentPosition = _contentNode.position;
+  CGPoint endContentPosition = [self HL_contentConstrainedPositionX:(startContentPosition.x + _scrollInertialVelocityPointsPerSecond.x * HLScrollInertialTickSeconds)
+                                                     positionY:(startContentPosition.y + _scrollInertialVelocityPointsPerSecond.y * HLScrollInertialTickSeconds)
+                                                         scale:_contentNode.xScale];
+
+  const CGFloat HLContentPositionEpsilon = 0.001;
+  // note: Actually, CGPointEqualToPoint() seems to work here without an epsilon,
+  // presumably because when positions are hitting max or min, they are assigned the max
+  // or min, computed and assigned identically.  But there is still some computation
+  // involved, and so I think it's reasonable to insist on using an epsilon.
+  if (fabs(startContentPosition.x - endContentPosition.x) < HLContentPositionEpsilon
+      && fabs(startContentPosition.y - endContentPosition.y) < HLContentPositionEpsilon) {
+    return;
+  }
+  _contentNode.position = endContentPosition;
+
+  // note: It would make sense to use SpriteKit-type event queueing, but all the SKAction
+  // instantiation stuff seems a bit intense for such a quick simple callback.  Use
+  // NSObject performSelector for now.  (If we do go back to using SKAction, note that in
+  // iOS11, SKAction performSelector retains the target only weakly, which is what we
+  // want, but should use SKAction runBlock so that we can be explicit about the weak
+  // pointer (in all iOS).
+  //__weak HLScrollNode *selfWeak = self;
+  //[self runAction:[SKAction sequence:@[ [SKAction waitForDuration:HLScrollInertialTickSeconds],
+  //                                      [SKAction runBlock:^{
+  //  [selfWeak HL_scrollInertialUpdate];
+  //}] ]]];
+  [self performSelector:@selector(HL_scrollInertialUpdate) withObject:nil afterDelay:HLScrollInertialTickSeconds];
+}
+
+- (void)HL_zoomBegin:(CGPoint)centerNodeLocation
 {
   // note: The idea is that we pin the HLScrollNode and content together at a point (call it
   // the center point of the gesture or event as it starts), and they will remained pinned
