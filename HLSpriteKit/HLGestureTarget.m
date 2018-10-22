@@ -11,7 +11,7 @@
 BOOL
 HLGestureTarget_areEquivalentGestureRecognizers(HLGestureRecognizer *a, HLGestureRecognizer *b)
 {
-  const CFTimeInterval HLGestureTargetLongPressMinimumPressDurationEpsilon = 0.01;
+  const NSTimeInterval HLGestureTargetLongPressMinimumPressDurationEpsilon = 0.01;
   const CGFloat HLGestureTargetLongPressAllowableMovementEpsilon = 0.1f;
 
   Class classA = [a class];
