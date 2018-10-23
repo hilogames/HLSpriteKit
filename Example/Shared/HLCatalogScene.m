@@ -30,6 +30,7 @@
   HLScrollNode *_catalogScrollNode;
   HLMessageNode *_messageNode;
   HLTiledNode *_tiledNode;
+  SKSpriteNode *_tiledNodeSizeTemplateNode;
 }
 
 - (void)didMoveToView:(SKView *)view
@@ -109,7 +110,7 @@
   catalogLayoutManager.rowSeparator = 15.0f;
   [catalogNode hlSetLayoutManager:catalogLayoutManager];
 
-  HLMultilineLabelNode *multilineLabelNode = [self HL_createContentMultilineLabelNode];
+  HLMultilineLabelNode *multilineLabelNode = [self HL_createMultilineLabelNode];
   // note: Show the label on a solid background to illustrate the size of the multiline label node.
   SKSpriteNode *multilineLabelBackgroundNode = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithRed:0.65f green:0.8f blue:0.95f alpha:1.0f]
                                                                             size:multilineLabelNode.size];
@@ -126,7 +127,7 @@
   [self needSharedGestureRecognizersForNode:multilineLabelNode];
   [catalogNode addChild:multilineLabelBackgroundNode];
 
-  HLGridNode *gridNode = [self HL_createContentGridNode];
+  HLGridNode *gridNode = [self HL_createGridNode];
 #if TARGET_OS_IPHONE
   gridNode.squareTappedBlock = ^(int squareIndex){
     [self HL_showMessage:[NSString stringWithFormat:@"Tapped HLGridNode squareIndex %d.", squareIndex]];
@@ -142,7 +143,7 @@
   //   gridNode.userInteractionEnabled = YES;
   [catalogNode addChild:gridNode];
 
-  HLToolbarNode *toolbarNode = [self HL_createContentToolbarNode];
+  HLToolbarNode *toolbarNode = [self HL_createToolbarNode];
 #if TARGET_OS_IPHONE
   toolbarNode.toolTappedBlock = ^(NSString *toolTag){
     [self HL_showMessage:[NSString stringWithFormat:@"Tapped tool '%@' on HLToolbarNode.", toolTag]];
@@ -158,22 +159,24 @@
   //   toolbarNode.userInteractionEnabled = YES;
   [catalogNode addChild:toolbarNode];
 
-  _tiledNode = [self HL_createContentTiledNode];
+  _tiledNode = [self HL_createTiledNodeWithSizeTemplateNode:&_tiledNodeSizeTemplateNode];
+  [self HL_animateTiledNode];
 #if TARGET_OS_IPHONE
   [_tiledNode hlSetGestureTarget:[HLTapGestureTarget tapGestureTargetWithHandleGestureBlock:^(UIGestureRecognizer *gestureRecognizer){
     [self HL_showMessage:@"Tapped HLTiledNode."];
+    [self HL_animateTiledNode];
   }]];
 #else
   [_tiledNode hlSetGestureTarget:[HLClickGestureTarget clickGestureTargetWithHandleGestureBlock:^(NSGestureRecognizer *gestureRecognizer){
     [self HL_showMessage:@"Clicked HLTiledNode."];
+    [self HL_animateTiledNode];
   }]];
 #endif
   [self needSharedGestureRecognizersForNode:_tiledNode];
-  [catalogNode addChild:_tiledNode];
-  // Animation depends on hlUpdateActionRunner code in update method.
-  [_tiledNode hlRunAction:[HLAction rotateFromAngle:0.0 to:M_PI duration:3.0] withKey:@"rotate"];
+  [_tiledNodeSizeTemplateNode addChild:_tiledNode];
+  [catalogNode addChild:_tiledNodeSizeTemplateNode];
 
-  HLLabelButtonNode *labelButtonNode = [self HL_createContentLabelButtonNode];
+  HLLabelButtonNode *labelButtonNode = [self HL_createLabelButtonNode];
 #if TARGET_OS_IPHONE
   [labelButtonNode hlSetGestureTarget:[HLTapGestureTarget tapGestureTargetWithHandleGestureBlock:^(UIGestureRecognizer *gestureRecognizer){
     [self HL_showMessage:@"Tapped HLLabelButtonNode."];
@@ -187,13 +190,16 @@
   [catalogNode addChild:labelButtonNode];
 
   SKLabelNode *wideLabelNode = [self HL_createWideLabelNode];
+  [self HL_animateWideLabelNode:wideLabelNode];
 #if TARGET_OS_IPHONE
   [wideLabelNode hlSetGestureTarget:[HLTapGestureTarget tapGestureTargetWithHandleGestureBlock:^(UIGestureRecognizer *gestureRecognizer){
-    [self HL_showMessage:@"Tapped wide SKLabelNode."];
+    [self HL_showMessage:@"Tapped SKLabelNode with text width fitting."];
+    [self HL_animateWideLabelNode:wideLabelNode];
   }]];
 #else
   [wideLabelNode hlSetGestureTarget:[HLClickGestureTarget clickGestureTargetWithHandleGestureBlock:^(NSGestureRecognizer *gestureRecognizer){
-    [self HL_showMessage:@"Clicked wide SKLabelNode."];
+    [self HL_showMessage:@"Clicked SKLabelNode with text width fitting."];
+    [self HL_animateWideLabelNode:wideLabelNode];
   }]];
 #endif
   [self needSharedGestureRecognizersForNode:wideLabelNode];
@@ -232,7 +238,7 @@
 
 #endif
 
-- (HLGridNode *)HL_createContentGridNode
+- (HLGridNode *)HL_createGridNode
 {
   HLGridNode *gridNode = [[HLGridNode alloc] initWithGridWidth:3
                                                    squareCount:10
@@ -258,7 +264,7 @@
   return gridNode;
 }
 
-- (HLLabelButtonNode *)HL_createContentLabelButtonNode
+- (HLLabelButtonNode *)HL_createLabelButtonNode
 {
   HLLabelButtonNode *labelButtonNode = [[HLLabelButtonNode alloc] initWithColor:[SKColor colorWithRed:0.9f green:0.7f blue:0.5f alpha:1.0f]
                                                                            size:CGSizeMake(0.0f, 24.0f)];
@@ -271,9 +277,9 @@
   return labelButtonNode;
 }
 
-- (HLTiledNode *)HL_createContentTiledNode
+- (HLTiledNode *)HL_createTiledNodeWithSizeTemplateNode:(SKSpriteNode * __strong *)sizeTemplateNode
 {
-  CGSize imageSize = CGSizeMake(50.0f, 30.0f);
+  CGSize imageSize = CGSizeMake(40.0f, 50.0f);
 
 #if TARGET_OS_IPHONE
   UIGraphicsBeginImageContext(imageSize);
@@ -284,12 +290,33 @@
   CGContextRef context = [NSGraphicsContext.currentContext CGContext];
 #endif
 
-  CGContextSetFillColorWithColor(context, [[SKColor yellowColor] CGColor]);
-  CGContextFillRect(context, CGRectMake(0.0f, 0.0f, imageSize.width / 2.0f, imageSize.height));
-  CGContextSetFillColorWithColor(context, [[SKColor blueColor] CGColor]);
-  CGContextFillRect(context, CGRectMake(imageSize.width / 2.0f, 0.0f, imageSize.width / 2.0f, imageSize.height));
-  CGContextSetFillColorWithColor(context, [[SKColor greenColor] CGColor]);
-  CGContextFillEllipseInRect(context, CGRectMake(2.0f, 2.0f, imageSize.width - 4.0f, imageSize.height - 4.0f));
+  CGContextSetFillColorWithColor(context, [[SKColor colorWithRed:0.3f green:0.6f blue:0.3f alpha:0.8f] CGColor]);
+  CGContextFillRect(context, CGRectMake(0.0f, 0.0f, imageSize.width, imageSize.height));
+
+  CGContextSetFillColorWithColor(context, [[SKColor colorWithRed:0.3f green:0.7f blue:0.8f alpha:0.8f] CGColor]);
+  CGContextFillRect(context, CGRectMake(2.0f, 2.0f, 13.0f, 13.0f));
+  CGContextFillRect(context, CGRectMake(2.0f, imageSize.height - 15.0f, 13.0f, 13.0f));
+  CGContextFillRect(context, CGRectMake(imageSize.width - 15.0f, 2.0f, 13.0f, 13.0f));
+  CGContextFillRect(context, CGRectMake(imageSize.width - 15.0f, imageSize.height - 15.0f, 13.0f, 13.0f));
+
+  CGContextSetFillColorWithColor(context, [[SKColor colorWithRed:0.1f green:0.3f blue:0.4f alpha:0.8f] CGColor]);
+  CGContextFillRect(context, CGRectMake(2.0f, 2.0f, 4.0f, 4.0f));
+  CGContextFillRect(context, CGRectMake(2.0f, imageSize.height - 6.0f, 4.0f, 4.0f));
+  CGContextFillRect(context, CGRectMake(imageSize.width - 6.0f, 2.0f, 4.0f, 4.0f));
+  CGContextFillRect(context, CGRectMake(imageSize.width - 6.0f, imageSize.height - 6.0f, 4.0f, 4.0f));
+
+  CGContextSetFillColorWithColor(context, [[SKColor colorWithRed:0.8f green:0.6f blue:0.3f alpha:0.8f] CGColor]);
+  CGContextFillRect(context, CGRectMake(17.0f, 4.0f, 6.0f, 8.0f));
+  CGContextSetFillColorWithColor(context, [[SKColor colorWithRed:0.6f green:0.8f blue:0.3f alpha:0.8f] CGColor]);
+  CGContextFillRect(context, CGRectMake(17.0f, imageSize.height - 12.0f, 6.0f, 8.0f));
+
+  CGContextSetFillColorWithColor(context, [[SKColor colorWithRed:0.8f green:0.5f blue:0.6f alpha:0.8f] CGColor]);
+  CGContextFillRect(context, CGRectMake(4.0f, 17.0f, 8.0f, 16.0f));
+  CGContextSetFillColorWithColor(context, [[SKColor colorWithRed:0.6f green:0.5f blue:0.8f alpha:0.8f] CGColor]);
+  CGContextFillRect(context, CGRectMake(imageSize.width - 12.0f, 17.0f, 8.0f, 16.0f));
+
+  CGContextSetFillColorWithColor(context, [[SKColor whiteColor] CGColor]);
+  CGContextFillRect(context, CGRectMake(19.0f, 24.0f, 2.0f, 2.0f));
 
 #if TARGET_OS_IPHONE
   UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
@@ -298,12 +325,52 @@
   [image unlockFocus];
 #endif
 
+  CGSize startingSize = CGSizeMake(120.0f, 100.0f);
   SKTexture *texture = [SKTexture textureWithImage:image];
-  HLTiledNode *tiledNode = [HLTiledNode tiledNodeWithTexture:texture size:CGSizeMake(120.0f, 100.0f)];
+  HLTiledNode *tiledNode = [HLTiledNode tiledNodeWithTexture:texture
+                                                        size:startingSize
+                                                    sizeMode:HLTiledNodeSizeModeCrop
+                                                 anchorPoint:CGPointMake(0.5f, 0.5f)
+                                                  centerRect:CGRectMake(0.4f, 0.32f, 0.2f, 0.36f)];
+
+  *sizeTemplateNode = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithWhite:0.2f alpha:1.0f] size:startingSize];
+
   return tiledNode;
 }
 
-- (HLToolbarNode *)HL_createContentToolbarNode
+- (void)HL_animateTiledNode
+{
+  static NSUInteger animateCount = 0;
+  if (animateCount % 2 == 0) {
+    _tiledNode.centerRect = CGRectMake(0.0f, 0.0f, 1.0f, 1.0f);
+  } else {
+    _tiledNode.centerRect = CGRectMake(0.4f, 0.32f, 0.2f, 0.36f);
+  }
+  _tiledNode.sizeMode = (animateCount / 2) % 3;
+  ++animateCount;
+
+  // Animation depends on hlUpdateActionRunner code in update method.
+  HLAction *resizeAction = [HLAction customActionWithDuration:4.0f selector:@selector(HL_updateTiledNode:elapsedTime:duration:userData:) weakTarget:self userData:nil];
+  [_tiledNode hlRunAction:resizeAction withKey:@"resize"];
+}
+
+- (void)HL_updateTiledNode:(HLTiledNode *)tiledNode
+               elapsedTime:(CGFloat)elapsedTime
+                  duration:(NSTimeInterval)duration
+                  userData:(id)userData
+{
+  CGFloat normalTime = (CGFloat)(elapsedTime / duration);
+  CGFloat startWidth = 0.0f;
+  CGFloat startHeight = 0.0f;
+  CGFloat finishWidth = 120.0f;
+  CGFloat finishHeight = 100.0f;
+  CGSize size = CGSizeMake((1.0f - normalTime) * startWidth + normalTime * finishWidth,
+                           (1.0f - normalTime) * startHeight + normalTime * finishHeight);
+  _tiledNode.size = size;
+  _tiledNodeSizeTemplateNode.size = size;
+}
+
+- (HLToolbarNode *)HL_createToolbarNode
 {
   HLToolbarNode *toolbarNode = [[HLToolbarNode alloc] init];
   toolbarNode.automaticHeight = NO;
@@ -336,7 +403,7 @@
   return toolbarNode;
 }
 
-- (HLMultilineLabelNode *)HL_createContentMultilineLabelNode
+- (HLMultilineLabelNode *)HL_createMultilineLabelNode
 {
   NSString *text = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
   HLMultilineLabelNode *multilineLabelNode = [[HLMultilineLabelNode alloc] initWithText:text
@@ -355,6 +422,11 @@
 {
   SKLabelNode *wideLabelNode = [SKLabelNode node];
   wideLabelNode.fontColor = [SKColor blackColor];
+  return wideLabelNode;
+}
+
+- (void)HL_animateWideLabelNode:(SKLabelNode *)wideLabelNode
+{
   const NSTimeInterval duration = 5.0;
   const CGFloat widthMinimum = 10.0f;
   const CGFloat widthMaximum = 180.0;
@@ -369,9 +441,8 @@
     [self HL_updateWideLabelNode:wideLabelNode withWidthMaximum:widthCurrent];
   }];
   SKAction *changeWidthAction = [SKAction sequence:@[ decreaseWidthAction, increaseWidthAction ]];
-  [wideLabelNode runAction:[SKAction repeatAction:changeWidthAction count:3]];
+  [wideLabelNode runAction:changeWidthAction];
   [self HL_updateWideLabelNode:wideLabelNode withWidthMaximum:widthMaximum];
-  return wideLabelNode;
 }
 
 - (void)HL_updateWideLabelNode:(SKLabelNode *)wideLabelNode withWidthMaximum:(CGFloat)widthMaximum

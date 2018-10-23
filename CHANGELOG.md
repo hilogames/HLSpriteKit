@@ -23,6 +23,13 @@
   disable it by setting `decelerationRate` to `0`.  
   [Karl Voskuil](https://github.com/karlvoskuil)
 
+- An optional size mode and "center rect" for `HLTiledNode`.  The tile
+  node previously sized itself exactly; now it can size itself to a
+  minimum or maximum size (using a whole number of times).  The
+  "center rect" option splits the tiled node texture into a 3 x 3 grid
+  of tiles -- like `SKSpriteNode` except tiling not stretching.  
+  [Karl Voskuil](https://github.com/karlvoskuil)
+
 ## 1.7.0 [2018-06-21]
 
 ### Breaking
