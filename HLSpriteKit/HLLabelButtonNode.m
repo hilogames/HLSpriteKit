@@ -252,6 +252,16 @@ enum {
   _labelNode.fontColor = fontColor;
 }
 
+- (CGFloat)backgroundAlpha
+{
+  return _backgroundNode.alpha;
+}
+
+- (void)setBackgroundAlpha:(CGFloat)backgroundAlpha
+{
+  _backgroundNode.alpha = backgroundAlpha;
+}
+
 - (SKColor *)color
 {
   return _backgroundNode.color;

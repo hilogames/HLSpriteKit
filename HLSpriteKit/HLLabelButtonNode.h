@@ -163,9 +163,16 @@
 /**
  The font color used by the label.
 
- The defualt value is determined by `[SKLabelNode fontColor]` (currently white).
+ The default value is determined by `[SKLabelNode fontColor]` (currently white).
 */
 @property (nonatomic, strong) SKColor *fontColor;
+
+/**
+ An alpha for the background node (not the label).
+
+ Both background and label are affeted by the label button node's `alpha` value.
+ */
+@property (nonatomic, assign) CGFloat backgroundAlpha;
 
 /**
  The color used by the background node, or the color blended into the background node's

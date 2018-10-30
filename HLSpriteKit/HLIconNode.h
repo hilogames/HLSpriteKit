@@ -149,7 +149,7 @@
 /**
  The font color used by the label.
 
- The defualt value is determined by `[SKLabelNode fontColor]` (currently white).
+ The default value is determined by `[SKLabelNode fontColor]` (currently white).
 */
 @property (nonatomic, strong) SKColor *fontColor;
 
