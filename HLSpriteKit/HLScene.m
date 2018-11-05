@@ -300,6 +300,9 @@ static BOOL _sceneAssetsLoaded = NO;
         highestGlobalZPosition = globalZPosition;
       }
     }
+    if (!node) {
+      node = self;
+    }
   } else {
     [NSException raise:@"HLSceneUnknownGestureTargetHitTestMode" format:@"Unknown gesture target hit test mode %ld.", (long)_gestureTargetHitTestMode];
   }
