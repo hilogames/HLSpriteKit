@@ -126,6 +126,8 @@
 - (CGFloat)labelHeightForHeightMode:(HLLabelHeightMode)heightMode
 {
   if (heightMode == HLLabelHeightModeText) {
+    // note: I expected to use [self.text sizeWithAttributes:].height here, but that
+    // seems to return the font height regardless of self.text.
     return self.frame.size.height;
   } else {
     return [SKLabelNode labelHeightForHeightMode:heightMode fontName:self.fontName fontSize:self.fontSize];
@@ -184,6 +186,8 @@
       *useVerticalAlignmentMode = verticalAlignmentMode;
     }
     if (labelHeight) {
+      // note: I expected to use [self.text sizeWithAttributes:].height here, but that
+      // seems to return the font height regardless of self.text.
       *labelHeight = self.frame.size.height;
     }
     if (offsetY) {

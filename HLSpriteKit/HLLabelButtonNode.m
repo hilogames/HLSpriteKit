@@ -313,6 +313,8 @@ enum {
   }
 
   if (_automaticWidth) {
+    // note: Could use [self.text sizeWithAttributes:].width here; I'm not sure
+    // there's a reason to do it one way or another.
     newSize.width = _labelNode.frame.size.width + _labelPadX * 2.0f;
   }
 
