@@ -14,6 +14,7 @@
 {
   CGSize _size;
   SKTexture *_texture;
+  SKNode *_tilesNode;
 }
 
 + (instancetype)tiledNodeWithImageNamed:(NSString *)name size:(CGSize)size
@@ -45,6 +46,8 @@
   self = [super init];
   if (self) {
     _texture = nil;
+    _tilesNode = [SKNode node];
+    [self addChild:_tilesNode];
     _anchorPoint = CGPointMake(0.5f, 0.5f);
     _centerRect = CGRectMake(0.0f, 0.0f, 1.0f, 1.0f);
     _sizeMode = HLTiledNodeSizeModeCrop;
@@ -58,6 +61,8 @@
   self = [super init];
   if (self) {
     _texture = [SKTexture textureWithImageNamed:name];
+    _tilesNode = [SKNode node];
+    [self addChild:_tilesNode];
     _anchorPoint = CGPointMake(0.5f, 0.5f);
     _centerRect = CGRectMake(0.0f, 0.0f, 1.0f, 1.0f);
     _sizeMode = HLTiledNodeSizeModeCrop;
@@ -71,6 +76,8 @@
   self = [super init];
   if (self) {
     _texture = texture;
+    _tilesNode = [SKNode node];
+    [self addChild:_tilesNode];
     _anchorPoint = CGPointMake(0.5f, 0.5f);
     _centerRect = CGRectMake(0.0f, 0.0f, 1.0f, 1.0f);
     _sizeMode = HLTiledNodeSizeModeCrop;
@@ -84,6 +91,8 @@
   self = [super init];
   if (self) {
     _texture = texture;
+    _tilesNode = [SKNode node];
+    [self addChild:_tilesNode];
     _anchorPoint = CGPointMake(0.5f, 0.5f);
     _centerRect = CGRectMake(0.0f, 0.0f, 1.0f, 1.0f);
     _sizeMode = HLTiledNodeSizeModeCrop;
@@ -104,6 +113,8 @@
   self = [super init];
   if (self) {
     _texture = texture;
+    _tilesNode = [SKNode node];
+    [self addChild:_tilesNode];
     _anchorPoint = anchorPoint;
     _centerRect = centerRect;
     _sizeMode = sizeMode;
@@ -117,6 +128,7 @@
   self = [super initWithCoder:aDecoder];
   if (self) {
     _texture = [aDecoder decodeObjectForKey:@"texture"];
+    _tilesNode = [aDecoder decodeObjectForKey:@"tilesNode"];
     _sizeMode = [aDecoder decodeIntegerForKey:@"sizeMode"];
 #if TARGET_OS_IPHONE
     _size = [aDecoder decodeCGSizeForKey:@"size"];
@@ -135,6 +147,7 @@
 {
   [super encodeWithCoder:aCoder];
   [aCoder encodeObject:_texture forKey:@"texture"];
+  [aCoder encodeObject:_tilesNode forKey:@"tilesNode"];
   [aCoder encodeInteger:_sizeMode forKey:@"sizeMode"];
 #if TARGET_OS_IPHONE
   [aCoder encodeCGSize:_size forKey:@"size"];
@@ -152,6 +165,8 @@
   HLTiledNode *copy = [super copyWithZone:zone];
   if (copy) {
     copy->_texture = _texture;
+    // note: Node already copied; here just hooking up the pointer.
+    copy->_tilesNode = copy.children.firstObject;
     copy->_size = _size;
     copy->_sizeMode = _sizeMode;
     copy->_anchorPoint = _anchorPoint;
@@ -162,21 +177,21 @@
 
 - (void)setSize:(CGSize)size
 {
-  SKSpriteNode *firstChild = (SKSpriteNode *)[self.children firstObject];
+  SKSpriteNode *firstTileNode = (SKSpriteNode *)[_tilesNode.children firstObject];
   [self HL_createTileNodesWithSize:size];
-  [self HL_updateTileNodePropertiesWithColor:firstChild.color
-                            colorBlendFactor:firstChild.colorBlendFactor
-                                   blendMode:firstChild.blendMode];
+  [self HL_updateTileNodePropertiesWithColor:firstTileNode.color
+                            colorBlendFactor:firstTileNode.colorBlendFactor
+                                   blendMode:firstTileNode.blendMode];
 }
 
 - (void)setSizeMode:(HLTiledNodeSizeMode)sizeMode
 {
   _sizeMode = sizeMode;
-  SKSpriteNode *firstChild = (SKSpriteNode *)[self.children firstObject];
+  SKSpriteNode *firstTileNode = (SKSpriteNode *)[_tilesNode.children firstObject];
   [self HL_createTileNodesWithSize:_size];
-  [self HL_updateTileNodePropertiesWithColor:firstChild.color
-                            colorBlendFactor:firstChild.colorBlendFactor
-                                   blendMode:firstChild.blendMode];
+  [self HL_updateTileNodePropertiesWithColor:firstTileNode.color
+                            colorBlendFactor:firstTileNode.colorBlendFactor
+                                   blendMode:firstTileNode.blendMode];
 }
 
 - (void)setAnchorPoint:(CGPoint)anchorPoint
@@ -184,61 +199,64 @@
   CGFloat deltaX = (_anchorPoint.x - anchorPoint.x) * _size.width;
   CGFloat deltaY = (_anchorPoint.y - anchorPoint.y) * _size.height;
   _anchorPoint = anchorPoint;
-  for (SKSpriteNode *child in self.children) {
-    CGPoint childPosition = child.position;
-    childPosition.x += deltaX;
-    childPosition.y += deltaY;
-    child.position = childPosition;
+  // note: Could just offset _tilesNode position, but the original layout was written
+  // to calculate anchor point in the positioning of each individual tile node, and it
+  // might be nice to keep it that way in case we ever don't have a grouping node.
+  for (SKSpriteNode *tileNode in _tilesNode.children) {
+    CGPoint position = tileNode.position;
+    position.x += deltaX;
+    position.y += deltaY;
+    tileNode.position = position;
   }
 }
 
 - (void)setTexture:(SKTexture *)texture
 {
   _texture = texture;
-  SKSpriteNode *firstChild = (SKSpriteNode *)[self.children firstObject];
+  SKSpriteNode *firstTileNode = (SKSpriteNode *)[_tilesNode.children firstObject];
   [self HL_createTileNodesWithSize:_size];
-  [self HL_updateTileNodePropertiesWithColor:firstChild.color
-                            colorBlendFactor:firstChild.colorBlendFactor
-                                   blendMode:firstChild.blendMode];
+  [self HL_updateTileNodePropertiesWithColor:firstTileNode.color
+                            colorBlendFactor:firstTileNode.colorBlendFactor
+                                   blendMode:firstTileNode.blendMode];
 }
 
 - (void)setColorBlendFactor:(CGFloat)colorBlendFactor
 {
-  for (SKSpriteNode *child in self.children) {
-    child.colorBlendFactor = colorBlendFactor;
+  for (SKSpriteNode *tileNode in _tilesNode.children) {
+    tileNode.colorBlendFactor = colorBlendFactor;
   }
 }
 
 - (CGFloat)colorBlendFactor
 {
-  SKSpriteNode *firstChild = (SKSpriteNode *)[self.children firstObject];
-  return firstChild.colorBlendFactor;
+  SKSpriteNode *firstTileNode = (SKSpriteNode *)[_tilesNode.children firstObject];
+  return firstTileNode.colorBlendFactor;
 }
 
 - (void)setColor:(SKColor *)color
 {
-  for (SKSpriteNode *child in self.children) {
-    child.color = color;
+  for (SKSpriteNode *tileNode in _tilesNode.children) {
+    tileNode.color = color;
   }
 }
 
 - (SKColor *)color
 {
-  SKSpriteNode *firstChild = (SKSpriteNode *)[self.children firstObject];
-  return firstChild.color;
+  SKSpriteNode *firstTileNode = (SKSpriteNode *)[_tilesNode.children firstObject];
+  return firstTileNode.color;
 }
 
 - (void)setBlendMode:(SKBlendMode)blendMode
 {
-  for (SKSpriteNode *child in self.children) {
-    child.blendMode = blendMode;
+  for (SKSpriteNode *tileNode in _tilesNode.children) {
+    tileNode.blendMode = blendMode;
   }
 }
 
 - (SKBlendMode)blendMode
 {
-  SKSpriteNode *firstChild = (SKSpriteNode *)[self.children firstObject];
-  return firstChild.blendMode;
+  SKSpriteNode *firstTileNode = (SKSpriteNode *)[_tilesNode.children firstObject];
+  return firstTileNode.blendMode;
 }
 
 #pragma mark -
@@ -248,7 +266,7 @@
 {
   // note: Sets _size as a side effect, based on _sizeMode.
 
-  [self removeAllChildren];
+  [_tilesNode removeAllChildren];
 
   const CGFloat HLTileFitEpsilon = 0.01f;
 
@@ -261,7 +279,7 @@
     SKSpriteNode *tileNode = [[SKSpriteNode alloc] initWithTexture:_texture];
     tileNode.size = size;
     tileNode.anchorPoint = _anchorPoint;
-    [self addChild:tileNode];
+    [_tilesNode addChild:tileNode];
     _size = size;
     return;
   }
@@ -285,7 +303,7 @@
     SKSpriteNode *tileNode = [[SKSpriteNode alloc] initWithTexture:_texture];
     tileNode.size = size;
     tileNode.anchorPoint = _anchorPoint;
-    [self addChild:tileNode];
+    [_tilesNode addChild:tileNode];
     _size = size;
     return;
   }
@@ -332,7 +350,7 @@
         break;
     }
     tileNode.anchorPoint = _anchorPoint;
-    [self addChild:tileNode];
+    [_tilesNode addChild:tileNode];
     return;
   }
 
@@ -384,14 +402,14 @@
         SKSpriteNode *cornerNode = [SKSpriteNode spriteNodeWithTexture:cornerTexture];
         cornerNode.anchorPoint = CGPointMake(1.0f, 1.0f);
         cornerNode.position = CGPointMake(fillLeftX, fillBottomY);
-        [self addChild:cornerNode];
+        [_tilesNode addChild:cornerNode];
       }
       if (hasCenterRectTop) {
         SKTexture *cornerTexture = [SKTexture textureWithRect:CGRectMake(0.0f, centerRectTopY, _centerRect.origin.x, (1.0f - centerRectTopY)) inTexture:_texture];
         SKSpriteNode *cornerNode = [SKSpriteNode spriteNodeWithTexture:cornerTexture];
         cornerNode.anchorPoint = CGPointMake(1.0f, 0.0f);
         cornerNode.position = CGPointMake(fillLeftX, fillBottomY + fillHeight);
-        [self addChild:cornerNode];
+        [_tilesNode addChild:cornerNode];
       }
     }
     if (hasCenterRectRight) {
@@ -400,14 +418,14 @@
         SKSpriteNode *cornerNode = [SKSpriteNode spriteNodeWithTexture:cornerTexture];
         cornerNode.anchorPoint = CGPointMake(0.0f, 1.0f);
         cornerNode.position = CGPointMake(fillLeftX + fillWidth, fillBottomY);
-        [self addChild:cornerNode];
+        [_tilesNode addChild:cornerNode];
       }
       if (hasCenterRectTop) {
         SKTexture *cornerTexture = [SKTexture textureWithRect:CGRectMake(centerRectRightX, centerRectTopY, (1.0f - centerRectRightX), (1.0f - centerRectTopY)) inTexture:_texture];
         SKSpriteNode *cornerNode = [SKSpriteNode spriteNodeWithTexture:cornerTexture];
         cornerNode.anchorPoint = CGPointMake(0.0f, 0.0f);
         cornerNode.position = CGPointMake(fillLeftX + fillWidth, fillBottomY + fillHeight);
-        [self addChild:cornerNode];
+        [_tilesNode addChild:cornerNode];
       }
     }
 
@@ -419,7 +437,7 @@
         SKSpriteNode *edgeNode = [SKSpriteNode spriteNodeWithTexture:edgeTexture];
         edgeNode.anchorPoint = CGPointMake(1.0f, 0.0f);
         edgeNode.position = CGPointMake(fillLeftX, edgeY);
-        [self addChild:edgeNode];
+        [_tilesNode addChild:edgeNode];
         edgeY += tileHeight;
       }
       if (centerRectCroppedHeight > HLCenterRectEpsilon) {
@@ -427,7 +445,7 @@
         SKSpriteNode *croppedEdgeNode = [SKSpriteNode spriteNodeWithTexture:croppedEdgeTexture];
         croppedEdgeNode.anchorPoint = CGPointMake(1.0f, 0.0f);
         croppedEdgeNode.position = CGPointMake(fillLeftX, edgeY);
-        [self addChild:croppedEdgeNode];
+        [_tilesNode addChild:croppedEdgeNode];
       }
     }
     if (hasCenterRectBottom) {
@@ -437,7 +455,7 @@
         SKSpriteNode *edgeNode = [SKSpriteNode spriteNodeWithTexture:edgeTexture];
         edgeNode.anchorPoint = CGPointMake(0.0f, 1.0f);
         edgeNode.position = CGPointMake(edgeX, fillBottomY);
-        [self addChild:edgeNode];
+        [_tilesNode addChild:edgeNode];
         edgeX += tileWidth;
       }
       if (centerRectCroppedWidth > HLCenterRectEpsilon) {
@@ -445,7 +463,7 @@
         SKSpriteNode *croppedEdgeNode = [SKSpriteNode spriteNodeWithTexture:croppedEdgeTexture];
         croppedEdgeNode.anchorPoint = CGPointMake(0.0f, 1.0f);
         croppedEdgeNode.position = CGPointMake(edgeX, fillBottomY);
-        [self addChild:croppedEdgeNode];
+        [_tilesNode addChild:croppedEdgeNode];
       }
     }
     if (hasCenterRectRight) {
@@ -456,7 +474,7 @@
         SKSpriteNode *edgeNode = [SKSpriteNode spriteNodeWithTexture:edgeTexture];
         edgeNode.anchorPoint = CGPointMake(0.0f, 0.0f);
         edgeNode.position = CGPointMake(edgeX, edgeY);
-        [self addChild:edgeNode];
+        [_tilesNode addChild:edgeNode];
         edgeY += tileHeight;
       }
       if (centerRectCroppedHeight > HLCenterRectEpsilon) {
@@ -464,7 +482,7 @@
         SKSpriteNode *croppedEdgeNode = [SKSpriteNode spriteNodeWithTexture:croppedEdgeTexture];
         croppedEdgeNode.anchorPoint = CGPointMake(0.0f, 0.0f);
         croppedEdgeNode.position = CGPointMake(edgeX, edgeY);
-        [self addChild:croppedEdgeNode];
+        [_tilesNode addChild:croppedEdgeNode];
       }
     }
     if (hasCenterRectTop) {
@@ -475,7 +493,7 @@
         SKSpriteNode *edgeNode = [SKSpriteNode spriteNodeWithTexture:edgeTexture];
         edgeNode.anchorPoint = CGPointMake(0.0f, 0.0f);
         edgeNode.position = CGPointMake(edgeX, edgeY);
-        [self addChild:edgeNode];
+        [_tilesNode addChild:edgeNode];
         edgeX += tileWidth;
       }
       if (centerRectCroppedWidth > HLCenterRectEpsilon) {
@@ -483,7 +501,7 @@
         SKSpriteNode *croppedEdgeNode = [SKSpriteNode spriteNodeWithTexture:croppedEdgeTexture];
         croppedEdgeNode.anchorPoint = CGPointMake(0.0f, 0.0f);
         croppedEdgeNode.position = CGPointMake(edgeX, edgeY);
-        [self addChild:croppedEdgeNode];
+        [_tilesNode addChild:croppedEdgeNode];
       }
     }
   }
@@ -501,14 +519,14 @@
       SKSpriteNode *tileNode = [SKSpriteNode spriteNodeWithTexture:tileTexture];
       tileNode.anchorPoint = CGPointMake(0.0f, 0.0f);
       tileNode.position = CGPointMake(fillLeftX + u * tileWidth, tileY);
-      [self addChild:tileNode];
+      [_tilesNode addChild:tileNode];
     }
     if (centerRectCroppedWidth > HLCenterRectEpsilon) {
       SKTexture *croppedTileTexture = [SKTexture textureWithRect:CGRectMake(_centerRect.origin.x, _centerRect.origin.y, centerRectCroppedWidth, _centerRect.size.height) inTexture:_texture];
       SKSpriteNode *croppedTileNode = [SKSpriteNode spriteNodeWithTexture:croppedTileTexture];
       croppedTileNode.anchorPoint = CGPointMake(0.0f, 0.0f);
       croppedTileNode.position = CGPointMake(fillLeftX + fillWidthUncroppedTileCount * tileWidth, tileY);
-      [self addChild:croppedTileNode];
+      [_tilesNode addChild:croppedTileNode];
     }
   }
   if (centerRectCroppedHeight > HLCenterRectEpsilon) {
@@ -518,14 +536,14 @@
       SKSpriteNode *croppedTileNode = [SKSpriteNode spriteNodeWithTexture:croppedTileTexture];
       croppedTileNode.anchorPoint = CGPointMake(0.0f, 0.0f);
       croppedTileNode.position = CGPointMake(fillLeftX + u * tileWidth, tileY);
-      [self addChild:croppedTileNode];
+      [_tilesNode addChild:croppedTileNode];
     }
     if (centerRectCroppedWidth > HLCenterRectEpsilon) {
       SKTexture *croppedCornerTileTexture = [SKTexture textureWithRect:CGRectMake(_centerRect.origin.x, _centerRect.origin.y, centerRectCroppedWidth, centerRectCroppedHeight) inTexture:_texture];
       SKSpriteNode *croppedCornerTileNode = [SKSpriteNode spriteNodeWithTexture:croppedCornerTileTexture];
       croppedCornerTileNode.anchorPoint = CGPointMake(0.0f, 0.0f);
       croppedCornerTileNode.position = CGPointMake(fillLeftX + fillWidthUncroppedTileCount * tileWidth, tileY);
-      [self addChild:croppedCornerTileNode];
+      [_tilesNode addChild:croppedCornerTileNode];
     }
   }
 }
@@ -534,10 +552,10 @@
                             colorBlendFactor:(CGFloat)colorBlendFactor
                                    blendMode:(SKBlendMode)blendMode
 {
-  for (SKSpriteNode *child in self.children) {
-    child.color = color;
-    child.colorBlendFactor = colorBlendFactor;
-    child.blendMode = blendMode;
+  for (SKSpriteNode *tileNode in _tilesNode.children) {
+    tileNode.color = color;
+    tileNode.colorBlendFactor = colorBlendFactor;
+    tileNode.blendMode = blendMode;
   }
 }
 
