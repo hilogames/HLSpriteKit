@@ -1340,7 +1340,7 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
 
   CGPoint lastInstantaneousDelta = [self HL_instantaneousDelta];
   // note: Always calculate the cumulative by adding the instantaneous, so that we can compensate for the difference
-  // between "elasped delta" (normal-elapsed-time * total-delta) and "cumulative delta" (sum of a series of
+  // between "elapsed delta" (normal-elapsed-time * total-delta) and "cumulative delta" (sum of a series of
   // instantaneous-delta).
   _lastCumulativeDeltaX += lastInstantaneousDelta.x;
   _lastCumulativeDeltaY += lastInstantaneousDelta.y;
@@ -1593,7 +1593,7 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
 
   CGFloat lastInstantaneousDelta = [self HL_instantaneousDelta];
   // note: Always calculate the cumulative by adding the instantaneous, so that we can compensate for the difference
-  // between "elasped delta" (normal-elapsed-time * total-delta) and "cumulative delta" (sum of a series of
+  // between "elapsed delta" (normal-elapsed-time * total-delta) and "cumulative delta" (sum of a series of
   // instantaneous-delta).
   _lastCumulativeDelta += lastInstantaneousDelta;
 
@@ -1817,7 +1817,7 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
 
   CGFloat lastInstantaneousDelta = [self HL_instantaneousDelta];
   // note: Always calculate the cumulative by adding the instantaneous, so that we can compensate for the difference
-  // between "elasped delta" (normal-elapsed-time * total-delta) and "cumulative delta" (sum of a series of
+  // between "elapsed delta" (normal-elapsed-time * total-delta) and "cumulative delta" (sum of a series of
   // instantaneous-delta).
   _lastCumulativeDelta += lastInstantaneousDelta;
 
@@ -2073,7 +2073,7 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
 
   CGFloat lastInstantaneousDelta = [self HL_instantaneousDelta];
   // note: Always calculate the cumulative by adding the instantaneous, so that we can compensate for the difference
-  // between "elasped delta" (normal-elapsed-time * total-delta) and "cumulative delta" (sum of a series of
+  // between "elapsed delta" (normal-elapsed-time * total-delta) and "cumulative delta" (sum of a series of
   // instantaneous-delta).
   _lastCumulativeDelta += lastInstantaneousDelta;
 
@@ -2187,7 +2187,7 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
   CGFloat lastInstantaneousDeltaY;
   [self HL_instantaneousDeltaX:&lastInstantaneousDeltaX instantaneousDeltaY:&lastInstantaneousDeltaY];
   // note: Always calculate the cumulative by adding the instantaneous, so that we can compensate for the difference
-  // between "elasped delta" (normal-elapsed-time * total-delta) and "cumulative delta" (sum of a series of
+  // between "elapsed delta" (normal-elapsed-time * total-delta) and "cumulative delta" (sum of a series of
   // instantaneous-delta).
   _lastCumulativeDeltaX += lastInstantaneousDeltaX;
   _lastCumulativeDeltaY += lastInstantaneousDeltaY;
@@ -2473,7 +2473,7 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
 
   CGFloat lastInstantaneousDelta = [self HL_instantaneousDelta];
   // note: Always calculate the cumulative by adding the instantaneous, so that we can compensate for the difference
-  // between "elasped delta" (normal-elapsed-time * total-delta) and "cumulative delta" (sum of a series of
+  // between "elapsed delta" (normal-elapsed-time * total-delta) and "cumulative delta" (sum of a series of
   // instantaneous-delta).
   _lastCumulativeDelta += lastInstantaneousDelta;
 
