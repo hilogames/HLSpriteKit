@@ -260,6 +260,25 @@
 */
 - (SKNode *)contentForItem:(int)itemIndex;
 
+/**
+ Returns the item node for the passed item index.
+
+ This is intended for callers that need to know specifics about the item node.  Throws an
+ exception if the item index is out of bounds.
+
+ @warning The returned node should be treated as read-only.  Modification of the item
+          node is neither expected nor recommended.
+*/
+- (SKNode *)itemNodeForItem:(int)itemIndex;
+
+/**
+ The number of items in the ring.
+
+ The same value passed into `init` by the owner.  It is made available here (readonly) for
+ the owner's convenience.
+*/
+@property (nonatomic, readonly) int itemCount;
+
 /// @name Configuring Appearance
 
 /**

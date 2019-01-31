@@ -155,6 +155,21 @@ enum {
   return ((HLItemNode *)itemNodes[itemIndex]).content;
 }
 
+- (SKNode *)itemNodeForItem:(int)itemIndex
+{
+  NSArray *itemNodes = _itemsNode.itemNodes;
+  NSUInteger itemCount = [itemNodes count];
+  if (itemIndex < 0 || itemIndex >= itemCount) {
+    [NSException raise:@"HLRingNodeInvalidIndex" format:@"Item index %d out of range.", itemIndex];
+  }
+  return (HLItemNode *)itemNodes[itemIndex];
+}
+
+- (int)itemCount
+{
+  return (int)[_itemsNode.itemNodes count];
+}
+
 #pragma mark -
 #pragma mark Configuring Appearance
 
