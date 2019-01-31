@@ -113,7 +113,7 @@ typedef NS_ENUM(NSInteger, HLMessageNodeAnimation) {
  Not used when the horizontal alignment mode is center.
 
  Default value `0.0`.
- */
+*/
 @property (nonatomic, assign) CGFloat horizontalMargin;
 
 /**

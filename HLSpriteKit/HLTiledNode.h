@@ -56,7 +56,7 @@ typedef NS_ENUM(NSInteger, HLTiledNodeSizeMode) {
  Returns an initialized tiled node.
 
  This method avoids repeated layouts caused by setting properties individually.
- */
+*/
 + (instancetype)tiledNodeWithTexture:(SKTexture *)texture
                                 size:(CGSize)size
                             sizeMode:(HLTiledNodeSizeMode)sizeMode

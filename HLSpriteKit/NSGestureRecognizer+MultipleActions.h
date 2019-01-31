@@ -19,14 +19,14 @@
 
  After registering all targets+actions with addTarget:action:, the NSGestureRecognizer
  must set its main target+action to this category's own handleGesture:.
- */
+*/
 @interface NSGestureRecognizer (NSGestureRecognizer_MultipleActions)
 
 /**
  Categories aren't typically allowed to add properties to a class, but a common
  workaround using objc_getAssociatedObject and objc_setAssociatedObject is used:
  http://stackoverflow.com/questions/4146183/instance-variables-for-objective-c-categories
- */
+*/
 @property (nonatomic, strong) NSMutableArray *targetActionPairs;
 
 /**
@@ -35,18 +35,18 @@
  action must follow one of the signatures as NSGestureRecognizer's main action property:
  - (void)handleGesture;
  - (void)handleGesture:(NSGestureRecognizer *)gestureRecognizer;
- */
+*/
 - (void)addTarget:(id)target action:(SEL)action;
 
 /**
  Remove a target+action pair.
- */
+*/
 - (void)removeTarget:(id)target action:(SEL)action;
 
 /**
  Automatically propogate the gesture recognizer handler call to all of the
  targets+actions registered in addTarget:action:.
- */
+*/
 - (void)handleGesture:(NSGestureRecognizer *)gestureRecognizer;
 
 @end

@@ -143,7 +143,7 @@ typedef NS_ENUM(NSInteger, HLGridNodeLayoutMode) {
 
  Beware retain cycles when using the callback to invoke a method in the owner.  As a safer
  alternative, use the toolbar node's delegation interface; see `setDelegate:`.
- */
+*/
 @property (nonatomic, copy) void (^squareClickedBlock)(int squareIndex);
 
 #endif

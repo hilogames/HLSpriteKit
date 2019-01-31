@@ -23,19 +23,19 @@
 typedef NS_ENUM(NSInteger, HLMenuNodeAnimation) {
   /**
    No animation when navigating between menus.
-   */
+  */
   HLMenuNodeAnimationNone,
   /**
    When navigating to a submenu, the parent menu slides off to the left, and the submenu
    slides in from the right side of the scene.  When navigating to a parent menu,
    everything slides the other direction.
-   */
+  */
   HLMenuNodeAnimationSlideLeft,
   /**
    When navigating to a submenu, the parent menu slides off to the right, and the
    submenu slides in from the left side of the scene.  When navigating to a parent menu,
    everything slides the other direction.
-   */
+  */
   HLMenuNodeAnimationSlideRight,
 };
 
@@ -334,7 +334,7 @@ typedef NS_ENUM(NSInteger, HLMenuNodeAnimation) {
 
  Relevant to `NSResponder` user interaction.
  See "Common User Interaction Configurations".
- */
+*/
 @optional
 - (void)menuNode:(HLMenuNode *)menuNode didLongClickMenuItem:(HLMenuItem *)menuItem itemIndex:(NSUInteger)itemIndex;
 

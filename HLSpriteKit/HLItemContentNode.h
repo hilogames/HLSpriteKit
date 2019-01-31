@@ -107,7 +107,7 @@
 
 /**
  The front-highlight node passed to `init`.
- */
+*/
 @property (nonatomic, readonly) SKNode *frontHighlightNode;
 
 /// @name Setting Node State

@@ -117,7 +117,7 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 
  Beware retain cycles when using the callback to invoke a method in the owner.  As a safer
  alternative, use the toolbar node's delegation interface; see `setDelegate:`.
- */
+*/
 @property (nonatomic, copy) void (^toolClickedBlock)(NSString *toolTag);
 
 #endif
@@ -192,7 +192,7 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 
 /**
  Returns the tools currently set in the toolbar by `setTools` or `setTool`.
- */
+*/
 - (NSArray *)toolNodes;
 
 /**
@@ -287,7 +287,7 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
       hidden in the implementation of custom nodes.  Also: In certain versions of iOS,
       adding an SKEffectNode as a descendant of an SKCropNode causes the effect to render
       incorrectly.
- */
+*/
 @property (nonatomic, assign, getter=isContentClipped) BOOL contentClipped;
 
 /**
@@ -522,7 +522,7 @@ typedef NS_ENUM(NSInteger, HLToolbarNodeAnimation) {
 
  Relevant to `NSResponder` user interaction.
  See "Common User Interaction Configurations".
- */
+*/
 - (void)toolbarNode:(HLToolbarNode *)toolbarNode didClickTool:(NSString *)toolTag;
 
 #endif

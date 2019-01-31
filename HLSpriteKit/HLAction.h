@@ -681,21 +681,21 @@ When complete, `elapsedTime` won't necessarily match the action's `duration`:
 
 /**
  The value of `destination` passed to the initializer.
- */
+*/
 @property (nonatomic, readonly) CGPoint destination;
 
 @end
 
 /**
  An action that tracks a relative change in z-position over a duration.
- */
+*/
 @interface HLChangeZPositionByAction : HLAction <NSCoding, NSCopying>
 
 /// @name Creating the Action
 
 /**
  Creates a change-z-position-by action.
- */
+*/
 - (instancetype)initWithZPosition:(CGFloat)deltaZPosition duration:(NSTimeInterval)duration;
 
 /// @name Accessing Action State
@@ -705,14 +705,14 @@ When complete, `elapsedTime` won't necessarily match the action's `duration`:
  last update).
 
  If a node was passed to the update method, its `zPosition` was changed by this delta.
- */
+*/
 @property (nonatomic, readonly) CGFloat instantaneousDelta;
 
 @end
 
 /**
  An action that changes z-position from one value to another over a duration.
- */
+*/
 @interface HLChangeZPositionToAction : HLAction <NSCoding, NSCopying>
 
 /// @name Creating the Action
@@ -724,12 +724,12 @@ When complete, `elapsedTime` won't necessarily match the action's `duration`:
  `zPosition` of the passed node.  For this reason, the node parameter passed to the first
  update must be non-nil.  (To set the original z-position without a node, use
  `initWithZFrom:to:duration:`.)
- */
+*/
 - (instancetype)initWithZPositionTo:(CGFloat)zPositionTo duration:(NSTimeInterval)duration;
 
 /**
  Creates a change-z-position-to action with a designated original z-position.
- */
+*/
 - (instancetype)initWithZPositionFrom:(CGFloat)zPositionFrom to:(CGFloat)zPositionTo duration:(NSTimeInterval)duration;
 
 /// @name Accessing Action State
@@ -738,7 +738,7 @@ When complete, `elapsedTime` won't necessarily match the action's `duration`:
  The current z-position of the change-z-position-to action.
 
  If a node was passed to the update method, it was updated with this position.
- */
+*/
 @property (nonatomic, readonly) CGFloat zPosition;
 
 @end
@@ -1190,7 +1190,7 @@ When complete, `elapsedTime` won't necessarily match the action's `duration`:
  The current texture.
 
  If a sprite node was passed to the update method, it was updated with this texture.
- */
+*/
 @property (nonatomic, readonly) SKTexture *texture;
 
 /**
@@ -1302,7 +1302,7 @@ When complete, `elapsedTime` won't necessarily match the action's `duration`:
  The current texture.
 
  If a sprite node was passed to the update method, it was updated with this texture.
- */
+*/
 @property (nonatomic, readonly) SKTexture *texture;
 
 /**

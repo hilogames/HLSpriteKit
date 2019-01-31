@@ -93,7 +93,7 @@ FOUNDATION_EXPORT const CGFloat HLParallaxLayoutManagerEpsilon;
  Initializes the layout manager with parameters for a customized parallax layout of nodes.
 
  See `setSpeedsForParallaxPanningWithViewportSize:panningRange:layerSizes:` for details.
- */
+*/
 - (instancetype)initForParallaxPanningWithViewportSize:(CGFloat)viewportSize
                                           panningRange:(CGFloat)panningRange
                                             layerCount:(NSUInteger)layerCount

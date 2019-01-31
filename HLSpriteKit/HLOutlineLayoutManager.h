@@ -85,7 +85,7 @@ FOUNDATION_EXPORT const CGFloat HLOutlineLayoutManagerEpsilon;
 
 /**
  Initializes the layout manager for a custom outline layout.
- */
+*/
 - (instancetype)initWithNodeLevels:(NSArray *)nodeLevels
                       levelIndents:(NSArray *)levelIndents
                   levelLineHeights:(NSArray *)levelLineHeights

@@ -16,7 +16,7 @@ static char targetActionPairsKey;
 /**
  When developers register targets+actions on NSGestureRecognizer, we need to save the
  entries into an NSMutableArray, and as such, must have a class that holds them.
- */
+*/
 @interface TargetActionPair : NSObject {
 @public
   id target;
