@@ -10,6 +10,8 @@
 
 @interface SKTexture (ShaderAdditions)
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 90000
+
 /**
  Calculates and returns the size of the source texture for this texture.
 
@@ -32,6 +34,8 @@
  sub-rectangles of a source texture (especially atlas sprite sheets).
 */
 - (vector_float2)sourceTextureConvertPoint:(CGPoint)texturePoint;
+
+#endif
 
 @end
 

@@ -14,6 +14,8 @@
 
 @implementation SKTexture (ShaderAdditions)
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 90000
+
 - (vector_float2)sourceTextureSize
 {
   if (!self.isRotated) {
@@ -38,5 +40,7 @@
                             (float)(self.textureRect.origin.y + (1.0 - texturePoint.x) * self.textureRect.size.height));
   }
 }
+
+#endif
 
 @end
