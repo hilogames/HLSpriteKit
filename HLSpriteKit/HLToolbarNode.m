@@ -857,6 +857,10 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
 
 - (void)handleTap:(UIGestureRecognizer *)gestureRecognizer
 {
+  if (gestureRecognizer.state != UIGestureRecognizerStateEnded) {
+    return;
+  }
+
   id <HLToolbarNodeMultiGestureTargetDelegate> delegate = _delegate;
   if (!delegate) {
     return;
@@ -876,6 +880,10 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
 
 - (void)handleDoubleTap:(UIGestureRecognizer *)gestureRecognizer
 {
+  if (gestureRecognizer.state != UIGestureRecognizerStateEnded) {
+    return;
+  }
+
   id <HLToolbarNodeMultiGestureTargetDelegate> delegate = _delegate;
   if (!delegate) {
     return;
@@ -895,6 +903,10 @@ static const NSTimeInterval HLToolbarSlideDuration = 0.15f;
 
 - (void)handleLongPress:(UIGestureRecognizer *)gestureRecognizer
 {
+  if (gestureRecognizer.state != UIGestureRecognizerStateEnded) {
+    return;
+  }
+
   id <HLToolbarNodeMultiGestureTargetDelegate> delegate = _delegate;
   if (!delegate) {
     return;
