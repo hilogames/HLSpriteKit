@@ -40,4 +40,5 @@
 #import "SKNode+HLLayoutManager.h"
 #import "SKNode+HLGestureTarget.h"
 #import "SKNode+HLNodeVisuals.h"
+#import "SKTexture+ShaderAdditions.h"
 #import "UIImage+HLImageAdditions.h"

@@ -65,6 +65,8 @@
 		847D62B21D8499AF006E287F /* SKNode+HLNodeVisuals.m in Sources */ = {isa = PBXBuildFile; fileRef = 847D627A1D8499AF006E287F /* SKNode+HLNodeVisuals.m */; };
 		847D62B31D8499AF006E287F /* UIImage+HLImageAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 847D627B1D8499AF006E287F /* UIImage+HLImageAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		847D62B41D8499AF006E287F /* UIImage+HLImageAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 847D627C1D8499AF006E287F /* UIImage+HLImageAdditions.m */; };
+		CB09AA4822B299A000211941 /* SKTexture+ShaderAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = CB09AA4622B299A000211941 /* SKTexture+ShaderAdditions.h */; };
+		CB09AA4922B299A000211941 /* SKTexture+ShaderAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = CB09AA4722B299A000211941 /* SKTexture+ShaderAdditions.m */; };
 		CB21A89920225F5B00E51FB8 /* HLStackLayoutManager.h in Headers */ = {isa = PBXBuildFile; fileRef = CB21A89720225F5B00E51FB8 /* HLStackLayoutManager.h */; };
 		CB21A89A20225F5B00E51FB8 /* HLStackLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = CB21A89820225F5B00E51FB8 /* HLStackLayoutManager.m */; };
 		CB5BA9E020D8540600F4389A /* HLParallaxLayoutManager.h in Headers */ = {isa = PBXBuildFile; fileRef = CB5BA9DE20D8540500F4389A /* HLParallaxLayoutManager.h */; };
@@ -143,6 +145,8 @@
 		847D627A1D8499AF006E287F /* SKNode+HLNodeVisuals.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SKNode+HLNodeVisuals.m"; sourceTree = "<group>"; };
 		847D627B1D8499AF006E287F /* UIImage+HLImageAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+HLImageAdditions.h"; sourceTree = "<group>"; };
 		847D627C1D8499AF006E287F /* UIImage+HLImageAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+HLImageAdditions.m"; sourceTree = "<group>"; };
+		CB09AA4622B299A000211941 /* SKTexture+ShaderAdditions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SKTexture+ShaderAdditions.h"; sourceTree = "<group>"; };
+		CB09AA4722B299A000211941 /* SKTexture+ShaderAdditions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "SKTexture+ShaderAdditions.m"; sourceTree = "<group>"; };
 		CB21A89720225F5B00E51FB8 /* HLStackLayoutManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLStackLayoutManager.h; sourceTree = "<group>"; };
 		CB21A89820225F5B00E51FB8 /* HLStackLayoutManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLStackLayoutManager.m; sourceTree = "<group>"; };
 		CB5BA9DE20D8540500F4389A /* HLParallaxLayoutManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLParallaxLayoutManager.h; sourceTree = "<group>"; };
@@ -228,6 +232,7 @@
 				847D62751D8499AF006E287F /* SKNode+HLGestureTarget.h */,
 				847D62771D8499AF006E287F /* SKNode+HLLayoutManager.h */,
 				847D62791D8499AF006E287F /* SKNode+HLNodeVisuals.h */,
+				CB09AA4622B299A000211941 /* SKTexture+ShaderAdditions.h */,
 				847D627B1D8499AF006E287F /* UIImage+HLImageAdditions.h */,
 				CB9E8CCC1E23FFC700F410B0 /* HLAction.m */,
 				847D62481D8499AF006E287F /* HLComponentNode.m */,
@@ -263,6 +268,7 @@
 				847D62761D8499AF006E287F /* SKNode+HLGestureTarget.m */,
 				847D62781D8499AF006E287F /* SKNode+HLLayoutManager.m */,
 				847D627A1D8499AF006E287F /* SKNode+HLNodeVisuals.m */,
+				CB09AA4722B299A000211941 /* SKTexture+ShaderAdditions.m */,
 				847D627C1D8499AF006E287F /* UIImage+HLImageAdditions.m */,
 			);
 			path = HLSpriteKit;
@@ -311,6 +317,7 @@
 				847D628E1D8499AF006E287F /* HLLabelButtonNode.h in Headers */,
 				847D62901D8499AF006E287F /* HLLayoutManager.h in Headers */,
 				CBB010942118E45800DC7431 /* HLIconNode.h in Headers */,
+				CB09AA4822B299A000211941 /* SKTexture+ShaderAdditions.h in Headers */,
 				847D629C1D8499AF006E287F /* HLRingLayoutManager.h in Headers */,
 				CB9E8CD11E23FFC700F410B0 /* SKNode+HLAction.h in Headers */,
 			);
@@ -403,6 +410,7 @@
 				847D62911D8499AF006E287F /* HLLayoutManager.m in Sources */,
 				847D62B21D8499AF006E287F /* SKNode+HLNodeVisuals.m in Sources */,
 				CBF9D2BE1DAD3450008F9C92 /* HLGridLayoutManager.m in Sources */,
+				CB09AA4922B299A000211941 /* SKTexture+ShaderAdditions.m in Sources */,
 				847D628D1D8499AF006E287F /* HLItemsNode.m in Sources */,
 				84662B481DA33093006B1812 /* NSGestureRecognizer+MultipleActions.m in Sources */,
 				847D62931D8499AF006E287F /* HLMath.m in Sources */,
