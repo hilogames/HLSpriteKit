@@ -99,7 +99,7 @@ static const NSUInteger HLUglyShufflerLfsrFeedbackTerms[16] = { 0x0, 0x3, 0x6, 0
 
  - Take the output from an an appropriately-sized LFSR using S.  (Remember again the
    LFSR's range is 1 less than the full range of the register it occupies.)  Same three
-   problems as listed in Approach 2.
+   problems as listed in Approach 1.
 
  - XORing a certain output from the LFSR with an increasing S value is a kind of whacky
    increment or decrement to the output.  For instance:
@@ -172,8 +172,7 @@ static const NSUInteger HLUglyShufflerLfsrFeedbackTerms[16] = { 0x0, 0x3, 0x6, 0
  - Having bin skippers larger than bin-count/2 is like smaller ones going backwards.  When
    bin skippers are small (close to 0) or large (close to bin-count) then the ordered
    nature of the skipping becomes too obvious (whether ascending or descending).  So bin
-   skippers should be close to bin-count/2, with the second half sometimes mirroring the
-   first half.
+   skippers should be close to bin-count/2, with the second half mirroring the first half.
 
  - Having a few large bins is fine for distribution, but can cause lots of misses (in the
    last bin, which will be non-full depending on N).  When bin-count is 5, then for
