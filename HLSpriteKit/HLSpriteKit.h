@@ -9,6 +9,7 @@
 #import "HLAction.h"
 #import "HLComponentNode.h"
 #import "HLEmitterStore.h"
+#import "HLFunction.h"
 #import "HLGestureTarget.h"
 #import "HLGridNode.h"
 #import "HLGridLayoutManager.h"

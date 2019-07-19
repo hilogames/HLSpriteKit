@@ -19,6 +19,8 @@
 		CB33390A1D905A22008CAFE0 /* HLViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CB3339091D905A22008CAFE0 /* HLViewController.m */; };
 		CB3A8D701ECCE916006E7849 /* HLUglyShufflerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CB3A8D6F1ECCE916006E7849 /* HLUglyShufflerTests.m */; };
 		CB3A8D711ECCE916006E7849 /* HLUglyShufflerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CB3A8D6F1ECCE916006E7849 /* HLUglyShufflerTests.m */; };
+		CB4F6B4A22E22B08000C7AB9 /* HLFunctionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CB4F6B4922E22B08000C7AB9 /* HLFunctionTests.m */; };
+		CB4F6B4B22E22B08000C7AB9 /* HLFunctionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CB4F6B4922E22B08000C7AB9 /* HLFunctionTests.m */; };
 		CB526A07204705D30004E508 /* HLOutlineLayoutManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CB526A06204705D30004E508 /* HLOutlineLayoutManagerTests.m */; };
 		CB526A08204705D30004E508 /* HLOutlineLayoutManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CB526A06204705D30004E508 /* HLOutlineLayoutManagerTests.m */; };
 		CB8F54F020066FA400004DE0 /* HLAlignmentScene.m in Sources */ = {isa = PBXBuildFile; fileRef = CB8F54EF20066FA400004DE0 /* HLAlignmentScene.m */; };
@@ -87,6 +89,7 @@
 		CB3339091D905A22008CAFE0 /* HLViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HLViewController.m; sourceTree = "<group>"; };
 		CB33390E1D905A22008CAFE0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CB3A8D6F1ECCE916006E7849 /* HLUglyShufflerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HLUglyShufflerTests.m; path = "Shared-Tests/HLUglyShufflerTests.m"; sourceTree = "<group>"; };
+		CB4F6B4922E22B08000C7AB9 /* HLFunctionTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = HLFunctionTests.m; path = "Shared-Tests/HLFunctionTests.m"; sourceTree = "<group>"; };
 		CB526A06204705D30004E508 /* HLOutlineLayoutManagerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = HLOutlineLayoutManagerTests.m; path = "Shared-Tests/HLOutlineLayoutManagerTests.m"; sourceTree = "<group>"; };
 		CB8F54EE20066FA400004DE0 /* HLAlignmentScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HLAlignmentScene.h; sourceTree = "<group>"; };
 		CB8F54EF20066FA400004DE0 /* HLAlignmentScene.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HLAlignmentScene.m; sourceTree = "<group>"; };
@@ -264,6 +267,7 @@
 			isa = PBXGroup;
 			children = (
 				CB0796141E5753E40097FFF2 /* HLActionTests.m */,
+				CB4F6B4922E22B08000C7AB9 /* HLFunctionTests.m */,
 				CB0F78F11F167A3B00C428A9 /* HLGridLayoutManagerTests.m */,
 				CBCC55F31F8D61C600FDC8F5 /* HLLayoutManagerTests.m */,
 				CBBD5FD51D9062710047D9F7 /* HLMathTests.m */,
@@ -565,6 +569,7 @@
 				CB3A8D701ECCE916006E7849 /* HLUglyShufflerTests.m in Sources */,
 				CB0796151E5753E40097FFF2 /* HLActionTests.m in Sources */,
 				CBBD5FD91D9062710047D9F7 /* HLMathTests.m in Sources */,
+				CB4F6B4A22E22B08000C7AB9 /* HLFunctionTests.m in Sources */,
 				CBB4C403202FF4D00071A161 /* HLStackLayoutManagerTests.m in Sources */,
 				CBBD5FDF1D9062720047D9F7 /* HLTableLayoutManagerTests.m in Sources */,
 			);
@@ -582,6 +587,7 @@
 				CB3A8D711ECCE916006E7849 /* HLUglyShufflerTests.m in Sources */,
 				CB0796161E5753E40097FFF2 /* HLActionTests.m in Sources */,
 				CBBD5FDA1D9062710047D9F7 /* HLMathTests.m in Sources */,
+				CB4F6B4B22E22B08000C7AB9 /* HLFunctionTests.m in Sources */,
 				CBB4C404202FF4D00071A161 /* HLStackLayoutManagerTests.m in Sources */,
 				CBBD5FE01D9062720047D9F7 /* HLTableLayoutManagerTests.m in Sources */,
 			);

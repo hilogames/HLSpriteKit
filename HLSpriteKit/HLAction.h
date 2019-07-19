@@ -1,6 +1,6 @@
 //
 //  HLAction.h
-//  Gargoyles
+//  HLSpriteKit
 //
 //  Created by Karl Voskuil on 12/22/16.
 //  Copyright © 2016 Hilo Games. All rights reserved.
