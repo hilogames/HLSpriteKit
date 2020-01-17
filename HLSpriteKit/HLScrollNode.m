@@ -1149,18 +1149,20 @@ enum {
   }
   _contentNode.position = endContentPosition;
 
-  // note: It would make sense to use SpriteKit-type event queueing, but all the SKAction
-  // instantiation stuff seems a bit intense for such a quick simple callback.  Use
-  // NSObject performSelector for now.  (If we do go back to using SKAction, note that in
-  // iOS11, SKAction performSelector retains the target only weakly, which is what we
-  // want, but should use SKAction runBlock so that we can be explicit about the weak
-  // pointer (in all iOS).
-  //__weak HLScrollNode *selfWeak = self;
-  //[self runAction:[SKAction sequence:@[ [SKAction waitForDuration:HLScrollInertialTickSeconds],
-  //                                      [SKAction runBlock:^{
-  //  [selfWeak HL_scrollInertialUpdate];
-  //}] ]]];
-  [self performSelector:@selector(HL_scrollInertialUpdate) withObject:nil afterDelay:HLScrollInertialTickSeconds];
+  // note: The callback should not create a retain cycle; should not mess with things or
+  // crash if the scene is unpresented (by another caller); and should call back at an
+  // appropriate time in the SpriteKit runloop.  In short, using SpriteKit mechanisms
+  // are safest, and SKAction runBlock allows us to be explicit about weak or strong
+  // references to self.
+  static SKAction *scrollInertialUpdateAction = nil;
+  if (!scrollInertialUpdateAction) {
+    __weak HLScrollNode *selfWeak = self;
+    scrollInertialUpdateAction = [SKAction sequence:@[ [SKAction waitForDuration:HLScrollInertialTickSeconds],
+                                                       [SKAction runBlock:^{
+      [selfWeak HL_scrollInertialUpdate];
+    }] ]];
+  }
+  [self runAction:scrollInertialUpdateAction];
 }
 
 - (void)HL_zoomBegin:(CGPoint)centerNodeLocation
