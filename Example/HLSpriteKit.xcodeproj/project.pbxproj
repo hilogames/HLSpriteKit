@@ -25,6 +25,7 @@
 		CB526A08204705D30004E508 /* HLOutlineLayoutManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CB526A06204705D30004E508 /* HLOutlineLayoutManagerTests.m */; };
 		CB8F54F020066FA400004DE0 /* HLAlignmentScene.m in Sources */ = {isa = PBXBuildFile; fileRef = CB8F54EF20066FA400004DE0 /* HLAlignmentScene.m */; };
 		CB8F54F120066FA400004DE0 /* HLAlignmentScene.m in Sources */ = {isa = PBXBuildFile; fileRef = CB8F54EF20066FA400004DE0 /* HLAlignmentScene.m */; };
+		CB946880243E524100D5B0C6 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CB94687F243E524100D5B0C6 /* Launch Screen.storyboard */; };
 		CBB4C403202FF4D00071A161 /* HLStackLayoutManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB4C402202FF4D00071A161 /* HLStackLayoutManagerTests.m */; };
 		CBB4C404202FF4D00071A161 /* HLStackLayoutManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB4C402202FF4D00071A161 /* HLStackLayoutManagerTests.m */; };
 		CBBD5FC01D905F240047D9F7 /* HLAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CBBD5FBD1D905F240047D9F7 /* HLAppDelegate.m */; };
@@ -93,6 +94,7 @@
 		CB526A06204705D30004E508 /* HLOutlineLayoutManagerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = HLOutlineLayoutManagerTests.m; path = "Shared-Tests/HLOutlineLayoutManagerTests.m"; sourceTree = "<group>"; };
 		CB8F54EE20066FA400004DE0 /* HLAlignmentScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HLAlignmentScene.h; sourceTree = "<group>"; };
 		CB8F54EF20066FA400004DE0 /* HLAlignmentScene.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HLAlignmentScene.m; sourceTree = "<group>"; };
+		CB94687F243E524100D5B0C6 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		CBB4C402202FF4D00071A161 /* HLStackLayoutManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HLStackLayoutManagerTests.m; path = "Shared-Tests/HLStackLayoutManagerTests.m"; sourceTree = "<group>"; };
 		CBBD5F981D905B180047D9F7 /* iOS-Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "iOS-Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CBBD5F9C1D905B180047D9F7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -209,8 +211,9 @@
 				CBBD5FBD1D905F240047D9F7 /* HLAppDelegate.m */,
 				CBBD5FBE1D905F240047D9F7 /* HLViewController.h */,
 				CBBD5FBF1D905F240047D9F7 /* HLViewController.m */,
-				CB3338FB1D905A22008CAFE0 /* Info.plist */,
 				CBBD5FCA1D9060270047D9F7 /* Images.xcassets */,
+				CB3338FB1D905A22008CAFE0 /* Info.plist */,
+				CB94687F243E524100D5B0C6 /* Launch Screen.storyboard */,
 				CB3338EC1D905A22008CAFE0 /* Supporting Files */,
 			);
 			path = iOS;
@@ -428,6 +431,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CB946880243E524100D5B0C6 /* Launch Screen.storyboard in Resources */,
 				CBBD5FCB1D9060270047D9F7 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -730,7 +734,6 @@
 			baseConfigurationReference = 2AF457F2207FD43A3E9EC59A /* Pods-iOS.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-iOS";
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-iOS";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = iOS/Info.plist;
@@ -748,7 +751,6 @@
 			baseConfigurationReference = D9FE9069A265CEE0EEF6DDDF /* Pods-iOS.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-iOS";
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-iOS";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = iOS/Info.plist;

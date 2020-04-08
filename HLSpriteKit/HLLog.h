@@ -29,32 +29,4 @@ typedef NS_ENUM(NSInteger, HLLogLevel) {
 /**
  Writes a log message with an associated level.
 */
-static inline void
-HLLog(HLLogLevel level, NSString *format, ...)
-{
-  // note: This is a placeholder for a better logging mechanism, e.g. CocoaLumberjack.
-
-#if DEBUG
-
-  va_list args;
-  va_start(args, format);
-  NSString *message = [[NSString alloc] initWithFormat:format arguments:args];
-  va_end(args);
-
-  NSString *levelLabel;
-  switch (level) {
-    case HLLogInfo:
-      levelLabel = @"INFO";
-      break;
-    case HLLogWarning:
-      levelLabel = @"WARNING";
-      break;
-    case HLLogError:
-      levelLabel = @"ERROR";
-      break;
-  }
-
-  NSLog(@"%@: %@", levelLabel, message);
-
-#endif
-}
+void HLLog(HLLogLevel level, NSString *format, ...) NS_FORMAT_FUNCTION(2, 3);

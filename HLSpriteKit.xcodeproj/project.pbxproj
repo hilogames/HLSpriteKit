@@ -15,7 +15,6 @@
 		847D62801D8499AF006E287F /* HLComponentNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 847D62481D8499AF006E287F /* HLComponentNode.m */; };
 		847D62811D8499AF006E287F /* HLEmitterStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 847D62491D8499AF006E287F /* HLEmitterStore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		847D62821D8499AF006E287F /* HLEmitterStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 847D624A1D8499AF006E287F /* HLEmitterStore.m */; };
-		847D62831D8499AF006E287F /* HLError.h in Headers */ = {isa = PBXBuildFile; fileRef = 847D624B1D8499AF006E287F /* HLError.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		847D62841D8499AF006E287F /* HLGestureTarget.h in Headers */ = {isa = PBXBuildFile; fileRef = 847D624C1D8499AF006E287F /* HLGestureTarget.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		847D62851D8499AF006E287F /* HLGestureTarget.m in Sources */ = {isa = PBXBuildFile; fileRef = 847D624D1D8499AF006E287F /* HLGestureTarget.m */; };
 		847D62861D8499AF006E287F /* HLGridNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 847D624E1D8499AF006E287F /* HLGridNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -76,6 +75,7 @@
 		CB8D943F1F881A2E00CAFA17 /* HLLog.h in Headers */ = {isa = PBXBuildFile; fileRef = CB8D943C1F881A2D00CAFA17 /* HLLog.h */; };
 		CB8D94401F881A2E00CAFA17 /* HLUglyShuffler.h in Headers */ = {isa = PBXBuildFile; fileRef = CB8D943D1F881A2E00CAFA17 /* HLUglyShuffler.h */; };
 		CB8D94411F881A2E00CAFA17 /* HLUglyShuffler.m in Sources */ = {isa = PBXBuildFile; fileRef = CB8D943E1F881A2E00CAFA17 /* HLUglyShuffler.m */; };
+		CB946882243E53D300D5B0C6 /* HLLog.m in Sources */ = {isa = PBXBuildFile; fileRef = CB946881243E53D200D5B0C6 /* HLLog.m */; };
 		CB9E8CCF1E23FFC700F410B0 /* HLAction.h in Headers */ = {isa = PBXBuildFile; fileRef = CB9E8CCB1E23FFC700F410B0 /* HLAction.h */; };
 		CB9E8CD01E23FFC700F410B0 /* HLAction.m in Sources */ = {isa = PBXBuildFile; fileRef = CB9E8CCC1E23FFC700F410B0 /* HLAction.m */; };
 		CB9E8CD11E23FFC700F410B0 /* SKNode+HLAction.h in Headers */ = {isa = PBXBuildFile; fileRef = CB9E8CCD1E23FFC700F410B0 /* SKNode+HLAction.h */; };
@@ -97,7 +97,6 @@
 		847D62481D8499AF006E287F /* HLComponentNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLComponentNode.m; sourceTree = "<group>"; };
 		847D62491D8499AF006E287F /* HLEmitterStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLEmitterStore.h; sourceTree = "<group>"; };
 		847D624A1D8499AF006E287F /* HLEmitterStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLEmitterStore.m; sourceTree = "<group>"; };
-		847D624B1D8499AF006E287F /* HLError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLError.h; sourceTree = "<group>"; };
 		847D624C1D8499AF006E287F /* HLGestureTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLGestureTarget.h; sourceTree = "<group>"; };
 		847D624D1D8499AF006E287F /* HLGestureTarget.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLGestureTarget.m; sourceTree = "<group>"; };
 		847D624E1D8499AF006E287F /* HLGridNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLGridNode.h; sourceTree = "<group>"; };
@@ -158,6 +157,7 @@
 		CB8D943C1F881A2D00CAFA17 /* HLLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLLog.h; sourceTree = "<group>"; };
 		CB8D943D1F881A2E00CAFA17 /* HLUglyShuffler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLUglyShuffler.h; sourceTree = "<group>"; };
 		CB8D943E1F881A2E00CAFA17 /* HLUglyShuffler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLUglyShuffler.m; sourceTree = "<group>"; };
+		CB946881243E53D200D5B0C6 /* HLLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLLog.m; sourceTree = "<group>"; };
 		CB9E8CCB1E23FFC700F410B0 /* HLAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLAction.h; sourceTree = "<group>"; };
 		CB9E8CCC1E23FFC700F410B0 /* HLAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLAction.m; sourceTree = "<group>"; };
 		CB9E8CCD1E23FFC700F410B0 /* SKNode+HLAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SKNode+HLAction.h"; sourceTree = "<group>"; };
@@ -205,7 +205,6 @@
 				847D62481D8499AF006E287F /* HLComponentNode.m */,
 				847D62491D8499AF006E287F /* HLEmitterStore.h */,
 				847D624A1D8499AF006E287F /* HLEmitterStore.m */,
-				847D624B1D8499AF006E287F /* HLError.h */,
 				CB4F6B4522E22A86000C7AB9 /* HLFunction.h */,
 				CB4F6B4622E22A86000C7AB9 /* HLFunction.m */,
 				847D624C1D8499AF006E287F /* HLGestureTarget.h */,
@@ -229,6 +228,7 @@
 				847D62581D8499AF006E287F /* HLLayoutManager.h */,
 				847D62591D8499AF006E287F /* HLLayoutManager.m */,
 				CB8D943C1F881A2D00CAFA17 /* HLLog.h */,
+				CB946881243E53D200D5B0C6 /* HLLog.m */,
 				847D625A1D8499AF006E287F /* HLMath.h */,
 				847D625B1D8499AF006E287F /* HLMath.m */,
 				847D625C1D8499AF006E287F /* HLMenuNode.h */,
@@ -305,7 +305,6 @@
 				847D62921D8499AF006E287F /* HLMath.h in Headers */,
 				847D62A21D8499AF006E287F /* HLScrollNode.h in Headers */,
 				847D628A1D8499AF006E287F /* HLItemNode.h in Headers */,
-				847D62831D8499AF006E287F /* HLError.h in Headers */,
 				847D62A51D8499AF006E287F /* HLTableLayoutManager.h in Headers */,
 				CB9E8CCF1E23FFC700F410B0 /* HLAction.h in Headers */,
 				847D62881D8499AF006E287F /* HLItemContentNode.h in Headers */,
@@ -411,6 +410,7 @@
 				847D62AA1D8499AF006E287F /* HLToolbarNode.m in Sources */,
 				847D62A81D8499AF006E287F /* HLTiledNode.m in Sources */,
 				847D62851D8499AF006E287F /* HLGestureTarget.m in Sources */,
+				CB946882243E53D300D5B0C6 /* HLLog.m in Sources */,
 				847D628F1D8499AF006E287F /* HLLabelButtonNode.m in Sources */,
 				847D62A11D8499AF006E287F /* HLScene.m in Sources */,
 				847D62801D8499AF006E287F /* HLComponentNode.m in Sources */,

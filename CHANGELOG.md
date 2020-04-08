@@ -12,6 +12,9 @@
   used.  If this doesn't, let me know!  
   [Karl Voskuil](https://github.com/karlvoskuil)
 
+- Removed the previously-deprecated `HLError`.  
+  [Karl Voskuil](https://github.com/karlvoskuil)
+
 ### Added
 
 - New methods to `SKLabelNode` category to reduce font size or
