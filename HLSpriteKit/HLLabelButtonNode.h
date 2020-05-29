@@ -170,7 +170,7 @@
 /**
  An alpha for the background node (not the label).
 
- Both background and label are affeted by the label button node's `alpha` value.
+ Both background and label are affected by the label button node's `alpha` value.
 */
 @property (nonatomic, assign) CGFloat backgroundAlpha;
 

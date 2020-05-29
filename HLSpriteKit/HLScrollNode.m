@@ -24,6 +24,7 @@ enum {
   CGPoint _scrollInertialVelocityPointsPerSecond;
   CGPoint _scrollInertialNodeLocationSample;
   CFTimeInterval _scrollInertialTimeSample;
+  SKAction *_scrollInertialUpdateAction;
   CGPoint _zoomPinContentLocation;
   CGPoint _zoomPinNodeLocation;
   CGFloat _zoomOriginalContentScale;
@@ -1154,15 +1155,14 @@ enum {
   // appropriate time in the SpriteKit runloop.  In short, using SpriteKit mechanisms
   // are safest, and SKAction runBlock allows us to be explicit about weak or strong
   // references to self.
-  static SKAction *scrollInertialUpdateAction = nil;
-  if (!scrollInertialUpdateAction) {
+  if (!_scrollInertialUpdateAction) {
     __weak HLScrollNode *selfWeak = self;
-    scrollInertialUpdateAction = [SKAction sequence:@[ [SKAction waitForDuration:HLScrollInertialTickSeconds],
-                                                       [SKAction runBlock:^{
+    _scrollInertialUpdateAction = [SKAction sequence:@[ [SKAction waitForDuration:HLScrollInertialTickSeconds],
+                                                        [SKAction runBlock:^{
       [selfWeak HL_scrollInertialUpdate];
     }] ]];
   }
-  [self runAction:scrollInertialUpdateAction];
+  [self runAction:_scrollInertialUpdateAction];
 }
 
 - (void)HL_zoomBegin:(CGPoint)centerNodeLocation

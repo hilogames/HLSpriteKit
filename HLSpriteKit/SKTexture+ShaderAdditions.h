@@ -10,6 +10,11 @@
 
 @interface SKTexture (ShaderAdditions)
 
+// note: Need iOS9 for vector types.  This conditional compilation, though, is
+// problematic.  It's common to include these definitions in a main target that has its
+// deployment target set higher than iOS9, but then fail to link (at runtime) because this
+// module compiles with a deployment target set lower than iOS9.  To fix the linking
+// error, set the HLSpriteKit deployment target to 9.0 or higher.
 #if __IPHONE_OS_VERSION_MIN_REQUIRED >= 90000
 
 /**
