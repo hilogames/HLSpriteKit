@@ -10,6 +10,33 @@
 
 static NSString * const HLGestureTargetUserDataKey = @"HLGestureTarget";
 
+@interface HLWeakGestureTarget : NSObject <NSCoding>
+- (instancetype)initWithWeakGestureTarget:(id <HLGestureTarget>)weakGestureTarget;
+@property (nonatomic, weak) id <HLGestureTarget> weakGestureTarget;
+@end
+@implementation HLWeakGestureTarget
+- (instancetype)initWithWeakGestureTarget:(id<HLGestureTarget>)weakGestureTarget
+{
+  self = [super init];
+  if (self) {
+    _weakGestureTarget = weakGestureTarget;
+  }
+  return self;
+}
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+  self = [super init];
+  if (self) {
+    _weakGestureTarget = [aDecoder decodeObjectForKey:@"weakGestureTarget"];
+  }
+  return self;
+}
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+  [aCoder encodeConditionalObject:_weakGestureTarget];
+}
+@end
+
 @implementation SKNode (HLGestureTarget)
 
 - (id <HLGestureTarget>)hlGestureTarget
@@ -39,6 +66,8 @@ static NSString * const HLGestureTargetUserDataKey = @"HLGestureTarget";
     //   comparison will be sufficient for the test.  [NSNull null] singleton works for
     //   this; easier than writing our own.
     return (id <HLGestureTarget>)self;
+  } else if ([value isKindOfClass:[HLWeakGestureTarget class]]) {
+    return ((HLWeakGestureTarget *)value).weakGestureTarget;
   } else {
     return (id <HLGestureTarget>)value;
   }
@@ -59,6 +88,25 @@ static NSString * const HLGestureTargetUserDataKey = @"HLGestureTarget";
       self.userData[HLGestureTargetUserDataKey] = [NSNull null];
     } else {
       self.userData[HLGestureTargetUserDataKey] = gestureTarget;
+    }
+  }
+}
+
+- (void)hlSetWeakGestureTarget:(id<HLGestureTarget>)weakGestureTarget
+{
+  if (!weakGestureTarget) {
+    NSMutableDictionary *userData = self.userData;
+    if (userData) {
+      [userData removeObjectForKey:HLGestureTargetUserDataKey];
+    }
+  } else {
+    if (!self.userData) {
+      self.userData = [NSMutableDictionary dictionary];
+    }
+    if ((id)weakGestureTarget == self) {
+      self.userData[HLGestureTargetUserDataKey] = [NSNull null];
+    } else {
+      self.userData[HLGestureTargetUserDataKey] = [[HLWeakGestureTarget alloc] initWithWeakGestureTarget:weakGestureTarget];
     }
   }
 }
