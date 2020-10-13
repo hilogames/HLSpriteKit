@@ -90,6 +90,14 @@
  . `HLTableLayoutManager` can optionally return from the `layout` method certain derived
    last-layout properties (namely, column widths and row heights).
 
+ . `HLRingLayoutManager` could do any of the above to return calculated thetas from last-
+   layout.  Really, it's a trivial calculation, and depends only on the thetas mode and
+   the number of nodes laid out.  Could retain last _nodeCount and recalculate thetas
+   on-demand after layout.  Could provide static class methods or global helpers which
+   return hypothetical thetas given a certain node count.  Could return thetas from a
+   a `layout` method.  Going with the last for now, but really, any of the above would
+   work.
+
  Here are further thoughts about these kinds of last-layout state:
 
  . Keeping small last-layout state on the layout manager itself makes good sense in the

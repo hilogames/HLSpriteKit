@@ -165,6 +165,18 @@ typedef NS_ENUM(NSInteger, HLRingLayoutManagerThetasMode) {
 
 - (void)layout:(NSArray *)nodes
 {
+  [self GL_layout:nodes getThetas:nil];
+}
+
+- (void)layout:(NSArray *)nodes getThetas:(NSArray *__strong *)thetas
+{
+  NSMutableArray *mutableThetas = [NSMutableArray array];
+  [self GL_layout:nodes getThetas:&mutableThetas];
+  *thetas = mutableThetas;
+}
+
+- (void)GL_layout:(NSArray *)nodes getThetas:(NSMutableArray *__strong *)thetas
+{
   NSUInteger radiiCount = [_radii count];
   if (radiiCount == 0) {
     return;
@@ -221,6 +233,9 @@ typedef NS_ENUM(NSInteger, HLRingLayoutManagerThetasMode) {
 
     node.position = CGPointMake(_ringPosition.x + radius * (CGFloat)cos(theta),
                                 _ringPosition.y + radius * (CGFloat)sin(theta));
+    if (thetas) {
+      [*thetas addObject:@(theta)];
+    }
 
     if (_thetasMode != HLRingLayoutManagerThetasAssigned) {
       theta += thetaIncrement;
