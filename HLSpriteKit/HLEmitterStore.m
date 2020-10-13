@@ -56,10 +56,50 @@
 
 - (SKEmitterNode *)setEmitterWithResource:(NSString *)name forKey:(NSString *)key
 {
-  SKEmitterNode *emitter = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:name ofType:@"sks"]];
+  SKEmitterNode *emitter = nil;
+#if TARGET_OS_IPHONE
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 120000
+  NSError *error = nil;
+  NSData *emitterData = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:name ofType:@"sks"]];
+  emitter = [NSKeyedUnarchiver unarchivedObjectOfClass:[SKEmitterNode class] fromData:emitterData error:&error];
   if (!emitter) {
-    [NSException raise:@"HLEmitterStoreEmitterNotFound" format:@"Could not find emitter in bundle with name '%@' and type 'sks'.", name];
+    [NSException raise:@"HLEmitterStoreEmitterNotFound" format:@"Could not find emitter in bundle with name '%@' and type 'sks': %@", name, error];
   }
+#else
+  if (@available(iOS 11.0, *)) {
+    NSError *error = nil;
+    NSData *emitterData = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:name ofType:@"sks"]];
+    emitter = [NSKeyedUnarchiver unarchivedObjectOfClass:[SKEmitterNode class] fromData:emitterData error:&error];
+    if (!emitter) {
+      [NSException raise:@"HLEmitterStoreEmitterNotFound" format:@"Could not find emitter in bundle with name '%@' and type 'sks': %@", name, error];
+    }
+  } else {
+    emitter = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:name ofType:@"sks"]];
+    if (!emitter) {
+      [NSException raise:@"HLEmitterStoreEmitterNotFound" format:@"Could not find emitter in bundle with name '%@' and type 'sks'.", name];
+    }
+  }
+#endif
+
+#else
+
+  if (@available(macOS 10.13, *)) {
+    NSError *error = nil;
+    NSData *emitterData = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:name ofType:@"sks"]];
+    emitter = [NSKeyedUnarchiver unarchivedObjectOfClass:[SKEmitterNode class] fromData:emitterData error:&error];
+    if (!emitter) {
+      [NSException raise:@"HLEmitterStoreEmitterNotFound" format:@"Could not find emitter in bundle with name '%@' and type 'sks': %@", name, error];
+    }
+  } else {
+    emitter = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:name ofType:@"sks"]];
+    if (!emitter) {
+      [NSException raise:@"HLEmitterStoreEmitterNotFound" format:@"Could not find emitter in bundle with name '%@' and type 'sks'.", name];
+    }
+  }
+
+#endif
+
   _emitters[key] = emitter;
   return emitter;
 }
