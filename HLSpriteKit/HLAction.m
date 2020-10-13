@@ -550,6 +550,16 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
   return [[HLMoveToAction alloc] initWithOrigin:origin destination:destination duration:duration];
 }
 
++ (HLChaseAction *)chaseDestinationWeakTarget:(id)destinationWeakTarget selector:(SEL)destinationSelector duration:(NSTimeInterval)duration
+{
+  return [[HLChaseAction alloc] initWithDestinationWeakTarget:destinationWeakTarget selector:destinationSelector duration:duration];
+}
+
++ (HLChaseAction *)chaseFrom:(CGPoint)origin toDestinationWeakTarget:(id)destinationWeakTarget selector:(SEL)destinationSelector duration:(NSTimeInterval)duration
+{
+  return [[HLChaseAction alloc] initWithOrigin:origin destinationWeakTarget:destinationWeakTarget selector:destinationSelector duration:duration];
+}
+
 + (HLChangeZPositionByAction *)changeZPositionBy:(CGFloat)zPositionDelta duration:(NSTimeInterval)duration
 {
   return [[HLChangeZPositionByAction alloc] initWithZPosition:zPositionDelta duration:duration];
@@ -1335,13 +1345,14 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
   }
 #endif
 
-  // note: This mechanism chosen in order to avoid floating point drift (in the sum of instantaneous deltas
-  // applied to the node or returned by the property) and to support calculation of property .instantaneousDelta.
+  // note: This mechanism chosen in order to avoid floating point drift (in the sum of
+  // instantaneous deltas applied to the node or returned by the property) and to support
+  // calculation of property .instantaneousDelta.
 
   CGPoint lastInstantaneousDelta = [self HL_instantaneousDelta];
-  // note: Always calculate the cumulative by adding the instantaneous, so that we can compensate for the difference
-  // between "elapsed delta" (normal-elapsed-time * total-delta) and "cumulative delta" (sum of a series of
-  // instantaneous-delta).
+  // note: Always calculate the cumulative by adding the instantaneous, so that we can
+  // compensate for the difference between "elapsed delta" (normal-elapsed-time *
+  // total-delta) and "cumulative delta" (sum of a series of instantaneous-delta).
   _lastCumulativeDeltaX += lastInstantaneousDelta.x;
   _lastCumulativeDeltaY += lastInstantaneousDelta.y;
 
@@ -1530,6 +1541,168 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
   position.y = _origin.y * (1.0f - normalTime) + _destination.y * normalTime;
 
   return position;
+}
+
+@end
+
+@implementation HLChaseAction
+{
+  BOOL _isOriginSet;
+  __weak id _destinationWeakTarget;
+  SEL _destinationSelector;
+  CGPoint _lastPosition;
+}
+
+- (instancetype)initWithDestinationWeakTarget:(id)destinationWeakTarget selector:(SEL)destinationSelector duration:(NSTimeInterval)duration
+{
+  self = [super initWithDuration:duration];
+  if (self) {
+    _isOriginSet = NO;
+    _destinationWeakTarget = destinationWeakTarget;
+    _destinationSelector = destinationSelector;
+  }
+  return self;
+}
+
+- (instancetype)initWithOrigin:(CGPoint)origin destinationWeakTarget:(id)destinationWeakTarget selector:(SEL)destinationSelector duration:(NSTimeInterval)duration
+{
+  self = [super initWithDuration:duration];
+  if (self) {
+    _isOriginSet = YES;
+    _destinationWeakTarget = destinationWeakTarget;
+    _destinationSelector = destinationSelector;
+    _lastPosition = origin;
+  }
+  return self;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+  self = [super initWithCoder:aDecoder];
+  if (self) {
+    _isOriginSet = [aDecoder decodeBoolForKey:@"isOriginSet"];
+    _destinationWeakTarget = [aDecoder decodeObjectForKey:@"destinationWeakTarget"];
+    _destinationSelector = NSSelectorFromString([aDecoder decodeObjectForKey:@"destinationSelector"]);
+#if TARGET_OS_IPHONE
+    _lastPosition = [aDecoder decodeCGPointForKey:@"lastPosition"];
+#else
+    _lastPosition = [aDecoder decodePointForKey:@"lastPosition"];
+#endif
+  }
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+  [super encodeWithCoder:aCoder];
+  [aCoder encodeBool:_isOriginSet forKey:@"isOriginSet"];
+  [aCoder encodeConditionalObject:_destinationWeakTarget forKey:@"destinationWeakTarget"];
+  [aCoder encodeObject:NSStringFromSelector(_destinationSelector) forKey:@"destinationSelector"];
+#if TARGET_OS_IPHONE
+  [aCoder encodeCGPoint:_lastPosition forKey:@"lastPosition"];
+#else
+  [aCoder encodePoint:_lastPosition forKey:@"lastPosition"];
+#endif
+}
+
+- (instancetype)copyWithZone:(NSZone *)zone
+{
+  HLChaseAction *copy = [super copyWithZone:zone];
+  if (copy) {
+    copy->_isOriginSet = _isOriginSet;
+    copy->_destinationWeakTarget = _destinationWeakTarget;
+    copy->_destinationSelector = _destinationSelector;
+    copy->_lastPosition = _lastPosition;
+  }
+  return copy;
+}
+
+- (BOOL)HL_update:(NSTimeInterval)incrementalTime node:(SKNode *)node extraTime:(NSTimeInterval *)extraTime
+{
+#if DEBUG
+  if (self.completed) {
+    // note: Some actions rely on this precondition (that update is not called after
+    // returning NO) more than others.  Probably things will break, but maybe not.
+    HLLog(HLLogError, @"HLActions should not be updated after they have completed."
+          " (Note that SKActions are immutable and can be reused multiple times,"
+          " but HLActions are stateful and can only be used once.)");
+  }
+#endif
+
+  // note: We chase the (changeable) destination using the last-set position of the
+  // action.  This ignores the current position of the node, which of course is
+  // appropriate since there might be no node.  But even if there is, it's worth noting
+  // that SKAction moveTo works the same way: The node position is moved along a straight
+  // line from origin to destination, even if halfway through the node's position is
+  // changed by some other process.
+
+  if (!_isOriginSet) {
+    if (node) {
+      _isOriginSet = YES;
+      _lastPosition = node.position;
+    } else {
+      [NSException raise:@"HLActionUninitialized" format:@"HLChaseAction requires an origin:"
+       " either pass a node to the first update,"
+       " or initialize with initWithOrigin:destinationWeakTarget:selector:duration:."];
+    }
+  }
+
+  NSTimeInterval elapsedTimeOld = self.elapsedTime;
+  BOOL notYetCompleted;
+  [self HL_advanceTime:incrementalTime extraTime:extraTime notYetCompleted:&notYetCompleted];
+
+  CGPoint destination = [self HL_destination];
+
+  if (!notYetCompleted) {
+    _lastPosition = destination;
+  } else {
+    NSTimeInterval elapsedTime = self.elapsedTime;
+    // note: "My frame" means adjusted for speed and timingMode.
+    NSTimeInterval incrementalTimeMyFrame = elapsedTime - elapsedTimeOld;
+    NSTimeInterval duration = self.duration;
+    NSTimeInterval remainingDuration = duration - elapsedTime;
+    // note: "Normal" to the remaining duration of the action.
+    NSTimeInterval normalIncrementalTimeMyFrame = incrementalTimeMyFrame / remainingDuration;
+    _lastPosition.x += (destination.x - _lastPosition.x) * normalIncrementalTimeMyFrame;
+    _lastPosition.y += (destination.y - _lastPosition.y) * normalIncrementalTimeMyFrame;
+  }
+
+  if (node) {
+    node.position = _lastPosition;
+  }
+
+#if DEBUG
+  if (!notYetCompleted) {
+    self.completed = YES;
+  }
+#endif
+  return notYetCompleted;
+}
+
+- (CGPoint)position
+{
+  if (!_isOriginSet) {
+    [NSException raise:@"HLActionUninitialized" format:@"HLChaseAction requires an origin:"
+     " either pass a node to the first update,"
+     " or initialize with initWithOrigin:destinationWeakTarget:selector:duration:."];
+  }
+  return _lastPosition;
+}
+
+- (CGPoint)destination
+{
+  return [self HL_destination];
+}
+
+- (CGPoint)HL_destination
+{
+  id target = _destinationWeakTarget;
+  if (!target) {
+    return CGPointZero;
+  }
+  IMP imp = [target methodForSelector:_destinationSelector];
+  CGPoint (*func)(id, SEL) = (CGPoint (*)(id, SEL))imp;
+  return func(target, _destinationSelector);
 }
 
 @end
@@ -1812,13 +1985,14 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
   }
 #endif
 
-  // note: This mechanism chosen in order to avoid floating point drift (in the sum of instantaneous deltas
-  // applied to the node or returned by the property) and to support calculation of property .instantaneousDelta.
+  // note: This mechanism chosen in order to avoid floating point drift (in the sum of
+  // instantaneous deltas applied to the node or returned by the property) and to support
+  // calculation of property .instantaneousDelta.
 
   CGFloat lastInstantaneousDelta = [self HL_instantaneousDelta];
-  // note: Always calculate the cumulative by adding the instantaneous, so that we can compensate for the difference
-  // between "elapsed delta" (normal-elapsed-time * total-delta) and "cumulative delta" (sum of a series of
-  // instantaneous-delta).
+  // note: Always calculate the cumulative by adding the instantaneous, so that we can
+  // compensate for the difference between "elapsed delta" (normal-elapsed-time *
+  // total-delta) and "cumulative delta" (sum of a series of instantaneous-delta).
   _lastCumulativeDelta += lastInstantaneousDelta;
 
   BOOL notYetCompleted;
@@ -2068,13 +2242,14 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
   }
 #endif
 
-  // note: This mechanism chosen in order to avoid floating point drift (in the sum of instantaneous deltas
-  // applied to the node or returned by the property) and to support calculation of property .instantaneousDelta.
+  // note: This mechanism chosen in order to avoid floating point drift (in the sum of
+  // instantaneous deltas applied to the node or returned by the property) and to support
+  // calculation of property .instantaneousDelta.
 
   CGFloat lastInstantaneousDelta = [self HL_instantaneousDelta];
-  // note: Always calculate the cumulative by adding the instantaneous, so that we can compensate for the difference
-  // between "elapsed delta" (normal-elapsed-time * total-delta) and "cumulative delta" (sum of a series of
-  // instantaneous-delta).
+  // note: Always calculate the cumulative by adding the instantaneous, so that we can
+  // compensate for the difference between "elapsed delta" (normal-elapsed-time *
+  // total-delta) and "cumulative delta" (sum of a series of instantaneous-delta).
   _lastCumulativeDelta += lastInstantaneousDelta;
 
   BOOL notYetCompleted;
@@ -2180,15 +2355,16 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
   }
 #endif
 
-  // note: This mechanism chosen in order to avoid floating point drift (in the sum of instantaneous deltas
-  // applied to the node or returned by the property) and to support calculation of property .instantaneousDelta*.
+  // note: This mechanism chosen in order to avoid floating point drift (in the sum of
+  // instantaneous deltas applied to the node or returned by the property) and to support
+  // calculation of property .instantaneousDelta*.
 
   CGFloat lastInstantaneousDeltaX;
   CGFloat lastInstantaneousDeltaY;
   [self HL_instantaneousDeltaX:&lastInstantaneousDeltaX instantaneousDeltaY:&lastInstantaneousDeltaY];
-  // note: Always calculate the cumulative by adding the instantaneous, so that we can compensate for the difference
-  // between "elapsed delta" (normal-elapsed-time * total-delta) and "cumulative delta" (sum of a series of
-  // instantaneous-delta).
+  // note: Always calculate the cumulative by adding the instantaneous, so that we can
+  // compensate for the difference between "elapsed delta" (normal-elapsed-time *
+  // total-delta) and "cumulative delta" (sum of a series of instantaneous-delta).
   _lastCumulativeDeltaX += lastInstantaneousDeltaX;
   _lastCumulativeDeltaY += lastInstantaneousDeltaY;
 
@@ -2468,13 +2644,14 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
   }
 #endif
 
-  // note: This mechanism chosen in order to avoid floating point drift (in the sum of instantaneous deltas
-  // applied to the node or returned by the property) and to support calculation of property .instantaneousDelta.
+  // note: This mechanism chosen in order to avoid floating point drift (in the sum of
+  // instantaneous deltas applied to the node or returned by the property) and to support
+  // calculation of property .instantaneousDelta.
 
   CGFloat lastInstantaneousDelta = [self HL_instantaneousDelta];
-  // note: Always calculate the cumulative by adding the instantaneous, so that we can compensate for the difference
-  // between "elapsed delta" (normal-elapsed-time * total-delta) and "cumulative delta" (sum of a series of
-  // instantaneous-delta).
+  // note: Always calculate the cumulative by adding the instantaneous, so that we can
+  // compensate for the difference between "elapsed delta" (normal-elapsed-time *
+  // total-delta) and "cumulative delta" (sum of a series of instantaneous-delta).
   _lastCumulativeDelta += lastInstantaneousDelta;
 
   BOOL notYetCompleted;

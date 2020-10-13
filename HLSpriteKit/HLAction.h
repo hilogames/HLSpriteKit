@@ -687,6 +687,57 @@ When complete, `elapsedTime` won't necessarily match the action's `duration`:
 @end
 
 /**
+ An action that moves from a fixed point to a changing point over a duration.
+*/
+@interface HLChaseAction : HLAction <NSCoding, NSCopying>
+
+/// @name Creating the Action
+
+/**
+ Creates a chase action.
+
+ When the action is first updated, it will set its origin based on the position of the
+ passed node.  For this reason, the node parameter passed to the first update must be
+ non-nil.  (To set the origin without a node, use
+ `initWithOrigin:destinationWeakTarget:selector:duration:`.)
+
+ @param destinationWeakTarget The target that will provide a destination, retained weakly
+                              in order to avoid retain cycles.  (One possible cycle, when
+                              the target is the parent of the child node running the
+                              action: The target retains the child node; the child node
+                              retains the action runner; the action runner retains the
+                              action; the action retains the target.)
+
+ @param destinationSelector The selector that will provide a destination.  It must take no
+                            parameters and return a `CGPoint`.
+
+ @param duration The duration of the action, in seconds.
+*/
+- (instancetype)initWithDestinationWeakTarget:(id)destinationWeakTarget selector:(SEL)destinationSelector duration:(NSTimeInterval)duration;
+
+/**
+ Creates a chase action with a designated origin.
+*/
+- (instancetype)initWithOrigin:(CGPoint)origin destinationWeakTarget:(id)destinationWeakTarget selector:(SEL)destinationSelector duration:(NSTimeInterval)duration;
+
+/// @name Accessing Action State
+
+/**
+ The current position of the chase action.
+
+ If a node was passed to the update method, it was updated with this position.
+ */
+@property (nonatomic, readonly) CGPoint position;
+
+/**
+ The current value returned by the destination-providing target and selector passed to
+ the initializer.
+*/
+@property (nonatomic, readonly) CGPoint destination;
+
+@end
+
+/**
  An action that tracks a relative change in z-position over a duration.
 */
 @interface HLChangeZPositionByAction : HLAction <NSCoding, NSCopying>
@@ -1656,6 +1707,17 @@ When complete, `elapsedTime` won't necessarily match the action's `duration`:
 //+ (HLMoveToXAction *)moveFromX:(CGFloat)xFrom to:(CGFloat)xTo duration:(NSTimeInterval)duration;
 //+ (HLMoveToYAction *)moveToY:(CGFloat)yTo duration:(NSTimeInterval)duration;
 //+ (HLMoveToYAction *)moveFromY:(CGFloat)yFrom to:(CGFloat)yTo duration:(NSTimeInterval)duration;
+
+/**
+ Creates an action that moves from a fixed point to a changing point over a duration.
+*/
++ (HLChaseAction *)chaseDestinationWeakTarget:(id)destinationWeakTarget selector:(SEL)destinationSelector duration:(NSTimeInterval)duration;
+
+/**
+ Creates an action that moves from a fixed point to a changing point over a duration, with
+ a designated origin.
+*/
++ (HLChaseAction *)chaseFrom:(CGPoint)origin toDestinationWeakTarget:(id)destinationWeakTarget selector:(SEL)destinationSelector duration:(NSTimeInterval)duration;
 
 /**
  Creates an action that tracks a relative change in z-position over a duration.
