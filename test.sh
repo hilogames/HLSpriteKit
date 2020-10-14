@@ -61,16 +61,32 @@ xcode_build_options=-disable-concurrent-destination-testing
 #if (( $travis )); then
 #    xcode_build_options=""
 #fi
-xcodebuild clean build test \
-           -workspace Example/HLSpriteKit.xcworkspace \
-           -scheme iOS \
-           -sdk $sdk_iphonesimulator \
-           $xcode_build_options \
-           -destination 'platform=iOS Simulator,OS=14.0,name=iPhone 8' \
-           -destination 'platform=iOS Simulator,OS=14.0,name=iPad (8th generation)' \
-           -destination 'platform=iOS Simulator,OS=latest,name=iPhone 11' \
-           ONLY_ACTIVE_ARCH=NO \
-    | xcpretty
+
+# note: Travis osx_image sometimes provides different destinations than
+# my current osx.
+if (( $travis )); then
+    xcodebuild clean build test \
+               -workspace Example/HLSpriteKit.xcworkspace \
+               -scheme iOS \
+               -sdk $sdk_iphonesimulator \
+               $xcode_build_options \
+               -destination 'platform=iOS Simulator,OS=13.7,name=iPhone 8' \
+               -destination 'platform=iOS Simulator,OS=12.0,name=iPad (5th generation)' \
+               -destination 'platform=iOS Simulator,OS=latest,name=iPhone X' \
+               ONLY_ACTIVE_ARCH=NO \
+        | xcpretty
+else
+    xcodebuild clean build test \
+               -workspace Example/HLSpriteKit.xcworkspace \
+               -scheme iOS \
+               -sdk $sdk_iphonesimulator \
+               $xcode_build_options \
+               -destination 'platform=iOS Simulator,OS=14.0,name=iPhone 8' \
+               -destination 'platform=iOS Simulator,OS=14.0,name=iPad (8th generation)' \
+               -destination 'platform=iOS Simulator,OS=latest,name=iPhone 11' \
+               ONLY_ACTIVE_ARCH=NO \
+        | xcpretty
+fi
 
 # note: Framework project (for Carthage) not currently configured for
 # testing; just build.
