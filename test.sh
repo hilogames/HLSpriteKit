@@ -72,7 +72,7 @@ if (( $travis )); then
                $xcode_build_options \
                -destination 'platform=iOS Simulator,OS=13.7,name=iPhone 8' \
                -destination 'platform=iOS Simulator,OS=12.0,name=iPad (5th generation)' \
-               -destination 'platform=iOS Simulator,OS=latest,name=iPhone X' \
+               -destination 'platform=iOS Simulator,OS=latest,name=iPhone 11' \
                ONLY_ACTIVE_ARCH=NO \
         | xcpretty
 else
