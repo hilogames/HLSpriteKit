@@ -3,7 +3,12 @@
 
 ## Master
 
+## 2.0.0 [2020-10-14]
+
 ### Breaking
+
+- Increased iOS deployment target to 12.0.  
+  [Karl Voskuil](https://github.com/karlvoskuil)
 
 - For gesture targets: Taps and long-presses are now only offered to
   the top target in the scene; pans and swipes and their ilk fall

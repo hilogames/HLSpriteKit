@@ -41,35 +41,34 @@ else
 fi
 
 sdk_iphonesimulator=iphonesimulator
-# note: TravisCI seems to need a verison-specified SDK.  Match it to
-# the osx_image in .travis.yml.  Reference:
+# note: TravisCI sometimes seems to need a version-specified SDK.
+# Match it to the osx_image in .travis.yml.  Reference:
 #   https://docs.travis-ci.com/user/osx-ci-environment
 # But the TravisCI failure was just the generic "Test target iOS-Tests
 # encountered an error", on a day with operational troubles, so it
-# might be a transient thing.  For now, specify.
+# might be a transient thing.
 #if (( $travis )); then
-#    sdk_iphonesimulator=iphonesimulator10.3
+#    sdk_iphonesimulator=iphonesimulator14.2
 #fi
 
-# note: xcpretty has a hard time handling output from multiple (concurrent)
-# destinations (see https://github.com/supermarin/xcpretty/issues/295).
-# So it's just an aesthetic issue, but -disable-concurrent-destination-testing.
-# Travis CI currently defaulting to osx_image xcode9.4, but the option doesn't
-# exist until Xcode 10.0.  So disable the option for now in Travis, but add it
-# in once the default xcode in Travis CI changes.
-if (( $travis )); then
-    xcode_build_options=""
-else
-    xcode_build_options=-disable-concurrent-destination-testing
-fi
+# note: xcpretty has a hard time handling output from multiple
+# (concurrent) destinations (see
+# https://github.com/supermarin/xcpretty/issues/295).  So it's just an
+# aesthetic issue, but -disable-concurrent-destination-testing.
+xcode_build_options=-disable-concurrent-destination-testing
+# The option doesn't exist until Xcode 10.0, so if using osx_image9.4
+# in Travis CI, then can't use it.
+#if (( $travis )); then
+#    xcode_build_options=""
+#fi
 xcodebuild clean build test \
            -workspace Example/HLSpriteKit.xcworkspace \
            -scheme iOS \
            -sdk $sdk_iphonesimulator \
            $xcode_build_options \
-           -destination 'platform=iOS Simulator,OS=8.4,name=iPhone 5s' \
-           -destination 'platform=iOS Simulator,OS=9.3,name=iPad 2' \
-           -destination 'platform=iOS Simulator,OS=latest,name=iPhone 6' \
+           -destination 'platform=iOS Simulator,OS=14.0,name=iPhone 8' \
+           -destination 'platform=iOS Simulator,OS=14.0,name=iPad (8th generation)' \
+           -destination 'platform=iOS Simulator,OS=latest,name=iPhone 11' \
            ONLY_ACTIVE_ARCH=NO \
     | xcpretty
 
