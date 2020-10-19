@@ -687,7 +687,18 @@ When complete, `elapsedTime` won't necessarily match the action's `duration`:
 @end
 
 /**
- An action that moves from a fixed point to a changing point over a duration.
+ An action that moves from a fixed point to a changable point over a duration.
+
+ The chase action remembers its last-calculated position, and at each update it steps from
+ there toward the current destination.  This behavior distinguishes it from
+ `HLMoveToAction`, which would recalculate its current position if its destination were
+ changed, hopping to the straight line between the origin and new destination.
+
+ The current position of the chase action can also be set by the owner using the
+ `position` property.  During update, this position will be used as the last-calculated
+ position.  (When setting `position`, the node is not available, and so it will not be
+ updated.  Also, as in other move actions, the current position of the node itself, if
+ provided to update, is ignored.)
 */
 @interface HLChaseAction : HLAction <NSCoding, NSCopying>
 
@@ -698,8 +709,57 @@ When complete, `elapsedTime` won't necessarily match the action's `duration`:
 
  When the action is first updated, it will set its origin based on the position of the
  passed node.  For this reason, the node parameter passed to the first update must be
+ non-nil.  (To set the origin without a node, use `initWithOrigin:destination:duration:`.)
+*/
+- (instancetype)initWithDestination:(CGPoint)destination duration:(NSTimeInterval)duration;
+
+/**
+ Creates a chase action with a designated origin.
+*/
+- (instancetype)initWithOrigin:(CGPoint)origin destination:(CGPoint)destination duration:(NSTimeInterval)duration;
+
+/// @name Accessing Action State
+
+/**
+ The current position of the chase action.
+
+ This value will be used by `update` to calculate the next position (chasing after the
+ destination); a node passed to the update method will have its position set accordingly.
+*/
+@property (nonatomic, assign) CGPoint position;
+
+/**
+ The current destination of the chase action.
+*/
+@property (nonatomic, assign) CGPoint destination;
+
+@end
+
+/**
+ An action that moves from a fixed point to a changable point over a duration.
+
+ The chase action remembers its last-calculated position, and at each update it steps from
+ there toward the current destination.  This behavior distinguishes it from
+ `HLMoveToAction`, which would recalculate its current position if its destination were
+ changed, hopping to the straight line between the origin and new destination.
+
+ The current position of the chase action can also be set by the owner using the
+ `position` property.  During update, this position will be used as the last-calculated
+ position.  (When setting `position`, the node is not available, and so it will not be
+ updated.  Also, as in other move actions, the current position of the node itself, if
+ provided to update, is ignored.)
+*/
+@interface HLChaseWeakTargetAction : HLAction <NSCoding, NSCopying>
+
+/// @name Creating the Action
+
+/**
+ Creates a chase-weak-target action.
+
+ When the action is first updated, it will set its origin based on the position of the
+ passed node.  For this reason, the node parameter passed to the first update must be
  non-nil.  (To set the origin without a node, use
- `initWithOrigin:destinationWeakTarget:selector:duration:`.)
+ `initWithOrigin:weakTarget:selector:duration:`.)
 
  @param destinationWeakTarget The target that will provide a destination, retained weakly
                               in order to avoid retain cycles.  (One possible cycle, when
@@ -713,21 +773,22 @@ When complete, `elapsedTime` won't necessarily match the action's `duration`:
 
  @param duration The duration of the action, in seconds.
 */
-- (instancetype)initWithDestinationWeakTarget:(id)destinationWeakTarget selector:(SEL)destinationSelector duration:(NSTimeInterval)duration;
+- (instancetype)initWithWeakTarget:(id)destinationWeakTarget selector:(SEL)destinationSelector duration:(NSTimeInterval)duration;
 
 /**
- Creates a chase action with a designated origin.
+ Creates a chase-weak-target action with a designated origin.
 */
-- (instancetype)initWithOrigin:(CGPoint)origin destinationWeakTarget:(id)destinationWeakTarget selector:(SEL)destinationSelector duration:(NSTimeInterval)duration;
+- (instancetype)initWithOrigin:(CGPoint)origin weakTarget:(id)destinationWeakTarget selector:(SEL)destinationSelector duration:(NSTimeInterval)duration;
 
 /// @name Accessing Action State
 
 /**
- The current position of the chase action.
+ The current position of the chase-weak-target action.
 
- If a node was passed to the update method, it was updated with this position.
- */
-@property (nonatomic, readonly) CGPoint position;
+ This value will be used by `update` to calculate the next position (chasing after the
+ destination); a node passed to the update method will have its position set accordingly.
+*/
+@property (nonatomic, assign) CGPoint position;
 
 /**
  The current value returned by the destination-providing target and selector passed to
@@ -1709,15 +1770,27 @@ When complete, `elapsedTime` won't necessarily match the action's `duration`:
 //+ (HLMoveToYAction *)moveFromY:(CGFloat)yFrom to:(CGFloat)yTo duration:(NSTimeInterval)duration;
 
 /**
- Creates an action that moves from a fixed point to a changing point over a duration.
+ Creates an action that moves from a fixed point to a changeable point over a duration.
 */
-+ (HLChaseAction *)chaseDestinationWeakTarget:(id)destinationWeakTarget selector:(SEL)destinationSelector duration:(NSTimeInterval)duration;
++ (HLChaseAction *)chase:(CGPoint)destination duration:(NSTimeInterval)duration;
 
 /**
- Creates an action that moves from a fixed point to a changing point over a duration, with
- a designated origin.
+ Creates an action that moves from a fixed point to a changeable point over a duration,
+ with a designated origin.
 */
-+ (HLChaseAction *)chaseFrom:(CGPoint)origin toDestinationWeakTarget:(id)destinationWeakTarget selector:(SEL)destinationSelector duration:(NSTimeInterval)duration;
++ (HLChaseAction *)chaseFrom:(CGPoint)origin to:(CGPoint)destination duration:(NSTimeInterval)duration;
+
+/**
+ Creates an action that moves from a fixed point to a changeable point (provided by a
+ callback) over a duration.
+*/
++ (HLChaseWeakTargetAction *)chaseWeakTarget:(id)destinationWeakTarget selector:(SEL)destinationSelector duration:(NSTimeInterval)duration;
+
+/**
+ Creates an action that moves from a fixed point to a changeable point (provided by a
+ callback) over a duration, with a designated origin.
+*/
++ (HLChaseWeakTargetAction *)chaseFrom:(CGPoint)origin toWeakTarget:(id)destinationWeakTarget selector:(SEL)destinationSelector duration:(NSTimeInterval)duration;
 
 /**
  Creates an action that tracks a relative change in z-position over a duration.

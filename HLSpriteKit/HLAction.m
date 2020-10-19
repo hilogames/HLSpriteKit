@@ -550,14 +550,24 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
   return [[HLMoveToAction alloc] initWithOrigin:origin destination:destination duration:duration];
 }
 
-+ (HLChaseAction *)chaseDestinationWeakTarget:(id)destinationWeakTarget selector:(SEL)destinationSelector duration:(NSTimeInterval)duration
++ (HLChaseAction *)chase:(CGPoint)destination duration:(NSTimeInterval)duration
 {
-  return [[HLChaseAction alloc] initWithDestinationWeakTarget:destinationWeakTarget selector:destinationSelector duration:duration];
+  return [[HLChaseAction alloc] initWithDestination:destination duration:duration];
 }
 
-+ (HLChaseAction *)chaseFrom:(CGPoint)origin toDestinationWeakTarget:(id)destinationWeakTarget selector:(SEL)destinationSelector duration:(NSTimeInterval)duration
++ (HLChaseAction *)chaseFrom:(CGPoint)origin to:(CGPoint)destination duration:(NSTimeInterval)duration
 {
-  return [[HLChaseAction alloc] initWithOrigin:origin destinationWeakTarget:destinationWeakTarget selector:destinationSelector duration:duration];
+  return [[HLChaseAction alloc] initWithOrigin:origin destination:destination duration:duration];
+}
+
++ (HLChaseWeakTargetAction *)chaseWeakTarget:(id)destinationWeakTarget selector:(SEL)destinationSelector duration:(NSTimeInterval)duration
+{
+  return [[HLChaseWeakTargetAction alloc] initWithWeakTarget:destinationWeakTarget selector:destinationSelector duration:duration];
+}
+
++ (HLChaseWeakTargetAction *)chaseFrom:(CGPoint)origin toWeakTarget:(id)destinationWeakTarget selector:(SEL)destinationSelector duration:(NSTimeInterval)duration
+{
+  return [[HLChaseWeakTargetAction alloc] initWithOrigin:origin weakTarget:destinationWeakTarget selector:destinationSelector duration:duration];
 }
 
 + (HLChangeZPositionByAction *)changeZPositionBy:(CGFloat)zPositionDelta duration:(NSTimeInterval)duration
@@ -837,10 +847,10 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
   NSTimeInterval incrementalTimeMyFrame = elapsedTime - elapsedTimeOld;
 
   // note: A problem we have in HLActionRunner that we don't have here: Our actions can't
-  // be modified in the middle of an update.  So iterating through them is straightforward.
-  // I'm noting it here because sometimes I think I should allow adding or removing actions
-  // to a running group, and if so, then it might happend during this update (because of
-  // code executed by one of our actions).
+  // be modified in the middle of an update.  So iterating through them is
+  // straightforward.  I'm noting it here because sometimes I think I should allow adding
+  // or removing actions to a running group, and if so, then it might happen during this
+  // update (because of code executed by one of our actions).
 
   NSTimeInterval leastExtraTimeMyFrame = incrementalTimeMyFrame;
   NSUInteger i = 0;
@@ -875,8 +885,8 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
     // measured with a linear timing mode and according to my current speed.
     NSTimeInterval completionTimeLinear = [self HL_elapsedTimeLinearForElapsedTime:completionTimeMyFrame];
     CGFloat speed = self.speed;
-    // note: It should not be possible to complete the action with zero speed, but a little
-    // defensive programming seems appropriate here.
+    // note: It should not be possible to complete the action with zero speed, but a
+    // little defensive programming seems appropriate here.
     if (speed == 0.0f) {
       assert(NO);
       *extraTime = incrementalTime;
@@ -1548,12 +1558,159 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
 @implementation HLChaseAction
 {
   BOOL _isOriginSet;
+  CGPoint _lastPosition;
+}
+
+- (instancetype)initWithDestination:(CGPoint)destination duration:(NSTimeInterval)duration
+{
+  self = [super initWithDuration:duration];
+  if (self) {
+    _isOriginSet = NO;
+    _destination = destination;
+  }
+  return self;
+}
+
+- (instancetype)initWithOrigin:(CGPoint)origin destination:(CGPoint)destination duration:(NSTimeInterval)duration
+{
+  self = [super initWithDuration:duration];
+  if (self) {
+    _isOriginSet = YES;
+    _lastPosition = origin;
+    _destination = destination;
+  }
+  return self;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+  self = [super initWithCoder:aDecoder];
+  if (self) {
+    _isOriginSet = [aDecoder decodeBoolForKey:@"isOriginSet"];
+#if TARGET_OS_IPHONE
+    _lastPosition = [aDecoder decodeCGPointForKey:@"lastPosition"];
+    _destination = [aDecoder decodeCGPointForKey:@"destination"];
+#else
+    _lastPosition = [aDecoder decodePointForKey:@"lastPosition"];
+    _destination = [aDecoder decodePointForKey:@"destination"];
+#endif
+  }
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+  [super encodeWithCoder:aCoder];
+  [aCoder encodeBool:_isOriginSet forKey:@"isOriginSet"];
+#if TARGET_OS_IPHONE
+  [aCoder encodeCGPoint:_lastPosition forKey:@"lastPosition"];
+  [aCoder encodeCGPoint:_destination forKey:@"destination"];
+#else
+  [aCoder encodePoint:_lastPosition forKey:@"lastPosition"];
+  [aCoder encodePoint:_destination forKey:@"destination"];
+#endif
+}
+
+- (instancetype)copyWithZone:(NSZone *)zone
+{
+  HLChaseAction *copy = [super copyWithZone:zone];
+  if (copy) {
+    copy->_isOriginSet = _isOriginSet;
+    copy->_lastPosition = _lastPosition;
+    copy->_destination = _destination;
+  }
+  return copy;
+}
+
+- (BOOL)HL_update:(NSTimeInterval)incrementalTime node:(SKNode *)node extraTime:(NSTimeInterval *)extraTime
+{
+#if DEBUG
+  if (self.completed) {
+    // note: Some actions rely on this precondition (that update is not called after
+    // returning NO) more than others.  Probably things will break, but maybe not.
+    HLLog(HLLogError, @"HLActions should not be updated after they have completed."
+          " (Note that SKActions are immutable and can be reused multiple times,"
+          " but HLActions are stateful and can only be used once.)");
+  }
+#endif
+
+  // note: We chase the (changeable) destination using the last-set position of the
+  // action.  This ignores the current position of the node, which of course is
+  // appropriate since there might be no node.  But even if there is, it's worth noting
+  // that SKAction moveTo works the same way: The node position is moved along a straight
+  // line from origin to destination, even if halfway through the node's position is
+  // changed by some other process.
+
+  if (!_isOriginSet) {
+    if (node) {
+      _isOriginSet = YES;
+      _lastPosition = node.position;
+    } else {
+      [NSException raise:@"HLActionUninitialized" format:@"HLChaseAction requires an origin:"
+       " either pass a node to the first update,"
+       " or initialize with initWithOrigin:destinationWeakTarget:selector:duration:."];
+    }
+  }
+
+  NSTimeInterval elapsedTimeOld = self.elapsedTime;
+  BOOL notYetCompleted;
+  [self HL_advanceTime:incrementalTime extraTime:extraTime notYetCompleted:&notYetCompleted];
+
+  if (!notYetCompleted) {
+    _lastPosition = _destination;
+  } else {
+    NSTimeInterval elapsedTime = self.elapsedTime;
+    // note: "My frame" means adjusted for speed and timingMode.
+    NSTimeInterval incrementalTimeMyFrame = elapsedTime - elapsedTimeOld;
+    NSTimeInterval duration = self.duration;
+    NSTimeInterval remainingDuration = duration - elapsedTime;
+    // note: "Normal" to the remaining duration of the action.
+    NSTimeInterval normalIncrementalTimeMyFrame = incrementalTimeMyFrame / remainingDuration;
+    _lastPosition.x += (_destination.x - _lastPosition.x) * normalIncrementalTimeMyFrame;
+    _lastPosition.y += (_destination.y - _lastPosition.y) * normalIncrementalTimeMyFrame;
+  }
+
+  if (node) {
+    node.position = _lastPosition;
+  }
+
+#if DEBUG
+  if (!notYetCompleted) {
+    self.completed = YES;
+  }
+#endif
+  return notYetCompleted;
+}
+
+- (void)setPosition:(CGPoint)position
+{
+  // note: Arguably could set _isOriginSet.  But that's not the purpose of this mutator,
+  // so no, insist that the owner uses the correct initializer if they want to provide
+  // the origin; this is just for setting current position.
+  _lastPosition = position;
+}
+
+- (CGPoint)position
+{
+  if (!_isOriginSet) {
+    [NSException raise:@"HLActionUninitialized" format:@"HLChaseAction requires an origin:"
+     " either pass a node to the first update,"
+     " or initialize with initWithOrigin:destination:duration:."];
+  }
+  return _lastPosition;
+}
+
+@end
+
+@implementation HLChaseWeakTargetAction
+{
+  BOOL _isOriginSet;
   __weak id _destinationWeakTarget;
   SEL _destinationSelector;
   CGPoint _lastPosition;
 }
 
-- (instancetype)initWithDestinationWeakTarget:(id)destinationWeakTarget selector:(SEL)destinationSelector duration:(NSTimeInterval)duration
+- (instancetype)initWithWeakTarget:(id)destinationWeakTarget selector:(SEL)destinationSelector duration:(NSTimeInterval)duration
 {
   self = [super initWithDuration:duration];
   if (self) {
@@ -1564,7 +1721,7 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
   return self;
 }
 
-- (instancetype)initWithOrigin:(CGPoint)origin destinationWeakTarget:(id)destinationWeakTarget selector:(SEL)destinationSelector duration:(NSTimeInterval)duration
+- (instancetype)initWithOrigin:(CGPoint)origin weakTarget:(id)destinationWeakTarget selector:(SEL)destinationSelector duration:(NSTimeInterval)duration
 {
   self = [super initWithDuration:duration];
   if (self) {
@@ -1607,7 +1764,7 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
 
 - (instancetype)copyWithZone:(NSZone *)zone
 {
-  HLChaseAction *copy = [super copyWithZone:zone];
+  HLChaseWeakTargetAction *copy = [super copyWithZone:zone];
   if (copy) {
     copy->_isOriginSet = _isOriginSet;
     copy->_destinationWeakTarget = _destinationWeakTarget;
@@ -1641,9 +1798,9 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
       _isOriginSet = YES;
       _lastPosition = node.position;
     } else {
-      [NSException raise:@"HLActionUninitialized" format:@"HLChaseAction requires an origin:"
+      [NSException raise:@"HLActionUninitialized" format:@"HLChaseWeakTargetAction requires an origin:"
        " either pass a node to the first update,"
-       " or initialize with initWithOrigin:destinationWeakTarget:selector:duration:."];
+       " or initialize with initWithOrigin:weakTarget:selector:duration:."];
     }
   }
 
@@ -1679,12 +1836,20 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
   return notYetCompleted;
 }
 
+- (void)setPosition:(CGPoint)position
+{
+  // note: Arguably could set _isOriginSet.  But that's not the purpose of this mutator,
+  // so no, insist that the owner uses the correct initializer if they want to provide
+  // the origin; this is just for setting current position.
+  _lastPosition = position;
+}
+
 - (CGPoint)position
 {
   if (!_isOriginSet) {
-    [NSException raise:@"HLActionUninitialized" format:@"HLChaseAction requires an origin:"
+    [NSException raise:@"HLActionUninitialized" format:@"HLChaseWeakTargetAction requires an origin:"
      " either pass a node to the first update,"
-     " or initialize with initWithOrigin:destinationWeakTarget:selector:duration:."];
+     " or initialize with initWithOrigin:weakTarget:selector:duration:."];
   }
   return _lastPosition;
 }
