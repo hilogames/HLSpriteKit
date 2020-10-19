@@ -28,6 +28,11 @@
 - (instancetype)initWithP0:(CGPoint)p0 p1:(CGPoint)p1 p2:(CGPoint)p2 p3:(CGPoint)p3;
 
 /**
+ Returns the `p0` passed to the initializer.
+*/
+@property (nonatomic, readonly) CGPoint p0;
+
+/**
  Returns a point on the cubic Bezier curve given a `t` value between `0` and `1`.
 */
 - (CGPoint)pointForT:(CGFloat)t;
@@ -67,6 +72,11 @@
                       shapeP1:(CGPoint)shapeP1
                       shapeP2:(CGPoint)shapeP2
                        height:(CGFloat)height;
+
+/**
+ Returns the `startLocation` passed to the initializer.
+*/
+@property (nonatomic, readonly) CGPoint startLocation;
 
 /**
  Returns a point on the trajectory given a `t` value between `0` and `1`.

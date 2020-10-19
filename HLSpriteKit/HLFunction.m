@@ -10,7 +10,6 @@
 
 @implementation HLCubicBezier
 {
-  CGPoint _p0;
   CGFloat _coefficientsX[3];
   CGFloat _coefficientsY[3];
 }
@@ -70,6 +69,11 @@
                                              p3:finishLocation];
   }
   return self;
+}
+
+- (CGPoint)startLocation
+{
+  return _bezier.p0;
 }
 
 - (CGPoint)pointForT:(CGFloat)t
