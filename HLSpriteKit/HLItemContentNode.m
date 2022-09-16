@@ -83,6 +83,11 @@ enum {
   [self HL_layoutZ];
 }
 
+- (SKNode *)contentNode
+{
+  return [self childNodeWithName:@"content"];
+}
+
 - (SKNode *)backHighlightNode
 {
   return _backHighlightNode;
@@ -241,6 +246,11 @@ enum {
 {
   [super setZPositionScale:zPositionScale];
   [self HL_layoutZ];
+}
+
+- (SKNode *)contentNode
+{
+  return [self childNodeWithName:@"content"];
 }
 
 - (SKNode *)frontHighlightNode

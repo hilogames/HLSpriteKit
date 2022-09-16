@@ -63,6 +63,11 @@
 /// @name Getting the Back-Highlight Node
 
 /**
+ The content node passed to `init`.
+*/
+@property (nonatomic, readonly) SKNode *contentNode;
+
+/**
  The back-highlight node passed to `init`.
 */
 @property (nonatomic, readonly) SKNode *backHighlightNode;
@@ -104,6 +109,11 @@
 - (instancetype)initWithContentNode:(SKNode *)contentNode frontHighlightNode:(SKNode *)frontHighlightNode;
 
 /// @name Getting the Front-Highlight Node
+
+/**
+ The content node passed to `init`.
+*/
+@property (nonatomic, readonly) SKNode *contentNode;
 
 /**
  The front-highlight node passed to `init`.
