@@ -454,10 +454,10 @@ useful.
 ## Installation
 
     # CocoaPods
-    pod "HLSpriteKit", "~> 1.0"
+    pod "HLSpriteKit", "~> 2.0"
 
     # Carthage
-	github "hilogames/HLSpriteKit" ~> 1.0
+	github "hilogames/HLSpriteKit" ~> 2.0
 
 ## Author
 

@@ -62,8 +62,11 @@ xcode_build_options=-disable-concurrent-destination-testing
 #    xcode_build_options=""
 #fi
 
-# note: Travis osx_image sometimes provides different destinations than
-# my current osx.
+# note: Travis osx_image sometimes provides different destinations
+# than my current osx.  Note that "OS=latest" refers to the latest OS,
+# and not the latest available for a certain name, so when using
+# "latest" must choose a destination that actually has the latest OS
+# available.
 if (( $travis )); then
     xcodebuild clean build test \
                -workspace Example/HLSpriteKit.xcworkspace \
@@ -72,7 +75,7 @@ if (( $travis )); then
                $xcode_build_options \
                -destination 'platform=iOS Simulator,OS=13.7,name=iPhone 8' \
                -destination 'platform=iOS Simulator,OS=12.0,name=iPad (5th generation)' \
-               -destination 'platform=iOS Simulator,OS=latest,name=iPhone 11' \
+               -destination 'platform=iOS Simulator,OS=14.2,name=iPhone 11' \
                ONLY_ACTIVE_ARCH=NO \
         | xcpretty
 else
