@@ -212,7 +212,6 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
 - (void)runAction:(HLAction *)action withKey:(NSString *)key
 {
   // Want to prevent people running HLActions more than once, like SKActions.
-  // Currently Gargoyles is doing it in GLUnit GL_fade* for unitNode and shadowNode.
   // Want to get a warning about it.
   // So:
   //  . Note it's okay to run an action with elapsedTime > 0; it might have been decoded
@@ -1153,7 +1152,7 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
     [NSException raise:@"HLActionInvalid" format:@"A repeat action must be created with an action to repeat."];
   }
   if (prototypeAction.duration == 0.0) {
-    [NSException raise:@"HLActionInvalid" format:@"An action to repeated forever must have a non-zero duration."];
+    [NSException raise:@"HLActionInvalid" format:@"An action to be repeated forever must have a non-zero duration."];
   }
   self = [super initWithDuration:0.0];
   if (self) {
@@ -3456,7 +3455,6 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
 
 @implementation HLLoopTexturesAction
 {
-  NSTimeInterval _timePerFrame;
   BOOL _resize;
   NSUInteger _startingTextureIndex;
 }

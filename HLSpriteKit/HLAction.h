@@ -1429,6 +1429,11 @@ When complete, `elapsedTime` won't necessarily match the action's `duration`:
 */
 @property (nonatomic, readonly) NSArray *textures;
 
+/**
+ The value of `timePerFrame` passed to the initializer.
+*/
+@property (nonatomic, readonly) CGFloat timePerFrame;
+
 @end
 
 /**
