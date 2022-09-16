@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1200"
+   LastUpgradeVersion = "1400"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B46FA33BF30B86468D41063E70BFAA98"
-               BuildableName = "libPods-iOS.a"
+               BuildableName = "Pods_iOS.framework"
                BlueprintName = "Pods-iOS"
                ReferencedContainer = "container:Pods/Pods.xcodeproj">
             </BuildableReference>
@@ -43,7 +43,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "F901B76FDF28CC5FECD5575D44CFC919"
-               BuildableName = "libPods-iOS-Tests.a"
+               BuildableName = "Pods_iOS_Tests.framework"
                BlueprintName = "Pods-iOS-Tests"
                ReferencedContainer = "container:Pods/Pods.xcodeproj">
             </BuildableReference>
