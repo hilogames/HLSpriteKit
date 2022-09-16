@@ -101,7 +101,7 @@
  In iOS 9 and later, the configured text will wrap so that no line is longer than the
  maximum width.  In the current implementation, the line will prefer to break on word
  boundaries.  If constrained by a long word, it will not hyphenate, but will break on
- latter boundaries.  If constrained so that even a single letter doesn't fit on the line,
+ letter boundaries.  If constrained so that even a single letter doesn't fit on the line,
  it will visually truncate the letter.
 
  Before iOS 9, the `widthMaximum` is more approximate; the label width will be near, but

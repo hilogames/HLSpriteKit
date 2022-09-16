@@ -50,7 +50,7 @@
  explicitly retained (but will be returned by `hlGestureTarget`).
 
  Pass `nil` to unset the gesture target (if any).
- */
+*/
 - (void)hlSetWeakGestureTarget:(id <HLGestureTarget>)weakGestureTarget;
 
 @end

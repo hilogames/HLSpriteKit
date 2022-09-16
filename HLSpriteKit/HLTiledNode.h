@@ -32,6 +32,10 @@ typedef NS_ENUM(NSInteger, HLTiledNodeSizeMode) {
 
 /**
  `HLTiledNode` behaves like an `SKSpriteNode` that tiles its texture to a specified size.
+
+ The tiled node automatically adds a single node child (which is a hierarchy of sprite
+ nodes textured as tiles).  This can cause surprising results for an owner accustomed to
+ controlling all children of a node.
 */
 @interface HLTiledNode : SKNode <NSCoding, NSCopying>
 

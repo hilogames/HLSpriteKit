@@ -24,9 +24,10 @@
 
  A random shuffle (limited only by the quality of the underlying random number generator)
  can be produced by the well-known Fisher-Yates technique: Pick each subsequent item
- randomly from all unpicked items.  The implementation generally requires a storage on the
- order of N (either the entire shuffle, or a list of picked, or a list of unpicked).  The
- algorithm can produce up to N! distinct shuffles of N items.
+ randomly from all unpicked items.  The implementation generally requires storage on the
+ order of N (either the entire shuffle, or a list of picked, or a list of unpicked) -- or,
+ alternately, N-order computation (remembering the random seed and recreating the shuffle
+ whenever needed).  The algorithm can produce up to N! distinct shuffles of N items.
 
  For some applications, this kind of randomness is not necessary.  For instance:
 
@@ -43,7 +44,7 @@
  That said, even relaxed applications like these want more than one distinct shuffle.
  After all, not every game should issue names in the same order, and not every playthrough
  of music should be the same.  It would be nice to have about, oh, say, N different
- shuffles.  After N games, or after N evenings of music, it seems okay to resuse an old
+ shuffles.  After N games, or after N evenings of music, it seems okay to reuse an old
  shuffle.
 
  ### Implementation
