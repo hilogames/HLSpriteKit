@@ -42,15 +42,16 @@
  should be careful, therefore, with the timing of the creation of this multi-shadow.
 
  @param offset The distance of the offset of the shadows (extending radially from the
- center).
+               center).
 
  @param shadowCount The number of shadows drawn.  The first copy is offset in the
- direction of `initialTheta` radians in polar coordinates; the other copies are offset at
- regular subdivisions of the unit circle.  For instance, if `initialTheta` is `0` and
- `shadowCount` is `4`, the shadows will be drawn directly right, up, left, and down.
+                    direction of `initialTheta` radians in polar coordinates; the other
+                    copies are offset at regular subdivisions of the unit circle.  For
+                    instance, if `initialTheta` is `0` and `shadowCount` is `4`, the
+                    shadows will be drawn directly right, up, left, and down.
 
  @param initialTheta The direction of the offset of the first shadow, in radians.  (`0`
- represents right, and the positive direction is counter-clockwise.)
+                     represents right, and the positive direction is counter-clockwise.)
 
  @param blur The blur radius for the multi-shadow shape.
 

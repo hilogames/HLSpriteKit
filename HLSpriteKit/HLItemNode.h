@@ -156,7 +156,7 @@ contentDidSetHighlight:(BOOL *)contentDidSetHighlight;
  backdrop item node according to object configuration.  See, for example, `normalColor`
  and `highlightColor`.
 
- @bug This might be over-engineered.  Ffirst, it's annoying that each `HLBackdropItemNode`
+ @bug This might be over-engineered.  First, it's annoying that each `HLBackdropItemNode`
       in a `HLItemsNode` collection has its own `enabledAlpha` and `normalColor`, as if it
       might be in an items node with lots of different types of items.  (It never is.)
       Second, it's not clear that the various collection objects that use this class
