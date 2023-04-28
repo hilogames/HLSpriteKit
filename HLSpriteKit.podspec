@@ -19,6 +19,6 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = "12.0"
   s.ios.frameworks        = "Foundation", "UIKit", "SpriteKit"
 
-  s.osx.deployment_target = "10.11"
+  s.osx.deployment_target = "10.13"
   s.osx.frameworks        = "Foundation", "SpriteKit"
 end

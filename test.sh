@@ -43,13 +43,13 @@ fi
 sdk_iphonesimulator=iphonesimulator
 # note: TravisCI sometimes seems to need a version-specified SDK.
 # Match it to the osx_image in .travis.yml.  Reference:
-#   https://docs.travis-ci.com/user/osx-ci-environment
+#   https://docs.travis-ci.com/user/reference/osx/
 # But the TravisCI failure was just the generic "Test target iOS-Tests
 # encountered an error", on a day with operational troubles, so it
 # might be a transient thing.
-#if (( $travis )); then
-#    sdk_iphonesimulator=iphonesimulator14.2
-#fi
+if (( $travis )); then
+    sdk_iphonesimulator=iphonesimulator16.2
+fi
 
 # note: xcpretty has a hard time handling output from multiple
 # (concurrent) destinations (see
@@ -63,19 +63,19 @@ xcode_build_options=-disable-concurrent-destination-testing
 #fi
 
 # note: Travis osx_image sometimes provides different destinations
-# than my current osx.  Note that "OS=latest" refers to the latest OS,
-# and not the latest available for a certain name, so when using
-# "latest" must choose a destination that actually has the latest OS
-# available.
+# than my current osx, even though I generally use the latest
+# available in Travis and locally.  See:
+#   https://docs.travis-ci.com/user/reference/osx/
+# Note that "OS=latest" refers to the latest OS, and not the latest
+# available for a certain name, so when using "latest" must choose a
+# destination that actually has the latest OS available.
 if (( $travis )); then
     xcodebuild clean build test \
                -workspace Example/HLSpriteKit.xcworkspace \
                -scheme iOS \
                -sdk $sdk_iphonesimulator \
                $xcode_build_options \
-               -destination 'platform=iOS Simulator,OS=13.7,name=iPhone 8' \
-               -destination 'platform=iOS Simulator,OS=12.0,name=iPad (5th generation)' \
-               -destination 'platform=iOS Simulator,OS=14.2,name=iPhone 11' \
+               -destination 'platform=iOS Simulator,OS=16.2,name=iPhone 14' \
                ONLY_ACTIVE_ARCH=NO \
         | xcpretty
 else
@@ -84,9 +84,9 @@ else
                -scheme iOS \
                -sdk $sdk_iphonesimulator \
                $xcode_build_options \
-               -destination 'platform=iOS Simulator,OS=14.0,name=iPhone 8' \
-               -destination 'platform=iOS Simulator,OS=14.0,name=iPad (8th generation)' \
-               -destination 'platform=iOS Simulator,OS=latest,name=iPhone 11' \
+               -destination 'platform=iOS Simulator,OS=16.4,name=iPhone SE (3rd generation)' \
+               -destination 'platform=iOS Simulator,OS=16.4,name=iPad (10th generation)' \
+               -destination 'platform=iOS Simulator,OS=16.4,name=iPhone 14' \
                ONLY_ACTIVE_ARCH=NO \
         | xcpretty
 fi
