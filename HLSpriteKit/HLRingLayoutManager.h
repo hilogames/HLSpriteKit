@@ -56,7 +56,7 @@ FOUNDATION_EXPORT const CGFloat HLRingLayoutManagerEpsilon;
 
  Also see "Accessing Last-Layout State" notes in `HLLayoutManager`.
 */
-- (void)layout:(NSArray *)nodes getThetas:(NSArray * __strong *)thetas;
+- (void)layout:(NSArray *)nodes getThetas:(NSArray * __autoreleasing *)thetas;
 
 /// @name Getting and Setting Ring Geometry
 

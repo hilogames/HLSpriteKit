@@ -114,7 +114,7 @@
    . Different managers will need to track and return different state, so perhaps there
      should be a single interface, with an associated hierarchy of state objects:
 
-       - (void)layout:(NSArray *)nodes getState:(GLLayoutState * __strong *)layoutState;
+       - (void)layout:(NSArray *)nodes getState:(GLLayoutState * __autoreleasing *)layoutState;
 
      The layout manager often calculates useful data derived from the main geometrical
      properties configured; it could store this intermediate data in the layout state
@@ -129,7 +129,7 @@
      returning simple state potentially interesting to an owner:
 
        - (void)layout:(NSArray *)nodes getSize:(CGSize *)size;
-       - (void)layout:(NSArray *)nodes getColumnWidths:(NSArray * __strong *)columnWidths;
+       - (void)layout:(NSArray *)nodes getColumnWidths:(NSArray * __autoreleasing *)columnWidths;
 
  . Related to the last point about over-engineering, above: The global helper function
    approach really can help simplify things.  Last-layout state is often completely

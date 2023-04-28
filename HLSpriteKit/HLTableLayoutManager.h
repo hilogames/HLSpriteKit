@@ -152,7 +152,7 @@ FOUNDATION_EXPORT const CGFloat HLTableLayoutManagerEpsilon;
 
  Also see "Accessing Last-Layout State" notes in this class and in `HLLayoutManager`.
 */
-- (void)layout:(NSArray *)nodes getColumnWidths:(NSArray * __strong *)columnWidths rowHeights:(NSArray * __strong *)rowHeights;
+- (void)layout:(NSArray *)nodes getColumnWidths:(NSArray * __autoreleasing *)columnWidths rowHeights:(NSArray * __autoreleasing *)rowHeights;
 
 /// @name Getting and Setting Table Geometry
 

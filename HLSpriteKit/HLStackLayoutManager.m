@@ -122,12 +122,12 @@ const CGFloat HLStackLayoutManagerEpsilon = 0.001f;
   [self GL_layout:nodes getCellLengths:nil];
 }
 
-- (void)layout:(NSArray *)nodes getCellLengths:(NSArray *__strong *)cellLengths
+- (void)layout:(NSArray *)nodes getCellLengths:(NSArray * __autoreleasing *)cellLengths
 {
   [self GL_layout:nodes getCellLengths:cellLengths];
 }
 
-- (void)GL_layout:(NSArray *)nodes getCellLengths:(NSArray * __strong *)returnCellLengths
+- (void)GL_layout:(NSArray *)nodes getCellLengths:(NSArray * __autoreleasing *)returnCellLengths
 {
   NSUInteger nodesCount = (nodes ? [nodes count] : 0);
   if (nodesCount == 0) {

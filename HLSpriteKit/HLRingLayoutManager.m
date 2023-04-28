@@ -168,14 +168,14 @@ typedef NS_ENUM(NSInteger, HLRingLayoutManagerThetasMode) {
   [self GL_layout:nodes getThetas:nil];
 }
 
-- (void)layout:(NSArray *)nodes getThetas:(NSArray *__strong *)thetas
+- (void)layout:(NSArray *)nodes getThetas:(NSArray * __autoreleasing *)thetas
 {
   NSMutableArray *mutableThetas = [NSMutableArray array];
   [self GL_layout:nodes getThetas:&mutableThetas];
   *thetas = mutableThetas;
 }
 
-- (void)GL_layout:(NSArray *)nodes getThetas:(NSMutableArray *__strong *)thetas
+- (void)GL_layout:(NSArray *)nodes getThetas:(NSMutableArray * __autoreleasing *)thetas
 {
   NSUInteger radiiCount = [_radii count];
   if (radiiCount == 0) {

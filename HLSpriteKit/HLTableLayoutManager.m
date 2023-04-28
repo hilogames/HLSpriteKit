@@ -141,12 +141,12 @@ const CGFloat HLTableLayoutManagerEpsilon = 0.001f;
   [self GL_layout:nodes getColumnWidths:nil rowHeights:nil];
 }
 
-- (void)layout:(NSArray *)nodes getColumnWidths:(NSArray * __strong *)columnWidths rowHeights:(NSArray * __strong *)rowHeights
+- (void)layout:(NSArray *)nodes getColumnWidths:(NSArray * __autoreleasing *)columnWidths rowHeights:(NSArray * __autoreleasing *)rowHeights
 {
   [self GL_layout:nodes getColumnWidths:columnWidths rowHeights:rowHeights];
 }
 
-- (void)GL_layout:(NSArray *)nodes getColumnWidths:(NSArray * __strong *)returnColumnWidths rowHeights:(NSArray * __strong *)returnRowHeights
+- (void)GL_layout:(NSArray *)nodes getColumnWidths:(NSArray * __autoreleasing *)returnColumnWidths rowHeights:(NSArray * __autoreleasing *)returnRowHeights
 {
   NSUInteger nodesCount = [nodes count];
   if (nodesCount == 0) {
