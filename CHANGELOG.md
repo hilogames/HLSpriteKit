@@ -3,6 +3,13 @@
 
 ## Master
 
+## 2.0.1 [2023-04-28]
+
+### Added
+
+- Nothing, really.  Just CocoaPods updates.  
+  [Karl Voskuil](https://github.com/karlvoskuil)
+
 ## 2.0.0 [2020-10-14]
 
 ### Breaking
