@@ -1,10 +1,8 @@
 # HLSpriteKit
 
-[![CI Status](http://img.shields.io/travis/hilogames/HLSpriteKit.svg?style=flat)](https://travis-ci.org/hilogames/HLSpriteKit)
-[![Version](https://img.shields.io/cocoapods/v/HLSpriteKit.svg?style=flat)](http://cocoadocs.org/docsets/HLSpriteKit)
-[![carthage compatible](https://img.shields.io/badge/carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
-[![License](https://img.shields.io/cocoapods/l/HLSpriteKit.svg?style=flat)](http://cocoadocs.org/docsets/HLSpriteKit)
-[![Platform](https://img.shields.io/cocoapods/p/HLSpriteKit.svg?style=flat)](http://cocoadocs.org/docsets/HLSpriteKit)
+![Version](https://img.shields.io/cocoapods/v/HLSpriteKit)
+![Platform](https://img.shields.io/cocoapods/p/HLSpriteKit)
+![License](https://img.shields.io/cocoapods/l/HLSpriteKit)
 
 SpriteKit scene and node subclasses, plus various utilities.
 
