@@ -1662,7 +1662,7 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
     // note: "My frame" means adjusted for speed and timingMode.
     NSTimeInterval incrementalTimeMyFrame = elapsedTime - elapsedTimeOld;
     NSTimeInterval duration = self.duration;
-    NSTimeInterval remainingDuration = duration - elapsedTime;
+    NSTimeInterval remainingDuration = duration - elapsedTimeOld;
     // note: "Normal" to the remaining duration of the action.
     NSTimeInterval normalIncrementalTimeMyFrame = incrementalTimeMyFrame / remainingDuration;
     _lastPosition.x += (_destination.x - _lastPosition.x) * normalIncrementalTimeMyFrame;
@@ -1816,7 +1816,7 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
     // note: "My frame" means adjusted for speed and timingMode.
     NSTimeInterval incrementalTimeMyFrame = elapsedTime - elapsedTimeOld;
     NSTimeInterval duration = self.duration;
-    NSTimeInterval remainingDuration = duration - elapsedTime;
+    NSTimeInterval remainingDuration = duration - elapsedTimeOld;
     // note: "Normal" to the remaining duration of the action.
     NSTimeInterval normalIncrementalTimeMyFrame = incrementalTimeMyFrame / remainingDuration;
     _lastPosition.x += (destination.x - _lastPosition.x) * normalIncrementalTimeMyFrame;
