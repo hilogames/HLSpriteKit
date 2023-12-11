@@ -77,6 +77,7 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
 @implementation HLActionRunner
 {
   NSMutableDictionary *_actions;
+  NSArray *_keys;
 }
 
 - (instancetype)init
@@ -84,6 +85,7 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
   self = [super init];
   if (self) {
     _actions = [NSMutableDictionary dictionary];
+    _keys = nil;
   }
   return self;
 }
@@ -93,6 +95,7 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
   self = [super init];
   if (self) {
     _actions = [aDecoder decodeObjectForKey:@"actions"];
+    _keys = [_actions allKeys];
   }
   return self;
 }
@@ -107,6 +110,8 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
   HLActionRunner *copy = [[[self class] allocWithZone:zone] init];
   if (copy) {
     copy->_actions = [[NSMutableDictionary alloc] initWithDictionary:_actions copyItems:YES];
+    // note: Array is not mutable, so should be okay to share.
+    copy->_keys = _keys;
   }
   return copy;
 }
@@ -185,8 +190,20 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
   // - Combining those last two into a corner case: The currently-updating action
   //   might complete on this tick, and, as part of its final update, replace itself.
   //   Don't remove the replacement!
+  //
+  // - An easy solution is to copy [_actions allKeys] to a local NSArray variable on every
+  //   update, iterating through the array and accessing into the dictionary.  This works
+  //   great, but shows up unpleasantly on CPU usage graphs when there are lots of action
+  //   runners (usually, lots of nodes, each of which has an action runner via
+  //   SKNode+HLAction).  Can maintain an indepedent NSArray or NSMutableArray which only
+  //   changes when actions are added or removed.  This also suggests the possiblity of
+  //   keeping actions in a parallel array rather than a dictionary -- the number of
+  //   actions per runner will typically be low, so linear operations on arrays might
+  //   prove faster than NSDictionaries.
 
-  NSArray *keys = [_actions allKeys];
+  // note: Deliberately copy the reference to a local variable, in case _keys is updated
+  // during the update -- the local keys will not be updated.
+  NSArray *keys = _keys;
 
   for (NSString *key in keys) {
     HLAction *action = _actions[key];
@@ -204,6 +221,10 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
       // note: The action might have replaced itself before completing.
       if (action == _actions[key]) {
         [_actions removeObjectForKey:key];
+        // note: Update the entire keys array on every change to _actions.  It's possible
+        // that a smarter update of an NSMutableArray would be faster, but I'm willing to
+        // bet the dumb way does quite well.
+        _keys = [_actions allKeys];
       }
     }
   }
@@ -234,6 +255,10 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
     [NSException raise:@"HLActionMissingKey" format:@"Action cannot be run without a key."];
   }
   _actions[key] = action;
+  // note: Update the entire keys array on every change to _actions.  It's possible that a
+  // smarter update of an NSMutableArray would be faster, but I'm willing to bet the dumb
+  // way does quite well.
+  _keys = [_actions allKeys];
 }
 
 - (BOOL)hasActions
@@ -252,11 +277,13 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
     return;
   }
   [_actions removeObjectForKey:key];
+  _keys = [_actions allKeys];
 }
 
 - (void)removeAllActions
 {
   [_actions removeAllObjects];
+  _keys = nil;
 }
 
 @end
