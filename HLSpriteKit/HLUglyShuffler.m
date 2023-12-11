@@ -299,6 +299,9 @@ static const NSUInteger HLUglyShufflerLfsrFeedbackTerms[16] = { 0x0, 0x3, 0x6, 0
 {
   // note: LFSR of W bits has output range of 2^W-1.  So we use enough bits to hold values
   // up to N+1 in order to give us the full range of N.
+  if (_itemCount == 0) {
+    return;
+  }
   NSUInteger shifting = _itemCount;
   _lfsrBound = 1;
   NSUInteger lfsrWidth = 0;
