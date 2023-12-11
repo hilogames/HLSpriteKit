@@ -17,8 +17,8 @@ NSString * const HLSceneChildResizeWithScene = @"HLSceneChildResizeWithScene";
 static NSString * const HLSceneChildUserDataKey = @"HLScene";
 
 typedef NS_OPTIONS(NSUInteger, HLSceneChildOptionBits) {
-  HLSceneChildBitNoCoding = (1 << 0),
-  HLSceneChildBitResizeWithScene = (1 << 1),
+  HLSceneChildBitNoCoding = (1UL << 0),
+  HLSceneChildBitResizeWithScene = (1UL << 1),
 };
 
 static const NSTimeInterval HLScenePresentationAnimationFadeDuration = 0.2f;
