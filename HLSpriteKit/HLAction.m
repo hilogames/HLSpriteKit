@@ -3376,12 +3376,12 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
 #endif
 
   // note: Should use duck-typing here, or check for SKSpriteNode?
-  BOOL haveTexturedNode = (node && [node isKindOfClass:[SKSpriteNode class]]);
+  BOOL haveSpriteNode = (node && [node isKindOfClass:[SKSpriteNode class]]);
 
   // note: The intention is that we restore texture to `nil` if the node originally had no texture,
   // so can't use nil-state of _restoreTexture to mean anything here; need separate flag.
   if (_restore && !_isRestoreTextureSpecified) {
-    if (haveTexturedNode) {
+    if (haveSpriteNode) {
       _restoreTexture = ((SKSpriteNode *)node).texture;
       _isRestoreTextureSpecified = YES;
     } else {
@@ -3406,7 +3406,7 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
   // variable would also be necessary, or else a sentinel value for _textureIndex, so that the texture is set on the
   // first update.)
 
-  if (haveTexturedNode) {
+  if (haveSpriteNode) {
     SKTexture *texture;
     if (notYetCompleted || !_restore) {
       NSUInteger textureIndex = [self HL_textureIndex];
@@ -3414,10 +3414,11 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
     } else {
       texture = _restoreTexture;
     }
-    if (texture != ((SKSpriteNode *)node).texture) {
-      ((SKSpriteNode *)node).texture = texture;
+    SKSpriteNode *spriteNode = (SKSpriteNode *)node;
+    if (texture != spriteNode.texture) {
+      spriteNode.texture = texture;
       if (_resize) {
-        ((SKSpriteNode *)node).size = texture.size;
+        spriteNode.size = texture.size;
       }
     }
   }
@@ -3565,10 +3566,11 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
   if (node && [node isKindOfClass:[SKSpriteNode class]]) {
     NSUInteger textureIndex = [self HL_textureIndex];
     SKTexture *texture = _textures[textureIndex];
-    if (texture != ((SKSpriteNode *)node).texture) {
-      ((SKSpriteNode *)node).texture = texture;
+    SKSpriteNode *spriteNode = (SKSpriteNode *)node;
+    if (texture != spriteNode.texture) {
+      spriteNode.texture = texture;
       if (_resize) {
-        ((SKSpriteNode *)node).size = texture.size;
+        spriteNode.size = texture.size;
       }
     }
   }
