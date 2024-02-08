@@ -3,6 +3,21 @@
 
 ## Master
 
+### Breaking
+
+- By default, `HLScene` now allows simultaneous recognition of swipe
+  and pan gestures on iOS.  (`HLScene` is implemented as the
+  `UIGestureRecognizerDelegate`, but a subclass can override the
+  behavior.)  If you would like this to be a configuration option,
+  please let me know.  
+  [Karl Voskuil](https://github.com/karlvoskuil)
+
+### Fixed
+
+- Fixed an error in `HLChaseAction` which caused chasing to appear
+  backwards on slow frame rates.  
+  [Karl Voskuil](https://github.com/karlvoskuil)
+
 ## 2.0.1 [2023-04-28]
 
 ### Added

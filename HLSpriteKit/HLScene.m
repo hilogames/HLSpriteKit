@@ -240,6 +240,20 @@ static BOOL _sceneAssetsLoaded = NO;
 }
 
 #if TARGET_OS_IPHONE
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+  // note: So far I've always wanted both swipe and pan to recognize simultaneously.  This
+  // behavior can be overridden by subclass, or could be offered as a configuration option
+  // for this base class.
+  if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]
+      && [otherGestureRecognizer isKindOfClass:[UISwipeGestureRecognizer class]]) {
+    return YES;
+  }
+  return NO;
+}
+#endif
+
+#if TARGET_OS_IPHONE
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
 #else
 - (BOOL)gestureRecognizer:(NSGestureRecognizer *)gestureRecognizer shouldAttemptToRecognizeWithEvent:(nonnull NSEvent *)event
@@ -255,7 +269,7 @@ static BOOL _sceneAssetsLoaded = NO;
     return YES;
   }
 
-  // TODO: If the scene has lots of gesture recognizers, then each one will be calling
+  // note: If the scene has lots of gesture recognizers, then each one will be calling
   // this same code.  Since the touch location will always be the same, they could
   // certainly share the hit-testing code.  In addition, the same target will have
   // addToGesture:firstTouch:isInside: called on it for each gesture recognizer,
