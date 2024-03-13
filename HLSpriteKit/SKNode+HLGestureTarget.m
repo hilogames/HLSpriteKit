@@ -33,7 +33,7 @@ static NSString * const HLGestureTargetUserDataKey = @"HLGestureTarget";
 }
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
-  [aCoder encodeConditionalObject:_weakGestureTarget];
+  [aCoder encodeConditionalObject:_weakGestureTarget forKey:@"weakGestureTarget"];
 }
 @end
 

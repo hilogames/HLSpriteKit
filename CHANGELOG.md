@@ -3,6 +3,14 @@
 
 ## Master
 
+### Added
+
+- A new line-wrapping layout manager: `HLWrapLayoutManager`.  The
+  layout manager is given a fill direction (like, "right-then-down")
+  and a maximum line length, and it fits as many nodes into a line as
+  it can before wrapping to the next line.  
+  [Karl Voskuil](https://github.com/karlvoskuil)
+
 ### Breaking
 
 - By default, `HLScene` now allows simultaneous recognition of swipe

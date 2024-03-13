@@ -84,6 +84,8 @@
 		CBB010942118E45800DC7431 /* HLIconNode.h in Headers */ = {isa = PBXBuildFile; fileRef = CBB010922118E45800DC7431 /* HLIconNode.h */; };
 		CBF9D2BD1DAD3450008F9C92 /* HLGridLayoutManager.h in Headers */ = {isa = PBXBuildFile; fileRef = CBF9D2BB1DAD3450008F9C92 /* HLGridLayoutManager.h */; };
 		CBF9D2BE1DAD3450008F9C92 /* HLGridLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = CBF9D2BC1DAD3450008F9C92 /* HLGridLayoutManager.m */; };
+		CBFFE7A22BA0EE81000F673E /* HLWrapLayoutManager.h in Headers */ = {isa = PBXBuildFile; fileRef = CBFFE7A02BA0EE81000F673E /* HLWrapLayoutManager.h */; };
+		CBFFE7A32BA0EE81000F673E /* HLWrapLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = CBFFE7A12BA0EE81000F673E /* HLWrapLayoutManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -166,6 +168,8 @@
 		CBB010922118E45800DC7431 /* HLIconNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLIconNode.h; sourceTree = "<group>"; };
 		CBF9D2BB1DAD3450008F9C92 /* HLGridLayoutManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLGridLayoutManager.h; sourceTree = "<group>"; };
 		CBF9D2BC1DAD3450008F9C92 /* HLGridLayoutManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLGridLayoutManager.m; sourceTree = "<group>"; };
+		CBFFE7A02BA0EE81000F673E /* HLWrapLayoutManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HLWrapLayoutManager.h; sourceTree = "<group>"; };
+		CBFFE7A12BA0EE81000F673E /* HLWrapLayoutManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HLWrapLayoutManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -260,6 +264,8 @@
 				847D62721D8499AF006E287F /* HLToolbarNode.m */,
 				CB8D943D1F881A2E00CAFA17 /* HLUglyShuffler.h */,
 				CB8D943E1F881A2E00CAFA17 /* HLUglyShuffler.m */,
+				CBFFE7A02BA0EE81000F673E /* HLWrapLayoutManager.h */,
+				CBFFE7A12BA0EE81000F673E /* HLWrapLayoutManager.m */,
 				84662B451DA33093006B1812 /* NSGestureRecognizer+MultipleActions.h */,
 				84662B461DA33093006B1812 /* NSGestureRecognizer+MultipleActions.m */,
 				847D62731D8499AF006E287F /* SKLabelNode+HLLabelNodeAdditions.h */,
@@ -313,6 +319,7 @@
 				CB21A89920225F5B00E51FB8 /* HLStackLayoutManager.h in Headers */,
 				847D62A91D8499AF006E287F /* HLToolbarNode.h in Headers */,
 				847D62AF1D8499AF006E287F /* SKNode+HLLayoutManager.h in Headers */,
+				CBFFE7A22BA0EE81000F673E /* HLWrapLayoutManager.h in Headers */,
 				847D62AD1D8499AF006E287F /* SKNode+HLGestureTarget.h in Headers */,
 				CB4F6B4722E22A86000C7AB9 /* HLFunction.h in Headers */,
 				847D62AB1D8499AF006E287F /* SKLabelNode+HLLabelNodeAdditions.h in Headers */,
@@ -416,6 +423,7 @@
 				847D62801D8499AF006E287F /* HLComponentNode.m in Sources */,
 				847D62911D8499AF006E287F /* HLLayoutManager.m in Sources */,
 				847D62B21D8499AF006E287F /* SKNode+HLNodeVisuals.m in Sources */,
+				CBFFE7A32BA0EE81000F673E /* HLWrapLayoutManager.m in Sources */,
 				CBF9D2BE1DAD3450008F9C92 /* HLGridLayoutManager.m in Sources */,
 				CB09AA4922B299A000211941 /* SKTexture+ShaderAdditions.m in Sources */,
 				847D628D1D8499AF006E287F /* HLItemsNode.m in Sources */,

@@ -27,6 +27,8 @@ Layout managers currently provided:
  * `HLOutlineLayoutManager` for vertical lists (especially of text)
    indented in levels.
 
+ * `HLWrapLayoutManager` for line-wrapping layouts;
+
  * `HLParallaxLayoutManager` for layers of nodes that move at
    different speeds.
 
