@@ -3,6 +3,8 @@
 
 ## Master
 
+## 2.1.0 [2024-07-09]
+
 ### Added
 
 - A new line-wrapping layout manager: `HLWrapLayoutManager`.  The
@@ -60,7 +62,8 @@
   the top target in the scene; pans and swipes and their ilk fall
   through to the first target that handles them.  This is a big
   change, but I'm hoping it fits the way gesture targets are already
-  used.  If this doesn't, let me know!  
+  used.  If this doesn't, let me know!  (See version 2.1.0 for further
+  changes to this.)  
   [Karl Voskuil](https://github.com/karlvoskuil)
 
 - Removed the previously-deprecated `HLError`.  
