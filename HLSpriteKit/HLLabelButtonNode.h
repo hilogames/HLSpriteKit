@@ -175,6 +175,11 @@
 @property (nonatomic, assign) CGFloat backgroundAlpha;
 
 /**
+ The texture used by the background node, or `nil` for none.
+*/
+@property (nonatomic, strong) SKTexture *texture;
+
+/**
  The color used by the background node, or the color blended into the background node's
  texture by a non-zero `colorBlendFactor`.
 */

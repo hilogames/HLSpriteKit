@@ -262,6 +262,16 @@ enum {
   _backgroundNode.alpha = backgroundAlpha;
 }
 
+- (SKTexture *)texture
+{
+  return _backgroundNode.texture;
+}
+
+- (void)setTexture:(SKTexture *)texture
+{
+  _backgroundNode.texture = texture;
+}
+
 - (SKColor *)color
 {
   return _backgroundNode.color;
