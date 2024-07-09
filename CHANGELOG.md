@@ -20,6 +20,22 @@
   please let me know.  
   [Karl Voskuil](https://github.com/karlvoskuil)
 
+- `HLGestureTarget` has been changed so that gesture targets now
+  decide which gestures are absorbed by the target, and which can be
+  passed through to other targets.  Previously, the gesture target
+  declared whether or not a particular gesture was considered "inside"
+  the target; then, the `HLScene` decided that any taps and
+  long-presses that were "inside" were considered absorbed, and others
+  were not.  The most noticeable breaking change is that all
+  `HLGestureTarget` implementations in `HLSpriteKit` (including
+  particular nodes like `HLGridNode` and `HLToolbarNode`, but also
+  including generic gesture target implementations like
+  `HLTapGestureTarget`) will behave differently.  Previously, the
+  gesture target would absorb taps and long-presses, even if
+  unhandled; now, gesture targets will typically let any unhandled
+  taps or long-presses fall through to other gesture targets.  
+  [Karl Voskuil](https://github.com/karlvoskuil)
+
 ### Fixed
 
 - Fixed an error in `HLChaseAction` which caused chasing to appear

@@ -409,11 +409,11 @@ enum {
 #endif
 }
 
-- (BOOL)addToGesture:(HLGestureRecognizer *)gestureRecognizer firstLocation:(CGPoint)sceneLocation isInside:(BOOL *)isInside
+- (BOOL)addToGesture:(HLGestureRecognizer *)gestureRecognizer firstLocation:(CGPoint)sceneLocation didAbsorbGesture:(BOOL *)didAbsorbGesture
 {
-  *isInside = YES;
 #if TARGET_OS_IPHONE
   if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
+    *didAbsorbGesture = YES;
     // note: Require only one tap and one touch, same as our gesture recognizer returned
     // from addsToGestureRecognizers?  I think it's okay to be non-strict.
     [gestureRecognizer addTarget:self action:@selector(handleTap:)];
@@ -421,10 +421,17 @@ enum {
   }
 #else
   if ([gestureRecognizer isKindOfClass:[NSClickGestureRecognizer class]]) {
+    *didAbsorbGesture = YES;
     [gestureRecognizer addTarget:self action:@selector(handleClick:)];
     return YES;
   }
 #endif
+  // note: Absorb only tap gestures.  I can easily imagine other desirable configurations
+  // but those will require a custom gesture target implementation.  This is the behavior
+  // of this gesture target since 4/2024; previously, the implementation of the gesture
+  // controller in `HLScene` would cause taps and long-presses on this gesture target to
+  // be absorbed and all other gestures to fall through.
+  *didAbsorbGesture = NO;
   return NO;
 }
 

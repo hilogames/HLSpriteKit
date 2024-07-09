@@ -272,16 +272,8 @@ static BOOL _sceneAssetsLoaded = NO;
   // note: If the scene has lots of gesture recognizers, then each one will be calling
   // this same code.  Since the touch location will always be the same, they could
   // certainly share the hit-testing code.  In addition, the same target will have
-  // addToGesture:firstTouch:isInside: called on it for each gesture recognizer,
-  // perhaps leading to a lot of redundant checking, especially is-inside checking.
-  // Ideas:
-  //
-  //   - That's okay, because is-inside checking is usually quick, and when it's not,
-  //     it's done with the same logic as `addToGesture`.
-  //
-  //   - Could separate out the is-inside check, passing only the point and not the
-  //     type of gesture.  The flow is then: check is-inside once for all gesture types
-  //     for a certain target, caching the result in some kind of object variable.
+  // addToGesture:firstTouch:didAbsorbGesture: called on it for each gesture recognizer,
+  // perhaps leading to a lot of redundant checking.  Okay for now.
 
   [gestureRecognizer removeTarget:nil action:NULL];
 #if TARGET_OS_IPHONE
@@ -297,6 +289,17 @@ static BOOL _sceneAssetsLoaded = NO;
   // empty array, which should be handled well in the while() loop below.  Also it's
   // possible that the nodesAtPoint will all be tied for zPosition zero, in which case the
   // first one returned should be chosen as a tie-breaker.
+
+  // note: See HLGestureTarget.h documentation of `addToGesture` for motivating examples
+  // of how `didAbsorbGesture` should be used.  It's perhaps worth noting that in the past
+  // the gesture targets only returned `isInside`, and then this code in `HLScene` decided
+  // whether or not the gesture should be absorbed -- in particular, taps and long presses
+  // were absorbed by a target as long as they were `isInside`, but all other gestures
+  // (pans, swipes, pinches) were not.  The overlay example motivated a change to the
+  // current system; I had not encountered it previously because my overlays were children
+  // of a scene which was not itself a gesture target, so I never noticed my scene was
+  // getting a chance to handle the swipe or pan gestures that were falling through from
+  // the overlay.
 
   SKNode *node = nil;
   if (_gestureTargetHitTestMode == HLSceneGestureTargetHitTestModeDeepestThenParent) {
@@ -321,22 +324,7 @@ static BOOL _sceneAssetsLoaded = NO;
     [NSException raise:@"HLSceneUnknownGestureTargetHitTestMode" format:@"Unknown gesture target hit test mode %ld.", (long)_gestureTargetHitTestMode];
   }
 
-  // note: Taps and long-presses should be offered only to the first target which claims
-  // the gesture is "inside", whether that target wants to handle it or not.  But other
-  // gestures (pans, swipes, pinches, and rotations) are usually less specific to the
-  // first target, and should be allowed to fall through until a target wants to handle
-  // it.  For example, say there's a game field that can be scrolled, with two objects: a
-  // player unit which can be dragged around the field, and a house which cannot.  A pan
-  // that begins on the player unit should drag the player; a pan that begins on the house
-  // should scroll the field.
-#if TARGET_OS_IPHONE
-  BOOL isGestureOpaque = ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]
-                          || [gestureRecognizer isKindOfClass:[UILongPressGestureRecognizer class]]);
-#else
-  BOOL isGestureOpaque = ([gestureRecognizer isKindOfClass:[NSClickGestureRecognizer class]]
-                          || [gestureRecognizer isKindOfClass:[NSPressGestureRecognizer class]]);
-#endif
-
+  BOOL shouldAttemptToRecognize = NO;
   while (node) {
 
     // note: Any target registered for gesture recognition is called to add itself to any
@@ -347,22 +335,19 @@ static BOOL _sceneAssetsLoaded = NO;
 
     id <HLGestureTarget> target = [node hlGestureTarget];
     if (target) {
-      BOOL isInside = YES;
-      BOOL addedToGesture = [target addToGesture:gestureRecognizer firstLocation:sceneLocation isInside:&isInside];
-      if (isInside) {
-        if (addedToGesture) {
-          return YES;
-        } else if (isGestureOpaque) {
-          return NO;
-        }
+      BOOL didAbsorbGesture = YES;
+      BOOL addedToGesture = [target addToGesture:gestureRecognizer firstLocation:sceneLocation didAbsorbGesture:&didAbsorbGesture];
+      if (addedToGesture) {
+        shouldAttemptToRecognize = YES;
       }
-      // note: It would be strange if a target claimed the gesture wasn't inside itself,
-      // and yet it added itself to the gesture.  But it's allowed.
+      if (didAbsorbGesture) {
+        break;
+      }
     }
     node = node.parent;
   }
 
-  return NO;
+  return shouldAttemptToRecognize;
 }
 
 - (void)HLScene_handleGesture:(HLGestureRecognizer *)gestureRecognizer

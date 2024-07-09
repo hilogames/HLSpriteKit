@@ -219,31 +219,33 @@ HLMenuNodeValidateButtonPrototype(SKNode *buttonPrototype, NSString *label)
 #endif
 }
 
-- (BOOL)addToGesture:(HLGestureRecognizer *)gestureRecognizer firstLocation:(CGPoint)sceneLocation isInside:(BOOL *)isInside
+- (BOOL)addToGesture:(HLGestureRecognizer *)gestureRecognizer firstLocation:(CGPoint)sceneLocation didAbsorbGesture:(BOOL *)didAbsorbGesture
 {
   CGPoint location = [self convertPoint:sceneLocation fromNode:self.scene];
 
-  *isInside = NO;
   for (SKNode *buttonNode in _buttonsNode.children) {
     if ([buttonNode containsPoint:location]) {
-      *isInside = YES;
 #if TARGET_OS_IPHONE
       if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
+        *didAbsorbGesture = YES;
         // note: Require only one tap and one touch, same as our gesture recognizer
         // returned from addsToGestureRecognizers?  I think it's okay to be non-strict.
         [gestureRecognizer addTarget:self action:@selector(handleTap:)];
         return YES;
       }
       if ([gestureRecognizer isKindOfClass:[UILongPressGestureRecognizer class]]) {
+        *didAbsorbGesture = YES;
         [gestureRecognizer addTarget:self action:@selector(handleLongPress:)];
         return YES;
       }
 #else
       if ([gestureRecognizer isKindOfClass:[NSClickGestureRecognizer class]]) {
+        *didAbsorbGesture = YES;
         [gestureRecognizer addTarget:self action:@selector(handleClick:)];
         return YES;
       }
       if ([gestureRecognizer isKindOfClass:[NSPressGestureRecognizer class]]) {
+        *didAbsorbGesture = YES;
         [gestureRecognizer addTarget:self action:@selector(handleLongPress:)];
         return YES;
       }
@@ -251,6 +253,17 @@ HLMenuNodeValidateButtonPrototype(SKNode *buttonPrototype, NSString *label)
       break;
     }
   }
+
+  // note: Absorb the kinds of gestures that are handled by this gesture target, even if
+  // the gestures started in the spaces between buttons.  I can imagine other desirable
+  // configurations, but they will require a custom gesture target implementation.
+#if TARGET_OS_IPHONE
+  *didAbsorbGesture = ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]
+                       || [gestureRecognizer isKindOfClass:[UILongPressGestureRecognizer class]]);
+#else
+  *didAbsorbGesture = ([gestureRecognizer isKindOfClass:[NSClickGestureRecognizer class]]
+                       || [gestureRecognizer isKindOfClass:[NSPressGestureRecognizer class]]);
+#endif
   return NO;
 }
 

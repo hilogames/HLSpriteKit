@@ -61,10 +61,10 @@ typedef NS_ENUM(NSInteger, HLScrollNodeContentScaleMinimumMode)
 
  Often the content node will want to handle taps (and the like) while letting pan and
  pinch gestures fall through to the scroll node.  It depends a little on the scene
- implementation, but for `HLScene`, the important part is returning `NO` for `isInside`
- for pan and pinch gesture recognizers in the content node's gesture target implementation
- of `addToGestureRecognizer:firstTouch:isInside:`.  See, for instance, the implementation
- of that method in `HLTapGestureTarget`.
+ implementation, but for `HLScene`, the important part is setting `didAbsorbGesture` to
+ `NO` for pan and pinch gesture recognizers in the content node's gesture target
+ implementation of `addToGestureRecognizer:firstTouch:didAbsorbGesture:`.  See, for
+ instance, the implementation of that method in `HLTapGestureTarget`.
 
  As a `UIResponder`:
 
@@ -74,9 +74,9 @@ typedef NS_ENUM(NSInteger, HLScrollNodeContentScaleMinimumMode)
 
  As an `NSResponder`:
 
- - Set this node's `userInteractionEnabled` property to true to get scrolling on left mouse
-   button drag.  (Mouse scroll wheel would be a good candidate for zooming interaction, but
-   scroll wheel events are not forwarded to the scene by `SKView`.)
+ - Set this node's `userInteractionEnabled` property to true to get scrolling on left
+   mouse button drag.  (Mouse scroll wheel would be a good candidate for zooming
+   interaction, but scroll wheel events are not forwarded to the scene by `SKView`.)
 */
 @interface HLScrollNode : HLComponentNode <NSCoding, HLGestureTarget>
 

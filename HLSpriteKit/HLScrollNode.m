@@ -714,18 +714,18 @@ enum {
 #endif
 }
 
-- (BOOL)addToGesture:(HLGestureRecognizer *)gestureRecognizer firstLocation:(CGPoint)sceneLocation isInside:(BOOL *)isInside
+- (BOOL)addToGesture:(HLGestureRecognizer *)gestureRecognizer firstLocation:(CGPoint)sceneLocation didAbsorbGesture:(BOOL *)didAbsorbGesture
 {
-  // note: The content might extend beyond the boundaries of the scroll node.  If a gesture
-  // starts in this extended area, a gesture handler like HLScene might ask us if we'd like
-  // to be the target for the gesture.  Whether we're clipping content or not, it seems like
-  // the answer should be "no".
+  // note: The content might extend beyond the boundaries of the scroll node.  If a
+  // gesture starts in this extended area, a gesture handler like HLScene might ask us if
+  // we'd like to be the target for the gesture.  Whether we're clipping content or not,
+  // it seems like the answer should be "no".
   CGPoint locationInSelf = [self convertPoint:sceneLocation fromNode:self.scene];
   if (locationInSelf.x < _size.width * -_anchorPoint.x
       || locationInSelf.x > _size.width * (1.0f - _anchorPoint.x)
       || locationInSelf.y < _size.height * -_anchorPoint.y
       || locationInSelf.y > _size.height * (1.0f - _anchorPoint.y)) {
-    *isInside = NO;
+    *didAbsorbGesture = NO;
     return NO;
   }
 
@@ -733,32 +733,30 @@ enum {
   if (HLGestureTarget_areEquivalentGestureRecognizers(gestureRecognizer, [[UIPanGestureRecognizer alloc] init])) {
     [gestureRecognizer addTarget:self action:@selector(handlePan:)];
     [self HL_scrollBegin:locationInSelf];
-    *isInside = YES;
+    *didAbsorbGesture = YES;
     return YES;
   } else if (HLGestureTarget_areEquivalentGestureRecognizers(gestureRecognizer, [[UIPinchGestureRecognizer alloc] init])) {
     [gestureRecognizer addTarget:self action:@selector(handlePinch:)];
-    *isInside = YES;
+    *didAbsorbGesture = YES;
     return YES;
   }
 #else
   if (HLGestureTarget_areEquivalentGestureRecognizers(gestureRecognizer, [[NSPanGestureRecognizer alloc] init])) {
     [gestureRecognizer addTarget:self action:@selector(handlePan:)];
     [self HL_scrollBegin:locationInSelf];
-    *isInside = YES;
+    *didAbsorbGesture = YES;
     return YES;
   }
   if (HLGestureTarget_areEquivalentGestureRecognizers(gestureRecognizer, [[NSMagnificationGestureRecognizer alloc] init])) {
     [gestureRecognizer addTarget:self action:@selector(handlePinch:)];
-    *isInside = YES;
+    *didAbsorbGesture = YES;
     return YES;
   }
 #endif
 
   // note: The scroll node content might be opaque, but the scroll node itself is
-  // transparent -- there's nothing really "inside" it.  This allows components that
-  // own a scroll node to get all gestures except for the scroll node handling its own
-  // scrolls and pinches.
-  *isInside = NO;
+  // transparent, and shouldn't really absorb any gestures other than the ones it handles.
+  *didAbsorbGesture = NO;
   return NO;
 }
 
@@ -786,8 +784,8 @@ enum {
   // movement from the original touch location.  I think translationInView accounts for
   // this, but I track my own translation (so that the conversion from view to node
   // coordinate systems is done by convertPointFromView and convertPoint:fromNode).  So
-  // call HL_scrollStart from addToGesture:firstTouch:isInside:, starting the pan from
-  // there.  For UIGestureRecognizerStateBegan, we update it.
+  // call HL_scrollStart from addToGesture:firstTouch:didAbsorbGesture:, starting the pan
+  // from there.  For UIGestureRecognizerStateBegan, we update it.
 
   CGPoint viewLocation = [gestureRecognizer locationInView:self.scene.view];
   CGPoint sceneLocation = [self.scene convertPointFromView:viewLocation];

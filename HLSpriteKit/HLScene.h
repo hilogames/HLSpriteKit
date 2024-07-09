@@ -17,7 +17,17 @@
       nodes are collected by `[SKNode nodesAtPoint]` and then traversed in order of
       `zPosition` (highest to lowest).  `HLSceneGestureTargetHitTestModeZPosition`,
       presumably.  But parent-traversal is already coded, and works in simple cases, so
-      I'm delaying implementation until I have a use-case for `zPosition`-only.
+      I'm delaying implementation until I have a use-case for `zPosition`-only.  It's
+      worth noting that `SpriteKit` does not seem optimized to do hit-testing by
+      `zPosition`, so that even implementing
+      `HLSceneGestureTargetHitTestModeZPositionThenParent` means accepting some pretty
+      crazy computation on every gesture (further complicated by my desire to use
+      `UIGestureRecognizers`), and whenever I start implementing z-position-only hit
+      testing I think "SpriteKit doesn't want me to do it this way."  If I really do want
+      to ignore the node tree, then maybe what I want is to make my own hit-testing
+      algorithm, too.  It's possible I could make a simpler system: Gesture targets
+      specifying their own hit boxes and layering, independent of their
+      `calculateAccumulatedFrame` and `zPosition`.
 
  @bug Okay, I had one use case: I wanted to flash the entire scene white, and so naively I
       overlaid a white sprite node on the scene and animated its alpha.  Gesture handling
@@ -30,12 +40,27 @@
       way), but it still makes a good use case.  The opposite case is this: It's nice to
       be able to disable interaction in the scene by covering everything with a matte
       which has a top-level parent.  However, that function is not impossible when doing
-      HLSceneGestureTargetHitTestModeZPosition (for example, the matte could be itself a
+      `HLSceneGestureTargetHitTestModeZPosition` (for example, the matte could be itself a
       gesture target which explicitly does nothing).  One more idea along these lines:
       Rather than having a scene-wide mode, could each node in the tree (optionally) have
       its own mode?  Like, the scene mode is to find the first target, either "deepest" or
       "z-position", but then that first target is queried to see how to traverse the node
-      tree, whether by node parent or z-position?
+      tree, whether by node parent or z-position?  Or it could have an explicit "gesture
+      parent node", but that probably wouldn't be dynamic enough.  Again, almost tempted
+      to have HLScene make its own gesture tree, independent of the SpriteKit node tree.
+
+ @bug Another argument in favor of hit-testing by z-position and/or a tree other than the
+      SpriteKit general-purpose node tree: I have a `worldNode` which contains the world
+      of the game, and can be panned and zoomed and shaken.  Interface elements (status
+      bars, minimaps, whatever) show above that world in z-position, but are not children
+      of that world node, since I don't want them moving around with the world.  And yet
+      that's a problem for hit testing order: Supposedly an inteface element can say a
+      gesture is "not absorbed" by the element, but in that case it needs to fall through
+      to the world, which is, again, not the parent of the interface element.  My solution
+      (in a real world example) was to no longer let the world be a gesture target, but
+      instead to have all gestures not handled by a special interface element fall through
+      to the scene controller.  Of course, that kinda defeats the purpose of
+      HLGestureTarget.
 */
 typedef NS_ENUM(NSInteger, HLSceneGestureTargetHitTestMode) {
   /**

@@ -203,22 +203,25 @@ HLGestureTarget_areEquivalentGestureRecognizers(HLGestureRecognizer *a, HLGestur
 
 - (BOOL)addToGesture:(HLGestureRecognizer *)gestureRecognizer
        firstLocation:(CGPoint)sceneLocation
-            isInside:(BOOL *)isInside
+    didAbsorbGesture:(BOOL *)didAbsorbGesture
 {
-  BOOL handleGesture = NO;
-  *isInside = YES;
+  // note: Absorb only tap gestures.  I can easily imagine other desirable configurations
+  // but those will require a custom gesture target implementation.  This is the behavior
+  // of `HLTapGestureTarget` since 4/2024; previously, the implementation of the gesture
+  // controller in `HLScene` would cause taps and long-presses on this gesture target to
+  // be absorbed and all other gestures to fall through.
+  *didAbsorbGesture = NO;
 
   if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
+    *didAbsorbGesture = YES;
     UITapGestureRecognizer *tapGestureRecognizer = (UITapGestureRecognizer *)gestureRecognizer;
     if (tapGestureRecognizer.numberOfTapsRequired == 1) {
-      handleGesture = YES;
+      [gestureRecognizer addTarget:self action:@selector(HLTapGestureTarget_handleGesture:)];
+      return YES;
     }
   }
 
-  if (handleGesture) {
-    [gestureRecognizer addTarget:self action:@selector(HLTapGestureTarget_handleGesture:)];
-  }
-  return handleGesture;
+  return NO;
 }
 
 - (NSArray *)addsToGestureRecognizers
@@ -333,22 +336,25 @@ HLGestureTarget_areEquivalentGestureRecognizers(HLGestureRecognizer *a, HLGestur
 
 - (BOOL)addToGesture:(HLGestureRecognizer *)gestureRecognizer
        firstLocation:(CGPoint)sceneLocation
-            isInside:(BOOL *)isInside
+    didAbsorbGesture:(BOOL *)didAbsorbGesture
 {
-  BOOL handleGesture = NO;
-  *isInside = YES;
+  // note: Absorb only click gestures.  I can easily imagine other desirable
+  // configurations but those will require a custom gesture target implementation.  This
+  // is the behavior of `HLTapGestureTarget` since 4/2024; previously, the implementation
+  // of the gesture controller in `HLScene` would cause taps and long-presses on this
+  // gesture target to be absorbed and all other gestures to fall through.
+  *didAbsorbGesture = NO;
 
   if ([gestureRecognizer isKindOfClass:[NSClickGestureRecognizer class]]) {
+    *didAbsorbGesture = YES;
     NSClickGestureRecognizer *clickGestureRecognizer = (NSClickGestureRecognizer *)gestureRecognizer;
     if (clickGestureRecognizer.numberOfClicksRequired == 1) {
-      handleGesture = YES;
+      [gestureRecognizer addTarget:self action:@selector(HLClickGestureTarget_handleGesture:)];
+      return YES;
     }
   }
 
-  if (handleGesture) {
-    [gestureRecognizer addTarget:self action:@selector(HLClickGestureTarget_handleGesture:)];
-  }
-  return handleGesture;
+  return NO;
 }
 
 - (NSArray *)addsToGestureRecognizers

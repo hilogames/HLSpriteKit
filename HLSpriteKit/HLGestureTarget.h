@@ -138,40 +138,54 @@ BOOL HLGestureTarget_areEquivalentGestureRecognizers(HLGestureRecognizer *a, HLG
  gesture recognizer before then offering it to be claimed by one or more of its possible
  targets for the given location.)
 
- Returns an additional boolean indicating whether the location is "inside" the target
- (regardless of whether the target added itself to the gesture recognizer).  The typical
- response is `YES`, but some nodes consider parts of themselves transparent to gestures,
- and so are telling the caller that all gestures should fall through at this location.
+ Returns an additional boolean indicating whether the gesture was absorbed by the target.
+ The typical value is `YES`: For example, a tap on a button should be "absorbed" so that
+ it gets handled only by the button, and not by another gesture target behind the
+ button.  And in fact it's often set to `YES` even if the gesture target did *not* want to
+ add itself to the gesture recognizer: That same button will probably absorb a swipe
+ gesture that starts on the button.  But other examples abound:
 
- To illustrate the logic of the parameters, here is a sketch of a typical caller
- implementation.  The caller is a delegate of a number of standard gesture recognizers.
- It has many possible targets for the gestures, some of which are controlled completely by
- the caller, and some of which are encapsulated into opaque components.  The motivating
- example is reusable subclasses of `SKNode`, which can't own their own gesture
- recognizers, since they aren't views (`UIView` or `NSView`).  On first recognition of a
- gesture recognizer (`gestureRecognizer:shouldRecieveTouch:` in iOS or
+ - A set of buttons which has space between buttons.  Hit-testing by SpriteKit's
+   `nodesAtPoint` uses `calculateAccumulatedFrame`, and so (depending on what hit-testing
+   is used by the caller) probably the spaces will still count as part of the target.  If
+   the gesture is in the space between buttons, the target's `addToGesture` method should
+   return `NO` (because it did not add itself to the gesture recognizer).  Setting
+   `didAbsorbGesture` could go either way: perhaps a pan gesture starting between buttons
+   should pan the world below the buttons (`didAbsorbGesture` set to `NO`); or maybe a tap
+   between buttons should not fall through, since the player probably meant to tap a
+   button and just missed (`didAbsorbGesture` set to `YES`).
+
+ - An elf and a house on a pannable world node.  A pan on the elf should move the elf
+   around the world: so `addToGesture` should return `YES` and set `didAbsorbGesture` to
+   `YES` so that the world won't pan.  But the house is only tappable, not pannable.  So a
+   tap gesture on the house would be handled by the house's `addToGesture`, but a pan on
+   the house would return `NO` and set `didAbsorbGesture` to `NO`.
+
+ - A more-or-less modal game menu overlay on top of a pannable world node.  The overlay is
+   not itself pannable, but it should absorb all gestures and prevent them from getting
+   handled by the scene underneath.  Even if the big backdrop node of the overlay is not
+   already a gesture target, it should become one, in order just to set `didAbsorbGesture`
+   to `YES` for all gestures.
+
+ This method is designed to work with `HLScene`, which has an implementation of "the
+ caller" (mentioned only generically above).  A typical implementation will have a
+ collection of gesture recognizers for which it serves as delegate.  On first recognition
+ of a gesture recognizer (`gestureRecognizer:shouldRecieveTouch:` in iOS or
  `gestureRecognizer:shouldAttemptToRecognizeWith:` in macOS), the caller might use
- bounding box (e.g. `[SKNode containsPoint]`) or other hit testing (e.g. `[SKNode
- nodeAtPoint]`) to find possibly-relevant targets, and then query them in order of visible
- layer height (e.g. `[SKNode zPosition]`): each target is asked to add itself to the
- gesture if it's interested.  A caller might offer pans and swipes only to the first
- target to add itself to the gesture; taps and long-presses might only be offered to the
- first target that claims the gesture is "inside", regardless of whether or not that
- target handles the gesture.
+ bounding box (`[SKNode containsPoint]`) or other hit testing (maybe `nodeAtPoint`) to
+ find the topmost possibly-relevant target, and ask it to add itself to the gesture if
+ it's interested, offering the gesture to the target's node tree parents until it is
+ absorbed.
 */
 - (BOOL)addToGesture:(HLGestureRecognizer *)gestureRecognizer
        firstLocation:(CGPoint)sceneLocation
-            isInside:(BOOL *)isInside;
+    didAbsorbGesture:(BOOL *)didAbsorbGesture;
 
 /**
  Returns an array of configured gesture recognizers that the target wants to handle.
 
  These are used by the caller to initialize and configure itself (usually by attaching the
  gesture recognizers, or equivalent ones, to its view).
-
- Some callers might also be able to use these to avoid unnecessary calls to `addToGesture`
- (which is assumed to be more costly), but typically not: A target still must evaluate "is
- inside" for all gestures, even if it doesn't handle some of those gestures.
 */
 - (NSArray *)addsToGestureRecognizers;
 
@@ -186,7 +200,7 @@ BOOL HLGestureTarget_areEquivalentGestureRecognizers(HLGestureRecognizer *a, HLG
  When a tap is recognized, it is forwarded to an owner-provided delegate or handling
  block.
 
- Delegation is preferred for two reasons:
+ Delegation might be preferred for two reasons:
 
  * The block is not encodable, but the delegate is.  (The block must be reset on decode.)
 
