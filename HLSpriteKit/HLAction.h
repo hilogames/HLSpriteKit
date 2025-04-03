@@ -375,7 +375,7 @@ When complete, `elapsedTime` won't necessarily match the action's `duration`:
 @property (nonatomic, readonly) NSTimeInterval elapsedTime;
 
 /**
- The timing mode of the action, in seconds.
+ The timing mode of the action.
 
  A timing mode affects the way that time elapses during action updates.
 
