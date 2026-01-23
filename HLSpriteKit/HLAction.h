@@ -1185,6 +1185,27 @@ When complete, `elapsedTime` won't necessarily match the action's `duration`:
 @end
 
 /**
+ A non-durational action that sets a texture on its node.
+*/
+@interface HLSetTextureAction : HLAction <NSCoding, NSCopying>
+
+/// @name Creating the Action
+
+/**
+ Creates a set-texture action.
+
+ @param texture The texture.
+
+ @param resize If `YES`, then a node passed to `update:node:` will have its size changed
+ to the size of the new texture.
+
+ @return A configured set-texture action.
+*/
+- (instancetype)initWithTexture:(SKTexture *)texture resize:(BOOL)resize;
+
+@end
+
+/**
  An action that progresses through an array of textures, considered as frames of an
  animation.
 
@@ -2029,6 +2050,16 @@ When complete, `elapsedTime` won't necessarily match the action's `duration`:
  another, with designated color blend factor.
 */
 + (HLColorizeAction *)colorizeWithColorBlendFactorFrom:(CGFloat)colorBlendFactorFrom to:(CGFloat)colorBlendFactorTo duration:(NSTimeInterval)duration;
+
+/**
+ Creates a non-durational action that sets a texture on its node.
+
+ @param texture The texture to set on the node.
+
+ @param resize If `YES`, then a node passed to `update:node:` will have its size changed
+ to the size of the new texture.
+*/
++ (HLSetTextureAction *)setTexture:(SKTexture *)texture resize:(BOOL)resize;
 
 /**
  Creates an action that progresses through an array of textures, considered as frames of

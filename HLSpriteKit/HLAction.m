@@ -725,6 +725,11 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
   return [[HLColorizeAction alloc] initWithColorBlendFactorFrom:colorBlendFactorFrom to:colorBlendFactorTo duration:duration];
 }
 
++ (HLSetTextureAction *)setTexture:(SKTexture *)texture resize:(BOOL)resize
+{
+  return [[HLSetTextureAction alloc] initWithTexture:texture resize:resize];
+}
+
 + (HLAnimateTexturesAction *)animateWithTextures:(NSArray *)textures timePerFrame:(NSTimeInterval)timePerFrame
 {
   return [[HLAnimateTexturesAction alloc] initWithTextures:textures timePerFrame:timePerFrame resize:NO restore:NO];
@@ -3255,6 +3260,53 @@ HLActionApplyTimingInverse(HLActionTimingMode timingMode, CGFloat normalTime)
                               blue:(colorFromBlue * (1.0f - normalTime) + colorToBlue * normalTime)
                              alpha:(colorFromAlpha * (1.0f - normalTime) + colorToAlpha * normalTime)];
   }
+}
+
+@end
+
+@implementation HLSetTextureAction
+{
+  SKTexture *_texture;
+  BOOL _resize;
+}
+
+- (instancetype)initWithTexture:(SKTexture *)texture resize:(BOOL)resize
+{
+  self = [super initWithDuration:0.0];
+  if (self) {
+    _texture = texture;
+    _resize = resize;
+  }
+  return self;
+}
+
+- (BOOL)HL_update:(NSTimeInterval)incrementalTime node:(SKNode *)node extraTime:(NSTimeInterval *)extraTime
+{
+#if DEBUG
+  if (self.completed) {
+    // note: Some actions rely on this precondition (that update is not called after
+    // returning NO) more than others.  Probably things will break, but maybe not.
+    HLLog(HLLogError, @"HLActions should not be updated after they have completed."
+          " (Note that SKActions are immutable and can be reused multiple times,"
+          " but HLActions are stateful and can only be used once.)");
+  }
+#endif
+
+  [self HL_advanceTime:incrementalTime];
+  // note: Should use duck-typing here, or check for SKSpriteNode?
+  if (node && [node isKindOfClass:[SKSpriteNode class]]) {
+    SKSpriteNode *spriteNode = (SKSpriteNode *)node;
+    spriteNode.texture = _texture;
+    if (_resize) {
+      spriteNode.size = _texture.size;
+    }
+  }
+
+  *extraTime = incrementalTime;
+#if DEBUG
+  self.completed = YES;
+#endif
+  return NO;
 }
 
 @end
