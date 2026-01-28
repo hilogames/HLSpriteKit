@@ -256,10 +256,6 @@ scene that it needs to create some appropriate gesture recognizers:
 
 This will give you delegate callbacks for taps or clicks on toolbar tools.
 
-See the Example project (`HLSpriteKit/Example/HLSpriteKit/HLCatalogScene.m` in project or
-[on GitHub](https://github.com/hilogames/HLSpriteKit/blob/master/Example/Shared/HLCatalogScene.m))
-for a working example of a scene using multiple gesture targets.
-
 ### I want to make my own gesture-target nodes in my scene.
 
 Okay!

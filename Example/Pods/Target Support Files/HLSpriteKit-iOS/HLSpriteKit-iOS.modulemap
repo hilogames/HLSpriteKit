@@ -1,6 +1,0 @@
-framework module HLSpriteKit {
-  umbrella header "HLSpriteKit-iOS-umbrella.h"
-
-  export *
-  module * { export * }
-}
