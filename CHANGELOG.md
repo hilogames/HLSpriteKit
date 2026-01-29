@@ -3,6 +3,20 @@
 
 ## Master
 
+## 3.0.0 [2026-01-29]
+
+### Breaking
+
+- Migrated from CocoaPods to Swift Package Manager.  The demo project
+  (previously called "Example") has been removed from the package, but
+  it is available upon request.  
+  [Karl Voskuil](https://github.com/karlvoskuil)
+
+### Added
+
+- `HLSetTextureAction`  
+  [Karl Voskuil](https://github.com/karlvoskuil)
+
 ## 2.1.0 [2024-07-09]
 
 ### Added

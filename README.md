@@ -1,8 +1,9 @@
 # HLSpriteKit
 
-![Version](https://img.shields.io/cocoapods/v/HLSpriteKit)
-![Platform](https://img.shields.io/cocoapods/p/HLSpriteKit)
-![License](https://img.shields.io/cocoapods/l/HLSpriteKit)
+![Swift Package Manager](https://img.shields.io/badge/SPM-compatible-lightgray)
+![CocoaPods Version](https://img.shields.io/cocoapods/v/HLSpriteKit)
+![Platform](https://img.shields.io/badge/platform-iOS%20%7C%20macOS-lightgray)
+![License](https://img.shields.io/badge/licence-MIT-lightgray)
 
 SpriteKit scene and node subclasses, plus various utilities.
 
@@ -449,11 +450,13 @@ useful.
 
 ## Installation
 
+    Swift Package Manager
+
     # CocoaPods
-    pod "HLSpriteKit", "~> 2.0"
+    pod "HLSpriteKit", "~> 2.1"
 
     # Carthage
-	github "hilogames/HLSpriteKit" ~> 2.0
+	github "hilogames/HLSpriteKit" ~> 2.1
 
 ## Author
 
